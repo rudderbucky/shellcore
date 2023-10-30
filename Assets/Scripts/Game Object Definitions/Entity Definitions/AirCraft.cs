@@ -131,6 +131,7 @@ public abstract class AirCraft : Craft
     public virtual void Warp(Vector3 point, bool setWarpUninteractable = true)
     {
         transform.position = point;
+        if (!(this as PlayerCore)) spawnPoint = point;
         oscillatorVector = point;
         storedPos = point;
         positionBeforeOscillation = point.y;

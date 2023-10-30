@@ -16,7 +16,7 @@ MissionTrigger(
     entryPoint=Abandonment_entryPoint,
     prerequisites=(Truthful_Revelation_missionName),
     sequence=(
-        Call(Abandonment_start)
+        Call(Abandonment_postJump)
     )
 )
 
@@ -88,8 +88,6 @@ Function(
     )
 )
 
-// abandoned-sectors-entrance-flag
-// Sector 190-5170
 Function(
     name=Abandonment_JumpSectorCountdown,
     sequence=(
@@ -212,22 +210,72 @@ Dialogue(
             )
         ),
         Response(
-            responseText=Abandonment_cs1_d3,
-            responses=(
-                Response(
-                    responseText=Abandonment_cs1_d6,
-                    next=Call(Abandonment_postBlueVoice)
+            responseText=$$Abandonment_cs1_r2_var,
+            next=Dialogue(
+                dialogueText=Abandonment_cs1_d5,
+                color=(92,137,230),
+                typingSpeedFactor=0.7,
+                responses=(
+                    Response(
+                        responseText=Abandonment_cs1_d6,
+                        next=Call(Abandonment_postBlueVoice)
+                    )
                 )
             )
         ),
     )
 )
 
+// Note: Loyalty = 0 means uninfected
 Function(
     name=Abandonment_postJump,
     sequence=(
-        WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
-        StartCutscene(),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    ClearParty(),
+                    SetVariable(
+                        name=$$Abandonment_cs1_r2_var,
+                        value=Abandonment_cs1_d4
+                    ),
+                    WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
+                    StartCutscene()
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    ClearParty(),
+                    WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
+                    StartCutscene(),
+                    SpawnEntity(
+                        entityID=sukrat,
+                        flagName=new-ep3-entry-flag
+                    ),
+                    SpawnEntity(
+                        entityID=the-architect,
+                        flagName=new-ep3-entry-flag
+                    ),
+                    AddPartyMember(
+                        entityID=the-architect,
+                    ),
+                    AddPartyMember(
+                        entityID=sukrat,
+                    ),
+                    SetVariable(
+                        name=$$Abandonment_cs1_r2_var,
+                        value=Abandonment_cs1_d3
+                    )
+                )
+            )
+        ),
+
+
         ForceStartDialogue(dialogueID=Abandonment_blueVoice)
     )
 )
@@ -243,10 +291,31 @@ Function(
                     entityID=player,
                     targetID=new-ep3-entry-flag,
                     sequence=(
-                        PassiveDialogue(
-                            entityID=player,
-                            text=Abandonment_cs1_pd1
+                        ConditionBlock(
+                            Comparison(
+                                val1=$$$Loyalty_Variable,
+                                val2=1,
+                                comp=Eq,
+                                sequence=(
+                                    PassiveDialogue(
+                                        entityID=player,
+                                        text=Abandonment_cs1_pd1
+                                    ),
+                                )
+                            ),
+                            Comparison(
+                                val1=$$$Loyalty_Variable,
+                                val2=0,
+                                comp=Eq,
+                                sequence=(
+                                    PassiveDialogue(
+                                        entityID=player,
+                                        text=Abandonment_cs1_pd1
+                                    ),
+                                )
+                            )
                         ),
+
                         FinishCutscene()
                     )
                 )

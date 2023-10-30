@@ -158,6 +158,7 @@ public class PartyManager : MonoBehaviour
     {
         if (partyMembers.Count >= 2)
         {
+            Debug.Log($"<Party Management> Adding Character ID {charID} would go above member cap");
             PlayerCore.Instance.alerter.showMessage("Cannot assign more than 2 party members!", "clip_alert");
             return;
         }
@@ -189,12 +190,21 @@ public class PartyManager : MonoBehaviour
         }
 
         var core = AIData.entities.Find(x => x.ID == charID) as ShellCore;
-        if (!core) return;
-        if (partyMembers.Contains(core))
+        if (!core)
+        {
+            Debug.LogWarning($"<Party Management> Character ID {charID} not found");
             return;
+        } 
+        if (partyMembers.Contains(core))
+        {
+
+            Debug.LogWarning($"<Party Management> Character {charID} already in party: Array count {partyMembers.Count}");
+            return;
+        }
 
         PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
         partyMembers.Add(core);
+        Debug.Log($"<Party Management> Character {charID} added");
         if (!partyIndicators.ContainsKey(core))
             partyIndicators.Add(core, Instantiate(partyIndicatorPrefab, indicatorTransform));
         partyIndicators[core].GetComponentInChildren<Text>().text = core.name.ToUpper();
@@ -344,12 +354,6 @@ public class PartyManager : MonoBehaviour
     {
         blocker.SetActive(false);
         partyMembers.RemoveAll(sc => !sc);
-
-        var deadMembers = partyMembers.FindAll(sc => !sc);
-        foreach (var member in deadMembers)
-        {
-            UnassignBackend(null, member);
-        }
 
         // distance maximum for party members - teleport them close to the player
         if (SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)

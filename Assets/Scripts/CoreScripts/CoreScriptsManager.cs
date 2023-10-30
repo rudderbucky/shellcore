@@ -64,6 +64,7 @@ public class CoreScriptsManager : MonoBehaviour
 
     public string GetLocalMapString(string key)
     {
+        if (string.IsNullOrEmpty(key)) return "";
         key = key.Trim();
         if (!localMap.ContainsKey(key)) return "";
         else return localMap[key];

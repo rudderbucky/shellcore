@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
+using System.Linq;
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
@@ -118,8 +119,11 @@ public class CoreScriptsSequence : MonoBehaviour
 
     public static string VariableSensitizeValue(string val)
     {
+        if (string.IsNullOrEmpty(val)) return val;
         string retVal = null;
-        if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null)
+        if (val.StartsWith("$$$") && 
+            SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null && 
+            SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.Contains(val.Substring(3)))
         {
             var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3));
             if (index >= 0) 
@@ -127,7 +131,8 @@ public class CoreScriptsSequence : MonoBehaviour
                 retVal = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
             }
         }
-        else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null)
+        else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null && 
+            SaveHandler.instance.GetSave().taskVariableNames.Contains(val.Substring(3)))
         {
             var index = -1;
             var names = SaveHandler.instance.GetSave().taskVariableNames;
@@ -205,12 +210,15 @@ public class CoreScriptsSequence : MonoBehaviour
                     CoreScriptsCondition.ExecuteConditionBlock(cb, context);
                     break;
                 case InstructionCommand.SpawnEntity:
+                    var fStr = GetArgument(inst.arguments, "faction");
+                    var fac = 0;
+                    if (!string.IsNullOrEmpty(fStr)) fac = int.Parse(fStr);
                     SpawnEntity(
                         GetArgument(inst.arguments, "entityID"), 
                         GetArgument(inst.arguments, "forceCharacterTeleport") != "false",
                         GetArgument(inst.arguments, "flagName"),
                         GetArgument(inst.arguments, "blueprintJSON"),
-                        int.Parse(GetArgument(inst.arguments, "faction")),
+                        fac,
                         GetArgument(inst.arguments, "name"));
                     break;
                 case InstructionCommand.Log:
@@ -450,7 +458,41 @@ public class CoreScriptsSequence : MonoBehaviour
         List<string> stx = null;
         int brax = 0;
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        // find start and finish of line
+        int start = index;
+        int end = index;
+        for (int i = index; i < line.Length; i++)
+        {
+            if (line[i] == '(')
+            {
+                start = i;
+                break;
+            }
+        }
+
+        int brackets = 0;
+        for (int i = start; i < line.Length; i++)
+        {
+            if (line[i] == '(')
+            {
+                brackets++;
+            }
+            if (line[i] == ')')
+            {
+                brackets--;
+                if (brackets == 0)
+                {
+                    end = i;
+                    break;
+                }
+            }
+        }
+
+
+        var x = line.Substring(start, end-start+1);
+        Debug.LogWarning(x);
+        line = x;
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
@@ -488,8 +530,14 @@ public class CoreScriptsSequence : MonoBehaviour
 
         for (int i = 0; i < val.Length; i++)
         {
-            if (val[i] == '(') brackets++;
-            else if (val[i] == ')') brackets--;
+            if (val[i] == '(')
+            {
+                brackets++;
+            }
+            else if (val[i] == ')')
+            {
+                brackets--;
+            }
 
             if (brackets > 0 && continueThroughScopes) continue;
 
@@ -540,6 +588,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     if (forceCharacterTeleport)
                     {
                         if (!(oj is AirCraft airCraft)) continue;
+                        Debug.Log($"Warping to {coords.x}, {coords.y}...");
                         airCraft.Warp(coords, false);
                     }
 

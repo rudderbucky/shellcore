@@ -20,6 +20,7 @@ public class Party : MonoBehaviour
 
     public static void AddPartyMember(string entityID)
     {
+        Debug.Log($"<AddPartyMember> {entityID}");
         PartyManager.instance.AssignBackend(entityID);
     }
 
