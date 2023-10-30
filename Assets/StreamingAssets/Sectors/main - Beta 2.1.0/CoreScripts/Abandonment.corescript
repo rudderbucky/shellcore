@@ -23,6 +23,22 @@ MissionTrigger(
 Function(
     name=Abandonment_start,
     sequence=(                    
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truthful_Revelation_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    Call(Abandonment_startHelper)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Abandonment_startHelper,
+    sequence=(
         SetFlagInteractibility(
             flagName=entrance-jump-gate-flag
         ),        
@@ -110,9 +126,9 @@ Function(
                             )
                         ),
                         Time(
-                            time=20,
+                            time=10,
                             sequence=(
-                                ShowAlert(text=Abandonment_10s, soundID=clip_alert),
+                                ShowAlert(text=Abandonment_20s, soundID=clip_alert),
                                 ConditionBlock(
                                     EnterSector(
                                         sectorName=Jump Sector,
@@ -122,9 +138,9 @@ Function(
                                         )
                                     ),
                                     Time(
-                                        time=5,
+                                        time=10,
                                         sequence=(
-                                            ShowAlert(text=Abandonment_5s, soundID=clip_alert),
+                                            ShowAlert(text=Abandonment_10s, soundID=clip_alert),
                                             ConditionBlock(
                                                 EnterSector(
                                                     sectorName=Jump Sector,
@@ -136,7 +152,22 @@ Function(
                                                 Time(
                                                     time=5,
                                                     sequence=(
-                                                        WarpPlayer(flagName=exit-jump-gate-flag, sectorName=Sector 1740-10950)
+                                                        ShowAlert(text=Abandonment_5s, soundID=clip_alert),
+                                                        ConditionBlock(
+                                                            EnterSector(
+                                                                sectorName=Jump Sector,
+                                                                invert=true,
+                                                                sequence=(
+                                                                    Call(Abandonment_start)
+                                                                )
+                                                            ),
+                                                            Time(
+                                                                time=5,
+                                                                sequence=(
+                                                                    WarpPlayer(flagName=exit-jump-gate-flag, sectorName=Sector 1740-10950)
+                                                                )
+                                                            )
+                                                        )
                                                     )
                                                 )
                                             )
