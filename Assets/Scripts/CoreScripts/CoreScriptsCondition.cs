@@ -240,6 +240,8 @@ public class CoreScriptsCondition : MonoBehaviour
                 CoreScriptsManager.instance.sectorLoadDelegates.Remove(ID);
                 break;
             case ConditionType.Comparison:
+                // Instant satisfy should not add/remove delegate
+                if (!CoreScriptsManager.instance.variableChangedDelegates.ContainsKey(ID)) break;
                 CoreScriptsManager.OnVariableUpdate -= CoreScriptsManager.instance.variableChangedDelegates[ID];
                 CoreScriptsManager.instance.variableChangedDelegates.Remove(ID);
                 break;

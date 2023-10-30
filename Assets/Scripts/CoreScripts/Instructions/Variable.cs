@@ -16,6 +16,7 @@ public class Variable : MonoBehaviour
 
     public static void CompareVals(string val1, string val2, string comp, Condition c, ConditionBlock cb)
     {
+        if (string.IsNullOrEmpty(comp)) comp = "Eq";
         if (!CompareValsHelper(val1, val2, comp, c, cb))
         {
             VariableChangedDelegate del = (x) =>

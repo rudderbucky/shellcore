@@ -126,6 +126,10 @@ public class TaskDisplayScript : MonoBehaviour
                 {
                     NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange.Invoke(mission);
                 }
+                if (CoreScriptsManager.OnVariableUpdate != null)
+                {
+                    CoreScriptsManager.OnVariableUpdate.Invoke("MissionStatus(");
+                }
             }
         }));
     }
