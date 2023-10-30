@@ -164,7 +164,7 @@ Function(
                                                             Time(
                                                                 time=5,
                                                                 sequence=(
-                                                                    WarpPlayer(flagName=exit-jump-gate-flag, sectorName=Sector 1740-10950)
+                                                                    WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460)
                                                                 )
                                                             )
                                                         )
@@ -183,3 +183,27 @@ Function(
     )
 )
 
+Text("Abandonment_cs1_pd1", "Here we are.")
+Function(
+    name=Abandonment_postJump,
+    sequence=(
+        WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
+        StartCutscene(),
+        SetPath(
+            entityID=player,
+            flagName=abandonment-cs1-flag1,
+            sequence=(
+                Rotate(
+                    entityID=player,
+                    flagName=new-ep3-entry-flag,
+                    sequence=(
+                        PassiveDialogue(
+                            entityID=player,
+                            text=Abandonment_cs1_pd1
+                        )
+                    )
+                )
+            )
+        ),
+    )
+)
