@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static CoreScriptsCondition;
-using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
+using static CoreScriptsManager;
+public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
     {
@@ -304,8 +305,15 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
                     flagName = GetArgument(inst.arguments, "flagName");
                     sectorName = GetArgument(inst.arguments, "sectorName");
                     entityID = GetArgument(inst.arguments, "entityID");
-                    var intString = GetArgument(inst.arguments, "interactibility");
-                    var interactibility = Enum.Parse<FlagInteractibility>(intString);
+                    var interactibility = FlagInteractibility.None;
+                    if (!string.IsNullOrEmpty(entityID) || !string.IsNullOrEmpty(sectorName))
+                    {
+                        interactibility = FlagInteractibility.Warp;
+                    }
+                    if (inst.sequence.instructions != null)
+                    {
+                        interactibility = FlagInteractibility.Sequence;
+                    }
 
                     foreach (var flag in AIData.flags)
                     {

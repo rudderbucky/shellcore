@@ -49,7 +49,7 @@ public class CoreScriptsCondition : MonoBehaviour
     public static ConditionBlock ParseConditionBlock(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
         var block = CreateConditionBlock();
-        bool skipToComma = true;
+        bool skipToComma = false;
         int brax = 0;
         List<string> stx = new List<string>()
         {
@@ -58,6 +58,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
         int condIndex = 0;
         index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        stx = null;
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
@@ -108,6 +109,7 @@ public class CoreScriptsCondition : MonoBehaviour
         {
             var c = block.conditions[i];
             c.ID = i;
+            block.conditions[i] = c;
             ExecuteCondition(c, block);
         }
     }
@@ -117,6 +119,7 @@ public class CoreScriptsCondition : MonoBehaviour
     private static void ExecuteCondition(Condition c, ConditionBlock cb)
     {
         var ID = $"{cb.ID}-{c.ID}";
+        Debug.Log($"Executing condition of type: {c.type} and ID: {c.ID}");
         switch (c.type)
         {
             case ConditionType.Comparison:
@@ -216,16 +219,17 @@ public class CoreScriptsCondition : MonoBehaviour
 
     private static void DeinitializeCondition(ConditionBlock cb, Condition cond)
     {
-        Debug.LogWarning(cond.ID);
         var ID = $"{cb.ID}-{cond.ID}";
         switch(cond.type)
         {
             case ConditionType.Time:
                 var coroutine = CoreScriptsManager.instance.timerCoroutines[ID];
                 TaskManager.Instance.StopCoroutine(coroutine);
+                CoreScriptsManager.instance.timerCoroutines.Remove(ID);
                 break;
             case ConditionType.DestroyEntities:
                 Entity.OnEntityDeath -= CoreScriptsManager.instance.entityDeathDelegates[ID];
+                CoreScriptsManager.instance.entityDeathDelegates.Remove(ID);
                 break;
             case ConditionType.WinBattleZone:
                 break;
@@ -233,9 +237,11 @@ public class CoreScriptsCondition : MonoBehaviour
                 break;
             case ConditionType.EnterSector:
                 SectorManager.OnSectorLoad -= CoreScriptsManager.instance.sectorLoadDelegates[ID];
+                CoreScriptsManager.instance.sectorLoadDelegates.Remove(ID);
                 break;
             case ConditionType.Comparison:
                 CoreScriptsManager.OnVariableUpdate -= CoreScriptsManager.instance.variableChangedDelegates[ID];
+                CoreScriptsManager.instance.variableChangedDelegates.Remove(ID);
                 break;
             default:
                 return;

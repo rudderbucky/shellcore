@@ -43,7 +43,12 @@ public class ObjectiveMarker : MonoBehaviour
             entity
         );
 
-        CoreScriptsManager.instance.objectiveLocations.Add(ID, objectiveLocation);
+        if (CoreScriptsManager.instance.objectiveLocations.ContainsKey(ID))
+            CoreScriptsManager.instance.objectiveLocations[ID] = objectiveLocation;
+        else 
+        {
+            CoreScriptsManager.instance.objectiveLocations.Add(ID, objectiveLocation);
+        }
         TaskManager.DrawObjectiveLocations();
     }
     public static void RemoveObjectiveMarker(string ID)

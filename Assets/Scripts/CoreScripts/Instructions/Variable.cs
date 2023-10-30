@@ -26,6 +26,7 @@ public class Variable : MonoBehaviour
                 }
             };
             CoreScriptsManager.instance.variableChangedDelegates.Add($"{cb.ID}-{c.ID}", del);
+            CoreScriptsManager.OnVariableUpdate += del;
         }
     }
 
@@ -53,6 +54,7 @@ public class Variable : MonoBehaviour
     {
         string tmp1 = GetComparisonValue(val1);
         string tmp2 = GetComparisonValue(val2);
+        Debug.Log($"Comparison of type: {comp} with values {tmp1} and {tmp2}");
         switch (comp)
         {
             case "Eq":
@@ -121,7 +123,11 @@ public class Variable : MonoBehaviour
             else dict.Add(key, variableValue);
         }
 
-        if (CoreScriptsManager.OnVariableUpdate != null) CoreScriptsManager.OnVariableUpdate.Invoke(variableName);
+        if (CoreScriptsManager.OnVariableUpdate != null) 
+        {
+            Debug.Log($"<SetVariable> invoking on {variableName}");
+            CoreScriptsManager.OnVariableUpdate.Invoke(variableName);
+        }
     }
 
 }
