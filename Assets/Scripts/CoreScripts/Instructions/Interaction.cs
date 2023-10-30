@@ -24,6 +24,11 @@ public class Interaction : MonoBehaviour
         }
     }
 
+    public static void StartDialogue(Context context, string dialogueID)
+    {
+        DialogueSystem.StartDialogue(CoreScriptsManager.instance.dialogues[dialogueID], null, context);
+    }
+
     public static void SetInteraction(Context context, string entityID, string dialogueID)
     {
         InteractAction action = new InteractAction();

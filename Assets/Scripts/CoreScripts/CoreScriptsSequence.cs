@@ -36,7 +36,8 @@ public class CoreScriptsSequence : MonoBehaviour
         FinishMission,
         SetFlagInteractibility,
         FinishTask,
-        FailTask
+        FailTask,
+        ForceStartDialogue
     }
     public struct Instruction
     {
@@ -186,6 +187,10 @@ public class CoreScriptsSequence : MonoBehaviour
                     entityID = GetArgument(inst.arguments, "entityID");
                     var dialogueID = GetArgument(inst.arguments, "dialogueID");
                     Interaction.SetInteraction(context, entityID, dialogueID);
+                    break;
+                case InstructionCommand.ForceStartDialogue:
+                    dialogueID = GetArgument(inst.arguments, "dialogueID");
+                    Interaction.StartDialogue(context, dialogueID);
                     break;
                 case InstructionCommand.ClearInteraction:
                     entityID = GetArgument(inst.arguments, "entityID");
