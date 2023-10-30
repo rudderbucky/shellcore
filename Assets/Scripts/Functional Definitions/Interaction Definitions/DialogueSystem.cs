@@ -880,8 +880,14 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         // change text
-        text = current.text.Replace("<br>", "\n");
-
+        if (current.useLocalMap)
+        {
+            text = SendThroughCoreScripts(current.text).Replace("<br>", "\n");
+        }
+        else
+        {
+            text = current.text.Replace("<br>", "\n");
+        }
         characterCount = 0;
 
         if (current.typingSpeedFactor == 0) current.typingSpeedFactor = 1;
@@ -910,7 +916,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             background.Find("TaskRewardInfo").gameObject.SetActive(true);
             // Objective list
             var objectiveList = background.transform.Find("TaskRewardInfo/ObjectiveList").GetComponent<Text>();
-            objectiveList.text = current.task.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(current.task.objectived) : current.task.objectived;
+            objectiveList.text = current.task.useLocalMap ? SendThroughCoreScripts(current.task.objectived) : current.task.objectived;
             SetupRewards(background.gameObject, wrapper);
         }
         // create buttons
@@ -928,7 +934,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
             Dialogue.Node next = dialogue.nodes[nextIndex];
 
-            Transform button = CreateButton(next.buttonText, null, 24 + 24 * (current.nextNodes.Count - (i + 1))).transform;
+            var buttonText = next.buttonText;
+            if (next.useLocalMap) buttonText = SendThroughCoreScripts(buttonText);
+            Transform button = CreateButton(buttonText, null, 24 + 24 * (current.nextNodes.Count - (i + 1))).transform;
 
             if (next.action == Dialogue.DialogueAction.ForceToNextID)
             {
@@ -957,6 +965,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
             buttons[i] = button.gameObject;
         }
+    }
+
+    private string SendThroughCoreScripts(string val)
+    {
+        val = CoreScriptsSequence.VariableSensitizeValue(val);
+        return CoreScriptsManager.instance.GetLocalMapString(val);
     }
 
     private int getNodeIndex(Dialogue dialogue, int ID)

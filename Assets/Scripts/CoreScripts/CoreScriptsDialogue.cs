@@ -9,6 +9,7 @@ public class CoreScriptsDialogue : MonoBehaviour
     private static Dialogue.Node GetDefaultNode()
     {
         var node = new Dialogue.Node();
+        node.useLocalMap = true;
         node.nextNodes = new List<int>();
         node.useSpeakerColor = true;
         node.typingSpeedFactor = 1;
@@ -104,7 +105,7 @@ public class CoreScriptsDialogue : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("dialogueText="))
             {
-                node.text = localMap[val];
+                node.text = val;
             }
             else if (lineSubstr.StartsWith("nodeID="))
             {
@@ -209,7 +210,7 @@ public class CoreScriptsDialogue : MonoBehaviour
             CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
             if (lineSubstr.StartsWith("responseText="))
             {
-                node.buttonText = localMap[val];
+                node.buttonText = val;
                 responseText = node.buttonText;
             }
             else if (lineSubstr.StartsWith("next="))

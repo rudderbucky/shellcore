@@ -49,5 +49,7 @@ public class Dialogue : ScriptableObject, IDialogueable
         public string functionID;
         [NonSerialized]
         public float typingSpeedFactor;
+        [NonSerialized]
+        public bool useLocalMap;
     }
 }
