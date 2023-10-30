@@ -484,6 +484,14 @@ public class DevConsoleScript : MonoBehaviour
                         break;
                 }
             }
+            else if (command.StartsWith("scriptrestart", StringComparison.CurrentCultureIgnoreCase))
+            {
+                textBox.text += "\n<color=lime>Rereading CoreScripts...</color>";
+                var gObj = CoreScriptsManager.instance.gameObject;
+                Destroy(CoreScriptsManager.instance);
+                var manager = gObj.AddComponent<CoreScriptsManager>();
+                manager.Initialize();
+            }
             else if (command.StartsWith("test ", StringComparison.CurrentCultureIgnoreCase))
             {
                 string blueprint = command.Substring(5).Trim();
