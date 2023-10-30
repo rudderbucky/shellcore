@@ -13,21 +13,43 @@ using static TaskManager;
 public class CoreScriptsManager : MonoBehaviour
 {
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
-    public static string[] paths;
     private Dictionary<string, string> localMap = new Dictionary<string, string>();
     private Dictionary<string, Sequence> functions = new Dictionary<string, Sequence>();
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
-    public Dictionary<string, SectorLoadDelegate> sectorLoadDelegates = new Dictionary<string, SectorLoadDelegate>();        
-    public delegate void VariableChangedDelegate(string variable);
-    public static VariableChangedDelegate OnVariableUpdate;
+    public Dictionary<string, SectorLoadDelegate> sectorLoadDelegates = new Dictionary<string, SectorLoadDelegate>();
     public Dictionary<string, VariableChangedDelegate> variableChangedDelegates = new Dictionary<string, VariableChangedDelegate>(); 
     public Dictionary<string, Coroutine> timerCoroutines = new Dictionary<string, Coroutine>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
-    public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
+    public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();   
+    private List<Context> missionTriggers = new List<Context>();
+    private List<Context> startTriggers = new List<Context>();
+    private List<Context> sectorTriggers = new List<Context>();     
+    public static string[] paths;
+    public delegate void VariableChangedDelegate(string variable);
+    public static VariableChangedDelegate OnVariableUpdate;
     public static CoreScriptsManager instance;
     
+    public void ClearAllData()
+    {
+        dialogues.Clear();
+        localMap.Clear();
+        functions.Clear();
+        tasks.Clear();
+        conditionBlocks.Clear();
+        entityDeathDelegates.Clear();
+        sectorLoadDelegates.Clear();
+        variableChangedDelegates.Clear();
+        timerCoroutines.Clear();
+        globalVariables.Clear();
+        objectiveLocations.Clear();
+        missionTriggers.Clear();
+        startTriggers.Clear();
+        sectorTriggers.Clear();
+        OnVariableUpdate = null;
+    }
+
     public static void AssertArgumentsPresent(string args, string statementType, List<string> argNames)
     {
         foreach (var argName in argNames)
@@ -63,9 +85,6 @@ public class CoreScriptsManager : MonoBehaviour
         public int line;
         public int character;
     }
-    private List<Context> missionTriggers = new List<Context>();
-    private List<Context> startTriggers = new List<Context>();
-    private List<Context> sectorTriggers = new List<Context>();
     public enum TriggerType
     {
         Mission,
@@ -89,6 +108,17 @@ public class CoreScriptsManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+    }
+
+    public void Reinitialize()
+    {
+        initialized = false;
+        foreach (var val in CoreScriptsManager.instance.conditionBlocks.Values)
+        {
+            CoreScriptsCondition.DeinitializeAllConditions(val);
+        }
+        ClearAllData();
+        Initialize();             
     }
 
 

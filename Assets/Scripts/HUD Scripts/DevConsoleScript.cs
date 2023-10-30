@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class DevConsoleScript : MonoBehaviour
 {
@@ -487,10 +488,9 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.StartsWith("scriptrestart", StringComparison.CurrentCultureIgnoreCase))
             {
                 textBox.text += "\n<color=lime>Rereading CoreScripts...</color>";
-                var gObj = CoreScriptsManager.instance.gameObject;
-                Destroy(CoreScriptsManager.instance);
-                var manager = gObj.AddComponent<CoreScriptsManager>();
-                manager.Initialize();
+                CoreScriptsManager.instance.Reinitialize();
+
+
             }
             else if (command.StartsWith("test ", StringComparison.CurrentCultureIgnoreCase))
             {

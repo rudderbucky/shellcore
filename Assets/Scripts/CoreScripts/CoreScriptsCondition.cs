@@ -208,13 +208,18 @@ public class CoreScriptsCondition : MonoBehaviour
 
     public static void SatisfyCondition(Condition cond, ConditionBlock cb)
     {
+        DeinitializeAllConditions(cb);
+
+        if (cond.sequence.instructions != null)
+            CoreScriptsSequence.RunSequence(cond.sequence, cb.context);
+    }
+
+    public static void DeinitializeAllConditions(ConditionBlock cb)
+    {
         foreach (var c in cb.conditions)
         {
             DeinitializeCondition(cb, c);
         }
-
-        if (cond.sequence.instructions != null)
-            CoreScriptsSequence.RunSequence(cond.sequence, cb.context);
     }
 
     private static void DeinitializeCondition(ConditionBlock cb, Condition cond)
@@ -223,11 +228,13 @@ public class CoreScriptsCondition : MonoBehaviour
         switch(cond.type)
         {
             case ConditionType.Time:
+                if (!CoreScriptsManager.instance.timerCoroutines.ContainsKey(ID)) break;
                 var coroutine = CoreScriptsManager.instance.timerCoroutines[ID];
                 TaskManager.Instance.StopCoroutine(coroutine);
                 CoreScriptsManager.instance.timerCoroutines.Remove(ID);
                 break;
             case ConditionType.DestroyEntities:
+                if (!CoreScriptsManager.instance.entityDeathDelegates.ContainsKey(ID)) break;
                 Entity.OnEntityDeath -= CoreScriptsManager.instance.entityDeathDelegates[ID];
                 CoreScriptsManager.instance.entityDeathDelegates.Remove(ID);
                 break;
@@ -236,6 +243,7 @@ public class CoreScriptsCondition : MonoBehaviour
             case ConditionType.WinSiegeZone:
                 break;
             case ConditionType.EnterSector:
+                if (!CoreScriptsManager.instance.sectorLoadDelegates.ContainsKey(ID)) break;
                 SectorManager.OnSectorLoad -= CoreScriptsManager.instance.sectorLoadDelegates[ID];
                 CoreScriptsManager.instance.sectorLoadDelegates.Remove(ID);
                 break;
