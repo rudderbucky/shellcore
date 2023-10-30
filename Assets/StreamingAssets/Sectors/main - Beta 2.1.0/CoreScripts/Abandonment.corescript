@@ -1,0 +1,154 @@
+Text("Truthful_Revelation_missionName", "Truthful Revelation")
+Text("Abandonment_missionName", "Abandonment")
+Text("Abandonment_entryPoint", "Interact with the gate in the Jump Sector.")
+Text("Abandonment_35s", "PREPARING TO JUMP!")
+Text("Abandonment_30s", "JUMPING IN 30 SECONDS.")
+Text("Abandonment_20s", "JUMPING IN 20 SECONDS.")
+Text("Abandonment_10s", "JUMPING IN 10 SECONDS.")
+Text("Abandonment_5s", "JUMPING IN 5 SECONDS.")
+Text("Abandonment_test", "TEST COMPLETE")
+Text("Abandonment_jumpSectorPlayerIndication", "<color=lime>I should head to the gate and activate it.</color>")
+Text("Abandonment_jumpSectorPlayerWarning", "<color=lime>Here goes... I should leave this sector if I'm not ready yet.</color>")
+
+// Protip: if something isn't executing, check if you've added the commas between sequences/conditions
+MissionTrigger(
+    name=Abandonment_missionName,
+    entryPoint=Abandonment_entryPoint,
+    prerequisites=(Truthful_Revelation_missionName),
+    sequence=(
+        Call(Abandonment_start)
+    )
+)
+
+Function(
+    name=Abandonment_start,
+    sequence=(                    
+        SetFlagInteractibility(
+            flagName=entrance-jump-gate-flag
+        ),        
+        SetVariable(
+            name=$$Abandonment_leftJumpSector,
+            value=false
+        ),
+        AddObjectiveMarker(
+            ID=Abandonment_jumpSectorMarker,
+            sectorName=Jump Sector
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Jump Sector,
+                sequence=(
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Jump Sector,
+                            invert=true,
+                            sequence=(
+                                Call(Abandonment_start)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$Abandonment_leftJumpSector,
+                            val2=true,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    ),
+                    RemoveObjectiveMarker(
+                        ID=Abandonment_jumpSectorMarker
+                    ),
+                    PassiveDialogue(
+                        entityID=player,
+                        text=Abandonment_jumpSectorPlayerIndication
+                    ),
+                    SetFlagInteractibility(
+                        flagName=entrance-jump-gate-flag,
+                        sequence=(
+                            Call(Abandonment_JumpSectorCountdown)
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+// abandoned-sectors-entrance-flag
+// Sector 190-5170
+Function(
+    name=Abandonment_JumpSectorCountdown,
+    sequence=(
+        SetVariable(
+            name=$$Abandonment_leftJumpSector,
+            value=true
+        ),
+        PassiveDialogue(
+            entityID=player,
+            text=Abandonment_jumpSectorPlayerWarning
+        ),
+        SetFlagInteractibility(
+            flagName=entrance-jump-gate-flag
+        ),
+        ShowAlert(text=Abandonment_35s, soundID=clip_alert),
+        ConditionBlock(                        
+            EnterSector(
+                sectorName=Jump Sector,
+                invert=true,
+                sequence=(
+                    Call(Abandonment_start)
+                )
+            ),
+            Time(
+                time=5,
+                sequence=(
+                    ShowAlert(text=Abandonment_30s, soundID=clip_alert),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Jump Sector,
+                            invert=true,
+                            sequence=(
+                                Call(Abandonment_start)
+                            )
+                        ),
+                        Time(
+                            time=20,
+                            sequence=(
+                                ShowAlert(text=Abandonment_10s, soundID=clip_alert),
+                                ConditionBlock(
+                                    EnterSector(
+                                        sectorName=Jump Sector,
+                                        invert=true,
+                                        sequence=(
+                                            Call(Abandonment_start)
+                                        )
+                                    ),
+                                    Time(
+                                        time=5,
+                                        sequence=(
+                                            ShowAlert(text=Abandonment_5s, soundID=clip_alert),
+                                            ConditionBlock(
+                                                EnterSector(
+                                                    sectorName=Jump Sector,
+                                                    invert=true,
+                                                    sequence=(
+                                                        Call(Abandonment_start)
+                                                    )
+                                                ),
+                                                Time(
+                                                    time=5,
+                                                    sequence=(
+                                                        WarpPlayer(flagName=exit-jump-gate-flag, sectorName=Sector 1740-10950)
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
