@@ -187,7 +187,6 @@ Text("Abandonment_cs1_d3", "You’re the Infection! Leave me alone!")
 Text("Abandonment_cs1_d4", "Are you on our side - the true Uninfected?")
 Text("Abandonment_cs1_d5", "...")
 Text("Abandonment_cs1_d6", "Answer me!")
-Text("Abandonment_cs1_pd1", "<color=lime>Here we are.</color>")
 
 Dialogue(
     dialogueID=Abandonment_blueVoice,
@@ -225,6 +224,72 @@ Dialogue(
         ),
     )
 )
+
+Text("Abandonment_cs1_d7", "Why were you buzzing those transmissions?")
+Text("Abandonment_cs1_d8", "The inner voice...")
+Text("Abandonment_cs1_d9", "This is magnificent desolation. A void. We're doomed.")
+Text("Abandonment_cs1_d10", "Let's not jump to conclusions.")
+Text("Abandonment_cs1_d11", "Yeah, but we need to find shelter quick. No telling what's out there.")
+Text("Abandonment_cs1_d12", "Let's split up.")
+Text("Abandonment_cs1_d13", "Oh no. We are staying together here.")
+Text("Abandonment_cs1_d14", "Okay then...")
+Text("Abandonment_cs1_d15", "Let’s move together.")
+Text("Abandonment_cs1_d16", "Agreed. Best we keep our firepower combined for now.")
+Text("Abandonment_cs1_d17", "Alright. Time to find a recluse.")
+
+Dialogue(
+    dialogueID=Abandonment_sukratQuestion,
+    dialogueText=Abandonment_cs1_d7,
+    entityID=sukrat,
+    responses=(
+        Response(
+            responseText=Abandonment_cs1_d8,
+            next=Dialogue(
+                dialogueText=Abandonment_cs1_d9,
+                entityID=the-architect,
+                responses=(
+                    Response(
+                        responseText=Abandonment_cs1_d10,
+                        next=Dialogue(
+                            dialogueText=Abandonment_cs1_d11,
+                            entityID=sukrat,
+                            responses=(
+                                Response(
+                                    responseText=Abandonment_cs1_d12,
+                                    next=Dialogue(
+                                        dialogueText=Abandonment_cs1_d13,
+                                        entityID=the-architect,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_cs1_d14,
+                                                next=Call(Abandonment_postSukratQuestion)
+                                            )
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=Abandonment_cs1_d15,
+                                    next=Dialogue(
+                                        dialogueText=Abandonment_cs1_d16,
+                                        entityID=sukrat,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_cs1_d17,
+                                                next=Call(Abandonment_postSukratQuestion)
+                                            )
+                                        )
+                                    )
+                                ),
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Abandonment_cs1_pd1", "<color=lime>Here we are. I've got to find shelter somewhere.</color>")
 
 // Note: Loyalty = 0 means uninfected
 Function(
@@ -283,6 +348,29 @@ Function(
 Function(
     name=Abandonment_postBlueVoice,
     sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetPath(
+                        entityID=sukrat,
+                        flagName=abandonment-cs1-flag2,
+                        sequence=(
+                            
+                        )
+                    ),
+                    SetPath(
+                        entityID=the-architect,
+                        flagName=abandonment-cs1-flag3,
+                        sequence=(
+                            
+                        )
+                    ),
+                )
+            )
+        ),
         SetPath(
             entityID=player,
             flagName=abandonment-cs1-flag1,
@@ -299,7 +387,8 @@ Function(
                                 sequence=(
                                     PassiveDialogue(
                                         entityID=player,
-                                        text=Abandonment_cs1_pd1
+                                        text=Abandonment_cs1_pd1,
+                                        FinishCutscene()
                                     ),
                                 )
                             ),
@@ -308,18 +397,38 @@ Function(
                                 val2=0,
                                 comp=Eq,
                                 sequence=(
-                                    PassiveDialogue(
-                                        entityID=player,
-                                        text=Abandonment_cs1_pd1
+                                    Rotate(
+                                        entityID=sukrat,
+                                        targetID=player
                                     ),
+                                    Rotate(
+                                        entityID=the-architect,
+                                        targetID=player
+                                    ),
+                                    ForceStartDialogue(dialogueID=Abandonment_sukratQuestion)
                                 )
                             )
                         ),
-
-                        FinishCutscene()
                     )
                 )
             )
         ),
+
+        
+    )
+)
+
+Function(
+    name=Abandonment_postSukratQuestion,
+    sequence=(
+        FollowEntity(
+            entityID=sukrat,
+            targetEntityID=player,
+        ),
+        FollowEntity(
+            entityID=the-architect,
+            targetEntityID=player,
+        ),
+        FinishCutscene()
     )
 )
