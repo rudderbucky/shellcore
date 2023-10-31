@@ -59,7 +59,7 @@ public class CoreScriptsDialogue : MonoBehaviour
         var stx = new List<string>()
         {
             "dialogueID=",
-            "speakerID=",
+            "entityID=",
             "dialogueText=",
             "nodeID=",
             "color=",
@@ -98,7 +98,7 @@ public class CoreScriptsDialogue : MonoBehaviour
             {
                 metadata.dialogueID = val;
             }
-            else if (lineSubstr.StartsWith("speakerID="))
+            else if (lineSubstr.StartsWith("entityID="))
             {
                 node.speakerID = val;
                 node.forceSpeakerChange = true;
