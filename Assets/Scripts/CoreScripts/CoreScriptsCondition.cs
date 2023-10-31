@@ -159,6 +159,8 @@ public class CoreScriptsCondition : MonoBehaviour
                 };
                 CoreScriptsManager.instance.sectorLoadDelegates.Add(ID, sectorAct);
                 SectorManager.OnSectorLoad += sectorAct;
+                
+                if (!invert) SectorCheck(SectorManager.instance.current.sectorName, sectorName, c, cb, invert);
                 break;
         }
     }

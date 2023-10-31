@@ -289,8 +289,6 @@ Dialogue(
     )
 )
 
-Text("Abandonment_cs1_pd1", "<color=lime>Here we are. I've got to find shelter somewhere.</color>")
-
 // Note: Loyalty = 0 means uninfected
 Function(
     name=Abandonment_postJump,
@@ -365,7 +363,7 @@ Function(
                         entityID=the-architect,
                         flagName=abandonment-cs1-flag3,
                         sequence=(
-                            
+
                         )
                     ),
                 )
@@ -385,11 +383,7 @@ Function(
                                 val2=1,
                                 comp=Eq,
                                 sequence=(
-                                    PassiveDialogue(
-                                        entityID=player,
-                                        text=Abandonment_cs1_pd1,
-                                        FinishCutscene()
-                                    ),
+                                    Call(Abandonment_traitorPlayerPostBlueVoice)
                                 )
                             ),
                             Comparison(
@@ -429,6 +423,35 @@ Function(
             entityID=the-architect,
             targetEntityID=player,
         ),
-        FinishCutscene()
+        FinishCutscene(),
+        Call(Abandonment_shelterScoutStart)
+    )
+)
+
+Text("Abandonment_cs1_pd1", "<color=lime>Well...  I've got to find shelter somewhere.</color>")
+Function(
+    name=Abandonment_traitorPlayerPostBlueVoice,
+    sequence=(
+        PassiveDialogue(
+            entityID=player,
+            text=Abandonment_cs1_pd1,
+        ),
+        FinishCutscene(),
+        Call(Abandonment_shelterScoutStart)
+    )
+)
+
+//Sector 2600-6460 (nothing)
+//Sector 2220-6140 (dangerous)
+//Sector 2220-6460 (meet Heracles)
+//Teleportation to Kappa Outskirts 1SE
+//Go to makeshift, mission over
+Function(
+    name=Abandonment_shelterScoutStart,
+    sequence=(
+        AddObjectiveMarker(
+            ID=Abandonment_jumpSectorMarker,
+            sectorName=Jump Sector
+        ),
     )
 )
