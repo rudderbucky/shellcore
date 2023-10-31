@@ -38,7 +38,8 @@ public class CoreScriptsSequence : MonoBehaviour
         SetFlagInteractibility,
         FinishTask,
         FailTask,
-        ForceStartDialogue
+        ForceStartDialogue,
+        FollowEntity
     }
     public struct Instruction
     {
@@ -358,6 +359,14 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.FailTask:
                     break;
+                case InstructionCommand.FollowEntity:
+                    Mobility.Follow(
+                        GetArgument(inst.arguments, "entityID"),
+                        GetArgument(inst.arguments, "targetEntityID"),
+                        GetArgument(inst.arguments, "stopFollowing") == "true",
+                        GetArgument(inst.arguments, "disallowAggression") == "true"
+                    );
+                    break;
             }
         }
     }
@@ -490,7 +499,6 @@ public class CoreScriptsSequence : MonoBehaviour
 
 
         var x = line.Substring(start, end-start+1);
-        Debug.LogWarning(x);
         line = x;
         index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))

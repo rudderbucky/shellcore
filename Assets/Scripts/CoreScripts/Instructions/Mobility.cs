@@ -10,7 +10,7 @@ public class Mobility : MonoBehaviour
     public static void SetPath(string entityID, bool rotateWhileMoving, float customMass, string flagName, Sequence sequence, Context context)
     {
         flagName = flagName.Trim();
-        Debug.Log("Entity ID: " + entityID + ", Flag name: " + flagName + ", Flag array count: " + AIData.flags.Count);
+        Debug.Log("<Set Path> Entity ID: " + entityID + ", Flag name: " + flagName + ", Flag array count: " + AIData.flags.Count);
 
         Vector2 coords = new Vector2();
         for (int i = 0; i < AIData.flags.Count; i++)
@@ -21,6 +21,7 @@ public class Mobility : MonoBehaviour
                 break;
             }
         }
+        Debug.LogWarning("<Set Path> " + coords);
 
         for (int i = 0; i < AIData.entities.Count; i++)
         {
@@ -37,6 +38,8 @@ public class Mobility : MonoBehaviour
                     pathData.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
                     var waypoint = new NodeEditorFramework.Standard.PathData.Node();
                     waypoint.position = coords;
+                    pathData.waypoints.Add(waypoint);
+                    waypoint.children = new List<int>();
                     airCraft.GetAI().setPath(pathData, () => 
                     {
                         if (sequence.instructions != null)
@@ -215,5 +218,43 @@ public class Mobility : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(flagName)) entityID = flagName;
         Flag.FindEntityAndWarpPlayer(sectorName, entityID, !string.IsNullOrEmpty(flagName));
+    }
+
+    public static void Follow(string entityID, string targetEntityID, bool stopFollowing, bool disallowAggression)
+    {
+        if (!stopFollowing)
+        {
+            Entity target = SectorManager.instance.GetEntity(targetEntityID);
+            if (target != null)
+            {
+                for (int i = 0; i < AIData.entities.Count; i++)
+                {
+                    if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft airCraft)
+                    {
+                        airCraft.GetAI().follow(target.transform);
+
+
+                        if (disallowAggression)
+                        {
+                            airCraft.GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Follow target not found!");
+            }
+        }
+        else
+        {
+            for (int i = 0; i < AIData.entities.Count; i++)
+            {
+                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft airCraft)
+                {
+                    airCraft.GetAI().follow(null);
+                }
+            }
+        }
     }
 }
