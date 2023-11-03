@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectiveMarker : MonoBehaviour
 {
-    public static void AddObjectiveMarker(string entityID, string sectorName, string missionName, string ID)
+    public static void AddObjectiveMarker(string entityID, string sectorName, string missionName, string flagName, string ID)
     {
         Vector2 pos = Vector2.zero;
         int dim = 0;
@@ -26,6 +26,25 @@ public class ObjectiveMarker : MonoBehaviour
             dim = SectorManager.instance.current.dimension;
         }
 
+        if (!string.IsNullOrEmpty(flagName))
+        {
+            foreach (var flag in AIData.flags)
+            {
+                if (!flag)
+                {
+                    continue;
+                }
+
+                if (flagName != flag.name)
+                {
+                    continue;
+                }
+
+                pos = flag.transform.position;
+                dim = SectorManager.instance.current.dimension;
+            }
+        }
+        
         var sect = SectorManager.GetSectorByName(sectorName);
         if (sect)
         {

@@ -14,29 +14,82 @@ public class Variable : MonoBehaviour
         return val.StartsWith(strVal);
     }
 
+    public static bool ComparisonOfType(string type, string val1, string val2)
+    {
+        return (ValueStartsWith(val1, type) || ValueStartsWith(val2, type));
+    }
+
+    // TODO: Make SqrDistance maybe work with two SqrDistance operations (dynamically checking two distances against each other)
     public static void CompareVals(string val1, string val2, string comp, Condition c, ConditionBlock cb)
     {
         if (string.IsNullOrEmpty(comp)) comp = "Eq";
+        var ID = $"{cb.ID}-{c.ID}";
+        var sqDistComp = ComparisonOfType("SqrDistance", val1, val2);
+        if (sqDistComp)
+        {
+            var data = new ProximityData();
+            var distVal = val1;
+            if (val2.StartsWith("SqrDistance"))
+            {
+                distVal = val2;
+                if (comp == "Lt") comp = "Gt";
+                else if (comp == "Gt") comp = "Lt";
+                data.distanceValue = float.Parse(val1);
+            }
+            else data.distanceValue = float.Parse(val2);
+            if (distVal.StartsWith("SqrDistance"))
+            {
+                GetEntitiesForSqrDistance(val1, out data.ent1ID, out data.ent2ID, out data.t1, out data.t2);
+                data.cond = c;
+                data.block = cb;
+                data.comp = comp;
+                if (RunDistanceCondition(data)) SatisfyCondition(c, cb);
+                else CoreScriptsManager.instance.distanceConditions.Add(ID, data);
+                return;
+            }
+        }
+
+
         if (!CompareValsHelper(val1, val2, comp, c, cb))
         {
             VariableChangedDelegate del = (x) =>
             {
-                if (x == val1 || x == val2 || (x == "MissionStatus(" && (ValueStartsWith(val1, "MissionStatus") || ValueStartsWith(val2, "MissionStatus"))))
+                if (x == val1 || x == val2 || 
+                    ComparisonOfType("MissionStatus", val1, val2))
                 {
                     CompareValsHelper(val1, val2, comp, c, cb);
                 }
+
             };
-            CoreScriptsManager.instance.variableChangedDelegates.Add($"{cb.ID}-{c.ID}", del);
+
+            CoreScriptsManager.instance.variableChangedDelegates.Add(ID, del);
             CoreScriptsManager.OnVariableUpdate += del;
         }
+    }
+
+
+    private static void GetEntitiesForSqrDistance(string sqrDistanceStr, out string ent1ID, out string ent2ID, out Transform t1, out Transform t2)
+    {
+        Debug.LogWarning(sqrDistanceStr);
+        var tmp = sqrDistanceStr.Trim().Replace("SqrDistance", "").Replace(")", "").Trim().Replace("(", "").Trim();
+        var entArr = tmp.Split(",");
+        if (entArr.Length != 2)
+        {
+            throw new System.Exception($"Distance comparison requires two entity values, got {entArr.Length}");
+        }
+
+        ent1ID = entArr[0].Trim();
+        ent2ID = entArr[1].Trim();
+        t1 = GetProximityTransformFromID(ent1ID);
+        t2 = GetProximityTransformFromID(ent2ID);
     }
 
     private static string GetComparisonValue(string val)
     {
         val = VariableSensitizeValue(val);
-        if (val.StartsWith("MissionStatus("))
+        if (val.StartsWith("MissionStatus"))
         {
-            var missionName = val.Trim().Replace("MissionStatus(", "").Replace(")", "").Trim();
+            var missionName = val.Trim().Replace("MissionStatus", "").Replace(")", "").Trim().Replace("(", "").Trim();
             switch (TaskDisplayScript.GetMissionStatus(missionName))
             {
                 case Mission.MissionStatus.Inactive:

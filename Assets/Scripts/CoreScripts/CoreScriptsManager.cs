@@ -22,7 +22,8 @@ public class CoreScriptsManager : MonoBehaviour
     public Dictionary<string, VariableChangedDelegate> variableChangedDelegates = new Dictionary<string, VariableChangedDelegate>(); 
     public Dictionary<string, Coroutine> timerCoroutines = new Dictionary<string, Coroutine>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
-    public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();   
+    public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
+    public Dictionary<string, ProximityData> distanceConditions = new Dictionary<string, ProximityData>();
     private List<Context> missionTriggers = new List<Context>();
     private List<Context> startTriggers = new List<Context>();
     private List<Context> sectorTriggers = new List<Context>();     
@@ -30,7 +31,6 @@ public class CoreScriptsManager : MonoBehaviour
     public delegate void VariableChangedDelegate(string variable);
     public static VariableChangedDelegate OnVariableUpdate;
     public static CoreScriptsManager instance;
-    
     public void ClearAllData()
     {
         dialogues.Clear();
@@ -49,6 +49,71 @@ public class CoreScriptsManager : MonoBehaviour
         sectorTriggers.Clear();
         OnVariableUpdate = null;
     }
+
+    public class ProximityData
+    {
+        public string ent1ID;
+        public string ent2ID;
+        public string comp;
+        public float distanceValue;
+        public Transform t1;
+        public Transform t2;
+        public Condition cond;
+        public ConditionBlock block;
+    }
+
+    private void Update()
+    {
+        while (RunDistanceChecks()) {}
+    }
+
+    private bool RunDistanceChecks()
+    {
+        foreach (var data in distanceConditions.Values)
+        {
+            var satisfy = RunDistanceCondition(data);
+
+            if (satisfy)
+            {
+                SatisfyCondition(data.cond, data.block);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Transform GetProximityTransformFromID(string ID)
+    {
+        var e = AIData.entities.Find(e => e.ID == ID);
+        if (e) return e.transform;
+        var f = AIData.flags.Find(f => f.name == ID);
+        if (f) return f.transform;
+        return null;
+    }
+
+
+    public static bool RunDistanceCondition(ProximityData data)
+    {
+        if (!data.t1) data.t1 = GetProximityTransformFromID(data.ent1ID);
+        if (!data.t2) data.t2 = GetProximityTransformFromID(data.ent2ID);
+        if (!data.t1 || !data.t2) return false;
+        var sqDist = Vector2.SqrMagnitude(data.t1.position - data.t2.position);
+        Debug.LogWarning(sqDist);
+        switch (data.comp)
+        {
+            case "Eq":
+                return sqDist == data.distanceValue;
+            case "Neq":
+                return sqDist != data.distanceValue;
+            case "Lt":
+                // TODO: which way the SqrDistance is inputted affects this
+                return sqDist < data.distanceValue;
+            case "Gt":
+                return sqDist > data.distanceValue;
+        }
+        return false;
+    }
+
 
     public static void AssertArgumentsPresent(string args, string statementType, List<string> argNames)
     {

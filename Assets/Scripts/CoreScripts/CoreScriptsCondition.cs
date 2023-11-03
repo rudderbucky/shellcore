@@ -93,7 +93,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
             var key = "";
             var val = "";
-            CoreScriptsSequence.GetNameAndValue(lineSubstr, out key, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out key, out val, true);
             cond.arguments = AddArgument(cond.arguments, key, val);
 
         }
@@ -250,6 +250,16 @@ public class CoreScriptsCondition : MonoBehaviour
                 CoreScriptsManager.instance.sectorLoadDelegates.Remove(ID);
                 break;
             case ConditionType.Comparison:
+                var val1 = CoreScriptsSequence.GetArgument(cond.arguments, "val1", true);
+                var val2 = CoreScriptsSequence.GetArgument(cond.arguments, "val2", true);
+
+                if (Variable.ComparisonOfType("SqrDistance", val1, val2))
+                {
+                    if (CoreScriptsManager.instance.distanceConditions.ContainsKey(ID))
+                        CoreScriptsManager.instance.distanceConditions.Remove(ID);
+                    break;
+                }
+
                 // Instant satisfy should not add/remove delegate
                 if (!CoreScriptsManager.instance.variableChangedDelegates.ContainsKey(ID)) break;
                 CoreScriptsManager.OnVariableUpdate -= CoreScriptsManager.instance.variableChangedDelegates[ID];

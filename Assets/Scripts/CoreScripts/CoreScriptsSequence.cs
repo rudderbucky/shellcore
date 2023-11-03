@@ -149,9 +149,11 @@ public class CoreScriptsSequence : MonoBehaviour
                 retVal = SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
             }
         }
-        else if (val.StartsWith("$$") && CoreScriptsManager.instance.globalVariables != null)
+        else if (val.StartsWith("$$") && !val.StartsWith("$$$") && CoreScriptsManager.instance.globalVariables != null)
         {
-            retVal = CoreScriptsManager.instance.globalVariables[val.Substring(2)];
+            if (CoreScriptsManager.instance.globalVariables.ContainsKey(val.Substring(2)))
+                retVal = CoreScriptsManager.instance.globalVariables[val.Substring(2)];
+            else return "";
         }
         else 
         {
@@ -182,8 +184,9 @@ public class CoreScriptsSequence : MonoBehaviour
                     var sectorName = GetArgument(inst.arguments, "sectorName");
                     var missionName = context.missionName;
                     var entityID = GetArgument(inst.arguments, "entityID");
+                    var flagName = GetArgument(inst.arguments, "flagName");
                     var ID = GetArgument(inst.arguments, "ID");
-                    ObjectiveMarker.AddObjectiveMarker(entityID, sectorName, missionName, ID);
+                    ObjectiveMarker.AddObjectiveMarker(entityID, sectorName, missionName, flagName, ID);
                     break;
                 case InstructionCommand.RemoveObjectiveMarker:
                     ID = GetArgument(inst.arguments, "ID");
@@ -246,7 +249,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     entityID = GetArgument(inst.arguments, "entityID");
                     var rotateWhileMoving = GetArgument(inst.arguments, "rotateWhileMoving") != "false";
                     var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"));
-                    var flagName = GetArgument(inst.arguments, "flagName");
+                    flagName = GetArgument(inst.arguments, "flagName");
 
                     Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
                     break;
