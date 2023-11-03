@@ -125,7 +125,12 @@ public class DevConsoleScript : MonoBehaviour
         MapMakerScript.EnableMapCheat();
     }
 
-    public void EnterCommand(string command, bool coreScript = false)
+    public void EnterCommand(string command)
+    {
+        EnterCommand(command, false);
+    }
+
+    public void EnterCommand(string command, bool coreScript)
     {
         inputField.text = "";
         inputField.ActivateInputField();

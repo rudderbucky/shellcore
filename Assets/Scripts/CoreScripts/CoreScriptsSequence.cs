@@ -477,19 +477,12 @@ public class CoreScriptsSequence : MonoBehaviour
         return seq;
     }
 
-    private static Instruction ParseInstruction(int index, string line, Dictionary<int, ConditionBlock> blocks)
+    public static string GetValueScopeWithinLine(string line, int index)
     {
-        var substr = line.Substring(index).Split("(")[0].Trim();
-        var inst = new Instruction();
-        Enum.TryParse<InstructionCommand>(substr, out inst.command);
-        inst.arguments = "";
-        bool skipToComma = true;
-        List<string> stx = null;
-        int brax = 0;
-
         // find start and finish of line
         int start = index;
         int end = index;
+        bool alreadyEnded = false;
         for (int i = index; i < line.Length; i++)
         {
             if (line[i] == '(')
@@ -502,24 +495,47 @@ public class CoreScriptsSequence : MonoBehaviour
         int brackets = 0;
         for (int i = start; i < line.Length; i++)
         {
+            if (alreadyEnded && (line[i] == ',' || line[i] == ')'))
+            {
+                break;
+            }
             if (line[i] == '(')
             {
+                if (alreadyEnded)
+                {
+                    throw new Exception($"A line reopens scope after closing it. You might be missing a comma or a closing bracket.\n Search for: {line.Substring(i)}");
+                }
                 brackets++;
             }
-            if (line[i] == ')')
+            if (line[i] == ')' && !alreadyEnded)
             {
                 brackets--;
                 if (brackets == 0)
                 {
                     end = i;
-                    break;
+                    alreadyEnded = true;
                 }
             }
         }
 
 
         var x = line.Substring(start, end-start+1);
-        line = x;
+        return x;
+    }
+
+
+    private static Instruction ParseInstruction(int index, string line, Dictionary<int, ConditionBlock> blocks)
+    {
+        var substr = line.Substring(index).Split("(")[0].Trim();
+        var inst = new Instruction();
+        Enum.TryParse<InstructionCommand>(substr, out inst.command);
+        inst.arguments = "";
+        bool skipToComma = true;
+        List<string> stx = null;
+        int brax = 0;
+
+        line = GetValueScopeWithinLine(line, index);
+        
         index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {

@@ -80,7 +80,9 @@ public class CoreScriptsCondition : MonoBehaviour
         var substr = line.Substring(index).Split("(")[0].Trim();
         
         Enum.TryParse<ConditionType>(substr, out cond.type);
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        
+        line = GetValueScopeWithinLine(line, index);
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
