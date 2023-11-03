@@ -9,21 +9,25 @@ public class ObjectiveMarker : MonoBehaviour
         Vector2 pos = Vector2.zero;
         int dim = 0;
         Entity entity = null;
-        foreach (var ent in AIData.entities)
+        
+        if (!string.IsNullOrEmpty(entityID))
         {
-            if (!ent)
+            foreach (var ent in AIData.entities)
             {
-                continue;
-            }
+                if (!ent)
+                {
+                    continue;
+                }
 
-            if (entityID != ent.ID)
-            {
-                continue;
-            }
+                if (entityID != ent.ID)
+                {
+                    continue;
+                }
 
-            entity = ent;
-            pos = entity.transform.position;
-            dim = SectorManager.instance.current.dimension;
+                entity = ent;
+                pos = entity.transform.position;
+                dim = SectorManager.instance.current.dimension;
+            }
         }
 
         if (!string.IsNullOrEmpty(flagName))

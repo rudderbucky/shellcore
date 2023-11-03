@@ -125,7 +125,7 @@ public class DevConsoleScript : MonoBehaviour
         MapMakerScript.EnableMapCheat();
     }
 
-    public void EnterCommand(string command)
+    public void EnterCommand(string command, bool coreScript = false)
     {
         inputField.text = "";
         inputField.ActivateInputField();
@@ -510,7 +510,9 @@ public class DevConsoleScript : MonoBehaviour
                 }
             }
             else doNotAttemptBackup = true;
-            
+            doNotAttemptBackup |= coreScript;
+
+
             if (!doNotAttemptBackup && !cheatBackup)
             {
                 Debug.LogWarning("Backing up...");

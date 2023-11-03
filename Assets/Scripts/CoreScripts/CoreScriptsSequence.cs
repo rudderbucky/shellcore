@@ -41,7 +41,8 @@ public class CoreScriptsSequence : MonoBehaviour
         FailTask,
         ForceStartDialogue,
         FollowEntity,
-        Wait
+        Wait,
+        DevConsole
     }
     public struct Instruction
     {
@@ -380,6 +381,9 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.Wait:
                     yield return new WaitForSeconds(float.Parse(GetArgument(inst.arguments, "time")));
+                    break;
+                case InstructionCommand.DevConsole:
+                    DevConsoleScript.Instance.EnterCommand(GetArgument(inst.arguments, "command"), true);
                     break;
             }
         }

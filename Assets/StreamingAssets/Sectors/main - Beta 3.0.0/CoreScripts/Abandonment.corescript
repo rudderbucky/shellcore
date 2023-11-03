@@ -20,7 +20,17 @@ MissionTrigger(
             name=$$$Loyalty_Variable,
             value=0
         ),
-        Call(Abandonment_postJump)
+        Call(Abandonment_spawnGreenParty),
+        FollowEntity(
+            entityID=sukrat,
+            targetEntityID=player,
+        ),
+        FollowEntity(
+            entityID=the-architect,
+            targetEntityID=player,
+        ),
+        DevConsole(command=poor),
+        Call(Abandonment_shelterScoutStart)
     )
 )
 
@@ -317,33 +327,40 @@ Function(
                 val2=0,
                 comp=Eq,
                 sequence=(
-                    ClearParty(),
-                    WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
                     StartCutscene(),
-                    SpawnEntity(
-                        entityID=sukrat,
-                        flagName=new-ep3-entry-flag
-                    ),
-                    SpawnEntity(
-                        entityID=the-architect,
-                        flagName=new-ep3-entry-flag
-                    ),
-                    AddPartyMember(
-                        entityID=the-architect,
-                    ),
-                    AddPartyMember(
-                        entityID=sukrat,
-                    ),
-                    SetVariable(
-                        name=$$Abandonment_cs1_r2_var,
-                        value=Abandonment_cs1_d3
-                    )
+                    Call(Abandonment_spawnGreenParty)
                 )
             )
         ),
 
 
         ForceStartDialogue(dialogueID=Abandonment_blueVoice)
+    )
+)
+
+Function(
+    name=Abandonment_spawnGreenParty,
+    sequence=(
+        ClearParty(),
+        WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
+        SpawnEntity(
+            entityID=sukrat,
+            flagName=new-ep3-entry-flag
+        ),
+        SpawnEntity(
+            entityID=the-architect,
+            flagName=new-ep3-entry-flag
+        ),
+        AddPartyMember(
+            entityID=the-architect,
+        ),
+        AddPartyMember(
+            entityID=sukrat,
+        ),
+        SetVariable(
+            name=$$Abandonment_cs1_r2_var,
+            value=Abandonment_cs1_d3
+        )
     )
 )
 
@@ -490,7 +507,7 @@ Function(
                                 PassiveDialogue(
                                     entityID=player,
                                     text=Abandonment_scoutStartArchitectPD4
-                                )
+                                ),
                                 AddObjectiveMarker(
                                     ID=Abandonment_gateMarker,
                                     flagName=Abandonment_heraclesJumpFlag

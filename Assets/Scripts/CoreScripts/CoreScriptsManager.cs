@@ -98,7 +98,6 @@ public class CoreScriptsManager : MonoBehaviour
         if (!data.t2) data.t2 = GetProximityTransformFromID(data.ent2ID);
         if (!data.t1 || !data.t2) return false;
         var sqDist = Vector2.SqrMagnitude(data.t1.position - data.t2.position);
-        Debug.LogWarning(sqDist);
         switch (data.comp)
         {
             case "Eq":

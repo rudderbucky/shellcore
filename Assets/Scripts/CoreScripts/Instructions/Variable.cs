@@ -70,7 +70,6 @@ public class Variable : MonoBehaviour
 
     private static void GetEntitiesForSqrDistance(string sqrDistanceStr, out string ent1ID, out string ent2ID, out Transform t1, out Transform t2)
     {
-        Debug.LogWarning(sqrDistanceStr);
         var tmp = sqrDistanceStr.Trim().Replace("SqrDistance", "").Replace(")", "").Trim().Replace("(", "").Trim();
         var entArr = tmp.Split(",");
         if (entArr.Length != 2)
