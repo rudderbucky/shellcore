@@ -4,6 +4,7 @@ using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
 using System.Linq;
+using System.Collections;
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
@@ -39,7 +40,8 @@ public class CoreScriptsSequence : MonoBehaviour
         FinishTask,
         FailTask,
         ForceStartDialogue,
-        FollowEntity
+        FollowEntity,
+        Wait
     }
     public struct Instruction
     {
@@ -174,6 +176,12 @@ public class CoreScriptsSequence : MonoBehaviour
     }
 
     public static void RunSequence (Sequence seq, Context context)
+    {
+        CoreScriptsManager.instance.StartCoroutine(RunSequenceHelper(seq, context));
+    }
+
+
+    public static IEnumerator RunSequenceHelper (Sequence seq, Context context)
     {
         var traverser = CoreScriptsManager.instance;
         foreach (var inst in seq.instructions)
@@ -370,9 +378,14 @@ public class CoreScriptsSequence : MonoBehaviour
                         GetArgument(inst.arguments, "disallowAggression") == "true"
                     );
                     break;
+                case InstructionCommand.Wait:
+                    yield return new WaitForSeconds(float.Parse(GetArgument(inst.arguments, "time")));
+                    break;
             }
         }
+        yield return null;
     }
+
 
     private static void FinishMission(Context context, string rewardsText, string jingleID)
     {
