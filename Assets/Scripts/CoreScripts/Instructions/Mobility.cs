@@ -21,7 +21,6 @@ public class Mobility : MonoBehaviour
                 break;
             }
         }
-        Debug.LogWarning("<Set Path> " + coords);
 
         for (int i = 0; i < AIData.entities.Count; i++)
         {
