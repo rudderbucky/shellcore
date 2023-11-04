@@ -202,6 +202,7 @@ public class CoreScriptsManager : MonoBehaviour
         localMap.Clear();
         OnVariableUpdate = null;
 
+        initialized = true;
         if (paths == null)
         {
             Debug.LogWarning("No paths to parse. Returning.");
