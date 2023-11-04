@@ -7,8 +7,8 @@ Text("Abandonment_20s", "JUMPING IN 20 SECONDS.")
 Text("Abandonment_10s", "JUMPING IN 10 SECONDS.")
 Text("Abandonment_5s", "JUMPING IN 5 SECONDS.")
 Text("Abandonment_test", "TEST COMPLETE")
-Text("Abandonment_jumpSectorPlayerIndication", "<color=lime>I should head to the gate and activate it.</color>")
-Text("Abandonment_jumpSectorPlayerWarning", "<color=lime>Here goes... I should leave this sector if I'm not ready yet.</color>")
+Text("Abandonment_jumpSectorPlayerIndication", "I should head to the gate and activate it.")
+Text("Abandonment_jumpSectorPlayerWarning", "Here goes... I should leave this sector if I'm not ready yet.")
 
 // Protip: if something isn't executing, check if you've added the commas between sequences/conditions
 MissionTrigger(
@@ -447,7 +447,7 @@ Function(
     )
 )
 
-Text("Abandonment_cs1_pd1", "<color=lime>Well...  I've got to find shelter somewhere.</color>")
+Text("Abandonment_cs1_pd1", "Well...  I've got to find shelter somewhere.")
 Function(
     name=Abandonment_traitorPlayerPostBlueVoice,
     sequence=(
@@ -460,10 +460,10 @@ Function(
     )
 )
 
-Text("Abandonment_scoutStartArchitectPD1", "<color=lime>See. Told you this is a void.</color>")
-Text("Abandonment_scoutStartArchitectPD2", "<color=lime>Oh would you pipe down? Let's try going the other way.</color>")
-Text("Abandonment_scoutStartArchitectPD3", "<color=lime>Looks like there's nothing here... I should try going the other way.</color>")
-Text("Abandonment_scoutStartArchitectPD4", "<color=lime>Wait... I'm picking up some kind of disturbance in this sector. I've marked it on the map.</color>")
+Text("Abandonment_scoutStartArchitect_pd1", "See. Told you this is a void.")
+Text("Abandonment_scoutStartArchitect_pd2", "Oh would you pipe down? Let's try going the other way.")
+Text("Abandonment_scoutStartArchitect_pd3", "Looks like there's nothing here... I should try going the other way.")
+Text("Abandonment_scoutStartArchitect_pd4", "Wait... I'm picking up some kind of disturbance in this sector. I've marked it on the map.")
 //Sector 2600-6460 (nothing)
 //Sector 2220-6140 (DeadZone)
 //Sector 2220-6460 (meet Heracles)
@@ -485,11 +485,11 @@ Function(
                     ),
                     PassiveDialogue(
                         entityID=the-architect,
-                        text=Abandonment_scoutStartArchitectPD1
+                        text=Abandonment_scoutStartArchitect_pd1
                     ),
                     PassiveDialogue(
                         entityID=player,
-                        text=Abandonment_scoutStartArchitectPD2
+                        text=Abandonment_scoutStartArchitect_pd2
                     ),
                     AddObjectiveMarker(
                         ID=Abandonment_22206460marker,
@@ -504,7 +504,7 @@ Function(
                                 ),
                                 PassiveDialogue(
                                     entityID=player,
-                                    text=Abandonment_scoutStartArchitectPD4
+                                    text=Abandonment_scoutStartArchitect_pd4
                                 ),
                                 AddObjectiveMarker(
                                     ID=Abandonment_gateMarker,
@@ -524,12 +524,471 @@ Function(
                                                 faction=2,
                                                 flagName=Abandonment_heraclesKraken
                                             ),
-                                            SetPath(
+                                            Rotate(
                                                 entityID=Abandonment_kraken,
-                                                flagName=Abandonment_heraclesKraken-cs1,
+                                                targetID=player
+                                            ),
+                                            Wait(time=1),
+                                            Rotate(
+                                                entityID=the-architect, 
+                                                targetID=Abandonment_heraclesKraken,
                                                 sequence=(
-                                                    Call(Abandonment_postKrakenSpawn)
+                                                    StartCameraPan(
+                                                        flagName=Abandonment_heraclesKraken,
+                                                        velocityFactor=0.5,
+                                                        sequence=(    
+                                                            Call(Abandonment_krakenSpawnDialogue)
+                                                        )
+                                                    )
                                                 )
+                                            ),
+                                            Rotate(entityID=sukrat, targetID=Abandonment_heraclesKraken),
+                                            Rotate(entityID=player, targetID=Abandonment_heraclesKraken)
+
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Abandonment_postKrakenSpawn_pd1", "What in the world is that?")
+Text("Abandonment_postKrakenSpawn_pd2", "No idea myself.")
+Text("Abandonment_postKrakenSpawn_pd3", "It doesn't seem to like us. We should run.")
+Text("Abandonment_postKrakenSpawn_pd4", "AAAAHHH! OH DEAR GET AWAY FROM US!")
+Function(
+    name=Abandonment_krakenSpawnDialogue,
+    sequence=(
+        PassiveDialogue(
+            entityID=the-architect,
+            text=Abandonment_postKrakenSpawn_pd1
+        ),
+        PassiveDialogue(
+            entityID=player,
+            text=Abandonment_postKrakenSpawn_pd2
+        ),
+        PassiveDialogue(
+            entityID=the-architect,
+            text=Abandonment_postKrakenSpawn_pd3
+        ),
+        Wait(time=12),
+        SetPath(
+            entityID=Abandonment_kraken,
+            flagName=Abandonment_heraclesJumpFlag
+        ),
+        PassiveDialogue(
+            entityID=sukrat,
+            text=Abandonment_postKrakenSpawn_pd4
+        ),
+        Wait(time=1),
+        EndCameraPan(),
+        SetPath(
+            entityID=sukrat,
+            flagName=Abandonment_heraclesKraken-1
+        ),
+        SetPath(
+            entityID=the-architect,
+            flagName=Abandonment_heraclesKraken-3
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Abandonment_heraclesKraken-2
+        ),
+        Wait(time=6),
+        SpawnEntity
+        (
+            entityID=heracles,
+            name=Heracles,
+            faction=3,
+            blueprintJSON=heracles,
+            flagName=Abandonment_heraclesSpawn
+        ),
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesKraken
+        ),  
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesNanoscope_1
+        ),
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesNanoscope_2
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope,
+            targetEntityID=Abandonment_kraken
+        ),
+        Call(Abandonment_postKrakenTractor)
+    )
+)
+
+Text("Abandonment_postKrakenTractor_pd1", "Wait... what just happened?")
+Function(
+    name=Abandonment_postKrakenTractor,
+    sequence=(
+        Wait(time=1),
+        PassiveDialogue(
+            entityID=sukrat,
+            text=Abandonment_postKrakenTractor_pd1
+        ),
+        Wait(time=1),
+        Rotate(
+            entityID=sukrat,
+            targetID=Abandonment_heraclesKraken
+        ),
+        Rotate(
+            entityID=player,
+            targetID=Abandonment_heraclesKraken
+        ),
+        Rotate(
+            entityID=the-architect,
+            targetID=Abandonment_heraclesKraken
+        ),
+        Wait(time=1),
+        StartCameraPan(
+            flagName=Abandonment_heraclesKraken,
+            velocityFactor=0.5,
+            sequence=(
+                Call(Abandonment_postHeraclesReveal)
+            )
+        ),
+        Rotate(
+            entityID=heracles,
+            targetID=player
+        ),
+    )
+)
+
+Text("Abandonment_postHeraclesReveal_d1", "Oh no! Another one!")
+Text("Abandonment_postHeraclesReveal_d2", "Wait, this one kind of looks like us. An ally?")
+Text("Abandonment_postHeraclesReveal_d3", "Perhaps, but it depends.")
+Text("Abandonment_postHeraclesReveal_d4", "On what?")
+Text("Abandonment_postHeraclesReveal_d5", "Are you willing to abandon your reality? I’m afraid you… we’ve been… deceived.")
+Text("Abandonment_postHeraclesReveal_d6", "What’s that supposed to mean?")
+Text("Abandonment_postHeraclesReveal_d7", "The “war” doesn’t exist here. At least not in the form you’re aware of. Neither does the “infection”. Only… abandonment remains.")
+Text("Abandonment_postHeraclesReveal_d8", "This can’t be!")
+Text("Abandonment_postHeraclesReveal_d9", "You aren’t willing to abandon your reality yet. Jump through the gate if you don’t want to be vivisected for parts by the defects.")
+Text("Abandonment_postHeraclesReveal_d10", "...")
+Text("Abandonment_postHeraclesReveal_d11", "You lie! Eat bullets!")
+Text("Abandonment_postHeraclesReveal_d12", "Please reconsider. We’ve harnessed the power of the Tractor Beam. You’ll be imprisoned like the defects we protect you from.")
+Text("Abandonment_postHeraclesReveal_d13", "You’re talking crazy!")
+Text("Abandonment_postHeraclesReveal_d14", "And you aren’t willing to abandon your reality yet. Jump through the gate if you don’t want to be dissected for parts by the defects.")
+Text("Abandonment_postHeraclesReveal_d15", "…yes.")
+Text("Abandonment_postHeraclesReveal_d16", "Interesting. Most of you new entrants cannot comprehend the idea of something larger than the story our leader told us. Let me tell you — we are not writing that story. Jump through the gate.")
+Text("Abandonment_postHeraclesReveal_d17", "We need to get out of here!")
+Text("Abandonment_postHeraclesReveal_d18", "Reconsider fleeing without my company unless you want to be disassembled involuntarily by the defects. It is safe on the other side of this gate.")
+
+Dialogue(
+    dialogueID=Abandonment_postHeraclesReveal_d,
+    entityID=sukrat,
+    dialogueText=Abandonment_postHeraclesReveal_d1,
+    responses=(
+        Response(
+            responseText=Abandonment_postHeraclesReveal_d2,
+            next=Dialogue(
+                entityID=heracles,  
+                dialogueText=Abandonment_postHeraclesReveal_d3,
+                responses=(
+                    Response(
+                        responseText=Abandonment_postHeraclesReveal_d4,
+                        next=Dialogue(
+                            dialogueText=Abandonment_postHeraclesReveal_d5,
+                            responses=(
+                                Response(
+                                    responseText=Abandonment_postHeraclesReveal_d6,
+                                    next=Dialogue(
+                                        dialogueText=Abandonment_postHeraclesReveal_d7,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_postHeraclesReveal_d8,
+                                                next=Dialogue(
+                                                    dialogueText=Abandonment_postHeraclesReveal_d9,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Abandonment_postHeraclesReveal_d10,
+                                                            next=Call(Abandonment_postHeraclesDialogue)
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                            Response(
+                                                responseText=Abandonment_postHeraclesReveal_d11,
+                                                next=Dialogue(
+                                                    dialogueText=Abandonment_postHeraclesReveal_d12,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Abandonment_postHeraclesReveal_d10,
+                                                            next=Call(Abandonment_postHeraclesDialogue)
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=Abandonment_postHeraclesReveal_d13,
+                                    next=Dialogue(
+                                        dialogueText=Abandonment_postHeraclesReveal_d14,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_postHeraclesReveal_d10,
+                                                next=Call(Abandonment_postHeraclesDialogue)
+                                            )
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=Abandonment_postHeraclesReveal_d15,
+                                    next=Dialogue(
+                                        dialogueText=Abandonment_postHeraclesReveal_d16,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_postHeraclesReveal_d10,
+                                                next=Call(Abandonment_postHeraclesDialogue)
+                                            )
+                                        )
+                                    )
+                                ),
+                            )
+                        )
+                    )
+                )
+            )
+        ),        
+        Response(
+            responseText=Abandonment_postHeraclesReveal_d17,
+            next=Dialogue(
+                entityID=heracles,
+                dialogueText=Abandonment_postHeraclesReveal_d18,
+                responses=(
+                    Response(
+                        responseText=Abandonment_postHeraclesReveal_d10,
+                        next=Call(Abandonment_postHeraclesDialogue)
+                    )
+                )
+            )
+        ),
+
+    )
+)
+
+Function(
+    name=Abandonment_postHeraclesReveal,
+    sequence=(
+        ForceStartDialogue(dialogueID=Abandonment_postHeraclesReveal_d)
+    )
+)
+
+
+Text("Abandonment_postHeraclesDialogue_d1", "Let me introduce myself. My name is Heracles. This is the path to the neutral zones. They have been cleared of defective presence. Please enter; unfortunately you have no choice but to obey my commands.")
+Text("Abandonment_postHeraclesDialogue_d2", "Neutral?")
+Text("Abandonment_postHeraclesDialogue_d3", "Yes. You may think I’m talking about the story of war and colors your leader taught you. Unfortunately, that is not the story we are writing. I’m sure the others will show up to proselytize their dogma as we will. You can make a decision then. Now please go.")
+Text("Abandonment_postHeraclesDialogue_d4", "Okay...")
+Text("Abandonment_postHeraclesDialogue_d5", "Yes. I’m sure they’ll all show up to proselytize their dogma as we will. You can make a decision then. Now please go.")
+Text("Abandonment_postHeraclesDialogue_d6", "What if I don’t?")
+Text("Abandonment_postHeraclesDialogue_d7", "You must understand the forces at power in these sectors are unlike what you could comprehend in Standardness. You will just have to trust me when I say I am providing you a great charity. Now go.")
+Text("Abandonment_postHeraclesDialogue_d8", "I agree with this bizarre core! Let’s bolt!")
+Text("Abandonment_postHeraclesDialogue_d9", "...")
+
+Dialogue(
+    dialogueID=Abandonment_postHeraclesDialogue_d,
+    entityID=heracles,
+    dialogueText=Abandonment_postHeraclesDialogue_d1,
+    responses=(
+        Response(
+            responseText=Abandonment_postHeraclesDialogue_d2,
+            next=Dialogue(
+                dialogueText=Abandonment_postHeraclesDialogue_d3,
+                responses=(
+                    Response(
+                        responseText=Abandonment_postHeraclesDialogue_d4,
+                        next=Call(Abandonment_kappaJump)
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=Abandonment_postHeraclesDialogue_d6,
+            next=Dialogue(
+                dialogueText=Abandonment_postHeraclesDialogue_d7,
+                responses=(
+                    Response(
+                        responseText=Abandonment_postHeraclesDialogue_d9,
+                        next=Dialogue(
+                            entityID=sukrat,
+                            dialogueText=Abandonment_postHeraclesDialogue_d8,
+                            responses=(
+                                Response(
+                                    responseText=Abandonment_postHeraclesDialogue_d9,
+                                    next=Call(Abandonment_kappaJump)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Abandonment_postHeraclesDialogue,
+    sequence=(
+        SetPath(
+            entityID=heracles,
+            flagName=Abandonment_heraclesJumpFlag,
+            sequence=(
+                StartCameraPan(
+                    velocityFactor=0.25,
+                    flagName=Abandonment_heraclesJumpFlag,
+                    sequence=(
+                        ForceStartDialogue(dialogueID=Abandonment_postHeraclesDialogue_d)
+                    )
+                )
+            )
+        ),
+        Wait(time=0.5),
+        EndCameraPan()
+    )
+)
+
+Text("Abandonment_kappaJump_pd1", "We'll meet again.")
+Text("Abandonment_kappaJump_pd2", "Will you turn the gate on? Not a fan of how the giant mess is glaring at us.")
+Function(
+    name=Abandonment_kappaJump,
+    sequence=(
+        EndCameraPan(),       
+        SetPath(
+            entityID=player,
+            flagName=Abandonment_heraclesJumpFlag
+        ),
+        SetPath(
+            entityID=sukrat,
+            flagName=Abandonment_heraclesJumpFlag
+        ),
+        SetPath(
+            entityID=the-architect,
+            flagName=Abandonment_heraclesJumpFlag
+        ),
+        SetPath(
+            entityID=heracles,
+            flagName=Abandonment_heraclesKraken-2,
+            sequence=(
+                Rotate(
+                    entityID=heracles,
+                    targetID=player,
+                    sequence=(
+                        PassiveDialogue(
+                            entityID=heracles,
+                            text=Abandonment_kappaJump_pd1,
+                        ),
+                        PassiveDialogue(
+                            entityID=the-architect,
+                            text=Abandonment_kappaJump_pd2,
+                        ),
+                        Wait(time=4),
+                        WarpPlayer(flagName=real-exit-jump-gate-flag, sectorName=Kappa Outskirts 1SE),
+                        SpawnEntity(
+                            entityID=sukrat,
+                            flagName=real-exit-jump-gate-flag
+                        ),
+                        SpawnEntity(
+                            entityID=the-architect,
+                            flagName=real-exit-jump-gate-flag
+                        ),
+                        FinishCutscene()
+                    )
+                )
+            )
+        ),
+    )
+)
+
+Text("Abandonment_kappaJump_pd3", "The sector to the left seems suitable. We should set up a base there.")
+Text("Abandonment_kappaJump_d1", "Well, this is as good a place as any to set up a base. At least we know it’s safe enough here.")
+Text("Abandonment_kappaJump_d2", "Yeah...")
+Text("Abandonment_kappaJump_d3", "Are we gonna talk about what just happened? This is not exactly what I expected coming here.")
+Text("Abandonment_kappaJump_d4", "What isn’t?")
+Text("Abandonment_kappaJump_d5", "The emptiness is… crushing. And we’re stuck with all sorts of things we weren’t told about. Things… aren’t as they seemed to me…")
+Text("Abandonment_kappaJump_d6", "...")
+Text("Abandonment_kappaJump_d7", "If that off-color Uninfected core is right, I’m afraid our leader hasn’t been giving us the whole picture.")
+Text("Abandonment_kappaJump_d8", "What do you think about that?")
+Text("Abandonment_kappaJump_d9", "I’m… kind of happy. This means there’s one less core to obey in my pursuit of the truths in this world.")
+Text("Abandonment_kappaJump_d10", "What do we do now?")
+Text("Abandonment_kappaJump_d11", "I can help build a station here for the three of us. We probably shouldn’t be wandering far from here, but I think we can trust Heracles that it’s safe enough outside here.")
+Text("Abandonment_kappaJump_d12", "With what? There is nothing here to modify.")
+Text("Abandonment_kappaJump_d13", "Do you not see them? The husks. I’m going to try switching them on.")
+
+Dialogue(
+    dialogueID=Abandonment_kappaJump_d,
+    entityID=the-architect,
+    dialogueText=Abandonment_kappaJump_d1,
+    responses=(
+        Response(
+            repsonseText=Abandonment_kappaJump_d2,
+            next=Dialogue(
+                entityID=sukrat,
+                dialogueText=Abandonment_kappaJump_d3,
+                responses=(
+                    Response(
+                        responseText=Abandonment_kappaJump_d4,
+                        next=Dialogue(
+                            dialogueText=Abandonment_kappaJump_d5,
+                            responses=(
+                                Response(
+                                    responseText=Abandonment_kappaJump_d6,
+                                    next=Dialogue(
+                                        entityID=the-architect,
+                                        dialogueText=Abandonment_kappaJump_d7,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_kappaJump_d8,
+                                                next=Dialogue(
+                                                    dialogueText=Abandonment_kappaJump_d9,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Abandonment_kappaJump_d10,
+                                                            next=Dialogue(
+                                                                ID=1,
+                                                                dialogueText=Abandonment_kappaJump_d11,
+                                                                responses=(
+                                                                    Response(
+                                                                        responseText=Abandonment_kappaJump_d12,
+                                                                        next=Dialogue(
+                                                                            dialogueText=Abandonment_kappaJump_d13,
+                                                                            responses=(
+                                                                                Response(
+                                                                                    repsonseText=Abandonment_kappaJump_d6,
+                                                                                    next=Call(Abandonment_postMakeshiftCreation)
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                            Respone(
+                                                responseText=Abandonment_kappaJump_d10,
+                                                next=SetID(1)
                                             )
                                         )
                                     )
@@ -543,23 +1002,102 @@ Function(
     )
 )
 
-Text("Abandonment_postKrakenSpawn_pd1", "<color=lime>What in the world is that?</color>")
-Text("Abandonment_postKrakenSpawn_pd2", "<color=lime>No idea myself.</color>")
-Text("Abandonment_postKrakenSpawn_pd3", "<color=lime>It doesn't seem to like us. We should run.</color>")
 Function(
-    name=Abandonment_postKrakenSpawn,
+    name=Abandonment_makeshift,
     sequence=(
-        PassiveDialogue(
-            entityID=the-architect,
-            text=Abandonment_postKrakenSpawn_pd1
-        ),
-        PassiveDialogue(
-            entityID=player,
-            text=Abandonment_postKrakenSpawn_pd2
-        ),
-        PassiveDialogue(
-            entityID=the-architect,
-            text=Abandonment_postKrakenSpawn_pd3
+        PassiveDialogue(entityID=the-architect, text=Abandonment_kappaJump_pd3),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Makeshift,
+                sequence=(
+                    StartCutscene(),
+                    SetPath(
+                        entityID=the-architect,
+                        flagName=Abandonment_makeshift_cs2
+                    ),
+                    SetPath(
+                        entityID=sukrat,
+                        flagName=Abandonment_makeshift_cs3
+                    ),
+                    SetPath(
+                        entityID=player,
+                        flagName=Abandonment_makeshift_cs1
+                        sequence=(
+                            ForceStartDialogue(Abandonment_kappaJump_d)
+                        )
+                    ),
+                )
+            )
         )
+    )
+)
+
+Text("Abandonment_kappaJump_d14", "Mostly done for now. Let’s call our new home — The Makeshift. There’s a lot more science to do here too. Come talk to me whenever you want to discuss more.")
+Text("Abandonment_kappaJump_d15", "Awesome!")
+Text("Abandonment_kappaJump_d16", "This is just… the worst.")
+Text("Abandonment_kappaJump_d17", "We need to find Aristu.")
+Text("Abandonment_kappaJump_d18", "Right. They’ll probably know a bit more about what’s going on. That’s next on the agenda.")
+Text("Abandonment_kappaJump_d19", "Sounds good.")
+Text("Abandonment_kappaJump_d20", "It really is.")
+Text("Abandonment_kappaJump_d21", "I think we should find Aristu next. They’ll know more about this place.")
+Text("Abandonment_kappaJump_d22", "Okay.")
+
+Dialogue(
+    dialogueID=Abandonment_postMakeshiftCreation_d,
+    entityID=the-architect,
+    dialogueText=Abandonment_kappaJump_d14,
+    responses=(
+        Response(
+            responseText=Abandonment_kappaJump_d15,
+            next=Call(Abandonment_sukratFinalDialogue)
+        )
+    )
+)
+
+Function(
+    name=Abandonment_postMakeshiftCreation,
+    sequence=(
+        Wait(time=2),
+        ForceStartDialogue(dialogueID=Abandonment_postMakeshiftCreation_d)
+    )
+)
+
+Dialogue(
+    dialogueID=Abandonment_sukratFinalDialogue_d,
+    entityID=sukrat,
+    dialogueText=Abandonment_kappaJump_16
+    responses=(
+        Response(
+            responseText=Abandonment_kappaJump_17,
+            next=Dialogue(
+                dialogueText=Abandonment_kappaJump_18,
+                responses=(
+                    Response(
+                        responseText=Abandonment_kappaJump_19,
+                        next=End(),
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=Abandonment_kappaJump_20,
+            next=Dialogue(
+                dialogueText=Abandonment_kappaJump_21,
+                responses=(
+                    Response(
+                        responseText=Abandonment_kappaJump_22,
+                        next=End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Abandonment_sukratFinalDialogue,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Abandonment_sukratFinalDialogue_d)
     )
 )
