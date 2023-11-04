@@ -428,8 +428,6 @@ Function(
                 )
             )
         ),
-
-        
     )
 )
 
@@ -463,7 +461,7 @@ Function(
 )
 
 Text("Abandonment_scoutStartArchitectPD1", "<color=lime>See. Told you this is a void.</color>")
-Text("Abandonment_scoutStartArchitectPD2", "<color=lime>Oh will you shut up? Let's try going the other way.</color>")
+Text("Abandonment_scoutStartArchitectPD2", "<color=lime>Oh would you pipe down? Let's try going the other way.</color>")
 Text("Abandonment_scoutStartArchitectPD3", "<color=lime>Looks like there's nothing here... I should try going the other way.</color>")
 Text("Abandonment_scoutStartArchitectPD4", "<color=lime>Wait... I'm picking up some kind of disturbance in this sector. I've marked it on the map.</color>")
 //Sector 2600-6460 (nothing)
@@ -518,17 +516,50 @@ Function(
                                         val2=100,
                                         comp=Lt,
                                         sequence=(
-                                            StartCutscene()
+                                            StartCutscene(),
+                                            SpawnEntity(
+                                                entityID=Abandonment_kraken,
+                                                name=Kraken,
+                                                blueprintJSON=Defected Kraken,
+                                                faction=2,
+                                                flagName=Abandonment_heraclesKraken
+                                            ),
+                                            SetPath(
+                                                entityID=Abandonment_kraken,
+                                                flagName=Abandonment_heraclesKraken-cs1,
+                                                sequence=(
+                                                    Call(Abandonment_postKrakenSpawn)
+                                                )
+                                            )
                                         )
                                     )
                                 )
-
                             )
                         )
                     )
                 )
             )
         )
+    )
+)
 
+Text("Abandonment_postKrakenSpawn_pd1", "<color=lime>What in the world is that?</color>")
+Text("Abandonment_postKrakenSpawn_pd2", "<color=lime>No idea myself.</color>")
+Text("Abandonment_postKrakenSpawn_pd3", "<color=lime>It doesn't seem to like us. We should run.</color>")
+Function(
+    name=Abandonment_postKrakenSpawn,
+    sequence=(
+        PassiveDialogue(
+            entityID=the-architect,
+            text=Abandonment_postKrakenSpawn_pd1
+        ),
+        PassiveDialogue(
+            entityID=player,
+            text=Abandonment_postKrakenSpawn_pd2
+        ),
+        PassiveDialogue(
+            entityID=the-architect,
+            text=Abandonment_postKrakenSpawn_pd3
+        )
     )
 )
