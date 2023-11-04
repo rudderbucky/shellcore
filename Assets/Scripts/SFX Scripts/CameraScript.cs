@@ -123,6 +123,7 @@ public class CameraScript : MonoBehaviour
             if (callback != null)
             {
                 callback.Invoke();
+                callback = null;
             }
         }
     }
