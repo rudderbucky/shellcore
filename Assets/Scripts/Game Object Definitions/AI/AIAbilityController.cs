@@ -22,6 +22,10 @@ public class AIAbilityController
     public void Update()
     {
         // TODO: timers & member boolean variables to reduce checks each frame
+        if (DialogueSystem.isInCutscene)
+        {
+            return;
+        }
 
         if (!useAbilities)
         {
