@@ -280,8 +280,8 @@ public class CoreScriptsSequence : MonoBehaviour
                     var text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
                     var soundType = GetArgument(inst.arguments, "soundType");
                     var onlyShowIfInParty = GetArgument(inst.arguments, "onlyShowIfInParty") == "true";
-
-                    Interaction.PassiveDialogue(entityID, text, soundType, onlyShowIfInParty);
+                    var useEntityColor = GetArgument(inst.arguments, "useEntityColor") != "false"; 
+                    Interaction.PassiveDialogue(entityID, text, soundType, onlyShowIfInParty, useEntityColor);
                     break;
                 case InstructionCommand.ShowAlert:
                     text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));

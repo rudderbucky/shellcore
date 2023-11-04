@@ -12,7 +12,15 @@ public class PassiveDialogueSystem : MonoBehaviour
     public Text passiveDialogueText;
     private DialogueSystem.DialogueState passiveDialogueState = DialogueSystem.DialogueState.Out;
     public RectTransform passiveDialogueScrollView;
-    Queue<(string, string, int)> passiveMessages = new Queue<(string, string, int)>();
+    private struct PassiveDialogue
+    {
+        public string id;
+        public string text;
+        public int soundType;
+        public bool useEntityColor;
+    }
+
+    Queue<PassiveDialogue> passiveMessages = new Queue<PassiveDialogue>();
     public GameObject passiveDialogueArchive;
     public Transform archiveContents;
     public static PassiveDialogueSystem Instance;
@@ -76,14 +84,19 @@ public class PassiveDialogueSystem : MonoBehaviour
         }
     }
 
-    public void PushPassiveDialogue(string id, string text, int soundType)
+    public void PushPassiveDialogue(string id, string text, int soundType, bool useEntityColor = false)
     {
         if (passiveDialogueState != DialogueSystem.DialogueState.In)
         {
             passiveDialogueState = DialogueSystem.DialogueState.In;
         }
 
-        passiveMessages.Enqueue((id, text, soundType));
+        var pd = new PassiveDialogue();
+        pd.id = id;
+        pd.text = text;
+        pd.soundType = soundType;
+        pd.useEntityColor = useEntityColor;
+        passiveMessages.Enqueue(pd);
     }
 
     float queueTimer = 0;
@@ -104,8 +117,8 @@ public class PassiveDialogueSystem : MonoBehaviour
             {
                 queueTimer = 3;
                 var dialogue = passiveMessages.Dequeue();
-                Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
-                int sType = dialogue.Item3;
+                Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.id);
+                int sType = dialogue.soundType;
                 if (sType > 0 && sType <= 13)
                 {
                     AudioManager.PlayClipByID($"clip_passiveDialogue{sType}", false, 2.5F);
@@ -121,7 +134,17 @@ public class PassiveDialogueSystem : MonoBehaviour
                     }
 
                     instance.transform.Find("Name").GetComponent<Text>().text = name;
-                    instance.transform.Find("Text").GetComponent<Text>().text = dialogue.Item2;
+                    var text = instance.transform.Find("Text").GetComponent<Text>();
+                    text.text = dialogue.text;
+                    if (dialogue.useEntityColor) 
+                    {
+                        text.color = FactionManager.GetFactionColor(speaker.faction);
+                    }
+                    else
+                    {
+                        text.color = Color.white;
+                    }
+
                     instance.transform.localScale -= new Vector3(0, 1);
                     StartCoroutine(SlidePassiveDialogueIn(instance.transform));
 

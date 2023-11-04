@@ -59,7 +59,7 @@ public class Interaction : MonoBehaviour
     }
 
     // TODO: Allow passive dialogue to inherit entity color
-    public static void PassiveDialogue(string id, string text, string soundType, bool onlyShowIfInParty)
+    public static void PassiveDialogue(string id, string text, string soundType, bool onlyShowIfInParty, bool useEntityColor)
     {
         if (!onlyShowIfInParty || (PartyManager.instance.partyMembers.Exists(sc => sc.ID == id)))
         {
@@ -70,7 +70,7 @@ public class Interaction : MonoBehaviour
                 soundIndex = 1;
             }
 
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(id, text, soundIndex);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(id, text, soundIndex, useEntityColor);
         }
         else
         {
