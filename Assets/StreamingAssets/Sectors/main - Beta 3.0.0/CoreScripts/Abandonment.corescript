@@ -16,6 +16,7 @@ MissionTrigger(
     entryPoint=Abandonment_entryPoint,
     prerequisites=(Truthful_Revelation_missionName),
     sequence=(
+        FinishCutscene(),
         SetVariable(
             name=$$$Loyalty_Variable,
             value=0
@@ -557,6 +558,42 @@ Function(
     )
 )
 
+SectorTrigger(
+    sectorName=Sector 2220-6460,
+    sequence=(
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesKraken
+        ),  
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope_1,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesNanoscope_1
+        ),
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope_2,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesNanoscope_2
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_1,
+            targetID=Abandonment_heraclesKraken,
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_2,
+            targetID=Abandonment_heraclesKraken,
+        ),
+    )
+)
+
+
 Text("Abandonment_postKrakenSpawn_pd1", "What in the world is that?")
 Text("Abandonment_postKrakenSpawn_pd2", "No idea myself.")
 Text("Abandonment_postKrakenSpawn_pd3", "It doesn't seem to like us. We should run.")
@@ -608,29 +645,16 @@ Function(
             blueprintJSON=heracles,
             flagName=Abandonment_heraclesSpawn
         ),
-        SpawnEntity
-        (
-            entityID=Abandonment_nanoscope,
-            faction=3,
-            blueprintJSON=Nanoscope,
-            flagName=Abandonment_heraclesKraken
-        ),  
-        SpawnEntity
-        (
-            entityID=Abandonment_nanoscope,
-            faction=3,
-            blueprintJSON=Nanoscope,
-            flagName=Abandonment_heraclesNanoscope_1
-        ),
-        SpawnEntity
-        (
-            entityID=Abandonment_nanoscope,
-            faction=3,
-            blueprintJSON=Nanoscope,
-            flagName=Abandonment_heraclesNanoscope_2
-        ),
         ForceTractor(
             entityID=Abandonment_nanoscope,
+            targetEntityID=Abandonment_kraken
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope_1,
+            targetEntityID=Abandonment_kraken
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope_2,
             targetEntityID=Abandonment_kraken
         ),
         Call(Abandonment_postKrakenTractor)
@@ -912,7 +936,7 @@ Function(
                             entityID=the-architect,
                             flagName=real-exit-jump-gate-flag
                         ),
-                        FinishCutscene()
+                        Call(Abandonment_makeshift)
                     )
                 )
             )
@@ -1005,6 +1029,7 @@ Dialogue(
 Function(
     name=Abandonment_makeshift,
     sequence=(
+        FinishCutscene(),
         PassiveDialogue(entityID=the-architect, text=Abandonment_kappaJump_pd3),
         ConditionBlock(
             EnterSector(
@@ -1021,9 +1046,9 @@ Function(
                     ),
                     SetPath(
                         entityID=player,
-                        flagName=Abandonment_makeshift_cs1
+                        flagName=Abandonment_makeshift_cs1,
                         sequence=(
-                            ForceStartDialogue(Abandonment_kappaJump_d)
+                            ForceStartDialogue(dialogueID=Abandonment_kappaJump_d)
                         )
                     ),
                 )
@@ -1057,7 +1082,10 @@ Dialogue(
 Function(
     name=Abandonment_postMakeshiftCreation,
     sequence=(
+        FadeIntoBlack(),
         Wait(time=2),
+        FadeOutOfBlack(),
+        Wait(time=1),
         ForceStartDialogue(dialogueID=Abandonment_postMakeshiftCreation_d)
     )
 )
