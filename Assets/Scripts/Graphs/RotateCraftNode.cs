@@ -261,7 +261,8 @@ namespace NodeEditorFramework.Standard
                     }
                     else
                     {
-                        entity.transform.RotateAround(entity.transform.position, Vector3.forward, Vector3.SignedAngle(Vector3.up, -targetVector, Vector3.forward));
+                        entity.transform.rotation = Quaternion.identity;
+                        entity.transform.RotateAround(entity.transform.position, Vector3.forward, Vector3.SignedAngle(Vector3.up, targetVector, Vector3.forward));
                         return 0;
                     }
                 }
