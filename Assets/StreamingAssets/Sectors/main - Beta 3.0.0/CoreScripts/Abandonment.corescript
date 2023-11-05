@@ -22,6 +22,15 @@ MissionTrigger(
             value=0
         ),
         Call(Abandonment_spawnGreenParty),
+        Call(Abandonment_partyFollowPlayer),
+        DevConsole(command=poor),
+        Call(Abandonment_shelterScoutStart)
+    )
+)
+
+Function(
+    name=Abandonment_partyFollowPlayer,
+    sequence=(
         FollowEntity(
             entityID=sukrat,
             targetEntityID=player,
@@ -30,10 +39,9 @@ MissionTrigger(
             entityID=the-architect,
             targetEntityID=player,
         ),
-        DevConsole(command=poor),
-        Call(Abandonment_shelterScoutStart)
     )
 )
+
 
 Function(
     name=Abandonment_start,
@@ -561,12 +569,13 @@ Function(
 SectorTrigger(
     sectorName=Sector 2220-6460,
     sequence=(
+        Wait(time=1),
         SpawnEntity
         (
             entityID=Abandonment_nanoscope,
             faction=3,
             blueprintJSON=Nanoscope,
-            flagName=Abandonment_heraclesKraken
+            flagName=Abandonment_heraclesNanoscope_3
         ),  
         SpawnEntity
         (
@@ -583,13 +592,17 @@ SectorTrigger(
             flagName=Abandonment_heraclesNanoscope_2
         ),
         Rotate(
+            entityID=Abandonment_nanoscope,
+            targetID=Abandonment_heraclesJumpFlag,
+        ),
+        Rotate(
             entityID=Abandonment_nanoscope_1,
             targetID=Abandonment_heraclesKraken,
         ),
         Rotate(
             entityID=Abandonment_nanoscope_2,
             targetID=Abandonment_heraclesKraken,
-        ),
+        )
     )
 )
 
@@ -684,6 +697,21 @@ Function(
             targetID=Abandonment_heraclesKraken
         ),
         Wait(time=1),
+
+// Rotate the nanoscopes to make it look more aligned
+        
+        Rotate(
+            entityID=Abandonment_nanoscope,
+            targetID=Abandonment_kraken,
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_1,
+            targetID=Abandonment_kraken,
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_2,
+            targetID=Abandonment_kraken,
+        ),
         StartCameraPan(
             flagName=Abandonment_heraclesKraken,
             velocityFactor=0.5,
@@ -882,11 +910,15 @@ Function(
                     velocityFactor=0.25,
                     flagName=Abandonment_heraclesJumpFlag,
                     sequence=(
+                        Wait(time=0.75),
                         ForceStartDialogue(dialogueID=Abandonment_postHeraclesDialogue_d)
                     )
                 )
             )
         ),
+
+// this happens before the pan to Heracles and ends the pan on the Kraken. Weird but the easiest way to do it.
+
         Wait(time=0.5),
         EndCameraPan()
     )
@@ -896,8 +928,7 @@ Text("Abandonment_kappaJump_pd1", "We'll meet again.")
 Text("Abandonment_kappaJump_pd2", "Will you turn the gate on? Not a fan of how the giant mess is glaring at us.")
 Function(
     name=Abandonment_kappaJump,
-    sequence=(
-        EndCameraPan(),       
+    sequence=(    
         SetPath(
             entityID=player,
             flagName=Abandonment_heraclesJumpFlag
@@ -917,7 +948,7 @@ Function(
                 Rotate(
                     entityID=heracles,
                     targetID=player,
-                    sequence=(
+                    sequence=( 
                         PassiveDialogue(
                             entityID=heracles,
                             text=Abandonment_kappaJump_pd1,
@@ -926,8 +957,9 @@ Function(
                             entityID=the-architect,
                             text=Abandonment_kappaJump_pd2,
                         ),
-                        Wait(time=4),
+                        Wait(time=6),
                         WarpPlayer(flagName=real-exit-jump-gate-flag, sectorName=Kappa Outskirts 1SE),
+                        EndCameraPan(),
                         SpawnEntity(
                             entityID=sukrat,
                             flagName=real-exit-jump-gate-flag
@@ -936,6 +968,7 @@ Function(
                             entityID=the-architect,
                             flagName=real-exit-jump-gate-flag
                         ),
+                        Call(Abandonment_partyFollowPlayer),
                         Call(Abandonment_makeshift)
                     )
                 )
@@ -965,7 +998,7 @@ Dialogue(
     dialogueText=Abandonment_kappaJump_d1,
     responses=(
         Response(
-            repsonseText=Abandonment_kappaJump_d2,
+            responseText=Abandonment_kappaJump_d2,
             next=Dialogue(
                 entityID=sukrat,
                 dialogueText=Abandonment_kappaJump_d3,
@@ -989,7 +1022,7 @@ Dialogue(
                                                         Response(
                                                             responseText=Abandonment_kappaJump_d10,
                                                             next=Dialogue(
-                                                                ID=1,
+                                                                nodeID=1,
                                                                 dialogueText=Abandonment_kappaJump_d11,
                                                                 responses=(
                                                                     Response(
@@ -998,7 +1031,7 @@ Dialogue(
                                                                             dialogueText=Abandonment_kappaJump_d13,
                                                                             responses=(
                                                                                 Response(
-                                                                                    repsonseText=Abandonment_kappaJump_d6,
+                                                                                    responseText=Abandonment_kappaJump_d6,
                                                                                     next=Call(Abandonment_postMakeshiftCreation)
                                                                                 )
                                                                             )
@@ -1010,7 +1043,7 @@ Dialogue(
                                                     )
                                                 )
                                             ),
-                                            Respone(
+                                            Response(
                                                 responseText=Abandonment_kappaJump_d10,
                                                 next=SetID(1)
                                             )
@@ -1030,7 +1063,6 @@ Function(
     name=Abandonment_makeshift,
     sequence=(
         FinishCutscene(),
-        PassiveDialogue(entityID=the-architect, text=Abandonment_kappaJump_pd3),
         ConditionBlock(
             EnterSector(
                 sectorName=The Makeshift,
@@ -1053,7 +1085,9 @@ Function(
                     ),
                 )
             )
-        )
+        ),
+        Wait(time=0.5),
+        PassiveDialogue(entityID=the-architect, text=Abandonment_kappaJump_pd3),
     )
 )
 
@@ -1093,28 +1127,28 @@ Function(
 Dialogue(
     dialogueID=Abandonment_sukratFinalDialogue_d,
     entityID=sukrat,
-    dialogueText=Abandonment_kappaJump_16
+    dialogueText=Abandonment_kappaJump_d16,
     responses=(
         Response(
-            responseText=Abandonment_kappaJump_17,
+            responseText=Abandonment_kappaJump_d17,
             next=Dialogue(
-                dialogueText=Abandonment_kappaJump_18,
+                dialogueText=Abandonment_kappaJump_d18,
                 responses=(
                     Response(
-                        responseText=Abandonment_kappaJump_19,
-                        next=End(),
+                        responseText=Abandonment_kappaJump_d19,
+                        next=Call(Abandonment_end),
                     )
                 )
             )
         ),
         Response(
-            responseText=Abandonment_kappaJump_20,
+            responseText=Abandonment_kappaJump_d20,
             next=Dialogue(
-                dialogueText=Abandonment_kappaJump_21,
+                dialogueText=Abandonment_kappaJump_d21,
                 responses=(
                     Response(
-                        responseText=Abandonment_kappaJump_22,
-                        next=End()
+                        responseText=Abandonment_kappaJump_d22,
+                        next=Call(Abandonment_end)
                     )
                 )
             )
@@ -1127,5 +1161,12 @@ Function(
     sequence=(
         Wait(time=1),
         ForceStartDialogue(dialogueID=Abandonment_sukratFinalDialogue_d)
+    )
+)
+
+Function(
+    name=Abandonment_end,
+    sequence=(
+        FinishCutscene()
     )
 )
