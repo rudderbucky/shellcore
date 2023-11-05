@@ -42,7 +42,9 @@ public class CoreScriptsSequence : MonoBehaviour
         ForceStartDialogue,
         FollowEntity,
         Wait,
-        DevConsole
+        DevConsole,
+        FadeIntoBlack,
+        FadeOutOfBlack
     }
     public struct Instruction
     {
@@ -384,6 +386,12 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.DevConsole:
                     DevConsoleScript.Instance.EnterCommand(GetArgument(inst.arguments, "command"), true);
+                    break;
+                case InstructionCommand.FadeIntoBlack:
+                    Cutscene.FadeIntoBlack();
+                    break;
+                case InstructionCommand.FadeOutOfBlack:
+                    Cutscene.FadeOutOfBlack();
                     break;
             }
         }

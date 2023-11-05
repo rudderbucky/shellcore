@@ -62,4 +62,14 @@ public class Cutscene : MonoBehaviour
             }
         }
     }
+
+    public static void FadeIntoBlack()
+    {
+        DialogueSystem.Instance.FadeInScreenBlack();
+    }
+
+    public static void FadeOutOfBlack()
+    {
+        DialogueSystem.Instance.FadeOutScreenBlack();
+    }
 }

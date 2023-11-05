@@ -46,6 +46,40 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public static bool isInCutscene = false;
     BattleZoneManager battleZoneManager;
 
+    public Image faderImage;
+    public void FadeInScreenBlack()
+    {
+        StartCoroutine(FadeInScreenBlackCo());
+    }
+    private IEnumerator FadeInScreenBlackCo()
+    {
+        while (faderImage.color.a < 1)
+        {
+            var c = faderImage.color;
+            c.a += 0.1F;
+            faderImage.color = c;
+            yield return new WaitForSeconds(0.05F);
+        }
+    }
+
+    public void FadeOutScreenBlack()
+    {
+        StartCoroutine(FadeOutScreenBlackCo());
+    }
+    private IEnumerator FadeOutScreenBlackCo()
+    {
+        while (faderImage.color.a > 0)
+        {
+            var c = faderImage.color;
+            c.a -= 0.1F;
+            faderImage.color = c;
+            yield return new WaitForSeconds(0.05F);
+        }
+    }
+
+
+
+
     public enum DialogueStyle
     {
         Remastered,
