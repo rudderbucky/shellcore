@@ -103,6 +103,7 @@ public class CameraScript : MonoBehaviour
 
     public void Focus(Vector3 pos)
     {
+        if (panning) return;
         Vector3 goalPos = pos; // update vector
         goalPos.z = -zLevel;
         transform.position = goalPos; // set position
