@@ -156,7 +156,7 @@ public class Variable : MonoBehaviour
         {
             var names = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames;
             var vals = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues;
-            key = variableName.Substring(3);
+            key = variableName.Substring(3).Trim();
             var index = names.IndexOf(key);
             if (index >= 0) vals[index] = variableValue;
             else
@@ -168,7 +168,7 @@ public class Variable : MonoBehaviour
         else if (variableName.StartsWith("$$"))
         {
             var dict = CoreScriptsManager.instance.globalVariables;
-            key = variableName.Substring(2);
+            key = variableName.Substring(2).Trim();
             if (dict.ContainsKey(key))
             {
                 dict[key] = variableValue;

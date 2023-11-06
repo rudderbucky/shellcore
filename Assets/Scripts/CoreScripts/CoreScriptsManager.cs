@@ -409,7 +409,18 @@ public class CoreScriptsManager : MonoBehaviour
 
             cnt++;
         }
-        if (skipToComma) cnt++;
+        if (skipToComma) 
+        {
+            cnt++;
+            while (cnt < scope.Length && scope[cnt] == ' ')
+            {
+                cnt++;
+            }
+            if (cnt < scope.Length && scope[cnt] == ')') 
+            {
+                return scope.Length;
+            }
+        }
         skipToComma = false;
 
 
