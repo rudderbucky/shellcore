@@ -17,14 +17,7 @@ MissionTrigger(
     entryPoint=Abandonment_entryPoint,
     prerequisites=(Truthful_Revelation_missionName),
     sequence=(
-        FinishCutscene(),
-        SetVariable(
-            name=$$$Loyalty_Variable,
-            value=1
-        ),
-        Call(Abandonment_finalizeJump),
-        Call(Abandonment_partyFollowPlayer),
-        DevConsole(command=poor),
+        Call(Abandonment_start),
     )
 )
 
