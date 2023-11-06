@@ -893,7 +893,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue(ID, false);
                 return;
             case Dialogue.DialogueAction.ForceToNextID:
-                next(dialogue, current.nextNodes[0], speaker);
+                next(dialogue, current.nextNodes[0], speaker, context);
                 return;
             case Dialogue.DialogueAction.Call:
                 var s = CoreScriptsManager.instance.GetFunction(current.functionID);
