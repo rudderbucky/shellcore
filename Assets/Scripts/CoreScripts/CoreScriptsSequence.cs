@@ -5,6 +5,7 @@ using static CoreScriptsCondition;
 using static CoreScriptsManager;
 using System.Linq;
 using System.Collections;
+using NodeEditorFramework.Standard;
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
@@ -48,7 +49,7 @@ public class CoreScriptsSequence : MonoBehaviour
         DeleteEntity,
         StartInflictionCosmetic,
         FinishInflictionCosmetic,
-
+        AddTask,
     }
     public struct Instruction
     {
@@ -201,6 +202,9 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.AddTask:
+                    StartTaskNode.RegisterTask(CoreScriptsManager.instance.GetTask(GetArgument(inst.arguments, "taskID")), context.missionName);
+                    break;
                 case InstructionCommand.AddObjectiveMarker: 
                     var sectorName = GetArgument(inst.arguments, "sectorName");
                     var missionName = context.missionName;
@@ -338,7 +342,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.FinishMission:
                     FinishMission(context, 
                         GetArgument(inst.arguments, "rewardsText"),
-                        GetArgument(inst.arguments, "jingleID"));
+                        GetArgument(inst.arguments, "soundID"));
                     break;
                 case InstructionCommand.SetFlagInteractibility:
                     flagName = GetArgument(inst.arguments, "flagName");
@@ -492,9 +496,13 @@ public class CoreScriptsSequence : MonoBehaviour
             CoreScriptsManager.OnVariableUpdate.Invoke("MissionStatus(");
         }
 
-        if (!string.IsNullOrEmpty(rewardsText) || !string.IsNullOrEmpty(jingleID))
+        if (!string.IsNullOrEmpty(rewardsText))
         {
             DialogueSystem.ShowMissionComplete(mission, rewardsText);
+        }
+
+        if (!string.IsNullOrEmpty(jingleID))
+        {
             AudioManager.OverrideMusicTemporarily(jingleID);
         }
 

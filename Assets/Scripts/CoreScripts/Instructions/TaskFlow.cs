@@ -10,7 +10,6 @@ public class TaskFlow : MonoBehaviour
     public static void FinishTask(Context context)
     {
         SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
-
         RewardPlayer(context.missionName);
         context.taskHash++;
     }

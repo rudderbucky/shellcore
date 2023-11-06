@@ -62,6 +62,15 @@ public class CoreScriptsManager : MonoBehaviour
         public ConditionBlock block;
     }
 
+    public Task GetTask(string taskID)
+    {
+        if (!tasks.ContainsKey(taskID))
+        {
+            Debug.LogError($"Task not found: {taskID}");
+        }
+        return tasks[taskID];
+    }
+
     private void Update()
     {
         while (RunDistanceChecks()) {}
