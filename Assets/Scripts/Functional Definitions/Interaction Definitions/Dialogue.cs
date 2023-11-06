@@ -50,6 +50,8 @@ public class Dialogue : ScriptableObject, IDialogueable
         [NonSerialized]
         public float typingSpeedFactor;
         [NonSerialized]
-        public bool useLocalMap;
+        public bool coreScriptsMode;
+        [NonSerialized]
+        public bool concealName;
     }
 }

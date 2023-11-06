@@ -63,13 +63,13 @@ public class Cutscene : MonoBehaviour
         }
     }
 
-    public static void FadeIntoBlack()
+    public static void FadeIntoBlack(Color color, float speedFactor)
     {
-        DialogueSystem.Instance.FadeInScreenBlack();
+        DialogueSystem.Instance.FadeInScreenBlack(color, speedFactor);
     }
 
-    public static void FadeOutOfBlack()
+    public static void FadeOutOfBlack(Color color, float speedFactor)
     {
-        DialogueSystem.Instance.FadeOutScreenBlack();
+        DialogueSystem.Instance.FadeOutScreenBlack(color, speedFactor);
     }
 }

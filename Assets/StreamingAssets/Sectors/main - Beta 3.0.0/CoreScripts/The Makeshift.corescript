@@ -1,0 +1,73 @@
+SectorTrigger(
+    sectorName=The Makeshift,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Makeshift_stage1,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Makeshift_yard,
+                        name=Yard,
+                        blueprintJSON=Yard,
+                        flagName=Abandonment_makeshiftYardSpawn
+                    ),
+                    SpawnEntity(
+                        entityID=Makeshift_upgrader,
+                        name=Core Upgrader,
+                        blueprintJSON=Core Upgrader,
+                        flagName=Abandonment_makeshiftUpgraderSpawn
+                    ),
+                    Call(Makeshift_addStationDialogue)
+                )
+            )
+        )
+    )
+)
+
+Text("Makeshift_yard_d1", "Greetings. The Architect has managed to link your Standard Sectors inventory to me for easy access.")
+Text("Makeshift_upgrader_d1", "Greetings. The Architect has linked me to the Standard Sectors upgrade system.")
+Text("Makeshift_yard_d2", "I would like to change my shell configuration.")
+Text("Makeshift_yard_d3", "On second thought, no thanks.")
+Text("Makeshift_upgrader_d2", "I want to upgrade my core.")
+
+Dialogue(
+    dialogueID=Makeshift_yard_d,
+    dialogueText=Makeshift_yard_d1,
+    entityID=Makeshift_yard,
+    responses=(
+        Response(
+            responseText=Makeshift_yard_d2,
+            next=Yard()
+        ),
+        Response(
+            responseText=Makeshift_yard_d3,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=Makeshift_upgrader_d,
+    dialogueText=Makeshift_upgrader_d1,
+    entityID=Makeshift_upgrader,
+    responses=(
+        Response(
+            responseText=Makeshift_upgrader_d2,
+            next=Upgrader()
+        ),
+        Response(
+            responseText=Makeshift_yard_d3,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=Makeshift_addStationDialogue,
+    sequence=(
+        SetInteraction(entityID=Makeshift_yard, dialogueID=Makeshift_yard_d),
+        SetInteraction(entityID=Makeshift_upgrader, dialogueID=Makeshift_upgrader_d),
+    )
+)

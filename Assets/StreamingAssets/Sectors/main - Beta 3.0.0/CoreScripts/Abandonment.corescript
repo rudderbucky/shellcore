@@ -19,12 +19,11 @@ MissionTrigger(
         FinishCutscene(),
         SetVariable(
             name=$$$Loyalty_Variable,
-            value=0
+            value=1
         ),
-        Call(Abandonment_spawnGreenParty),
+        Call(Abandonment_finalizeJump),
         Call(Abandonment_partyFollowPlayer),
         DevConsole(command=poor),
-        Call(Abandonment_shelterScoutStart)
     )
 )
 
@@ -185,7 +184,7 @@ Function(
                                                             Time(
                                                                 time=5,
                                                                 sequence=(
-                                                                    Call(Abandonment_postJump)
+                                                                    Call(Abandonment_finalizeJump)
                                                                 )
                                                             )
                                                         )
@@ -314,8 +313,12 @@ Dialogue(
 
 // Note: Loyalty = 0 means uninfected
 Function(
-    name=Abandonment_postJump,
+    name=Abandonment_finalizeJump,
     sequence=(
+        SetVariable(
+            name=$$$Makeshift_stage1,
+            value=0
+        ),
         ConditionBlock(
             Comparison(
                 val1=$$$Loyalty_Variable,
@@ -327,8 +330,8 @@ Function(
                         name=$$Abandonment_cs1_r2_var,
                         value=Abandonment_cs1_d4
                     ),
-                    WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
-                    StartCutscene()
+                    StartCutscene(),
+                    Call(Abandonment_jumpSectorWarp),
                 )
             ),
             Comparison(
@@ -341,9 +344,6 @@ Function(
                 )
             )
         ),
-
-
-        ForceStartDialogue(dialogueID=Abandonment_blueVoice)
     )
 )
 
@@ -351,25 +351,44 @@ Function(
     name=Abandonment_spawnGreenParty,
     sequence=(
         ClearParty(),
-        WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
-        SpawnEntity(
-            entityID=sukrat,
-            flagName=new-ep3-entry-flag
-        ),
-        SpawnEntity(
-            entityID=the-architect,
-            flagName=new-ep3-entry-flag
-        ),
-        AddPartyMember(
-            entityID=the-architect,
-        ),
-        AddPartyMember(
-            entityID=sukrat,
-        ),
         SetVariable(
             name=$$Abandonment_cs1_r2_var,
             value=Abandonment_cs1_d3
+        ),
+// Do not remove this warp, it needs to be before the spawns to Function
+        Call(Abandonment_jumpSectorWarp),
+        Wait(time=1),
+        SpawnEntity(
+            entityID=sukrat,
+            flagName=new-ep3-entry-flag
+        ),
+        SpawnEntity(
+            entityID=the-architect,
+            flagName=new-ep3-entry-flag
+        ),
+        AddPartyMember(
+            entityID=the-architect,
+        ),
+        AddPartyMember(
+            entityID=sukrat,
         )
+    )
+)
+
+Function(
+    name=Abandonment_jumpSectorWarp,
+    sequence=(
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
+        Wait(time=1),
+        WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
+        FadeOutOfBlack(
+            color=(255,255,255),
+            speedFactor=0.5,
+        ),
+        ForceStartDialogue(dialogueID=Abandonment_blueVoice)
     )
 )
 
@@ -473,6 +492,7 @@ Text("Abandonment_scoutStartArchitect_pd1", "See. Told you this is a void.")
 Text("Abandonment_scoutStartArchitect_pd2", "Oh would you pipe down? Let's try going the other way.")
 Text("Abandonment_scoutStartArchitect_pd3", "Looks like there's nothing here... I should try going the other way.")
 Text("Abandonment_scoutStartArchitect_pd4", "Wait... I'm picking up some kind of disturbance in this sector. I've marked it on the map.")
+Text("Abandonment_scoutStartArchitect_pd5", "Their... our leader mentioned there would be other traitors here. Maybe the other way?")
 //Sector 2600-6460 (nothing)
 //Sector 2220-6140 (DeadZone)
 //Sector 2220-6460 (meet Heracles)
@@ -492,18 +512,40 @@ Function(
                     RemoveObjectiveMarker(
                         ID=Abandonment_26006460marker
                     ),
-                    PassiveDialogue(
-                        entityID=the-architect,
-                        text=Abandonment_scoutStartArchitect_pd1
-                    ),
-                    PassiveDialogue(
-                        entityID=player,
-                        text=Abandonment_scoutStartArchitect_pd2
-                    ),
                     AddObjectiveMarker(
                         ID=Abandonment_22206460marker,
                         sectorName=Sector 2220-6460
                     ),
+                    
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                PassiveDialogue(
+                                    entityID=the-architect,
+                                    text=Abandonment_scoutStartArchitect_pd1
+                                ),
+                                PassiveDialogue(
+                                    entityID=player,
+                                    text=Abandonment_scoutStartArchitect_pd2
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                PassiveDialogue(
+                                    entityID=player,
+                                    text=Abandonment_scoutStartArchitect_pd5
+                                ),
+                            )
+                        )
+                    ),
+
                     ConditionBlock(
                         EnterSector(
                             sectorName=Sector 2220-6460,
@@ -535,25 +577,49 @@ Function(
                                             ),
                                             Rotate(
                                                 entityID=Abandonment_kraken,
-                                                targetID=player
-                                            ),
-                                            Wait(time=1),
-                                            Rotate(
-                                                entityID=the-architect, 
-                                                targetID=Abandonment_heraclesKraken,
+                                                targetID=player,
                                                 sequence=(
-                                                    StartCameraPan(
-                                                        flagName=Abandonment_heraclesKraken,
-                                                        velocityFactor=0.5,
-                                                        sequence=(    
-                                                            Call(Abandonment_krakenSpawnDialogue)
-                                                        )
+                                                    ConditionBlock(
+                                                        Comparison(
+                                                            val1=$$$Loyalty_Variable,
+                                                            val2=0,
+                                                            comp=Eq,
+                                                            sequence=()
+                                                        ),                                                                                               
+                                                        Comparison(
+                                                            val1=$$$Loyalty_Variable,
+                                                            val2=1,
+                                                            comp=Eq,
+                                                            sequence=(
+                                                                Rotate(
+                                                                    entityID=player, 
+                                                                    targetID=Abandonment_heraclesKraken,
+                                                                    sequence=(
+                                                                        Call(Abandonment_krakenCameraPan)
+                                                                    )
+                                                                )
+                                                            )
+                                                        ),
                                                     )
                                                 )
                                             ),
-                                            Rotate(entityID=sukrat, targetID=Abandonment_heraclesKraken),
-                                            Rotate(entityID=player, targetID=Abandonment_heraclesKraken)
-
+                                            ConditionBlock(
+                                                Comparison(
+                                                    val1=$$$Loyalty_Variable,
+                                                    val2=0,
+                                                    comp=Eq,
+                                                    sequence=(
+                                                        Call(Abandonment_krakenCameraPanPartyRotate)
+                                                    )
+                                                ),                                                                                               
+                                                Comparison(
+                                                    val1=$$$Loyalty_Variable,
+                                                    val2=1,
+                                                    comp=Eq,
+                                                    sequence=(
+                                                    )
+                                                ),
+                                            )                                            
                                         )
                                     )
                                 )
@@ -561,6 +627,35 @@ Function(
                         )
                     )
                 )
+            )
+        )
+    )
+)
+
+Function(
+    name=Abandonment_krakenCameraPanPartyRotate,
+    sequence=(
+        Wait(time=1),
+        Rotate(
+            entityID=the-architect, 
+            targetID=Abandonment_heraclesKraken,
+            sequence=(
+                Call(Abandonment_krakenCameraPan)
+            )
+        ),
+        Rotate(entityID=sukrat, targetID=Abandonment_heraclesKraken),
+        Rotate(entityID=player, targetID=Abandonment_heraclesKraken)
+    )
+)
+
+Function(
+    name=Abandonment_krakenCameraPan,
+    sequence=(
+        StartCameraPan(
+            flagName=Abandonment_heraclesKraken,
+            velocityFactor=0.5,
+            sequence=(    
+                Call(Abandonment_krakenSpawnDialogue)
             )
         )
     )
@@ -591,6 +686,17 @@ SectorTrigger(
             blueprintJSON=Nanoscope,
             flagName=Abandonment_heraclesNanoscope_2
         ),
+        SpawnEntity
+        (
+            entityID=Abandonment_nanoscope_3,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Abandonment_heraclesNanoscope_4
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_3,
+            targetID=Abandonment_heraclesJumpFlag,
+        ),
         Rotate(
             entityID=Abandonment_nanoscope,
             targetID=Abandonment_heraclesJumpFlag,
@@ -609,47 +715,220 @@ SectorTrigger(
 
 Text("Abandonment_postKrakenSpawn_pd1", "What in the world is that?")
 Text("Abandonment_postKrakenSpawn_pd2", "No idea myself.")
-Text("Abandonment_postKrakenSpawn_pd3", "It doesn't seem to like us. We should run.")
-Text("Abandonment_postKrakenSpawn_pd4", "AAAAHHH! OH DEAR GET AWAY FROM US!")
+Text("Abandonment_postKrakenSpawn_pd3", "It doesn't seem to like us. We should dash.")
+Text("Abandonment_postKrakenSpawn_pd5", "I can't move! It's over.")
+Text("Abandonment_postKrakenSpawn_pd6", "Whatever this thing is, it seems like the end of the road.")
+Text("Abandonment_postKrakenSpawn_pd7", "Well I guess this is one way to cure my infection.")
 Function(
     name=Abandonment_krakenSpawnDialogue,
     sequence=(
-        PassiveDialogue(
-            entityID=the-architect,
-            text=Abandonment_postKrakenSpawn_pd1
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    PassiveDialogue(
+                        entityID=the-architect,
+                        text=Abandonment_postKrakenSpawn_pd1
+                    ),
+                    PassiveDialogue(
+                        entityID=player,
+                        text=Abandonment_postKrakenSpawn_pd2
+                    ),
+                    PassiveDialogue(
+                        entityID=the-architect,
+                        text=Abandonment_postKrakenSpawn_pd3
+                    ),
+                    Wait(time=12),
+                    Call(Abandonment_krakenSpawnDialogue_2)
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Wait(time=0.5),
+                    PassiveDialogue(
+                        entityID=player,
+                        text=Abandonment_postKrakenSpawn_pd7
+                    ),
+                    Wait(time=4),
+                    Call(Abandonment_krakenSpawnDialogue_2)
+                )
+            ),
+        )
+    )
+)
+
+Function(
+    name=Abandonment_reallyAnnoyingPDSetup,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_postKrakenSpawn_raceCond,
+                        value=3
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_postKrakenSpawn_raceCond,
+                        value=1
+                    )
+                )
+            ),
         ),
-        PassiveDialogue(
-            entityID=player,
-            text=Abandonment_postKrakenSpawn_pd2
-        ),
-        PassiveDialogue(
-            entityID=the-architect,
-            text=Abandonment_postKrakenSpawn_pd3
-        ),
-        Wait(time=12),
+    )
+)
+
+Function(
+    name=Abandonment_krakenSpawnDialogue_2,
+    sequence=(
         SetPath(
             entityID=Abandonment_kraken,
             flagName=Abandonment_heraclesJumpFlag
         ),
-        PassiveDialogue(
-            entityID=sukrat,
-            text=Abandonment_postKrakenSpawn_pd4
-        ),
+
+        Call(Abandonment_reallyAnnoyingPDSetup),
         Wait(time=1),
-        EndCameraPan(),
+        FinishCameraPan(),
+// set the path back after camera isn't on screen to eliminate race conditions
         SetPath(
-            entityID=sukrat,
-            flagName=Abandonment_heraclesKraken-1
+            entityID=Abandonment_kraken,
+            flagName=Abandonment_heraclesKraken
         ),
-        SetPath(
-            entityID=the-architect,
-            flagName=Abandonment_heraclesKraken-3
+        SetVariable(
+            name=$$Abandonment_raceCondition,
+            value=0
         ),
+
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetPath(
+                        entityID=sukrat,
+                        flagName=Abandonment_heraclesKraken-1,
+                        sequence=(
+                            AddIntValues(
+                                val1=$$Abandonment_raceCondition,
+                                val2=1,
+                                name=$$Abandonment_raceCondition
+                            ),
+                            StartInflictionCosmetic(
+                                entityID=sukrat,
+                                type=PinDown
+                            )
+                        )
+                    ),
+                    SetPath(
+                        entityID=the-architect,
+                        flagName=Abandonment_heraclesKraken-3,
+                        sequence=(
+                            AddIntValues(
+                                val1=$$Abandonment_raceCondition,
+                                val2=1,
+                                name=$$Abandonment_raceCondition
+                            ),
+                            StartInflictionCosmetic(
+                                entityID=the-architect,
+                                type=PinDown
+                            )
+                        )
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+        ),
+
         SetPath(
             entityID=player,
-            flagName=Abandonment_heraclesKraken-2
+            flagName=Abandonment_heraclesKraken-2,
+            sequence=(
+                AddIntValues(
+                    val1=$$Abandonment_raceCondition,
+                    val2=1,
+                    name=$$Abandonment_raceCondition
+                ),
+                PassiveDialogue(
+                    entityID=player,
+                    text=Abandonment_postKrakenSpawn_pd5
+                ),
+                StartInflictionCosmetic(
+                    entityID=player,
+                    type=PinDown
+                )
+            )
         ),
-        Wait(time=6),
+        ConditionBlock(
+            Comparison(
+                val1=$$Abandonment_raceCondition,
+                val2=$$Abandonment_postKrakenSpawn_raceCond,
+                comp=Eq,
+                sequence=(
+                    Call(Abandonment_heraclesSpawnAndTractor)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Abandonment_heraclesSpawnAndTractor,
+    sequence=(
+// set the path back after camera isn't on screen to eliminate race conditions
+        SetPath(
+            entityID=Abandonment_kraken,
+            flagName=Abandonment_heraclesJumpFlag
+        ),
+        Wait(time=5.75),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=PinDown,
+        ),
+
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    FinishInflictionCosmetic(
+                        entityID=sukrat,
+                        type=PinDown,
+                    ),
+                    FinishInflictionCosmetic(
+                        entityID=the-architect,
+                        type=PinDown,
+                    ),
+                ),
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+        ),
+
         SpawnEntity
         (
             entityID=heracles,
@@ -670,6 +949,10 @@ Function(
             entityID=Abandonment_nanoscope_2,
             targetEntityID=Abandonment_kraken
         ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope_3,
+            targetEntityID=Abandonment_kraken
+        ),
         Call(Abandonment_postKrakenTractor)
     )
 )
@@ -678,9 +961,35 @@ Text("Abandonment_postKrakenTractor_pd1", "Wait... what just happened?")
 Function(
     name=Abandonment_postKrakenTractor,
     sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_postkrakenTractor_pd_entityID,
+                        value=sukrat
+                    ), 
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_postkrakenTractor_pd_entityID,
+                        value=player
+                    ),
+                )
+            ),
+        ),
+
+
         Wait(time=1),
         PassiveDialogue(
-            entityID=sukrat,
+            entityID=$$Abandonment_postkrakenTractor_pd_entityID,
             text=Abandonment_postKrakenTractor_pd1
         ),
         Wait(time=1),
@@ -730,9 +1039,9 @@ Text("Abandonment_postHeraclesReveal_d1", "Oh no! Another one!")
 Text("Abandonment_postHeraclesReveal_d2", "Wait, this one kind of looks like us. An ally?")
 Text("Abandonment_postHeraclesReveal_d3", "Perhaps, but it depends.")
 Text("Abandonment_postHeraclesReveal_d4", "On what?")
-Text("Abandonment_postHeraclesReveal_d5", "Are you willing to abandon your reality? I’m afraid you… we’ve been… deceived.")
+Text("Abandonment_postHeraclesReveal_d5", "Are you willing to abandon your reality? I’m afraid you... we’ve been... deceived.")
 Text("Abandonment_postHeraclesReveal_d6", "What’s that supposed to mean?")
-Text("Abandonment_postHeraclesReveal_d7", "The “war” doesn’t exist here. At least not in the form you’re aware of. Neither does the “infection”. Only… abandonment remains.")
+Text("Abandonment_postHeraclesReveal_d7", "The “war” doesn’t exist here. At least not in the form you’re aware of. Neither does the “infection”. Only... abandonment remains.")
 Text("Abandonment_postHeraclesReveal_d8", "This can’t be!")
 Text("Abandonment_postHeraclesReveal_d9", "You aren’t willing to abandon your reality yet. Jump through the gate if you don’t want to be vivisected for parts by the defects.")
 Text("Abandonment_postHeraclesReveal_d10", "...")
@@ -740,7 +1049,7 @@ Text("Abandonment_postHeraclesReveal_d11", "You lie! Eat bullets!")
 Text("Abandonment_postHeraclesReveal_d12", "Please reconsider. We’ve harnessed the power of the Tractor Beam. You’ll be imprisoned like the defects we protect you from.")
 Text("Abandonment_postHeraclesReveal_d13", "You’re talking crazy!")
 Text("Abandonment_postHeraclesReveal_d14", "And you aren’t willing to abandon your reality yet. Jump through the gate if you don’t want to be dissected for parts by the defects.")
-Text("Abandonment_postHeraclesReveal_d15", "…yes.")
+Text("Abandonment_postHeraclesReveal_d15", "...yes.")
 Text("Abandonment_postHeraclesReveal_d16", "Interesting. Most of you new entrants cannot comprehend the idea of something larger than the story our leader told us. Let me tell you — we are not writing that story. Jump through the gate.")
 Text("Abandonment_postHeraclesReveal_d17", "We need to get out of here!")
 Text("Abandonment_postHeraclesReveal_d18", "Reconsider fleeing without my company unless you want to be disassembled involuntarily by the defects. It is safe on the other side of this gate.")
@@ -753,7 +1062,8 @@ Dialogue(
         Response(
             responseText=Abandonment_postHeraclesReveal_d2,
             next=Dialogue(
-                entityID=heracles,  
+                entityID=heracles,
+                concealName=true,
                 dialogueText=Abandonment_postHeraclesReveal_d3,
                 responses=(
                     Response(
@@ -827,6 +1137,7 @@ Dialogue(
             responseText=Abandonment_postHeraclesReveal_d17,
             next=Dialogue(
                 entityID=heracles,
+                concealName=true,
                 dialogueText=Abandonment_postHeraclesReveal_d18,
                 responses=(
                     Response(
@@ -836,14 +1147,77 @@ Dialogue(
                 )
             )
         ),
+    )
+)
 
+
+Text("Abandonment_postHeraclesReveal_d19", "Hello, I'm afraid you have been cast away to rot for eternity.")
+Text("Abandonment_postHeraclesReveal_d20", "What?")
+Text("Abandonment_postHeraclesReveal_d21", "Are you willing to abandon your reality? I’m afraid you... we’ve been... deceived.")
+Text("Abandonment_postHeraclesReveal_d22", "You lie! I am here to cure our infection!")
+Text("Abandonment_postHeraclesReveal_d23", "I see you decided to join your enemies... too bad they're not much better.")
+Text("Abandonment_postHeraclesReveal_d24", "Eat bullets!")
+Text("Abandonment_postHeraclesReveal_d25", "Do you really want to try that? I just captured this behemoth. Jump through the gate instead.")
+Text("Abandonment_postHeraclesReveal_d26", "...")
+
+Dialogue(
+    dialogueID=Abandonment_postHeraclesReveal_d_traitor,
+    entityID=heracles,
+    concealName=true,
+    dialogueText=Abandonment_postHeraclesReveal_d19,
+    responses=(
+        Response(
+            responseText=Abandonment_postHeraclesReveal_d20,
+            next=Dialogue(
+                dialogueText=Abandonment_postHeraclesReveal_d21,
+                responses=(
+                    Response(
+                        responseText=Abandonment_postHeraclesReveal_d22,
+                        next=Dialogue(
+                            dialogueText=Abandonment_postHeraclesReveal_d23,
+                            responses=(
+                                Response(
+                                    responseText=Abandonment_postHeraclesReveal_d24,
+                                    next=Dialogue(
+                                        dialogueText=Abandonment_postHeraclesReveal_d25,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_postHeraclesReveal_d26,
+                                                next=Call(Abandonment_postHeraclesDialogue)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                )
+            )
+        )
     )
 )
 
 Function(
     name=Abandonment_postHeraclesReveal,
     sequence=(
-        ForceStartDialogue(dialogueID=Abandonment_postHeraclesReveal_d)
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    ForceStartDialogue(dialogueID=Abandonment_postHeraclesReveal_d)
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    ForceStartDialogue(dialogueID=Abandonment_postHeraclesReveal_d_traitor)
+                )
+            ),
+        )
     )
 )
 
@@ -854,9 +1228,10 @@ Text("Abandonment_postHeraclesDialogue_d3", "Yes. You may think I’m talking ab
 Text("Abandonment_postHeraclesDialogue_d4", "Okay...")
 Text("Abandonment_postHeraclesDialogue_d5", "Yes. I’m sure they’ll all show up to proselytize their dogma as we will. You can make a decision then. Now please go.")
 Text("Abandonment_postHeraclesDialogue_d6", "What if I don’t?")
-Text("Abandonment_postHeraclesDialogue_d7", "You must understand the forces at power in these sectors are unlike what you could comprehend in Standardness. You will just have to trust me when I say I am providing you a great charity. Now go.")
+Text("Abandonment_postHeraclesDialogue_d7", "You must understand the forces in power in these sectors are unlike what you could comprehend in Standardness. You will just have to trust me when I say I am providing you a great charity. Now go.")
 Text("Abandonment_postHeraclesDialogue_d8", "I agree with this bizarre core! Let’s bolt!")
 Text("Abandonment_postHeraclesDialogue_d9", "...")
+Text("Abandonment_postHeraclesDialogue_d10", "Besides... you're all alone. You'll definitely need company to survive out here.")
 
 Dialogue(
     dialogueID=Abandonment_postHeraclesDialogue_d,
@@ -883,8 +1258,8 @@ Dialogue(
                     Response(
                         responseText=Abandonment_postHeraclesDialogue_d9,
                         next=Dialogue(
-                            entityID=sukrat,
-                            dialogueText=Abandonment_postHeraclesDialogue_d8,
+                            entityID=$$Abandonment_postHeraclesDialogue_d_entityID,
+                            dialogueText=$$Abandonment_postHeraclesDialogue_d_dialogueText,
                             responses=(
                                 Response(
                                     responseText=Abandonment_postHeraclesDialogue_d9,
@@ -902,6 +1277,41 @@ Dialogue(
 Function(
     name=Abandonment_postHeraclesDialogue,
     sequence=(
+        
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_postHeraclesDialogue_d_entityID,
+                        value=sukrat
+                    ),
+                    SetVariable(
+                        name=$$Abandonment_postHeraclesDialogue_d_dialogueText,
+                        value=Abandonment_postHeraclesDialogue_d8
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_postHeraclesDialogue_d_entityID,
+                        value=heracles
+                    ),
+                    SetVariable(
+                        name=$$Abandonment_postHeraclesDialogue_d_dialogueText,
+                        value=Abandonment_postHeraclesDialogue_d10
+                    ),
+                )
+            ),
+        ),
+
+
         SetPath(
             entityID=heracles,
             flagName=Abandonment_heraclesJumpFlag,
@@ -920,7 +1330,7 @@ Function(
 // this happens before the pan to Heracles and ends the pan on the Kraken. Weird but the easiest way to do it.
 
         Wait(time=0.5),
-        EndCameraPan()
+        FinishCameraPan()
     )
 )
 
@@ -953,22 +1363,61 @@ Function(
                             entityID=heracles,
                             text=Abandonment_kappaJump_pd1,
                         ),
-                        PassiveDialogue(
-                            entityID=the-architect,
-                            text=Abandonment_kappaJump_pd2,
+                        ConditionBlock(
+                            Comparison(
+                                val1=$$$Loyalty_Variable,
+                                val2=0,
+                                comp=Eq,
+                                sequence=(
+                                    PassiveDialogue(
+                                        entityID=the-architect,
+                                        text=Abandonment_kappaJump_pd2,
+                                    ),
+                                )
+                            ),
+                            Comparison(
+                                val1=$$$Loyalty_Variable,
+                                val2=1,
+                                comp=Eq,
+                                sequence=()
+                            ),
                         ),
                         Wait(time=6),
+                        FadeIntoBlack(
+                            color=(255,255,255),
+                            speedFactor=2,
+                        ),
+                        Wait(time=1),
                         WarpPlayer(flagName=real-exit-jump-gate-flag, sectorName=Kappa Outskirts 1SE),
-                        EndCameraPan(),
-                        SpawnEntity(
-                            entityID=sukrat,
-                            flagName=real-exit-jump-gate-flag
+                        FadeOutOfBlack(
+                            color=(255,255,255),
+                            speedFactor=0.5,
                         ),
-                        SpawnEntity(
-                            entityID=the-architect,
-                            flagName=real-exit-jump-gate-flag
+                        FinishCameraPan(),
+                        ConditionBlock(
+                            Comparison(
+                                val1=$$$Loyalty_Variable,
+                                val2=0,
+                                comp=Eq,
+                                sequence=(
+                                    SpawnEntity(
+                                        entityID=sukrat,
+                                        flagName=real-exit-jump-gate-flag
+                                    ),
+                                    SpawnEntity(
+                                        entityID=the-architect,
+                                        flagName=real-exit-jump-gate-flag
+                                    ),
+                                    Call(Abandonment_partyFollowPlayer),
+                                )
+                            ),
+                            Comparison(
+                                val1=$$$Loyalty_Variable,
+                                val2=1,
+                                comp=Eq,
+                                sequence=()
+                            ),
                         ),
-                        Call(Abandonment_partyFollowPlayer),
                         Call(Abandonment_makeshift)
                     )
                 )
@@ -982,15 +1431,28 @@ Text("Abandonment_kappaJump_d1", "Well, this is as good a place as any to set up
 Text("Abandonment_kappaJump_d2", "Yeah...")
 Text("Abandonment_kappaJump_d3", "Are we gonna talk about what just happened? This is not exactly what I expected coming here.")
 Text("Abandonment_kappaJump_d4", "What isn’t?")
-Text("Abandonment_kappaJump_d5", "The emptiness is… crushing. And we’re stuck with all sorts of things we weren’t told about. Things… aren’t as they seemed to me…")
+Text("Abandonment_kappaJump_d5", "The emptiness is... crushing. And we’re stuck with all sorts of things we weren’t told about. Things... aren’t as they seemed to me...")
 Text("Abandonment_kappaJump_d6", "...")
 Text("Abandonment_kappaJump_d7", "If that off-color Uninfected core is right, I’m afraid our leader hasn’t been giving us the whole picture.")
 Text("Abandonment_kappaJump_d8", "What do you think about that?")
-Text("Abandonment_kappaJump_d9", "I’m… kind of happy. This means there’s one less core to obey in my pursuit of the truths in this world.")
+Text("Abandonment_kappaJump_d9", "I’m... kind of happy. This means there’s one less core to obey in my pursuit of the truths in this world.")
 Text("Abandonment_kappaJump_d10", "What do we do now?")
-Text("Abandonment_kappaJump_d11", "I can help build a station here for the three of us. We probably shouldn’t be wandering far from here, but I think we can trust Heracles that it’s safe enough outside here.")
+Text("Abandonment_kappaJump_d11", "I can help build a station here for the three of us. I think we can trust Heracles that it’s safe enough, wherever we are now.")
 Text("Abandonment_kappaJump_d12", "With what? There is nothing here to modify.")
 Text("Abandonment_kappaJump_d13", "Do you not see them? The husks. I’m going to try switching them on.")
+
+
+Text("Abandonment_kappaJump_d14", "Mostly done for now. Let’s call our new home — The Makeshift. There’s a lot more science to do here too. Come talk to me whenever you want to discuss more.")
+Text("Abandonment_kappaJump_d15", "Awesome!")
+Text("Abandonment_kappaJump_d16", "This is just... the worst.")
+Text("Abandonment_kappaJump_d17", "We need to find Aristu.")
+Text("Abandonment_kappaJump_d18", "Right. They’ll probably know a bit more about what’s going on. That’s next on the agenda.")
+Text("Abandonment_kappaJump_d19", "Sounds good.")
+Text("Abandonment_kappaJump_d20", "It really is.")
+Text("Abandonment_kappaJump_d21", "I think we should find Aristu next. They’ll know more about this place.")
+Text("Abandonment_kappaJump_d22", "Okay.")
+
+Text("Abandonment_kappaJump_pd4", "I'm picking up some familiar signals in the sector on the left...")
 
 Dialogue(
     dialogueID=Abandonment_kappaJump_d,
@@ -1059,47 +1521,255 @@ Dialogue(
     )
 )
 
+Text("Abandonment_kappaJump_d23", "It’s you! Why did you abandon us...")
+Text("Abandonment_kappaJump_d24", "I believe we are infected.")
+Text("Abandonment_kappaJump_d25", "Just because the other leader said so? You were convinced to forsake all the time we fought together? It’s unbelievable...")
+Text("Abandonment_kappaJump_d26", "I didn’t like our society.")
+Text("Abandonment_kappaJump_d27", "So you went and joined those who were ripping our society apart? That’s crazy...")
+Text("Abandonment_kappaJump_d28", "I felt like it.")
+Text("Abandonment_kappaJump_d29", "Wow. I don’t even know what to say...")
+Text("Abandonment_kappaJump_d30", "I’m... surprised to see you again, but not disappointed. Sukrat and I made this hideout together. We’re calling it The Makeshift. You’re welcome to join us here whenever. After all, it appears there’s a lot out there we still need to figure out — perhaps together.")
+Text("Abandonment_kappaJump_d31", "Thank you.")
+Text("Abandonment_kappaJump_d32", "I... sure... whatever...")
+Text("Abandonment_kappaJump_d33", "I’m sorry for committing treason.")
+Text("Abandonment_kappaJump_d34", "You know, Aristu committed treason too. But they didn’t just leave us in the dark about what their plans were, did they?")
+Text("Abandonment_kappaJump_d35", "...")
+Text("Abandonment_kappaJump_d36", "I’m not sorry for what I did.")
+Text("Abandonment_kappaJump_d37", "I don’t really know what to say... I guess I thought the three of us were closer than we really were.")
+
+Dialogue(
+    dialogueID=Abandonment_kappaJump_d_traitor,
+    entityID=sukrat,
+    dialogueText=Abandonment_kappaJump_d23,
+    responses=(
+        Response(
+            responseText=Abandonment_kappaJump_d24,
+            next=Dialogue(
+                dialogueText=Abandonment_kappaJump_d25,
+                responses=(
+                    Response(
+                        responseText=Abandonment_kappaJump_d35,
+                        next=Dialogue(
+                            nodeID=1,
+                            entityID=the-architect,
+                            dialogueText=Abandonment_kappaJump_d30,
+                            responses=(
+                                Response(
+                                    responseText=Abandonment_kappaJump_d31,
+                                    next=Dialogue(
+                                        entityID=sukrat,
+                                        dialogueText=Abandonment_kappaJump_d32,
+                                        responses=(
+                                            Response(
+                                                responseText=Abandonment_kappaJump_d33,
+                                                next=Dialogue(
+                                                    dialogueText=Abandonment_kappaJump_d34,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Abandonment_kappaJump_d35,
+                                                            next=Call(Abandonment_end)
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                            Response(
+                                                responseText=Abandonment_kappaJump_d36,
+                                                next=Dialogue(
+                                                    dialogueText=Abandonment_kappaJump_d37,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Abandonment_kappaJump_d35,
+                                                            next=Call(Abandonment_end)
+                                                        )
+                                                    )
+                                                )
+                                            ),
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=Abandonment_kappaJump_d26,
+            next=Dialogue(
+                dialogueText=Abandonment_kappaJump_d27,
+                responses=(
+                    Response(
+                        responseText=Abandonment_kappaJump_d35,
+                        next=SetID(1)
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=Abandonment_kappaJump_d28,
+            next=Dialogue(
+                dialogueText=Abandonment_kappaJump_d29,
+                responses=(
+                    Response(
+                        responseText=Abandonment_kappaJump_d35,
+                        next=SetID(1)
+                    )
+                )
+            )
+        ),
+    )
+)
+
+
 Function(
     name=Abandonment_makeshift,
     sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_makeshift_pd_entityID,
+                        value=the-architect
+                    ),
+                    SetVariable(
+                        name=$$Abandonment_makeshift_pd_text,
+                        value=Abandonment_kappaJump_pd3
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_makeshift_pd_entityID,
+                        value=player
+                    ),
+                    SetVariable(
+                        name=$$Abandonment_makeshift_pd_text,
+                        value=Abandonment_kappaJump_pd4
+                    ),
+                )
+            ),
+        ),
+
+        Wait(time=3),
+        PassiveDialogue(entityID=$$Abandonment_makeshift_pd_entityID, text=$$Abandonment_makeshift_pd_text),
         FinishCutscene(),
         ConditionBlock(
             EnterSector(
                 sectorName=The Makeshift,
                 sequence=(
                     StartCutscene(),
-                    SetPath(
-                        entityID=the-architect,
-                        flagName=Abandonment_makeshift_cs2
-                    ),
-                    SetPath(
-                        entityID=sukrat,
-                        flagName=Abandonment_makeshift_cs3
-                    ),
-                    SetPath(
-                        entityID=player,
-                        flagName=Abandonment_makeshift_cs1,
-                        sequence=(
-                            ForceStartDialogue(dialogueID=Abandonment_kappaJump_d)
-                        )
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                SpawnEntity(
+                                    assetID=partparticles,
+                                    entityID=Abandonment_part_particles1,
+                                    flagName=Abandonment_partParticles1,
+                                ),
+                                SpawnEntity(
+                                    assetID=partparticles,
+                                    entityID=Abandonment_part_particles2,
+                                    flagName=Abandonment_partParticles2,
+                                ),
+                                SpawnEntity(
+                                    assetID=partparticles,
+                                    entityID=Abandonment_part_particles3,
+                                    flagName=Abandonment_partParticles3,
+                                ),
+                                SpawnEntity(
+                                    assetID=partparticles,
+                                    entityID=Abandonment_part_particles4,
+                                    flagName=Abandonment_partParticles4,
+                                ),
+                                SpawnEntity(
+                                    assetID=partparticles,
+                                    entityID=Abandonment_part_particles5,
+                                    flagName=Abandonment_partParticles5,
+                                ),
+                                SpawnEntity(
+                                    assetID=partparticles,
+                                    entityID=Abandonment_part_particles6,
+                                    flagName=Abandonment_partParticles6,
+                                ),
+                                SetPath(
+                                    entityID=the-architect,
+                                    flagName=Abandonment_makeshift_cs2
+                                ),
+                                SetPath(
+                                    entityID=sukrat,
+                                    flagName=Abandonment_makeshift_cs3
+                                ),
+                                SetPath(
+                                    entityID=player,
+                                    flagName=Abandonment_makeshift_cs1,
+                                    sequence=(
+                                        ForceStartDialogue(dialogueID=Abandonment_kappaJump_d)
+                                    )
+                                ),
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                SetVariable(
+                                    name=$$$Makeshift_stage1,
+                                    value=1
+                                ),
+                                SpawnEntity(
+                                    entityID=the-architect,
+                                    flagName=Abandonment_makeshiftYardSpawn
+                                ),
+                                SpawnEntity(
+                                    entityID=sukrat,
+                                    flagName=Abandonment_makeshiftYardSpawn
+                                ),
+                                SetPath(
+                                    entityID=the-architect,
+                                    flagName=Abandonment_makeshift_cs2,
+                                    sequence=(
+                                        Rotate(
+                                            entityID=the-architect,
+                                            targetID=player
+                                        )
+                                    )
+                                ),
+                                SetPath(
+                                    entityID=sukrat,
+                                    flagName=Abandonment_makeshift_cs3,
+                                    sequence=(
+                                        Rotate(
+                                            entityID=the-architect,
+                                            targetID=player,
+                                            sequence=(    
+                                                ForceStartDialogue(dialogueID=Abandonment_kappaJump_d_traitor)
+                                            )
+                                        )
+                                    )
+                                ),
+                                SetPath(
+                                    entityID=player,
+                                    flagName=Abandonment_makeshift_cs1
+                                )
+                            )
+                        ),
                     ),
                 )
             )
         ),
-        Wait(time=0.5),
-        PassiveDialogue(entityID=the-architect, text=Abandonment_kappaJump_pd3),
     )
 )
-
-Text("Abandonment_kappaJump_d14", "Mostly done for now. Let’s call our new home — The Makeshift. There’s a lot more science to do here too. Come talk to me whenever you want to discuss more.")
-Text("Abandonment_kappaJump_d15", "Awesome!")
-Text("Abandonment_kappaJump_d16", "This is just… the worst.")
-Text("Abandonment_kappaJump_d17", "We need to find Aristu.")
-Text("Abandonment_kappaJump_d18", "Right. They’ll probably know a bit more about what’s going on. That’s next on the agenda.")
-Text("Abandonment_kappaJump_d19", "Sounds good.")
-Text("Abandonment_kappaJump_d20", "It really is.")
-Text("Abandonment_kappaJump_d21", "I think we should find Aristu next. They’ll know more about this place.")
-Text("Abandonment_kappaJump_d22", "Okay.")
 
 Dialogue(
     dialogueID=Abandonment_postMakeshiftCreation_d,
@@ -1118,6 +1788,29 @@ Function(
     sequence=(
         FadeIntoBlack(),
         Wait(time=2),
+        DeleteEntity(
+            entityID=Abandonment_part_particles1,
+        ),
+        DeleteEntity(
+            entityID=Abandonment_part_particles2,
+        ),
+        DeleteEntity(
+            entityID=Abandonment_part_particles3,
+        ),
+        DeleteEntity(
+            entityID=Abandonment_part_particles4,
+        ),
+        DeleteEntity(
+            entityID=Abandonment_part_particles5,
+        ),
+        DeleteEntity(
+            entityID=Abandonment_part_particles6,
+        ),
+        SetVariable(
+            name=$$$Makeshift_stage1,
+            value=1
+        ),
+        Wait(time=0.5),
         FadeOutOfBlack(),
         Wait(time=1),
         ForceStartDialogue(dialogueID=Abandonment_postMakeshiftCreation_d)
@@ -1167,6 +1860,6 @@ Function(
 Function(
     name=Abandonment_end,
     sequence=(
-        FinishCutscene()
+        FinishCutscene(),
     )
 )

@@ -63,7 +63,8 @@ public class CoreScriptsCondition : MonoBehaviour
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
-            block.conditions.Add(ParseCondition(i, line, condIndex, blocks));
+            var condition = ParseCondition(i, line, condIndex, blocks);
+            block.conditions.Add(condition);
             condIndex++;
         }
         return block;

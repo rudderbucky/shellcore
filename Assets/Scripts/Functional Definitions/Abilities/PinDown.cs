@@ -8,7 +8,7 @@ public class PinDown : ActiveAbility
     Craft target;
     const float range = 15f;
     float rangeSquared = range * range;
-    private static float PINDOWN_ACTIVE_DURATION = 5f;
+    private static readonly float PINDOWN_ACTIVE_DURATION = 5f;
 
     public override float GetRange()
     {
@@ -42,7 +42,7 @@ public class PinDown : ActiveAbility
 
 
     private static GameObject missileLinePrefab;
-    public static void InflictionCosmetic(Entity entity, int coreFaction = 0)
+    public static void InflictionCosmetic(Entity entity, int coreFaction = 0, bool destroy = true)
     {
         if (!missileLinePrefab)
         {
@@ -59,7 +59,7 @@ public class PinDown : ActiveAbility
             var x = Instantiate(missileLinePrefab, part.transform); // instantiate
             x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
             x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
-            Destroy(x, PINDOWN_ACTIVE_DURATION);
+            if (destroy) Destroy(x, PINDOWN_ACTIVE_DURATION);
         }
     }
     /// <summary>

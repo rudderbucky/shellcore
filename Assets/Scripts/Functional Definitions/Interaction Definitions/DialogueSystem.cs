@@ -47,33 +47,37 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     BattleZoneManager battleZoneManager;
 
     public Image faderImage;
-    public void FadeInScreenBlack()
+    public void FadeInScreenBlack(Color color, float speedFactor)
     {
-        StartCoroutine(FadeInScreenBlackCo());
+        StartCoroutine(FadeInScreenBlackCo(color, speedFactor));
     }
-    private IEnumerator FadeInScreenBlackCo()
+    private IEnumerator FadeInScreenBlackCo(Color color, float speedFactor)
     {
+        color.a = 0;
+        faderImage.color = color;
         while (faderImage.color.a < 1)
         {
             var c = faderImage.color;
             c.a += 0.1F;
             faderImage.color = c;
-            yield return new WaitForSeconds(0.05F);
+            yield return new WaitForSeconds(0.05F / speedFactor);
         }
     }
 
-    public void FadeOutScreenBlack()
+    public void FadeOutScreenBlack(Color color, float speedFactor)
     {
-        StartCoroutine(FadeOutScreenBlackCo());
+        StartCoroutine(FadeOutScreenBlackCo(color, speedFactor));
     }
-    private IEnumerator FadeOutScreenBlackCo()
+    private IEnumerator FadeOutScreenBlackCo(Color color, float speedFactor)
     {
+        color.a = 1;
+        faderImage.color = color;
         while (faderImage.color.a > 0)
         {
             var c = faderImage.color;
             c.a -= 0.1F;
             faderImage.color = c;
-            yield return new WaitForSeconds(0.05F);
+            yield return new WaitForSeconds(0.05F / speedFactor);
         }
     }
 
@@ -759,10 +763,18 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
 
+
+
         DialogueViewTransitionIn(speaker as Entity);
 
         background = window.transform.Find("Background").GetComponent<RectTransform>();
-        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
+        var exit = background.transform.Find("Exit");
+        exit.GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
+        if (isInCutscene)
+        {
+            exit.gameObject.SetActive(false);
+        }
+
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
@@ -899,7 +911,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         if (current.forceSpeakerChange)
         {
-            speaker = AIData.entities.Find(x => x.ID == current.speakerID);
+            var speakerID = current.speakerID;
+            if (current.coreScriptsMode) speakerID = CoreScriptsSequence.VariableSensitizeValue(speakerID);
+            speaker = AIData.entities.Find(x => x.ID == speakerID);
             speakerPos = speaker.GetTransform().position;
         }
 
@@ -908,13 +922,15 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             var ent = speaker as Entity;
             // radio image 
+            var entName = ent.blueprint.entityName;
+            if (current.concealName) entName = "Unknown Speaker";
             if (remastered)
                 window.transform.Find("Background/RadioVisual/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
-            window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = remastered ? ent.blueprint.entityName : "";
+            window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = remastered ? entName : "";
         }
 
         // change text
-        if (current.useLocalMap)
+        if (current.coreScriptsMode)
         {
             text = SendThroughCoreScripts(current.text).Replace("<br>", "\n");
         }
@@ -969,7 +985,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             Dialogue.Node next = dialogue.nodes[nextIndex];
 
             var buttonText = next.buttonText;
-            if (next.useLocalMap) buttonText = SendThroughCoreScripts(buttonText);
+            if (next.coreScriptsMode) buttonText = SendThroughCoreScripts(buttonText);
             Transform button = CreateButton(buttonText, null, 24 + 24 * (current.nextNodes.Count - (i + 1))).transform;
 
             if (next.action == Dialogue.DialogueAction.ForceToNextID)

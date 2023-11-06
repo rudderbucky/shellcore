@@ -9,7 +9,7 @@ public class CoreScriptsDialogue : MonoBehaviour
     private static Dialogue.Node GetDefaultNode()
     {
         var node = new Dialogue.Node();
-        node.useLocalMap = true;
+        node.coreScriptsMode = true;
         node.nextNodes = new List<int>();
         node.useSpeakerColor = true;
         node.typingSpeedFactor = 1;
@@ -25,20 +25,44 @@ public class CoreScriptsDialogue : MonoBehaviour
         nextID = 0;
         var metadata = new DialogueRecursionMetadata();
         var scope = CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord);
-        ParseDialogueHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, Color.white);
+        var propertyMetadata = new DialoguePropertyMetadata();
+        propertyMetadata.defaultColor = Color.white;
+        propertyMetadata.useSpeakerColor = true;
+        propertyMetadata.typingSpeedFactor = 1;
+        ParseDialogueHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, propertyMetadata);
         data.dialogues[metadata.dialogueID] = dialogue;
     }
 
     private struct DialogueRecursionMetadata
     {
+        // used to find where to parse after parsing an internal dialogue node within an external
         public int index;
         public string dialogueID;
+    }
+
+    private struct DialoguePropertyMetadata
+    {
+        public Color defaultColor;
+        public bool useSpeakerColor;
+        public float typingSpeedFactor;
+        public bool concealName;
+    }
+
+    public static Color ParseColor(string val)
+    {
+        var colorCommaSep = val.Trim().Replace("(", "").Replace(")", "").Split(",");
+        var color = new Color32();
+        color.r = (byte)int.Parse(colorCommaSep[0]);
+        color.g = (byte)int.Parse(colorCommaSep[1]);
+        color.b = (byte)int.Parse(colorCommaSep[2]);
+        color.a = 255;
+        return color;
     }
 
     // TODO: Remove order-sensitivity on color properties and response parsing
     private static void ParseDialogueHelper(int index, string line, Dialogue dialogue, 
         Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, Dictionary<string, Task> tasks, 
-        Color defaultColor, string responseText = null, bool useSpeakerColor = true, float typingSpeedFactor = 1)
+        DialoguePropertyMetadata data, string responseText = null)
     {
         
         metadata = new DialogueRecursionMetadata();
@@ -50,7 +74,7 @@ public class CoreScriptsDialogue : MonoBehaviour
         }
         
         var node = GetDefaultNode();
-        node.typingSpeedFactor = typingSpeedFactor;
+        node.typingSpeedFactor = data.typingSpeedFactor;
         bool forcedID = false;
         node.buttonText = responseText;
 
@@ -68,6 +92,7 @@ public class CoreScriptsDialogue : MonoBehaviour
             "taskID=",
             "finishTask=",
             "typingSpeedFactor=",
+            "concealName="
         };
 
         var skipSettingID = false;
@@ -89,7 +114,7 @@ public class CoreScriptsDialogue : MonoBehaviour
 
             if (lineSubstr.StartsWith("responses="))
             {
-                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks, defaultColor, useSpeakerColor, typingSpeedFactor);
+                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks, data);
                 continue;
             }
 
@@ -115,23 +140,17 @@ public class CoreScriptsDialogue : MonoBehaviour
             else if (lineSubstr.StartsWith("typingSpeedFactor="))
             {
                 node.typingSpeedFactor = float.Parse(val);
-                typingSpeedFactor = node.typingSpeedFactor;
+                data.typingSpeedFactor = node.typingSpeedFactor;
             }
             else if (lineSubstr.StartsWith("color="))
             {
-                var colorCommaSep = val.Trim().Replace("(", "").Replace(")", "").Split(",");
-                var color = new Color32();
-                color.r = (byte)int.Parse(colorCommaSep[0]);
-                color.g = (byte)int.Parse(colorCommaSep[1]);
-                color.b = (byte)int.Parse(colorCommaSep[2]);
-                color.a = 255;
-                defaultColor = color;
-                useSpeakerColor = false;
-
+                var color = ParseColor(val);
+                data.defaultColor = color;
+                data.useSpeakerColor = false;
             }
             else if (lineSubstr.StartsWith("useSpeakerColor="))
             {
-                useSpeakerColor = val == "true";
+                data.useSpeakerColor = val == "true";
             }
             else if (lineSubstr.StartsWith("taskID="))
             {
@@ -141,14 +160,19 @@ public class CoreScriptsDialogue : MonoBehaviour
             {
                 if (val == "true") node.action = Dialogue.DialogueAction.FinishTask;
             }
+            else if (lineSubstr.StartsWith("concealName="))
+            {
+                data.concealName = val == "true";
+            }
         }
 
-        node.useSpeakerColor = useSpeakerColor;
+        node.concealName = data.concealName;
+        node.useSpeakerColor = data.useSpeakerColor;
         node.textColor = Color.white;
         
-        if (!useSpeakerColor) 
+        if (!data.useSpeakerColor) 
         {
-            node.textColor = defaultColor;
+            node.textColor = data.defaultColor;
         }
         dialogue.nodes.Add(node);
         var last = dialogue.nodes.Count - 1;
@@ -161,7 +185,7 @@ public class CoreScriptsDialogue : MonoBehaviour
 
     private static void ParseResponses (int index, string line, Dialogue dialogue, 
         List<int> nextNodes, Dictionary<string, string> localMap, 
-        Dictionary<string, Task> tasks, Color defaultColor, bool useSpeakerColor = true, float typingSpeedFactor = 1)
+        Dictionary<string, Task> tasks, DialoguePropertyMetadata data)
     {
         bool skipToComma = false;
         int brax = 0;
@@ -176,14 +200,14 @@ public class CoreScriptsDialogue : MonoBehaviour
             var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("Response("))
             {
-                ParseResponse(i, line, dialogue, localMap, nextNodes, defaultColor, tasks, useSpeakerColor, typingSpeedFactor);
+                ParseResponse(i, line, dialogue, localMap, nextNodes, tasks, data);
             }
         }
     }
 
     private static int ParseResponse (int index, string line, 
-        Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes, Color defaultColor,
-        Dictionary<string, Task> tasks, bool useSpeakerColor = true, float typingSpeedFactor = 1)
+        Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes,
+        Dictionary<string, Task> tasks, DialoguePropertyMetadata data)
     {
         
         var node = GetDefaultNode();
@@ -229,7 +253,7 @@ public class CoreScriptsDialogue : MonoBehaviour
                 {
                     insertNode = false;
                     DialogueRecursionMetadata metadata;
-                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, defaultColor, responseText, useSpeakerColor, typingSpeedFactor);
+                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, data, responseText);
                     index = metadata.index;
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
                     
@@ -242,7 +266,22 @@ public class CoreScriptsDialogue : MonoBehaviour
                     var parse = val.Replace("SetID(", "").Replace(")", "").Trim();
                     node.nextNodes.Add(int.Parse(parse));
                 }
-                
+                else if (val.StartsWith("Yard"))
+                {
+                    node.action = Dialogue.DialogueAction.Yard;
+                }
+                else if (val.StartsWith("Trader"))
+                {
+                    node.action = Dialogue.DialogueAction.Shop;
+                }
+                else if (val.StartsWith("Upgrader"))
+                {
+                    node.action = Dialogue.DialogueAction.Upgrader;
+                }
+                else if (val.StartsWith("Workshop"))
+                {
+                    node.action = Dialogue.DialogueAction.Workshop;
+                }
             }
         }
 

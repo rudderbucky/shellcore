@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using static Sector;
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -1337,27 +1338,7 @@ public class SectorManager : MonoBehaviour
 
             if (obj is GameObject go)
             {
-                GameObject gObj = Instantiate(go);
-
-                // TODO: Make some property for level entities that dictates whether they change on faction or not
-                if (!gObj.GetComponent<EnergyRock>() && !gObj.GetComponent<Flag>())
-                {
-                    gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(current.entities[i].faction);
-                }
-
-                gObj.transform.position = current.entities[i].position;
-                gObj.name = current.entities[i].name;
-                if (gObj.GetComponent<ShardRock>())
-                {
-                    if (!string.IsNullOrEmpty(current.entities[i].blueprintJSON))
-                    {
-                        gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
-                    }
-
-                    gObj.GetComponent<ShardRock>().ID = current.entities[i].ID;
-                }
-
-                objects.Add(current.entities[i].ID, gObj);
+                SpawnAsset(current.entities[i]);
             }
             else if (obj is EntityBlueprint blueprint && (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client))
             {
@@ -1366,6 +1347,37 @@ public class SectorManager : MonoBehaviour
         }
 
     }
+
+    public void SpawnAsset(LevelEntity entity)
+    {
+        Object obj = ResourceManager.GetAsset<Object>(entity.assetID);
+
+        if (obj is GameObject go)
+        {
+            GameObject gObj = Instantiate(go);
+
+            // TODO: Make some property for level entities that dictates whether they change on faction or not
+            if (!gObj.GetComponent<EnergyRock>() && !gObj.GetComponent<Flag>())
+            {
+                gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(entity.faction);
+            }
+
+            gObj.transform.position = entity.position;
+            gObj.name = entity.name;
+            if (gObj.GetComponent<ShardRock>())
+            {
+                if (!string.IsNullOrEmpty(entity.blueprintJSON))
+                {
+                    gObj.GetComponent<ShardRock>().tier = int.Parse(entity.blueprintJSON);
+                }
+
+                gObj.GetComponent<ShardRock>().ID = entity.ID;
+            }
+
+            objects.Add(entity.ID, gObj);
+        }
+    }
+
 
     private float bgSpawnTimer = 0;
 
@@ -1801,6 +1813,17 @@ public class SectorManager : MonoBehaviour
             {
                 return pair.Value;
             }
+        }
+
+        return null;
+    }
+
+    public GameObject GetObjectByID(string ID)
+    {
+        Debug.Log($"Getting object: '{ID}'");
+        if (objects.ContainsKey(ID))
+        {
+            return objects[ID];
         }
 
         return null;

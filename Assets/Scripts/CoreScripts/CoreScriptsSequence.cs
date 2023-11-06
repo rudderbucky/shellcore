@@ -28,7 +28,7 @@ public class CoreScriptsSequence : MonoBehaviour
         RemoveObjectiveMarker,
         WarpPlayer,
         StartCameraPan,
-        EndCameraPan,
+        FinishCameraPan,
         RegisterPartyMember,
         AddPartyMember,
         SetPartyMemberEnabled,
@@ -44,7 +44,11 @@ public class CoreScriptsSequence : MonoBehaviour
         Wait,
         DevConsole,
         FadeIntoBlack,
-        FadeOutOfBlack
+        FadeOutOfBlack,
+        DeleteEntity,
+        StartInflictionCosmetic,
+        FinishInflictionCosmetic,
+
     }
     public struct Instruction
     {
@@ -129,19 +133,20 @@ public class CoreScriptsSequence : MonoBehaviour
         string retVal = null;
         if (val.StartsWith("$$$") && 
             SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null && 
-            SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.Contains(val.Substring(3)))
+            SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.Contains(val.Substring(3).Trim()))
         {
-            var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3));
+            var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3).Trim());
             if (index >= 0) 
             {
                 retVal = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
             }
         }
         else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null && 
-            SaveHandler.instance.GetSave().taskVariableNames.Contains(val.Substring(3)))
+            SaveHandler.instance.GetSave().taskVariableNames.Contains(val.Substring(3).Trim()))
         {
             var index = -1;
             var names = SaveHandler.instance.GetSave().taskVariableNames;
+            var key = val.Substring(3).Trim();
             for (int j = 0; j < names.Length; j++)
             {
                 if (names[j] != val.Substring(3)) continue;
@@ -156,9 +161,14 @@ public class CoreScriptsSequence : MonoBehaviour
         }
         else if (val.StartsWith("$$") && !val.StartsWith("$$$") && CoreScriptsManager.instance.globalVariables != null)
         {
-            if (CoreScriptsManager.instance.globalVariables.ContainsKey(val.Substring(2)))
-                retVal = CoreScriptsManager.instance.globalVariables[val.Substring(2)];
-            else return "";
+            var key = val.Substring(2).Trim();
+            if (CoreScriptsManager.instance.globalVariables.ContainsKey(key))
+                retVal = CoreScriptsManager.instance.globalVariables[key];
+            else 
+            {
+                Debug.LogWarning($"Variable syntax was used but variable was not found: {val}");
+                return "";
+            }
         }
         else 
         {
@@ -234,7 +244,8 @@ public class CoreScriptsSequence : MonoBehaviour
                         GetArgument(inst.arguments, "flagName"),
                         GetArgument(inst.arguments, "blueprintJSON"),
                         fac,
-                        GetArgument(inst.arguments, "name"));
+                        GetArgument(inst.arguments, "name"),
+                        GetArgument(inst.arguments, "assetID"));
                     break;
                 case InstructionCommand.Log:
                     Debug.LogWarning(GetArgument(inst.arguments, "message"));
@@ -300,7 +311,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"));
                     Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
                     break;
-                case InstructionCommand.EndCameraPan:
+                case InstructionCommand.FinishCameraPan:
                     Cutscene.EndCameraPan();
                     break;
                 case InstructionCommand.RegisterPartyMember:
@@ -388,10 +399,72 @@ public class CoreScriptsSequence : MonoBehaviour
                     DevConsoleScript.Instance.EnterCommand(GetArgument(inst.arguments, "command"), true);
                     break;
                 case InstructionCommand.FadeIntoBlack:
-                    Cutscene.FadeIntoBlack();
+                    var cStr = GetArgument(inst.arguments, "color");
+                    var color = string.IsNullOrEmpty(cStr) ? Color.black : CoreScriptsDialogue.ParseColor(cStr);
+                    var speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"));
+                    Cutscene.FadeIntoBlack(color, speedFactor);
                     break;
                 case InstructionCommand.FadeOutOfBlack:
-                    Cutscene.FadeOutOfBlack();
+                    cStr = GetArgument(inst.arguments, "color");
+                    color = string.IsNullOrEmpty(cStr) ? Color.black : CoreScriptsDialogue.ParseColor(cStr);
+                    speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"));
+                    Cutscene.FadeOutOfBlack(color, speedFactor);
+                    break;
+                case InstructionCommand.DeleteEntity:
+                    var id = GetArgument(inst.arguments, "entityID");
+                    foreach (var data in AIData.entities)
+                    {
+                        if (data.ID == id)
+                        {
+                            Destroy(data.gameObject);
+                            break;
+                        }
+                    }
+
+                    var obj = SectorManager.instance.GetObjectByID(id);
+                    if (obj) Destroy(obj);
+                    break;
+                case InstructionCommand.StartInflictionCosmetic:
+                    id = GetArgument(inst.arguments, "entityID");
+                    var type = GetArgument(inst.arguments, "type");
+                    foreach (var data in AIData.entities)
+                    {
+                        if (data.ID != id)
+                        {
+                            continue;
+                        }
+
+                        switch (type)
+                        {
+                            case "PinDown":
+                                PinDown.InflictionCosmetic(data, 0, false);
+                                break;
+                        }
+                    }
+                    
+                    break;
+                case InstructionCommand.FinishInflictionCosmetic:
+                    id = GetArgument(inst.arguments, "entityID");
+                    type = GetArgument(inst.arguments, "type");
+                    foreach (var data in AIData.entities)
+                    {
+                        if (data.ID != id)
+                        {
+                            continue;
+                        }
+
+                        switch (type)
+                        {
+                            case "PinDown":
+                                foreach (var part in data.GetComponentsInChildren<ShellPart>())
+                                {
+                                    var x = part.GetComponentInChildren<MissileAnimationScript>();
+                                    if (x) Destroy(x.gameObject);
+                                }
+                                break;
+                        }
+                    }
+                    
                     break;
             }
         }
@@ -453,7 +526,8 @@ public class CoreScriptsSequence : MonoBehaviour
             }
         }
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        line = GetValueScopeWithinLine(line, index);
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
@@ -552,7 +626,7 @@ public class CoreScriptsSequence : MonoBehaviour
 
             var name = "";
             var val = "";
-            GetNameAndValue(lineSubstr, out name, out val);
+            GetNameAndValue(lineSubstr, out name, out val, true);
             if (name == "sequence")
             {
                 inst.sequence = ParseSequence(i, line, blocks);
@@ -615,7 +689,7 @@ public class CoreScriptsSequence : MonoBehaviour
         }
     }
 
-    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, string name)
+    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, string name, string assetID)
     {
         Vector2 coords = new Vector2();
         for (int i = 0; i < AIData.flags.Count; i++)
@@ -625,6 +699,21 @@ public class CoreScriptsSequence : MonoBehaviour
                 coords = AIData.flags[i].transform.position;
                 break;
             }
+        }
+
+        if (!string.IsNullOrEmpty(assetID))
+        {
+            Sector.LevelEntity entityData = new Sector.LevelEntity
+            {
+                faction = faction,
+                name = name,
+                position = coords,
+                ID = entityID,
+                assetID = assetID
+            };
+            
+            SectorManager.instance.SpawnAsset(entityData);
+            return;
         }
 
         foreach (var data in SectorManager.instance.characters)
