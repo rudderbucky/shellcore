@@ -9,6 +9,7 @@ Text("Abandonment_5s", "JUMPING IN 5 SECONDS.")
 Text("Abandonment_test", "TEST COMPLETE")
 Text("Abandonment_jumpSectorPlayerIndication", "I should head to the gate and activate it.")
 Text("Abandonment_jumpSectorPlayerWarning", "Here goes... I should leave this sector if I'm not ready yet.")
+Text("Abandonment_taskObjective", "- Find shelter in the Abandoned sectors.")
 
 // Protip: if something isn't executing, check if you've added the commas between sequences/conditions
 MissionTrigger(
@@ -25,6 +26,11 @@ MissionTrigger(
         Call(Abandonment_partyFollowPlayer),
         DevConsole(command=poor),
     )
+)
+
+Task(
+    taskID=Abandonment_task,
+    objectives=Abandonment_taskObjective
 )
 
 Function(
@@ -315,6 +321,9 @@ Dialogue(
 Function(
     name=Abandonment_finalizeJump,
     sequence=(
+        AddTask(
+            taskID=Abandonment_task
+        ),
         SetVariable(
             name=$$$Makeshift_stage1,
             value=0
@@ -568,6 +577,9 @@ Function(
                                         comp=Lt,
                                         sequence=(
                                             StartCutscene(),
+                                            RemoveObjectiveMarker(
+                                                ID=Abandonment_gateMarker
+                                            ),
                                             SpawnEntity(
                                                 entityID=Abandonment_kraken,
                                                 name=Kraken,
@@ -1737,7 +1749,7 @@ Function(
                                 ),
                                 SetPath(
                                     entityID=the-architect,
-                                    flagName=Abandonment_makeshift_cs2,
+                                    flagName=Abandonment_makeshift_cs4,
                                     sequence=(
                                         Rotate(
                                             entityID=the-architect,
@@ -1747,7 +1759,7 @@ Function(
                                 ),
                                 SetPath(
                                     entityID=sukrat,
-                                    flagName=Abandonment_makeshift_cs3,
+                                    flagName=Abandonment_makeshift_cs5,
                                     sequence=(
                                         Rotate(
                                             entityID=the-architect,
@@ -1857,9 +1869,14 @@ Function(
     )
 )
 
+Text("Abandonment_missionComplete", "MISSION COMPLETE")
 Function(
     name=Abandonment_end,
     sequence=(
         FinishCutscene(),
+        FinishTask(),
+        ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
+        FinishMission(soundID=clip_missioncompleteep3),
+
     )
 )
