@@ -6,7 +6,6 @@ Text("Abandonment_30s", "JUMPING IN 30 SECONDS.")
 Text("Abandonment_20s", "JUMPING IN 20 SECONDS.")
 Text("Abandonment_10s", "JUMPING IN 10 SECONDS.")
 Text("Abandonment_5s", "JUMPING IN 5 SECONDS.")
-Text("Abandonment_test", "TEST COMPLETE")
 Text("Abandonment_jumpSectorPlayerIndication", "I should head to the gate and activate it.")
 Text("Abandonment_jumpSectorPlayerWarning", "Here goes... I should leave this sector if I'm not ready yet.")
 Text("Abandonment_taskObjective", "- Find shelter in the Abandoned sectors.")
@@ -50,12 +49,149 @@ Function(
                 val2=complete,
                 comp=Eq,
                 sequence=(
-                    Call(Abandonment_startHelper)
+
+// if the loyalty variable isn't set, set it to 0
+
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=1,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=0,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=0,
+                            comp=Neq,
+                            sequence=(
+                                SetVariable(
+                                    name=$$$Loyalty_Variable,
+                                    value=0
+                                )
+                            )
+                        ),
+                    ),
+
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Abandonment_Kappa_Outskirts_1SE_haven,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                Call(Abandonment_checkpoint1SE)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Abandonment_2410-6460_haven,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                Call(Abandonment_checkpoint2410-6460)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Abandonment_2410-6460_haven,
+                            val2=1,
+                            comp=Neq,
+                            sequence=(
+                                Call(Abandonment_startHelper)
+                            )
+                        ),
+                    )
                 )
             )
         )
     )
 )
+
+
+Function(
+    name=Abandonment_checkpoint2410-6460,
+    sequence=(
+        SetVariable(
+            name=$$Abandonment_checkpointSpawnFlag,
+            value=new-ep3-entry-flag
+        ),
+        Call(Abandonment_checkpointSpawnParty),
+        StartCutscene(),
+        ForceStartDialogue(dialogueID=Abandonment_blueVoice)
+    )
+)
+
+Function(
+    name=Abandonment_checkpoint1SE,
+    sequence=(
+        SetVariable(
+            name=$$Abandonment_checkpointSpawnFlag,
+            value=real-exit-jump-gate-flag
+        ),
+        WarpPlayer(flagName=real-exit-jump-gate-flag, sectorName=Kappa Outskirts 1SE),
+        Call(Abandonment_checkpointSpawnParty),
+        StartCutscene(),
+        Call(Abandonment_makeshift)
+    )
+)
+
+Function(
+    name=Abandonment_checkpointSpawnParty,
+    sequence=(
+        ClearParty(),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=sukrat,
+                        flagName=$$Abandonment_checkpointSpawnFlag,
+                    ),
+                    SpawnEntity(
+                        entityID=the-architect,
+                        flagName=$$Abandonment_checkpointSpawnFlag,
+                    ),
+                    AddPartyMember(
+                        entityID=the-architect,
+                    ),
+                    AddPartyMember(
+                        entityID=sukrat,
+                    ),
+                    FollowEntity(
+                        entityID=sukrat,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=the-architect,
+                        targetEntityID=player
+                    ),
+                    SetVariable(
+                        name=$$Abandonment_cs1_r2_var,
+                        value=Abandonment_cs1_d3
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(
+                        name=$$Abandonment_cs1_r2_var,
+                        value=Abandonment_cs1_d4
+                    ),
+                )
+            )
+        ),
+        LockParty()
+    )
+)
+
 
 Function(
     name=Abandonment_startHelper,
@@ -205,7 +341,7 @@ Function(
 Text("Abandonment_cs1_d1", "Have faith in our work; we will again bring a peace to all creation.")
 Text("Abandonment_cs1_d2", "What work? What peace? You won’t even tell me what you are.")
 Text("Abandonment_cs1_d3", "You’re the Infection! Leave me alone!")
-Text("Abandonment_cs1_d4", "Are you on our side - the true Uninfected?")
+Text("Abandonment_cs1_d4", "Are you trying to cure my infection?")
 Text("Abandonment_cs1_d5", "...")
 Text("Abandonment_cs1_d6", "Answer me!")
 
@@ -328,11 +464,11 @@ Function(
                 comp=Eq,
                 sequence=(
                     ClearParty(),
+                    LockParty(),
                     SetVariable(
                         name=$$Abandonment_cs1_r2_var,
                         value=Abandonment_cs1_d4
                     ),
-                    StartCutscene(),
                     Call(Abandonment_jumpSectorWarp),
                 )
             ),
@@ -341,8 +477,8 @@ Function(
                 val2=0,
                 comp=Eq,
                 sequence=(
-                    StartCutscene(),
-                    Call(Abandonment_spawnGreenParty)
+                    Call(Abandonment_spawnGreenPartyJumpSectorWarp),
+                    LockParty(),
                 )
             )
         ),
@@ -350,7 +486,7 @@ Function(
 )
 
 Function(
-    name=Abandonment_spawnGreenParty,
+    name=Abandonment_spawnGreenPartyJumpSectorWarp,
     sequence=(
         ClearParty(),
         SetVariable(
@@ -386,10 +522,15 @@ Function(
         ),
         Wait(time=1),
         WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
+        SetVariable(
+            name=$$$Abandonment_2410-6460_haven,
+            value=1
+        ),
         FadeOutOfBlack(
             color=(255,255,255),
             speedFactor=0.5,
         ),
+        StartCutscene(),
         ForceStartDialogue(dialogueID=Abandonment_blueVoice)
     )
 )
@@ -1026,6 +1167,10 @@ Function(
             entityID=Abandonment_nanoscope_2,
             targetID=Abandonment_kraken,
         ),
+        Rotate(
+            entityID=Abandonment_nanoscope_3,
+            targetID=Abandonment_kraken,
+        ),
         StartCameraPan(
             flagName=Abandonment_heraclesKraken,
             velocityFactor=0.5,
@@ -1155,14 +1300,13 @@ Dialogue(
     )
 )
 
-
 Text("Abandonment_postHeraclesReveal_d19", "Hello, I'm afraid you have been cast away to rot for eternity.")
 Text("Abandonment_postHeraclesReveal_d20", "What?")
 Text("Abandonment_postHeraclesReveal_d21", "Are you willing to abandon your reality? I’m afraid you... we’ve been... deceived.")
 Text("Abandonment_postHeraclesReveal_d22", "You lie! I am here to cure our infection!")
 Text("Abandonment_postHeraclesReveal_d23", "I see you decided to join your enemies... too bad they're not much better.")
 Text("Abandonment_postHeraclesReveal_d24", "Eat bullets!")
-Text("Abandonment_postHeraclesReveal_d25", "Do you really want to try that? I just captured this behemoth. Jump through the gate instead.")
+Text("Abandonment_postHeraclesReveal_d25", "Do you really want to try that? I just captured this behemoth. I can only hold it for so long. Jump through the gate.")
 Text("Abandonment_postHeraclesReveal_d26", "...")
 
 Dialogue(
@@ -1394,6 +1538,14 @@ Function(
                         ),
                         Wait(time=1),
                         WarpPlayer(flagName=real-exit-jump-gate-flag, sectorName=Kappa Outskirts 1SE),
+                        SetVariable(
+                            name=$$$Abandonment_2410-6460_haven,
+                            value=0
+                        ),
+                        SetVariable(
+                            name=$$$Abandonment_Kappa_Outskirts_1SE_haven,
+                            value=1
+                        ),
                         FadeOutOfBlack(
                             color=(255,255,255),
                             speedFactor=0.5,
@@ -1728,10 +1880,6 @@ Function(
                             val2=1,
                             comp=Eq,
                             sequence=(
-                                SetVariable(
-                                    name=$$$Makeshift_stage1,
-                                    value=1
-                                ),
                                 SpawnEntity(
                                     entityID=the-architect,
                                     flagName=Abandonment_makeshiftYardSpawn
@@ -1863,13 +2011,23 @@ Function(
 )
 
 Text("Abandonment_missionComplete", "MISSION COMPLETE")
+Text("Abandonment_endOfStory", "End of story as of Beta 3.0.0. Thank you for playing ShellCore Command Remastered!")
 Function(
     name=Abandonment_end,
     sequence=(
         FinishCutscene(),
         FinishTask(),
+        SetVariable(
+            name=$$$Abandonment_Kappa_Outskirts_1SE_haven,
+            value=0
+        ),
+        SetVariable(
+            name=$$$Makeshift_stage1,
+            value=1
+        ),
         ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
+        UnlockParty(),
         FinishMission(soundID=clip_missioncompleteep3),
-
+        ShowPopup(text=Abandonment_endOfStory)
     )
 )

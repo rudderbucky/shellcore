@@ -7,6 +7,7 @@ SectorTrigger(
                 val2=1,
                 comp=Eq,
                 sequence=(
+                    SetSectorType(type=Haven),
                     SpawnEntity(
                         entityID=Makeshift_yard,
                         name=Yard,
@@ -18,6 +19,16 @@ SectorTrigger(
                         name=Core Upgrader,
                         blueprintJSON=Core Upgrader,
                         flagName=Abandonment_makeshiftUpgraderSpawn
+                    ),
+                    SpawnEntity(
+                        entityID=sukrat,
+                        flagName=Abandonment_makeshift_cs3,
+                        forceCharacterTeleport=false
+                    ),
+                    SpawnEntity(
+                        entityID=the-architect,
+                        flagName=Abandonment_makeshift_cs2,
+                        forceCharacterTeleport=false
                     ),
                     Call(Makeshift_addStationDialogue)
                 )
