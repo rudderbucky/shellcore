@@ -55,6 +55,11 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void LoadSave()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            handler.DeleteSaveAtIndex(index);
+            return;
+        }
         if (save.resourcePath != "" && !save.resourcePath.Contains("main"))
         {
             SectorManager.customPath = save.resourcePath;

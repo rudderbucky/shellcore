@@ -414,12 +414,17 @@ public class SaveMenuHandler : GUIWindowScripts
 
     public void DeleteSave()
     {
+        DeleteSaveAtIndex(indexToDelete);
+        deletePrompt.ToggleActive();
+    }
+
+    public void DeleteSaveAtIndex(int indexToDelete)
+    {
         saves.RemoveAt(indexToDelete);
         File.Delete(paths[indexToDelete]);
         paths.RemoveAt(indexToDelete);
         Destroy(icons[indexToDelete].gameObject);
         icons.RemoveAt(indexToDelete);
-        deletePrompt.ToggleActive();
         for (int i = 0; i < icons.Count; i++)
         {
             icons[i].index = i;
