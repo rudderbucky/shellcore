@@ -6,25 +6,6 @@ using UnityEngine.UI;
 public class TaskDisplayScript : MonoBehaviour
 {
     static TaskDisplayScript instance;
-
-    public static Dictionary<string, int> rankNumberByString = new Dictionary<string, int>()
-    {
-        ["C"] = 0,
-        ["B"] = 1,
-        ["A"] = 2,
-        ["S"] = 3,
-        ["X"] = 4
-    };
-
-    public static Dictionary<string, Color> rankColorsByString = new Dictionary<string, Color>()
-    {
-        ["C"] = Color.cyan,
-        ["B"] = Color.yellow,
-        ["A"] = Color.red + Color.green / 2,
-        ["S"] = Color.magenta,
-        ["X"] = Color.red
-    };
-
     public GameObject missionButtonPrefab;
     public GameObject missionObjectivePrefab;
     public Transform[] rankTexts;
@@ -90,7 +71,6 @@ public class TaskDisplayScript : MonoBehaviour
     public static void AddMission(Mission mission)
     {
         loadedMissions.Add(mission);
-
         Func<string, bool> missionDoesNotExist = (missionName) => !PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == missionName);
         Func<string, bool> incompleteMissionLambda = (missionName) => PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == missionName) &&
                 PlayerCore.Instance.cursave.missions.Find(mi => mi.name == missionName).status != Mission.MissionStatus.Complete;

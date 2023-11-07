@@ -227,7 +227,6 @@ public class CoreScriptsManager : MonoBehaviour
             RunMissionTrigger(context);
         }
 
-
         PlayerCore.Instance.cursave.missions.RemoveAll(m => !canvasMissions.Exists(p =>
             System.IO.Path.GetFileNameWithoutExtension(p) == m.name) && !missionTriggers.Exists(t => t.missionName == m.name)   );
 

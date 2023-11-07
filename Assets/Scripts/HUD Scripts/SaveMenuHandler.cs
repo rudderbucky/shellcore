@@ -321,8 +321,10 @@ public class SaveMenuHandler : GUIWindowScripts
                     "Awakening the Holy Citadel", 
                     "Derelict Vanquish", 
                     "Forsaken Declaration", 
-                    "Gunning Triumph", 
-                    "Reclamation"};
+                    "Gunning Triumph",
+                    "The Stronghold",
+                    "Reclamation"
+                };
                 var missionsToRemove = save.missions.Where(m => missionsNames.Contains(m.name)).ToArray();
                 foreach (var m in missionsToRemove)
                 {

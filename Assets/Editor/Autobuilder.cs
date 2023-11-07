@@ -89,6 +89,21 @@ public class Autobuilder
             });
 	}
 
+	[MenuItem("ShellCore Command/Build/OSX (debug)")]
+	public static void BuildOSXDebug()
+	{
+		Debug.Log("Starting OSX Build!");
+        BuildPipeline.BuildPlayer(new BuildPlayerOptions() 
+            {
+                scenes = scenes,
+			    locationPathName = 
+			    "Build/OSX/ShellCore Command",
+			    target = BuildTarget.StandaloneOSX,
+			    options = BuildOptions.AutoRunPlayer,
+                subtarget = (int)StandaloneBuildSubtarget.Player
+            });
+	}
+
     [MenuItem("ShellCore Command/Build/Linux (headless)")]
 	public static void BuildLinuxHeadless()
 	{
