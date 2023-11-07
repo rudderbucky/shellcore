@@ -195,6 +195,7 @@ public class CoreScriptsManager : MonoBehaviour
         Initialize();             
     }
 
+    public static List<string> canvasMissions;
 
     public void Initialize()
     {
@@ -226,6 +227,10 @@ public class CoreScriptsManager : MonoBehaviour
             RunMissionTrigger(context);
         }
 
+
+        PlayerCore.Instance.cursave.missions.RemoveAll(m => !canvasMissions.Exists(p =>
+            System.IO.Path.GetFileNameWithoutExtension(p) == m.name) && !missionTriggers.Exists(t => t.missionName == m.name)   );
+
         foreach (var context in startTriggers)
         {
             CoreScriptsSequence.RunSequence(context.sequence, context);
@@ -238,6 +243,9 @@ public class CoreScriptsManager : MonoBehaviour
                 CoreScriptsSequence.RunSequence(context.sequence, context);
             }
         };
+
+        var current = sectorTriggers.Find(c => c.sectorName == SectorManager.instance.current.sectorName);
+        if (current != null) CoreScriptsSequence.RunSequence(current.sequence, current);
     }
 
     void RunMissionTrigger(Context context)

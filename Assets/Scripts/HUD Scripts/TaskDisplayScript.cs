@@ -72,6 +72,21 @@ public class TaskDisplayScript : MonoBehaviour
         return m.status;
     }
 
+    public static Mission GetMission(string missionName)
+    {
+        Mission m = null;
+        var lmap = CoreScriptsManager.instance.GetLocalMapString(missionName);
+        if (PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == missionName))
+        {
+            m = PlayerCore.Instance.cursave.missions.Find(mi => mi.name == missionName);
+        }
+        else if (PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == lmap))
+        {
+            m = PlayerCore.Instance.cursave.missions.Find(mi => mi.name == lmap);
+        }
+        return m;
+    }
+
     public static void AddMission(Mission mission)
     {
         loadedMissions.Add(mission);
