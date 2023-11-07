@@ -1350,16 +1350,7 @@ public class SectorManager : MonoBehaviour
                 continue;
             }
 
-            Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
-
-            if (obj is GameObject go)
-            {
-                SpawnAsset(current.entities[i]);
-            }
-            else if (obj is EntityBlueprint blueprint && (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client))
-            {
-                SpawnEntity(current.entities[i].assetID, current.entities[i]);
-            }
+            SpawnAsset(current.entities[i]);
         }
 
     }
@@ -1391,6 +1382,10 @@ public class SectorManager : MonoBehaviour
             }
 
             objects.Add(entity.ID, gObj);
+        }
+        else if (obj is EntityBlueprint print && (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client))
+        {
+            SpawnEntity(entity.assetID, entity);
         }
     }
 
