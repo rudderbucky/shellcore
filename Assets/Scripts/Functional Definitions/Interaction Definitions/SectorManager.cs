@@ -13,6 +13,17 @@ public class SectorManager : MonoBehaviour
     private static float deadzoneDamageMult = 0.1f;
     private static float deadzoneDamageBase = 0.2f;
     private static float deadzoneDamage = deadzoneDamageBase;
+    private static bool deadzoneDamageOverride = false;
+
+    public void SetDeadZoneDamageOverride(bool val)
+    {
+        deadzoneDamageOverride = val;
+    }
+
+    private bool DeadzoneDamageEnabled()
+    {
+        return GetCurrentType() == SectorType.DangerZone || deadzoneDamageOverride;
+    }
 
     public delegate void SectorLoadDelegate(string sectorName);
 
@@ -274,7 +285,7 @@ public class SectorManager : MonoBehaviour
         }
 
         // deadzone damage
-        if (playerActive && current && GetCurrentType() == Sector.SectorType.DangerZone)
+        if (playerActive && current && DeadzoneDamageEnabled())
         {
             if (dangerZoneTimer >= 5 && !player.GetIsDead())
             {
@@ -1219,6 +1230,11 @@ public class SectorManager : MonoBehaviour
         lpg.LoadSector(current);
     }
 
+    public static Vector2 GetSectorCenter(Sector sector)
+    {
+        return new Vector2(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2);
+    }
+
     public void AddTarget(Entity target)
     {
         if (target is ShellCore shellcore)
@@ -1294,7 +1310,7 @@ public class SectorManager : MonoBehaviour
                 break;
             case Sector.SectorType.Haven:
             case Sector.SectorType.Capitol:
-                player.havenSpawnPoint = player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
+                player.havenSpawnPoint = player.spawnPoint = GetSectorCenter(current);
                 player.LastDimension = current.dimension;
                 break;
             case Sector.SectorType.SiegeZone:

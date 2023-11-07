@@ -142,7 +142,7 @@ namespace NodeEditorFramework.Standard
 
         public static void TryAddMission(string missionName, string rank, string entryPoint, Color textColor, int episode, List<string> prerequisites, NodeCanvas Canvas = null)
         {
-            if (PlayerCore.Instance.cursave.missions.TrueForAll((x) => { return x.name != missionName; }))
+            if (TaskDisplayScript.GetMission(missionName) == null)
             {
                 var mission = new Mission();
                 mission.name = missionName;
@@ -157,7 +157,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                var mission = PlayerCore.Instance.cursave.missions.Find((x) => { return x.name == missionName; });
+                var mission = TaskDisplayScript.GetMission(missionName);
                 mission.prerequisites = prerequisites;
                 mission.entryPoint = entryPoint;
                 mission.textColor = textColor;

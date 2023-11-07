@@ -32,7 +32,8 @@ public class CoreScriptsSequence : MonoBehaviour
         FinishCameraPan,
         RegisterPartyMember,
         AddPartyMember,
-        SetPartyMemberEnabled,
+        EnablePartyMember,
+        DisablePartyMember,
         RemovePartyMember,
         ClearParty,
         ForceTractor,
@@ -50,6 +51,13 @@ public class CoreScriptsSequence : MonoBehaviour
         StartInflictionCosmetic,
         FinishInflictionCosmetic,
         AddTask,
+        LockParty,
+        SetSectorType,
+        ForceSpawnPoint,
+        UnlockParty,
+        EnableDeadZoneDamage,
+        DisableDeadZoneDamage,
+        ShowPopup
     }
     public struct Instruction
     {
@@ -202,6 +210,34 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.ShowPopup:
+                    DialogueSystem.ShowPopup(CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text")));
+                    break;
+                case InstructionCommand.EnableDeadZoneDamage:
+                    SectorManager.instance.SetDeadZoneDamageOverride(true);
+                    break;
+                case InstructionCommand.DisableDeadZoneDamage:
+                    SectorManager.instance.SetDeadZoneDamageOverride(false);
+                    break;
+                case InstructionCommand.ForceSpawnPoint:
+                    var sector = SectorManager.GetSectorByName(GetArgument(inst.arguments, "sectorName"));
+                    var player = PlayerCore.Instance;
+                    player.havenSpawnPoint = player.spawnPoint = SectorManager.GetSectorCenter(sector);
+                    player.LastDimension = sector.dimension;
+                    break;
+                case InstructionCommand.SetSectorType:
+                    int sectorType = (int)Enum.Parse<Sector.SectorType>(GetArgument(inst.arguments, "type"));
+                    SectorManager.instance.overrideProperties.type = (Sector.SectorType)sectorType;
+                    SectorManager.instance.SetSectorTypeBehavior();
+                    string[] types = System.Enum.GetNames(typeof(Sector.SectorType));
+                    Debug.Log($"Sector type set to: {types[sectorType]} ({sectorType})");
+                    break;
+                case InstructionCommand.LockParty:
+                    PartyManager.instance.SetOverrideLock(true);
+                    break;
+                case InstructionCommand.UnlockParty:
+                    PartyManager.instance.SetOverrideLock(false);
+                    break;
                 case InstructionCommand.AddTask:
                     StartTaskNode.RegisterTask(CoreScriptsManager.instance.GetTask(GetArgument(inst.arguments, "taskID")), context.missionName);
                     break;
@@ -324,9 +360,11 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.AddPartyMember:
                     Party.AddPartyMember(GetArgument(inst.arguments, "entityID"));
                     break;
-                case InstructionCommand.SetPartyMemberEnabled:
-                    var enabled = GetArgument(inst.arguments, "enabled") != "false";
-                    Party.SetPartyMemberEnabled(GetArgument(inst.arguments, "entityID"), enabled);
+                case InstructionCommand.EnablePartyMember:
+                    Party.SetPartyMemberEnabled(GetArgument(inst.arguments, "entityID"), true);
+                    break;
+                case InstructionCommand.DisablePartyMember:
+                    Party.SetPartyMemberEnabled(GetArgument(inst.arguments, "entityID"), false);
                     break;
                 case InstructionCommand.RemovePartyMember:
                     Party.RemovePartyMember(GetArgument(inst.arguments, "entityID"));

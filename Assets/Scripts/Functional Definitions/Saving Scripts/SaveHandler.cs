@@ -59,8 +59,7 @@ public class SaveHandler : MonoBehaviour
                 }
 
             SectorManager.instance.LoadSectorFile(save.resourcePath);
-            save.missions.RemoveAll(m => !taskManager.questCanvasPaths.Exists(p =>
-                System.IO.Path.GetFileNameWithoutExtension(p) == m.name));
+            CoreScriptsManager.canvasMissions = taskManager.questCanvasPaths;
             taskManager.Initialize(true); // Re-init
             DialogueSystem.InitCanvases();
 
