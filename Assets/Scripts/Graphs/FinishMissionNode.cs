@@ -70,6 +70,10 @@ namespace NodeEditorFramework.Standard
                 MissionCondition.OnMissionStatusChange.Invoke(mission);
             }
 
+            if (CoreScriptsManager.OnVariableUpdate != null)
+            {
+                CoreScriptsManager.OnVariableUpdate.Invoke("MissionStatus(");
+            }
             // try loading all missions for which this mission is a prerequisite
             PlayerCore.Instance.cursave.missions.FindAll(m => m.prerequisites != null && m.prerequisites.Contains(mission.name))
                 .ForEach(m => TaskManager.Instance.startNewQuest(m.name));
