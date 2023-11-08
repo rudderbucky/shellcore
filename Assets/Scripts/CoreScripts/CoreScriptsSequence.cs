@@ -57,7 +57,9 @@ public class CoreScriptsSequence : MonoBehaviour
         UnlockParty,
         EnableDeadZoneDamage,
         DisableDeadZoneDamage,
-        ShowPopup
+        ShowPopup,
+        StartMusicOverride,
+        FinishMusicOverride
     }
     public struct Instruction
     {
@@ -210,6 +212,23 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.StartMusicOverride:
+                    var musicID = GetArgument(inst.arguments, "musicID");
+                    AudioManager.musicOverrideID = musicID;
+                    AudioManager.PlayMusic(musicID);
+                    break;
+                case InstructionCommand.FinishMusicOverride:
+                    AudioManager.musicOverrideID = null;
+                    if (!SectorManager.instance.current.hasMusic || SectorManager.instance.current.musicID == "")
+                    {
+                        Debug.Log("Jazz music stops.");
+                        AudioManager.StopMusic();
+                    }
+                    else
+                    {
+                        AudioManager.PlayMusic(SectorManager.instance.current.musicID);
+                    }
+                    break;
                 case InstructionCommand.ShowPopup:
                     DialogueSystem.ShowPopup(CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text")));
                     break;

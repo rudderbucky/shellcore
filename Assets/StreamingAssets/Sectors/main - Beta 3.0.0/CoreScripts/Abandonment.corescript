@@ -531,6 +531,7 @@ Function(
             speedFactor=0.5,
         ),
         StartCutscene(),
+        StartMusicOverride(musicID=music_blue4),
         ForceStartDialogue(dialogueID=Abandonment_blueVoice)
     )
 )
@@ -538,6 +539,7 @@ Function(
 Function(
     name=Abandonment_postBlueVoice,
     sequence=(
+        StopMusicOverride(),
         ConditionBlock(
             Comparison(
                 val1=$$$Loyalty_Variable,
