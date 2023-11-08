@@ -160,7 +160,7 @@ public class CoreScriptsSequence : MonoBehaviour
             var key = val.Substring(3).Trim();
             for (int j = 0; j < names.Length; j++)
             {
-                if (names[j] != val.Substring(3)) continue;
+                if (names[j] != val.Substring(3).Trim()) continue;
                 index = j;
                 break;
             }

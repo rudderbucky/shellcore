@@ -30,11 +30,12 @@ public class CoreScriptsCondition : MonoBehaviour
         public int ID;
     }
 
-    public struct ConditionBlock
+    public class ConditionBlock
     {
         public List<Condition> conditions;
         public Context context;
         public int ID;
+        public bool complete;
     }
 
     public static ConditionBlock CreateConditionBlock()
@@ -110,6 +111,7 @@ public class CoreScriptsCondition : MonoBehaviour
         block.context = context;
         for (int i = 0; i < block.conditions.Count; i++)
         {
+            if (block.complete) break;
             var c = block.conditions[i];
             c.ID = i;
             block.conditions[i] = c;
@@ -221,6 +223,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
     public static void DeinitializeAllConditions(ConditionBlock cb)
     {
+        cb.complete = true;
         foreach (var c in cb.conditions)
         {
             DeinitializeCondition(cb, c);

@@ -245,6 +245,7 @@ public class CoreScriptsManager : MonoBehaviour
 
         var current = sectorTriggers.Find(c => c.sectorName == SectorManager.instance.current.sectorName);
         if (current != null) CoreScriptsSequence.RunSequence(current.sequence, current);
+
     }
 
     void RunMissionTrigger(Context context)
