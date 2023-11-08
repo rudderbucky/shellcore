@@ -303,7 +303,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         window = Instantiate(prefab).GetComponentInChildren<GUIWindowScripts>();
 
-
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -898,9 +897,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 next(dialogue, current.nextNodes[0], speaker, context);
                 return;
             case Dialogue.DialogueAction.Call:
+                endDialogue(0, false);
                 var s = CoreScriptsManager.instance.GetFunction(current.functionID);
                 CoreScriptsSequence.RunSequence(s, context);
-                endDialogue(0, false);
                 return;
             default:
                 break;
