@@ -159,10 +159,14 @@ public class Mobility : MonoBehaviour
 
         Vector2 normalizedTarget = targetVector.normalized;
         float delta = Mathf.Abs(Vector2.Dot(player.transform.up, normalizedTarget) - 1f);
+        float lastDelta = 0;
         while (delta > 0.0001F)
         {
             player.RotateCraft(targetVector);
             delta = Mathf.Abs(Vector2.Dot(player.transform.up, normalizedTarget) - 1f);
+            // give up if the rotate didn't do anything
+            if (lastDelta == delta) break;
+            lastDelta = delta;
             yield return null;
         }
 

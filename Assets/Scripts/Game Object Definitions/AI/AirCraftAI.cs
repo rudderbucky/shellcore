@@ -244,10 +244,14 @@ public class AirCraftAI : MonoBehaviour
     {
         Vector2 normalizedTarget = targetVector.normalized;
         float delta = Mathf.Abs(Vector2.Dot(craft.transform.up, normalizedTarget) - 1f);
+        float lastDelta = 0;
         while (delta > 0.0001F)
         {
             craft.RotateCraft(targetVector);
             delta = Mathf.Abs(Vector2.Dot(craft.transform.up, normalizedTarget) - 1f);
+            // give up if the rotate didn't do anything
+            if (lastDelta == delta) break;
+            lastDelta = delta;
             yield return null;
         }
 
