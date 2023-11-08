@@ -700,6 +700,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.dialogueColor, speaker);
+        background.Find("TaskRewardInfo").gameObject.SetActive(true);
+        background.Find("RadioVisual").GetComponent<CanvasGroup>().alpha = 0.1F;
         DialogueViewTransitionIn(speaker);
         AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
         // so cover for its noise here
