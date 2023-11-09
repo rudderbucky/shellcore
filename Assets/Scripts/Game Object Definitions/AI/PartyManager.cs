@@ -371,7 +371,11 @@ public class PartyManager : MonoBehaviour
         }
 
 
-        if (InputManager.GetKey(KeyName.CommandWheel) && !DialogueSystem.isInCutscene && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
+        if (InputManager.GetKey(KeyName.CommandWheel) && 
+        Time.timeScale > 0 &&
+        !DialogueSystem.isInCutscene && 
+        partyMembers.Count > 0 && 
+        partyMembers.TrueForAll((member) => { return member; }))
         {
             if (showCoroutine == null)
             {
@@ -448,7 +452,7 @@ public class PartyManager : MonoBehaviour
             scale.x = Mathf.Min(scale.x + 0.1F, 1);
             scale.y = Mathf.Min(scale.y + 0.1F, 1);
             wheel.transform.localScale = scale;
-            yield return new WaitForSecondsRealtime(0.001F);
+            yield return new WaitForSeconds(0.001F);
         }
 
         wheel.transform.localScale = Vector3.one;
@@ -470,7 +474,7 @@ public class PartyManager : MonoBehaviour
             scale.x = Mathf.Max(scale.x - 0.1F, 0);
             scale.y = Mathf.Max(scale.y - 0.1F, 0);
             wheel.transform.localScale = scale;
-            yield return new WaitForSecondsRealtime(0.001F);
+            yield return new WaitForSeconds(0.001F);
         }
 
         wheel.transform.localScale = Vector3.zero;
