@@ -15,6 +15,7 @@ MissionTrigger(
     name=Abandonment_missionName,
     entryPoint=Abandonment_entryPoint,
     prerequisites=(Truthful_Revelation_missionName),
+    episode=3,
     sequence=(
         Call(Abandonment_start),
     )
@@ -120,6 +121,7 @@ Function(
         ),
         Call(Abandonment_checkpointSpawnParty),
         StartCutscene(),
+        StartMusicOverride(musicID=music_blue4),
         ForceStartDialogue(dialogueID=Abandonment_blueVoice)
     )
 )
@@ -349,14 +351,14 @@ Dialogue(
     dialogueID=Abandonment_blueVoice,
     dialogueText=Abandonment_cs1_d1,
     color=(92,137,230),
-    typingSpeedFactor=0.7,
+    typingSpeedFactor=0.4,
     responses=(
         Response(
             responseText=Abandonment_cs1_d2,
             next=Dialogue(
                 dialogueText=Abandonment_cs1_d5,
                 color=(92,137,230),
-                typingSpeedFactor=0.7,
+                typingSpeedFactor=0.4,
                 responses=(
                     Response(
                         responseText=Abandonment_cs1_d6,
@@ -370,7 +372,7 @@ Dialogue(
             next=Dialogue(
                 dialogueText=Abandonment_cs1_d5,
                 color=(92,137,230),
-                typingSpeedFactor=0.7,
+                typingSpeedFactor=0.4,
                 responses=(
                     Response(
                         responseText=Abandonment_cs1_d6,
@@ -539,7 +541,7 @@ Function(
 Function(
     name=Abandonment_postBlueVoice,
     sequence=(
-        StopMusicOverride(),
+        FinishMusicOverride(),
         ConditionBlock(
             Comparison(
                 val1=$$$Loyalty_Variable,
