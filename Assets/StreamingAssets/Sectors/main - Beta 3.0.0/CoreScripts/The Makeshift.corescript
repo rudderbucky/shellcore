@@ -7,31 +7,61 @@ SectorTrigger(
                 val2=1,
                 comp=Eq,
                 sequence=(
-                    SetSectorType(type=Haven),
-                    SpawnEntity(
-                        entityID=Makeshift_yard,
-                        assetID=yard_blueprint,
-                        flagName=Abandonment_makeshiftYardSpawn
-                    ),
-                    SpawnEntity(
-                        entityID=Makeshift_upgrader,
-                        assetID=coreupgrader_blueprint,
-                        flagName=Abandonment_makeshiftUpgraderSpawn
-                    ),
-                    SpawnEntity(
-                        entityID=sukrat,
-                        flagName=Abandonment_makeshift_cs3,
-                        forceCharacterTeleport=false
-                    ),
-                    SpawnEntity(
-                        entityID=the-architect,
-                        flagName=Abandonment_makeshift_cs2,
-                        forceCharacterTeleport=false
-                    ),
-                    Call(Makeshift_addStationDialogue)
+                    Call(Makeshift_spawnStage1)
                 )
             )
         )
+    )
+)
+
+Function(
+    name=Makeshift_spawnStage1,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Makeshift_stage1spawned,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$Makeshift_stage1spawned,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    SetVariable(name=$$Makeshift_stage1spawned, value=1),
+                    Call(Makeshift_spawnStage1Helper)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Makeshift_spawnStage1Helper,
+    sequence=(
+        SetSectorType(type=Haven),
+        SpawnEntity(
+            entityID=Makeshift_yard,
+            assetID=yard_blueprint,
+            flagName=Abandonment_makeshiftYardSpawn
+        ),
+        SpawnEntity(
+            entityID=Makeshift_upgrader,
+            assetID=coreupgrader_blueprint,
+            flagName=Abandonment_makeshiftUpgraderSpawn
+        ),
+        SpawnEntity(
+            entityID=sukrat,
+            flagName=Abandonment_makeshift_cs3,
+            forceCharacterTeleport=false
+        ),
+        SpawnEntity(
+            entityID=the-architect,
+            flagName=Abandonment_makeshift_cs2,
+            forceCharacterTeleport=false
+        ),
+        Call(Makeshift_addStationDialogue)
     )
 )
 

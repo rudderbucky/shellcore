@@ -72,7 +72,7 @@ Function(
                             sequence=(
                                 SetVariable(
                                     name=$$$Loyalty_Variable,
-                                    value=0
+                                    value=1
                                 )
                             )
                         ),
@@ -1680,7 +1680,7 @@ Dialogue(
     )
 )
 
-Text("Abandonment_kappaJump_d23", "It’s you! Why did you abandon us...")
+Text("Abandonment_kappaJump_d23", "It’s you! Why did you leave us...")
 Text("Abandonment_kappaJump_d24", "I believe we are infected.")
 Text("Abandonment_kappaJump_d25", "Just because the other leader said so? You were convinced to forsake all the time we fought together? It’s unbelievable...")
 Text("Abandonment_kappaJump_d26", "I didn’t like our society.")
@@ -1882,6 +1882,7 @@ Function(
                             val2=1,
                             comp=Eq,
                             sequence=(
+                                Call(Makeshift_spawnStage1),
                                 SpawnEntity(
                                     entityID=the-architect,
                                     flagName=Abandonment_makeshiftYardSpawn
