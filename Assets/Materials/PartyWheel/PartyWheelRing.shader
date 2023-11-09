@@ -1,4 +1,4 @@
-Shader "Sprites/PartyWheelCursor" {
+Shader "Sprites/PartyWheelRing" {
     Properties {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1, 1, 1, 1)
@@ -72,7 +72,6 @@ Shader "Sprites/PartyWheelCursor" {
                 _Offset *= 0.5F * 3.1415;
                 float rad = _MainTex_TexelSize.y / 2;
                 float rad2 = _MainTex_TexelSize.y / 2 * 3 / 5;
-                float rad3 = _MainTex_TexelSize.y / 2 * 3 / 5;
                 float x = (i.uv.x * _MainTex_TexelSize.x) - _MainTex_TexelSize.x / 2;
                 float y = (i.uv.y * _MainTex_TexelSize.y) - _MainTex_TexelSize.y / 2;
                 float test = x * x + y * y;
@@ -89,28 +88,22 @@ Shader "Sprites/PartyWheelCursor" {
                     c.rgb *= 0;
                 }
 
-                if (sqrt(test) > rad2)
-                {
-                    c.a *= (rad2 / sqrt(test));
-                    c.rgb *= c.a;
-                }
-
-                if (tan(0.6283 * 0.75F) * x < y)
+                if (tan(0.6283) * x < y)
                 {
                     c.a = 0;
                     c.rgb *= 0;
                 }
 
                 
-                if (tan(-0.6283 * 0.75F) * x > y)
+                if (tan(-0.6283) * x > y)
                 {
                     c.a = 0;
                     c.rgb *= 0;
                 }
 
+                c.a *= (sin(_Time*64+ _Offset * 3.14) / 4) + 0.75F;
+                c.a *= 0.25F;
 
-                c.a *= (sin(_Time*16) / 10) + 0.9F;
-                c.a *= 0.8f;
                 c.rgb *= c.a;
 
                 return c;
