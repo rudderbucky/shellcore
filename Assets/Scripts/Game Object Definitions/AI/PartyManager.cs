@@ -245,20 +245,13 @@ public class PartyManager : MonoBehaviour
     public GameObject partyIndicatorPrefab;
     public Dictionary<ShellCore, GameObject> partyIndicators = new Dictionary<ShellCore, GameObject>();
     public Transform indicatorTransform;
+    public List<string> optionNames = new List<string>();
+
 
     private void AddOption(string name, UnityAction action)
     {
-        var text = Instantiate(textPrefab, wheel.transform).GetComponent<Text>();
-        text.text = name;
-        texts.Add(text);
         options.Add(action);
-
-
-        for (int i = 0; i < texts.Count; i++)
-        {
-            float angle = Mathf.Deg2Rad * i * 360f / texts.Count;
-            texts[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(250 * Mathf.Sin(angle), 250 * Mathf.Cos(angle));
-        }
+        optionNames.Add(name);
     }
 
     bool initialized = false;
@@ -267,6 +260,7 @@ public class PartyManager : MonoBehaviour
 
     void Start()
     {
+        optionNames.Clear();
         AddOption("Attack Enemy", OrderAttack);
         AddOption("Defend Stations", OrderDefendStation);
         AddOption("Collect Power", OrderCollection);
@@ -350,6 +344,7 @@ public class PartyManager : MonoBehaviour
     private int index = -1;
     private float partyMemberTeleportThreshold = 2500;
 
+    public Text wheelText;
     void Update()
     {
         blocker.SetActive(false);
@@ -391,6 +386,7 @@ public class PartyManager : MonoBehaviour
             }
 
             index = Mathf.RoundToInt((x) / (360 / options.Count));
+            wheelText.text = optionNames[index % optionNames.Count];
         }
         else if (initialized)
         {

@@ -75,13 +75,13 @@ Shader "Sprites/PartyWheelShader" {
                 float y = (i.uv.y * _MainTex_TexelSize.y) - _MainTex_TexelSize.y / 2;
                 float test = x * x + y * y;
                 
-                c.g *= _SinTime;
                 if (sqrt(test) > rad)
                 {
                     c.a = 0;
                     c.rgb *= 0;
                 }
 
+                c.a *= (sin(_Time*16) / 10) + 0.9F;
                 c.a *= 0.8f;
                 c.rgb *= c.a;
 
