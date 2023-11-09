@@ -38,7 +38,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     int characterCount = 0;
     float nextCharacterTime;
     private float typingSpeedFactor = 1;
-    public double timeBetweenCharacters = 0.0175d;
+    public double timeBetweenCharacters = 0.01f;
     string text = "";
     public PlayerCore player;
     Vector3? speakerPos = null;
