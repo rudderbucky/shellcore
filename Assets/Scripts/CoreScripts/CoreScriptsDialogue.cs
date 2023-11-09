@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
@@ -139,7 +140,7 @@ public class CoreScriptsDialogue : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("typingSpeedFactor="))
             {
-                node.typingSpeedFactor = float.Parse(val);
+                node.typingSpeedFactor = float.Parse(val, CultureInfo.InvariantCulture);
                 data.typingSpeedFactor = node.typingSpeedFactor;
             }
             else if (lineSubstr.StartsWith("color="))

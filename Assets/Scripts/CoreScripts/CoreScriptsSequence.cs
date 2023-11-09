@@ -6,6 +6,7 @@ using static CoreScriptsManager;
 using System.Linq;
 using System.Collections;
 using NodeEditorFramework.Standard;
+using System.Globalization;
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
@@ -329,7 +330,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.SetPath:
                     entityID = GetArgument(inst.arguments, "entityID");
                     var rotateWhileMoving = GetArgument(inst.arguments, "rotateWhileMoving") != "false";
-                    var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"));
+                    var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"), CultureInfo.InvariantCulture);
                     flagName = GetArgument(inst.arguments, "flagName");
 
                     Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
@@ -367,7 +368,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.StartCameraPan:
                     flagName = GetArgument(inst.arguments, "flagName");
-                    var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"));
+                    var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"), CultureInfo.InvariantCulture);
                     Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
                     break;
                 case InstructionCommand.FinishCameraPan:
@@ -454,7 +455,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     );
                     break;
                 case InstructionCommand.Wait:
-                    yield return new WaitForSeconds(float.Parse(GetArgument(inst.arguments, "time")));
+                    yield return new WaitForSeconds(float.Parse(GetArgument(inst.arguments, "time"), CultureInfo.InvariantCulture));
                     break;
                 case InstructionCommand.DevConsole:
                     DevConsoleScript.Instance.EnterCommand(GetArgument(inst.arguments, "command"), true);
@@ -462,13 +463,13 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.FadeIntoBlack:
                     var cStr = GetArgument(inst.arguments, "color");
                     var color = string.IsNullOrEmpty(cStr) ? Color.black : CoreScriptsDialogue.ParseColor(cStr);
-                    var speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"));
+                    var speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"), CultureInfo.InvariantCulture);
                     Cutscene.FadeIntoBlack(color, speedFactor);
                     break;
                 case InstructionCommand.FadeOutOfBlack:
                     cStr = GetArgument(inst.arguments, "color");
                     color = string.IsNullOrEmpty(cStr) ? Color.black : CoreScriptsDialogue.ParseColor(cStr);
-                    speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"));
+                    speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"), CultureInfo.InvariantCulture);
                     Cutscene.FadeOutOfBlack(color, speedFactor);
                     break;
                 case InstructionCommand.DeleteEntity:

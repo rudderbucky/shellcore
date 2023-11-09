@@ -7,6 +7,7 @@ using static CoreScriptsSequence;
 using static CoreScriptsManager;
 using static Entity;
 using static SectorManager;
+using System.Globalization;
 
 public class CoreScriptsCondition : MonoBehaviour
 {
@@ -134,7 +135,7 @@ public class CoreScriptsCondition : MonoBehaviour
                 Variable.CompareVals(val1, val2, comp, c, cb);
                 break;
             case ConditionType.Time:
-                var time = float.Parse(CoreScriptsSequence.GetArgument(c.arguments, "time"));
+                var time = float.Parse(CoreScriptsSequence.GetArgument(c.arguments, "time"), CultureInfo.InvariantCulture);
                 var timer = TaskManager.Instance.StartCoroutine(Timer(time, cb, c));
                 CoreScriptsManager.instance.timerCoroutines.Add(ID, timer);
                 break;
