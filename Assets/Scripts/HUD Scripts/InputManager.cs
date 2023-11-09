@@ -67,7 +67,7 @@ public class InputManager : MonoBehaviour
         {KeyName.StatusMenu, new Key(KeyCode.E, "Status menu")},
         {KeyName.PauseMenu, new Key(KeyCode.Escape, "Pause menu")},
         {KeyName.Console, new Key(KeyCode.F3, "Open developer console")},
-        {KeyName.CommandWheel, new Key(KeyCode.LeftControl, "Party command wheel")},
+        {KeyName.CommandWheel, new Key(KeyCode.LeftAlt, "Party command wheel")},
         {KeyName.HideHUD, new Key(KeyCode.F1, "Hide HUD")},
         {KeyName.ShowChatHistory, new Key(KeyCode.Return, "Show chat history")},
         {KeyName.AutoCastBuyTurret, new Key(KeyCode.LeftShift, "Turret quick purchase (+ number) and Auto cast")},
