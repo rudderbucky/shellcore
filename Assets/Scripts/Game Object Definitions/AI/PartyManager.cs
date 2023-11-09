@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
 
 public class PartyManager : MonoBehaviour
 {
@@ -372,7 +373,11 @@ public class PartyManager : MonoBehaviour
 
         if (InputManager.GetKey(KeyName.CommandWheel) && !DialogueSystem.isInCutscene && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
         {
-            wheel.SetActive(true);
+            if (showCoroutine == null)
+            {
+                showCoroutine = StartCoroutine(BeginShow());
+            }
+
             arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2),
                 (Input.mousePosition.x - Camera.main.pixelWidth / 2)) * Mathf.Rad2Deg);
             var x = 90 - arrow.rotation.eulerAngles.z;
@@ -403,8 +408,10 @@ public class PartyManager : MonoBehaviour
 
                 index = -1;
             }
-
-            wheel.SetActive(false);
+            if (hideCoroutine == null)
+            {
+                hideCoroutine = StartCoroutine(BeginHide());
+            }
         }
 
         foreach (var kvp in partyIndicators)
@@ -422,6 +429,55 @@ public class PartyManager : MonoBehaviour
             }
         }
     }
+
+    public Coroutine showCoroutine;
+    public Coroutine hideCoroutine;
+    public IEnumerator BeginShow()
+    {
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
+
+        wheel.SetActive(true);
+        wheel.transform.localScale = new Vector3(0.5F, 0.5F, 1);
+        while (wheel.transform.localScale.x < 1)
+        {
+            var scale = wheel.transform.localScale;
+            scale.x = Mathf.Min(scale.x + 0.1F, 1);
+            scale.y = Mathf.Min(scale.y + 0.1F, 1);
+            wheel.transform.localScale = scale;
+            yield return new WaitForSecondsRealtime(0.001F);
+        }
+
+        wheel.transform.localScale = Vector3.one;
+        yield return null;
+    }
+
+    public IEnumerator BeginHide()
+    {
+        if (showCoroutine != null)
+        {
+            StopCoroutine(showCoroutine);
+            showCoroutine = null;
+        }
+        wheel.transform.localScale = new Vector3(0.5F, 0.5F, 1);
+
+        while (wheel.transform.localScale.x > 0F)
+        {
+            var scale = wheel.transform.localScale;
+            scale.x = Mathf.Max(scale.x - 0.1F, 0);
+            scale.y = Mathf.Max(scale.y - 0.1F, 0);
+            wheel.transform.localScale = scale;
+            yield return new WaitForSecondsRealtime(0.001F);
+        }
+
+        wheel.transform.localScale = Vector3.zero;
+        wheel.SetActive(false);
+        yield return null;
+    }
+
 
     public Transform[] portraits;
 

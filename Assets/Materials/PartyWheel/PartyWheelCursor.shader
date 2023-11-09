@@ -109,7 +109,7 @@ Shader "Sprites/PartyWheelCursor" {
                 }
 
 
-                c.a *= (sin(_Time*16) / 10) + 0.9F;
+                c.a *= (sin(_Time*32) / 5) + 0.8F;
                 c.a *= 0.8f;
                 c.rgb *= c.a;
 
