@@ -50,6 +50,7 @@ public class Mobility : MonoBehaviour
                     if (customMass >= 0)
                     {
                         AIData.entities[i].weight = customMass;
+                        if (AIData.entities[i] is Craft craft) craft.CalculatePhysicsConstants();
                     }
 
                     airCraft.rotateWhileMoving = rotateWhileMoving;

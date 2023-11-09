@@ -168,15 +168,16 @@ namespace NodeEditorFramework.Standard
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft airCraft)
+                var ent = AIData.entities[i];
+                if (ent.ID == entityID && ent is AirCraft airCraft)
                 {
-                    if (AIData.entities[i] is PlayerCore player)
+                    if (ent is PlayerCore player)
                     {
-                        AIData.entities[i].StartCoroutine(pathPlayer(player));
+                        ent.StartCoroutine(pathPlayer(player));
                     }
                     else
                     {
-                        AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
+                        ent.isPathing = false; // override any previous paths given to it immediately
                         if (!asynchronous)
                         {
                             airCraft.GetAI().setPath(path, continueTraversing);
@@ -188,7 +189,8 @@ namespace NodeEditorFramework.Standard
 
                         if (useCustomMass)
                         {
-                            AIData.entities[i].weight = mass;
+                            ent.weight = mass;
+                            if (ent is Craft craft) craft.CalculatePhysicsConstants();
                         }
 
                         airCraft.rotateWhileMoving = !doNotRotate;
