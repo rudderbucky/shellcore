@@ -17,6 +17,7 @@ public class CoreScriptsTrigger : MonoBehaviour
     {
         "name",
         "entryPoint",
+        "episode"
     };
 
         private static readonly List<string> requiredSectorTriggerArguments = new List<string>()
@@ -66,6 +67,9 @@ public class CoreScriptsTrigger : MonoBehaviour
                     break;
                 case "sectorName":
                     trigger.sectorName = val;
+                    break;
+                case "episode":
+                    trigger.episode = int.Parse(val);
                     break;
             }
         }
