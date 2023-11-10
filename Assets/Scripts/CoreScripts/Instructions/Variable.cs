@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
@@ -125,18 +126,18 @@ public class Variable : MonoBehaviour
                 }
                 break;
             case "Gt":
-                var tmpInt1 = int.Parse(tmp1);
-                var tmpInt2 = int.Parse(tmp2);
-                if (tmpInt1 > tmpInt2)
+                var tmpVal1 = float.Parse(tmp1, CultureInfo.InvariantCulture);
+                var tmpVal2 = float.Parse(tmp2, CultureInfo.InvariantCulture);
+                if (tmpVal1 > tmpVal2)
                 {
                     SatisfyCondition(c, cb);
                     return true;
                 }
                 break;
             case "Lt":
-                tmpInt1 = int.Parse(tmp1);
-                tmpInt2 = int.Parse(tmp2);
-                if (tmpInt1 < tmpInt2)
+                tmpVal1 = float.Parse(tmp1, CultureInfo.InvariantCulture);
+                tmpVal2 = float.Parse(tmp2, CultureInfo.InvariantCulture);
+                if (tmpVal1 < tmpVal2)
                 {
                     SatisfyCondition(c, cb);
                     return true;
@@ -145,9 +146,6 @@ public class Variable : MonoBehaviour
         }
         return false;
     }
-
-
-
 
     public static void SetVariable(string variableName, string variableValue)
     {
