@@ -640,6 +640,7 @@ Text("Abandonment_scoutStartArchitect_pd2", "Oh would you pipe down? Let's try g
 Text("Abandonment_scoutStartArchitect_pd3", "Looks like there's nothing here... I should try going the other way.")
 Text("Abandonment_scoutStartArchitect_pd4", "Wait... I'm picking up some kind of disturbance in this sector. I've marked it on the map.")
 Text("Abandonment_scoutStartArchitect_pd5", "Their... our leader mentioned there would be other traitors here. Maybe the other way?")
+Text("Abandonment_scoutStartArchitect_pd6", "What? Nanoscopes? I invented those!! What are those doing here...")
 //Sector 2600-6460 (nothing)
 //Sector 2220-6140 (DeadZone)
 //Sector 2220-6460 (meet Heracles)
@@ -818,6 +819,7 @@ SectorTrigger(
         SpawnEntity
         (
             entityID=Abandonment_nanoscope,
+            name=Nanoscope,
             faction=3,
             blueprintJSON=Nanoscope,
             flagName=Abandonment_heraclesNanoscope_3
@@ -825,6 +827,7 @@ SectorTrigger(
         SpawnEntity
         (
             entityID=Abandonment_nanoscope_1,
+            name=Nanoscope,
             faction=3,
             blueprintJSON=Nanoscope,
             flagName=Abandonment_heraclesNanoscope_1
@@ -832,6 +835,7 @@ SectorTrigger(
         SpawnEntity
         (
             entityID=Abandonment_nanoscope_2,
+            name=Nanoscope,
             faction=3,
             blueprintJSON=Nanoscope,
             flagName=Abandonment_heraclesNanoscope_2
@@ -839,6 +843,7 @@ SectorTrigger(
         SpawnEntity
         (
             entityID=Abandonment_nanoscope_3,
+            name=Nanoscope,
             faction=3,
             blueprintJSON=Nanoscope,
             flagName=Abandonment_heraclesNanoscope_4

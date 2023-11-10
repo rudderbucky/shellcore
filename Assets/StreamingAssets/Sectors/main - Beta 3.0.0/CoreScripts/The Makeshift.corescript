@@ -7,7 +7,8 @@ SectorTrigger(
                 val2=1,
                 comp=Eq,
                 sequence=(
-                    Call(Makeshift_spawnStage1)
+                    Call(Makeshift_spawnStage1),
+                    Call(Makeshift_addStationDialogue)
                 )
             )
         )
@@ -106,6 +107,8 @@ Dialogue(
 Function(
     name=Makeshift_addStationDialogue,
     sequence=(
+        ClearInteraction(entityID=Makeshift_yard),
+        ClearInteraction(entityID=Makeshift_upgrader),
         SetInteraction(entityID=Makeshift_yard, dialogueID=Makeshift_yard_d),
         SetInteraction(entityID=Makeshift_upgrader, dialogueID=Makeshift_upgrader_d),
     )
