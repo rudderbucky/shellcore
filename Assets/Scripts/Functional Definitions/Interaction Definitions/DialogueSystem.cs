@@ -321,7 +321,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         var display = window.transform.Find("Background/RadioVisual/Radio/Holder")?.GetComponentInChildren<SelectionDisplayHandler>();
         if (display)
         {
-            var remastered = dialogueStyle == DialogueStyle.Remastered;
+            var remastered = GetDialogueStyle() == DialogueStyle.Remastered;
             if (speaker && remastered)
             {
                 DialogueViewTransitionIn(speaker);
@@ -352,6 +352,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
+    private DialogueStyle GetDialogueStyle()
+    {
+        if (isInCutscene) return DialogueStyle.Remastered;
+        return dialogueStyle;
+    }
     ///
     /// Creates and returns a button with the passed text, action call, and y position.
     ///
@@ -360,7 +365,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
         button.SetParent(background, false);
         button.anchoredPosition = new Vector2(0, ypos);
-        button.GetComponent<Image>().enabled = dialogueStyle == DialogueStyle.Remastered;
+        button.GetComponent<Image>().enabled = GetDialogueStyle() == DialogueStyle.Remastered ;
         if (call != null)
         {
             button.GetComponent<Button>().onClick.AddListener(call);
@@ -918,7 +923,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             speakerPos = speaker.GetTransform().position;
         }
 
-        var remastered = dialogueStyle == DialogueStyle.Remastered;
+        var remastered = GetDialogueStyle() == DialogueStyle.Remastered;
         if (speaker as Entity)
         {
             var ent = speaker as Entity;
@@ -1091,7 +1096,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     {
         currentState = DialogueState.In;
         var windowRect = window.GetComponent<RectTransform>();
-        switch (dialogueStyle)
+        switch (GetDialogueStyle())
         {
             case DialogueStyle.Original:
                 windowRect.anchorMin = windowRect.anchorMax = new Vector2(0.5F, 0.5F);
