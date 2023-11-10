@@ -60,7 +60,8 @@ public class CoreScriptsSequence : MonoBehaviour
         DisableDeadZoneDamage,
         ShowPopup,
         StartMusicOverride,
-        FinishMusicOverride
+        FinishMusicOverride,
+        RandomFloat,
     }
     public struct Instruction
     {
@@ -320,6 +321,11 @@ public class CoreScriptsSequence : MonoBehaviour
                     var val2 = int.Parse(GetArgument(inst.arguments, "val2"));
                     var name = GetArgument(inst.arguments, "name", true);
                     Variable.SetVariable(name, val1+val2+"");
+                    break;
+                case InstructionCommand.RandomFloat:
+                    variableName = GetArgument(inst.arguments, "name", true);
+                    var randFloat = UnityEngine.Random.Range(0, 1F);
+                    Variable.SetVariable(variableName, randFloat.ToString());
                     break;
                 case InstructionCommand.ConcatenateValues:
                     var v1 = GetArgument(inst.arguments, "val1");
