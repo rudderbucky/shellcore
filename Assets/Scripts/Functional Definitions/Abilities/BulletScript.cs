@@ -152,11 +152,18 @@ public class BulletScript : MonoBehaviour, IProjectile
 
     public void HitPart(ShellPart part)
     {
-        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
+        DetachTrail();
+        Destroy(gameObject); // bullet has collided with a target, delete immediately
+        if (!part) return;
+
+        var networkReady = MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off 
+            || !NetworkManager.Singleton.IsClient 
+            || NetworkManager.Singleton.IsHost;
+        if (networkReady && part.craft)
         {
             var residue = part.craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
             part.TakeDamage(residue); // if the shell is low, damage the part
-            damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+            damage = 0; // make sure that other collision events with the same bullet don't do any more damage
         }
 
         if (part.craft is Drone drone && disableDrones)
@@ -165,13 +172,13 @@ public class BulletScript : MonoBehaviour, IProjectile
         }
 
         InstantiateHitPrefab();
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off 
+            && NetworkManager.Singleton.IsServer
+            && GetComponent<NetworkObject>())
         {
             if (GetComponent<NetworkObject>().IsSpawned)
                 GetComponent<NetworkObject>().Despawn();
         }
-        DetachTrail();
-        Destroy(gameObject); // bullet has collided with a target, delete immediately
     }
 
     // Shards, core parts
