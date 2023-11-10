@@ -529,7 +529,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             interactible = false;
         }
 
-        if (this as ShellCore && (SectorManager.instance.current.type == Sector.SectorType.BattleZone || SectorManager.instance.current.type == Sector.SectorType.SiegeZone))
+        if (this as ShellCore && (SectorManager.instance.BZActive() || SectorManager.instance.SZActive()))
         {
             interactible = false;
         }

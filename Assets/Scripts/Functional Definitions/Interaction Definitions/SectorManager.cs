@@ -47,6 +47,27 @@ public class SectorManager : MonoBehaviour
     private BattleZoneManager battleZone;
     private SiegeZoneManager siegeZone;
 
+    public bool BZActive()
+    {
+        return battleZone != null && battleZone.playing;
+    }
+
+    public bool SZActive()
+    {
+        return siegeZone != null && siegeZone.playing;
+    }
+
+    public void WinSiege()
+    {
+        if (siegeZone != null) siegeZone.playing = false;
+    }
+
+
+    public void WinBZ()
+    {
+        if (battleZone != null) battleZone.playing = false;
+    }
+
     private Dictionary<string, GameObject> objects;
 
     // TODO: Remove persistent objects. Doesn't need to be here
