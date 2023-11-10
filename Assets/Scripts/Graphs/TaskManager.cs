@@ -355,6 +355,8 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         {
             path = System.IO.Path.Join("\\\\?\\", path);
         }
+
+        if (!System.IO.File.Exists(path)) return null;
         return XMLImport.Import(path);
     }
 

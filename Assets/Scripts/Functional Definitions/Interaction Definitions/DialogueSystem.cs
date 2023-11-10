@@ -197,7 +197,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 traverser.StartQuest();
             }
         }
-        else Debug.LogWarning("null canvas path");
+        else Debug.Log("null canvas path");
     }
 
     public static bool GetInitialized()
