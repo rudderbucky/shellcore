@@ -45,7 +45,13 @@ public class Variable : MonoBehaviour
                 data.block = cb;
                 data.comp = comp;
                 if (RunDistanceCondition(data)) SatisfyCondition(c, cb);
-                else CoreScriptsManager.instance.distanceConditions.Add(ID, data);
+                else
+                {
+                    var dCond = CoreScriptsManager.instance.distanceConditions;
+                    if (dCond.ContainsKey(ID)) dCond.Remove(ID);
+                    dCond.Add(ID, data);
+                }
+                
                 return;
             }
         }
@@ -63,7 +69,9 @@ public class Variable : MonoBehaviour
 
             };
 
-            CoreScriptsManager.instance.variableChangedDelegates.Add(ID, del);
+            var varCond = CoreScriptsManager.instance.variableChangedDelegates;
+            if (varCond.ContainsKey(ID)) varCond.Remove(ID);
+            varCond.Add(ID, del);
             CoreScriptsManager.OnVariableUpdate += del;
         }
     }
