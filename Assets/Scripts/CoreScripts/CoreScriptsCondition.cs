@@ -109,6 +109,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
     public static void ExecuteConditionBlock(ConditionBlock block, Context context)
     {
+        block.complete = false;
         block.context = context;
         for (int i = 0; i < block.conditions.Count; i++)
         {
