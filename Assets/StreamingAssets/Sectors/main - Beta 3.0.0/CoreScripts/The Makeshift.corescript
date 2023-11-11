@@ -62,7 +62,16 @@ Function(
             flagName=Abandonment_makeshift_cs2,
             forceCharacterTeleport=false
         ),
-        Call(Makeshift_addStationDialogue)
+        Call(Makeshift_addStationDialogue),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Makeshift,
+                invert=true,
+                sequence=(
+                    SetVariable(name=$$Makeshift_stage1spawned, value=0),
+                )
+            )
+        )
     )
 )
 

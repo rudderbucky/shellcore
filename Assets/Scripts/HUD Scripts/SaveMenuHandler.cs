@@ -39,6 +39,8 @@ public class SaveMenuHandler : GUIWindowScripts
         "Beta 0.0.0",
         "Beta 0.1.1",
         "Beta 1.0.0",
+        "Beta 2.0.0",
+        "Beta 2.0.1",
         "Beta 2.1.0"
     };
 
