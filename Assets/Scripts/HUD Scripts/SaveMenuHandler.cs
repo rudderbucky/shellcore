@@ -314,6 +314,8 @@ public class SaveMenuHandler : GUIWindowScripts
         var save = saves[indexToMigrate];
         switch (save.version)
         {
+            case "Beta 2.0.0":
+            case "Beta 2.0.1":
             case "Beta 2.1.0":
                 var missionsNames = new string[] 
                 {
