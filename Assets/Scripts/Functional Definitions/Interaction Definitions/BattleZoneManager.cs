@@ -44,6 +44,7 @@ public class BattleZoneManager : MonoBehaviour
     {
         Entity.OnEntityDeath -= OnEntityDeath;
         ShellCore.OnPowerCollected -= OnPowerCollected;
+        playing = false;
         ClearTargetsAndStats();
     }
 

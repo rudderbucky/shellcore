@@ -49,6 +49,11 @@ public class SiegeZoneManager : MonoBehaviour
         playing = true;
     }
 
+    void OnDisable()
+    {
+        playing = false;
+    }
+
     public void AlertPlayers(string message)
     {
         foreach (PlayerCore player in players)
