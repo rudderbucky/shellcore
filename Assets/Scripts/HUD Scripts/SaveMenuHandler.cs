@@ -264,7 +264,7 @@ public class SaveMenuHandler : GUIWindowScripts
         switch (saves[index].version)
         {
             case "Beta 2.1.0":
-                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will remove old EP3 mission data from your save file. "
+                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will remove old EP3 mission data and place you in the Spawning Grounds. "
                                                                                                  + "Backup first! (Below save icon delete button)";
                 break;
             case "Beta 1.0.0":
@@ -326,6 +326,8 @@ public class SaveMenuHandler : GUIWindowScripts
                     "Reclamation"
                 };
                 var missionsToRemove = save.missions.Where(m => missionsNames.Contains(m.name)).ToArray();
+                save.lastDimension = 0;
+                save.position = new Vector2(260, -145);
                 foreach (var m in missionsToRemove)
                 {
                     save.missions.Remove(m);
