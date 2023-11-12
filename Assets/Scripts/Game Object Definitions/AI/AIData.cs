@@ -16,4 +16,5 @@ public class AIData
     public static List<Flag> flags = new List<Flag>();
     public static List<IProjectile> collidingProjectiles = new List<IProjectile>();
     public static List<ShardRock> shards = new List<ShardRock>();
+    public static List<GasScript> gas = new List<GasScript>();
 }

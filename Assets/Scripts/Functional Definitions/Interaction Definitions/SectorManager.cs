@@ -62,6 +62,7 @@ public class SectorManager : MonoBehaviour
 
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
+    public GameObject gasPrefab;
     public Sector overrideProperties = null;
     public SkirmishMenu skirmishMenu;
     int maxID = 0;
@@ -1520,7 +1521,6 @@ public class SectorManager : MonoBehaviour
         }
 
 
-        // shards
         for (int i = 0; i < current.shardCountSet.Length; i++)
         {
             for (int j = 0; j < current.shardCountSet[i]; j++)
@@ -1534,7 +1534,14 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        // music
+        for (int i = 0; i < 10; i++)
+        {
+            var shard = Instantiate(gasPrefab, new Vector3(
+                        Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f),
+                        Random.Range(current.bounds.y - current.bounds.h * 0.2f, current.bounds.y - current.bounds.h * 0.8f), 0)
+                    , Quaternion.identity);
+        }
+
         PlayCurrentSectorMusic();
 
         if (info)

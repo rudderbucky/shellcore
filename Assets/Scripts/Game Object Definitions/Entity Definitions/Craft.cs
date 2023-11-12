@@ -220,15 +220,31 @@ public abstract class Craft : Entity
 
     public bool rotateWhileMoving = true;
     protected const float maxVelocity = 40f;
+    
 
     /// <summary>
     /// Applies a force to the craft on the given vector
     /// </summary>
     protected virtual void CraftMover(Vector2 directionVector)
     {
+        var restVelocity = Vector3.zero;
+
+        foreach (var gas in AIData.gas)
+        {
+            var radius = gas.radius;
+            if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < radius * radius)
+            {
+                var diff = radius * radius - Vector2.SqrMagnitude(transform.position - gas.transform.position);
+                var vec = gas.transform.position - transform.position;
+                restVelocity += (vec.normalized * Mathf.Pow(diff, 0.25F)) * 0.25F;
+            }
+        }
+        
+
+
         if (isImmobile)
         {
-            entityBody.velocity = Vector2.zero;
+            entityBody.velocity = restVelocity;
             return;
         }
 
@@ -237,7 +253,7 @@ public abstract class Craft : Entity
             RotateCraft(directionVector / weight);
         }
 
-        entityBody.velocity = CalculateNewVelocity(directionVector);
+        entityBody.velocity = CalculateNewVelocity(directionVector, restVelocity);
 
         if (((Vector2)transform.position - oldPosition).sqrMagnitude > 2f)
         {
@@ -246,8 +262,9 @@ public abstract class Craft : Entity
         }
     }
 
-    protected Vector2 CalculateNewVelocity(Vector2 directionVector)
+    protected Vector2 CalculateNewVelocity(Vector2 directionVector, Vector2 restVelocity)
     {
+        if (this as PlayerCore) Debug.LogWarning(restVelocity);
         var vec = entityBody.velocity;
         /*
         // enable dash dancing lol
@@ -259,6 +276,7 @@ public abstract class Craft : Entity
         else 
         */
         vec += directionVector * physicsAccel * Time.fixedDeltaTime;
+        vec += restVelocity;
         var sqr = vec.sqrMagnitude;
         if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
         {

@@ -16,7 +16,13 @@ public class GasScript : MonoBehaviour
     {
         arc =  Random.Range(2, 9);
         angularVelocity = Random.Range(-4f, -64f);
-        radius = Random.Range(5, 10f);
+        radius = Random.Range(10, 25f);
+        AIData.gas.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        AIData.gas.Remove(this);
     }
 
     void Update()

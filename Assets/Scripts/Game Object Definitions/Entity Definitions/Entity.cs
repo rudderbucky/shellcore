@@ -1395,6 +1395,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             DeathHandler();
         UpdateInteractible();
         UpdateAuras();
+        
+        foreach (var gas in AIData.gas)
+        {
+            var radius = gas.radius;
+            if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < 1F)
+            {
+                TakeCoreDamage(500);
+            }
+        }
+        
+
         if (isDead) // if the craft is dead
         {
             GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
