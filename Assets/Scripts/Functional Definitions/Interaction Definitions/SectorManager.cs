@@ -1534,7 +1534,7 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 1; i++)
         {
             var shard = Instantiate(gasPrefab, new Vector3(
                         Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f),

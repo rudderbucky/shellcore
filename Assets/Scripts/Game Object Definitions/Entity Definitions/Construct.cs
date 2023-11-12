@@ -34,7 +34,26 @@ public class Construct : Entity
 
     protected override void Update()
     {
-        damageLeft = Mathf.Min(MAX_DAMAGE_PER_SECOND, damageLeft + MAX_DAMAGE_PER_SECOND * Time.deltaTime);
+        damageLeft = Mathf.Min(MAX_DAMAGE_PER_SECOND, damageLeft + MAX_DAMAGE_PER_SECOND * Time.deltaTime);     
         base.Update();
+    }
+
+    protected Vector2 restAccel;
+    protected override void FixedUpdate()
+    {
+        restAccel = Vector2.zero;
+        foreach (var gas in AIData.gas)
+        {
+            var radius = gas.radius;
+            if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < radius * radius)
+            {
+                var diff = radius * radius - Vector2.SqrMagnitude(transform.position - gas.transform.position);
+                var vec = gas.transform.position - transform.position;
+                restAccel += (Vector2)(vec.normalized * Mathf.Sqrt(diff)) * 0.1F;
+            }
+        }
+
+        transform.position += (Vector3)restAccel * Time.fixedDeltaTime;
+        base.FixedUpdate();
     }
 }

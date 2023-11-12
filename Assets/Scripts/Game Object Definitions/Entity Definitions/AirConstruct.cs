@@ -45,6 +45,7 @@ public class AirConstruct : Construct
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        Oscillator();
+        if (restAccel == Vector2.zero)
+            Oscillator();
     }
 }

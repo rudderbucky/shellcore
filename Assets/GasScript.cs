@@ -16,7 +16,8 @@ public class GasScript : MonoBehaviour
     {
         arc =  Random.Range(2, 9);
         angularVelocity = Random.Range(-4f, -64f);
-        radius = Random.Range(10, 25f);
+        radius = Random.Range(25F, 25F);
+
         AIData.gas.Add(this);
     }
 
@@ -30,6 +31,8 @@ public class GasScript : MonoBehaviour
         GetComponent<Rigidbody2D>().angularDrag = 0;
         GetComponent<Rigidbody2D>().angularVelocity = angularVelocity * multiplier;
         var partSys = GetComponent<ParticleSystem>();
+        var main = partSys.main;
+        main.startLifetime = 0.3f * radius;
         var velo = partSys.velocityOverLifetime;
         velo.orbitalZ = orbitalZ * Mathf.Sqrt(multiplier);
         velo.radial = radial * multiplier;

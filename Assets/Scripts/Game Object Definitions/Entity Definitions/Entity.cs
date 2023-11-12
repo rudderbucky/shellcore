@@ -1399,7 +1399,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         foreach (var gas in AIData.gas)
         {
             var radius = gas.radius;
-            if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < 1F)
+            if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < 10F)
             {
                 TakeCoreDamage(500);
             }
