@@ -1534,13 +1534,14 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < 1; i++)
-        {
-            var shard = Instantiate(gasPrefab, new Vector3(
-                        Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f),
-                        Random.Range(current.bounds.y - current.bounds.h * 0.2f, current.bounds.y - current.bounds.h * 0.8f), 0)
-                    , Quaternion.identity);
-        }
+        if (gasPrefab && current.type == SectorType.DangerZone)
+            for (int i = 0; i < 5; i++)
+            {
+                var shard = Instantiate(gasPrefab, new Vector3(
+                            Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f),
+                            Random.Range(current.bounds.y - current.bounds.h * 0.2f, current.bounds.y - current.bounds.h * 0.8f), 0)
+                        , Quaternion.identity);
+            }
 
         PlayCurrentSectorMusic();
 
@@ -1565,7 +1566,6 @@ public class SectorManager : MonoBehaviour
 
     private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null, int lastDimension = 0)
     {
-        // destroy existing shard rocks
         foreach (var rock in shardRocks)
         {
             if (rock)
@@ -1573,6 +1573,15 @@ public class SectorManager : MonoBehaviour
                 Destroy(rock.gameObject);
             }
         }
+
+        foreach (var gas in AIData.gas)
+        {
+            if (gas)
+            {
+                Destroy(gas.gameObject);
+            }
+        }
+
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var shard in AIData.rockFragments)

@@ -108,7 +108,7 @@ public class CoreUpgraderScript : GUIWindowScripts
             player.cursave.shards -= GetUpgradeCost(type);
             player.AddCredits(GetUpgradeCostCredits(type) * -1);
             player.abilityCaps[type]++;
-            ShardCountScript.UpdateNumber(player.cursave.shards);
+            ShardCountScript.DisplayCount();
         }
     }
 

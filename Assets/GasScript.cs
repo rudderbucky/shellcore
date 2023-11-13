@@ -16,18 +16,10 @@ public class GasScript : MonoBehaviour
     {
         arc =  Random.Range(2, 9);
         angularVelocity = Random.Range(-4f, -64f);
-        radius = Random.Range(25F, 25F);
+        radius = Random.Range(5F, 10F);
+        if (SectorManager.instance.current.type == Sector.SectorType.DangerZone)
+            radius *= 5;
 
-        AIData.gas.Add(this);
-    }
-
-    private void OnDestroy()
-    {
-        AIData.gas.Remove(this);
-    }
-
-    void Update()
-    {
         GetComponent<Rigidbody2D>().angularDrag = 0;
         GetComponent<Rigidbody2D>().angularVelocity = angularVelocity * multiplier;
         var partSys = GetComponent<ParticleSystem>();
@@ -41,5 +33,29 @@ public class GasScript : MonoBehaviour
         shape.radius = radius * multiplier;
         shape.arcSpread = 1 / arc;
         emission.rateOverTime = 0 * emissionPerSecond * Mathf.Sqrt(multiplier);
+        partSys.Stop();
+        partSys.Clear();
+        partSys.Play();
+        AIData.gas.Add(this);
+    }
+
+    public void Shrink(float val)
+    {
+        radius -= val;
+        var partSys = GetComponent<ParticleSystem>();
+        var main = partSys.main;
+        main.startLifetime = 0.3f * radius; 
+        var shape = partSys.shape;
+        shape.radius = radius * multiplier;
+    }
+
+    private void OnDestroy()
+    {
+        AIData.gas.Remove(this);
+    }
+
+    void Update()
+    {
+
     }
 }

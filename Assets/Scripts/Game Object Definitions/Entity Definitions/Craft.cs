@@ -183,10 +183,15 @@ public abstract class Craft : Entity
                 if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < radius * radius)
                 {
                     var diff = radius * radius - Vector2.SqrMagnitude(transform.position - gas.transform.position);
+                    if (this is PlayerCore core)
+                    { 
+                        core.cursave.gas += Mathf.Pow(diff, 0.75F) * Time.deltaTime / 10;
+                        gas.Shrink(diff * Time.deltaTime / (radius * radius));
+                        ShardCountScript.DisplayCount();
+                    }
                     var vec = (Vector2)(gas.transform.position - transform.position);
                     restAccel += (vec.normalized * Mathf.Sqrt(diff)) * 2F;
                     var normal = Vector2.Dot(Vector2.Perpendicular(vec), entityBody.velocity);
-                    restAccel -= normal * Vector2.Perpendicular(vec) / 10;
                 }
             }
         }

@@ -48,6 +48,8 @@ public class PlayerSave
     public int[] taskVariableValues;
     public int[] abilityCaps;
     public int shards;
+    public float gas;
+    public int fusionEnergy;
     public WorldData.CharacterData[] characters;
     public List<string> sectorsSeen;
     public List<EntityBlueprint.PartInfo> partsSeen;

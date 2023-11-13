@@ -1104,6 +1104,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected virtual void OnDeath()
     {
         // set death, interactibility and immobility
+        if (this is PlayerCore core) 
+        {
+            core.cursave.gas = Mathf.Max(0, core.cursave.gas - 100);
+            ShardCountScript.DisplayCount();
+        }
         IsInvisible = false;
         serverSyncHealthDirty = true;
         RememberWeaponActivationStates();

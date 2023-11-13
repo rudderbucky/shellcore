@@ -179,7 +179,7 @@ public class ShardRock : MonoBehaviour, IDamageable
         {
             var tiers = new int[] { 1, 5, 20 };
             PlayerCore.Instance.cursave.shards += tiers[tier];
-            ShardCountScript.DisplayCount(PlayerCore.Instance.cursave.shards);
+            ShardCountScript.DisplayCount();
         }
     }
 

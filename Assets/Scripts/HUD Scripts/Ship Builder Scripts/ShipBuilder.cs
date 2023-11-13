@@ -981,7 +981,7 @@ public class ShipBuilder : GUIWindowScripts
 
             if (initialShards != player.cursave.shards)
             {
-                ShardCountScript.DisplayCount(player.cursave.shards);
+                ShardCountScript.DisplayCount();
             }
 
             foreach (ShellPart part in partsToAdd)
