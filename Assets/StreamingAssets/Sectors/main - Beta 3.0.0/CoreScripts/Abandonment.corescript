@@ -81,6 +81,12 @@ Function(
 
                     ConditionBlock(
                         Comparison(
+                            val1=MissionStatus(Abandonment_missionName),
+                            val2=complete,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        Comparison(
                             val1=$$$Abandonment_Kappa_Outskirts_1SE_haven,
                             val2=1,
                             comp=Eq,
