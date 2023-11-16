@@ -16,7 +16,7 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
     public virtual void OnPointerDown(PointerEventData eventData)
     {
     }
-
+    
     protected virtual void Start()
     {
         image = GetComponentsInChildren<Image>()[1];
