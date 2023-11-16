@@ -7,9 +7,10 @@ public class FusionStationInventoryScript : ShipBuilderInventoryBase
 {
     private int count;
     public PartDisplayBase partDisplayBase;
+    public FusionStationScript fusionStationScript;
     public override void OnPointerDown(PointerEventData eventData)
     {
-
+        fusionStationScript.SetSelectedPart(part);
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {

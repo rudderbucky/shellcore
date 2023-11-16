@@ -6,7 +6,11 @@ using System.Linq;
 public class FusionStationScript : GUIWindowScripts
 {
     [SerializeField]
-    private FusionStationDisplayScript finalPart;
+    private FusionStationSelectionScript part1;
+    [SerializeField]
+    private FusionStationSelectionScript part2;
+    [SerializeField]
+    private FusionStationSelectionScript finalPart;
     [SerializeField]
     private Transform[] contentsArray; // holds scroll view sub-sections by part size
     [SerializeField]
@@ -41,6 +45,7 @@ public class FusionStationScript : GUIWindowScripts
             dictInvButton.IncrementCount();
             dictInvButton.partDisplayBase = partDisplayBase;
             dictInvButton.part = part;
+            dictInvButton.fusionStationScript = this;
             buttons.Add(part, dictInvButton);
         }
 
@@ -51,11 +56,27 @@ public class FusionStationScript : GUIWindowScripts
         }
     }
 
+    public void SetSelectedPart(EntityBlueprint.PartInfo info)
+    {
+        if (string.IsNullOrEmpty(part1.part.partID))
+        {
+            part1.part = info;
+            part1.Restart();
+        }
+        else if (string.IsNullOrEmpty(part2.part.partID))
+        {
+            part2.part = info;
+            part2.Restart();
+        }
+    }
+
     public void Fuse()
     {
         var pi = new EntityBlueprint.PartInfo();
-        pi.partID = "MediumCenter2";
-        pi.abilityID = 4;
+        pi.partID = part1.part.partID;
+        pi.abilityID = part2.part.abilityID;
+        pi.tier = part2.part.tier;
+        pi.secondaryData = part2.part.secondaryData;
         finalPart.part = pi;
         finalPart.Restart();
     }

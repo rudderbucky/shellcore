@@ -53,6 +53,7 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler, IPoi
             shooter.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
             shooter.color = activeColor;
             shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+            shooter.enabled = true;
         }
         else
         {

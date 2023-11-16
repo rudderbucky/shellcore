@@ -1,17 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FusionStationDisplayScript : ShipBuilderInventoryBase
+public class FusionStationSelectionScript : ShipBuilderInventoryBase
 {
     public Text partCreated;
+    public bool finalPartMode;
     public void Restart()
     {
         Start();
         StopAllCoroutines();
         StartCoroutine(Grow());
     }
+        
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        if (Input.GetKey(KeyCode.LeftShift) && !string.IsNullOrEmpty(part.partID) && !finalPartMode)
+        {
+            part.partID = null;
+            StopAllCoroutines();
+            StartCoroutine(Shrink());
+        }
+    }
+
 
     IEnumerator Grow()
     {
@@ -24,7 +37,7 @@ public class FusionStationDisplayScript : ShipBuilderInventoryBase
             yield return new WaitForEndOfFrame();
         }
         rect.localScale = Vector3.one;
-        StartCoroutine(Shrink());
+        if (finalPartMode) StartCoroutine(Shrink());
     }
 
 
@@ -32,7 +45,7 @@ public class FusionStationDisplayScript : ShipBuilderInventoryBase
     {
         var rect = GetComponent<RectTransform>();
         rect.localScale = Vector3.one;
-        yield return new WaitForSeconds(3);
+        if (finalPartMode) yield return new WaitForSeconds(3);
         if (partCreated) partCreated.enabled = false;
         while (rect.localScale.x > 0)
         {
