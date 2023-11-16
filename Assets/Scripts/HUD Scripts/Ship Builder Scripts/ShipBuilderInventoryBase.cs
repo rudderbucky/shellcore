@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 
 
-public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
+public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public EntityBlueprint.PartInfo part;
     protected Image image;
@@ -14,6 +14,16 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
     public Image isShiny;
 
     public virtual void OnPointerDown(PointerEventData eventData)
+    {
+    }
+
+
+    public virtual void OnPointerEnter(PointerEventData eventData)
+    {
+    }
+
+
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
     }
     

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FusionStationInventoryScript : ShipBuilderInventoryBase
+public class FusionStationDisplayScript : ShipBuilderInventoryBase
 {
     public Text partCreated;
     public void Restart()

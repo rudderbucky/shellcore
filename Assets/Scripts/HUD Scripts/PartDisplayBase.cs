@@ -11,9 +11,24 @@ public class PartDisplayBase : MonoBehaviour
     public Text abilityText;
     public AbilityButtonScript buttonScript;
     public Image abilityBox;
+    public GameObject emptyInfoMarker;
+    
+    public void SetInactive()
+    {
+        if (emptyInfoMarker) emptyInfoMarker.SetActive(true);
+        abilityBox.gameObject.SetActive(false);
+        abilityImage.gameObject.SetActive(false);
+        abilityText.gameObject.SetActive(false);
+        image.gameObject.SetActive(false);
+        partName.gameObject.SetActive(false);
+        partStats.gameObject.SetActive(false);
+        abilityTier.gameObject.SetActive(false);
+    }
+
 
     public void DisplayPartInfo(EntityBlueprint.PartInfo info)
     {
+        if (emptyInfoMarker) emptyInfoMarker.SetActive(false);
         if (info.abilityID != 0)
         {
             if (info.tier != 0)

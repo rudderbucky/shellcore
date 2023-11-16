@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class ShipBuilderPartDisplay : PartDisplayBase
 {
     public ShipBuilder builder;
-    public GameObject emptyInfoMarker;
     public ShipBuilderCursorScript cursorScript;
     public RectTransform builderBG;
     bool initialized = false;
@@ -19,17 +18,6 @@ public class ShipBuilderPartDisplay : PartDisplayBase
         SetInactive();
     }
 
-    void SetInactive()
-    {
-        emptyInfoMarker.SetActive(true);
-        abilityBox.gameObject.SetActive(false);
-        abilityImage.gameObject.SetActive(false);
-        abilityText.gameObject.SetActive(false);
-        image.gameObject.SetActive(false);
-        partName.gameObject.SetActive(false);
-        partStats.gameObject.SetActive(false);
-        abilityTier.gameObject.SetActive(false);
-    }
 
     // Update is called once per frame
     void Update()

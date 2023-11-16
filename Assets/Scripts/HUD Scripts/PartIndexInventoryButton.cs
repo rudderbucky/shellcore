@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
+public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerClickHandler
 {
     public PartIndexScript.PartStatus status;
     public GameObject infoBox;
@@ -55,7 +55,7 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
         }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
         infoBox.SetActive(true);
         if (status != PartIndexScript.PartStatus.Unseen)
@@ -106,7 +106,7 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
         }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
         infoBox.SetActive(true);
         partDisplay.gameObject.SetActive(false);

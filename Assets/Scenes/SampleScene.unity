@@ -3838,18 +3838,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &315500383 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7943546137540392347, guid: 34ff4dae8b8986442a78643442e90c92,
-    type: 3}
-  m_PrefabInstance: {fileID: 8776915232814753614}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 267aa72c6e1e579429acf4a9046f2f3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &329022227
 GameObject:
   m_ObjectHideFlags: 0
@@ -4803,7 +4791,7 @@ RectTransform:
   m_Father: {fileID: 1947363348}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7586,7 +7574,7 @@ GameObject:
   m_Component:
   - component: {fileID: 695813510}
   - component: {fileID: 695813512}
-  - component: {fileID: 695813511}
+  - component: {fileID: 695813513}
   m_Layer: 0
   m_Name: Part Info
   m_TagString: Untagged
@@ -7620,7 +7608,15 @@ RectTransform:
   m_AnchoredPosition: {x: -3.8999023, y: -211}
   m_SizeDelta: {x: 322.99, y: 204.56}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &695813511
+--- !u!222 &695813512
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695813509}
+  m_CullTransparentMesh: 0
+--- !u!114 &695813513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7629,7 +7625,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 695813509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5cca0484bd09e7419f9ec4da8b34103, type: 3}
+  m_Script: {fileID: 11500000, guid: 9356889ee85de02418a74ab0b8f90aeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   partName: {fileID: 930782178}
@@ -7640,18 +7636,7 @@ MonoBehaviour:
   abilityText: {fileID: 1577138334}
   buttonScript: {fileID: 1574080836}
   abilityBox: {fileID: 1574080838}
-  builder: {fileID: 0}
   emptyInfoMarker: {fileID: 1648406213}
-  cursorScript: {fileID: 315500383}
-  builderBG: {fileID: 2132354899}
---- !u!222 &695813512
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 695813509}
-  m_CullTransparentMesh: 0
 --- !u!1 &699330192
 GameObject:
   m_ObjectHideFlags: 0
@@ -10017,7 +10002,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &801737278
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12112,8 +12097,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 1121702678}
+        m_TargetAssemblyTypeName: GUIWindowScripts, Assembly-CSharp
         m_MethodName: CloseUI
         m_Mode: 1
         m_Arguments:
@@ -13760,7 +13745,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9be6dd3d7ed64857a6dd6930689c854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playSoundOnClose: 1
+  OnCancelled:
+    m_PersistentCalls:
+      m_Calls: []
   finalPart: {fileID: 1836535173}
+  contentsArray:
+  - {fileID: 862579709}
+  - {fileID: 1629124333}
+  - {fileID: 862615266}
+  contentTexts:
+  - {fileID: 1259925583}
+  - {fileID: 1398030857}
+  - {fileID: 112186586}
+  buttonPrefab: {fileID: -7573867850786697174, guid: dc74c09cfe9c44cc18b9f0445f8d8e48,
+    type: 3}
+  partDisplayBase: {fileID: 695813513}
 --- !u!1 &1135301909
 GameObject:
   m_ObjectHideFlags: 0
@@ -24958,6 +24958,7 @@ MonoBehaviour:
   abilityText: {fileID: 736192470}
   buttonScript: {fileID: 736192471}
   abilityBox: {fileID: 736192472}
+  emptyInfoMarker: {fileID: 0}
 --- !u!222 &1957389346
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25839,7 +25840,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000030517578}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 40.5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2038911704
 MonoBehaviour:
@@ -26948,12 +26949,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2119011989}
   m_CullTransparentMesh: 0
---- !u!224 &2132354899 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7943546137579198215, guid: 34ff4dae8b8986442a78643442e90c92,
-    type: 3}
-  m_PrefabInstance: {fileID: 8776915232814753614}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2135038852
 GameObject:
   m_ObjectHideFlags: 0
