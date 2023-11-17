@@ -42,6 +42,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     string text = "";
     public PlayerCore player;
     Vector3? speakerPos = null;
+    public FusionStationScript fusionScript;
     public CoreUpgraderScript upgraderScript;
     public static bool isInCutscene = false;
     BattleZoneManager battleZoneManager;
@@ -811,6 +812,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         upgraderScript.initialize();
     }
 
+    public void OpenFusion(Vector3 speakerPos)
+    {
+        builder.yardPosition = speakerPos;
+        fusionScript.Activate();
+    }
+
     public void OpenWorkshop(Vector3 speakerPos)
     {
         builder.yardPosition = speakerPos;
@@ -888,6 +895,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 return;
             case Dialogue.DialogueAction.Workshop:
                 OpenWorkshop((Vector3)speakerPos);
+                endDialogue(0, false);
+                return;
+            case Dialogue.DialogueAction.Fusion:
+                OpenFusion((Vector3)speakerPos);
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Upgrader:

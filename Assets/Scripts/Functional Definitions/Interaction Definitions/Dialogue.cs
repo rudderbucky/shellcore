@@ -21,7 +21,8 @@ public class Dialogue : ScriptableObject, IDialogueable
         InvokeEnd,
         ForceToNextID,
         Call,
-        FinishTask
+        FinishTask,
+        Fusion
     }
 
     public List<Node> nodes;

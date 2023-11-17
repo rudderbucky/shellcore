@@ -283,6 +283,10 @@ public class CoreScriptsDialogue : MonoBehaviour
                 {
                     node.action = Dialogue.DialogueAction.Workshop;
                 }
+                else if (val.StartsWith("Fusion"))
+                {
+                    node.action = Dialogue.DialogueAction.Fusion;
+                }
             }
         }
 
