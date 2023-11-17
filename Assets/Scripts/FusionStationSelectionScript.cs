@@ -8,6 +8,17 @@ public class FusionStationSelectionScript : ShipBuilderInventoryBase
 {
     public Text partCreated;
     public bool finalPartMode;
+    public PartDisplayBase partDisplayBase;
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        partDisplayBase.DisplayPartInfo(part);
+    }
+    
+    public override void OnPointerExit(PointerEventData eventData)
+    {
+        partDisplayBase.SetInactive();
+    }
+
     public void Restart()
     {
         Start();

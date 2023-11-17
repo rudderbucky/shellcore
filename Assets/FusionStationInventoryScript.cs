@@ -22,6 +22,11 @@ public class FusionStationInventoryScript : ShipBuilderInventoryBase
         partDisplayBase.SetInactive();
     }
 
+    public int GetCount()
+    {
+        return count;
+    }
+
     public void IncrementCount(bool obeyDroneCount = false)
     {
         count++;

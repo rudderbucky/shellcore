@@ -29,10 +29,32 @@ public class FusionStationScript : GUIWindowScripts
         ShardCountScript.StickySlideOut();
     }
 
+    private void AddOrIncrement(EntityBlueprint.PartInfo part)
+    {
+        part = ShipBuilder.CullSpatialValues(part);
+        if (buttons.ContainsKey(part)) 
+        {
+            buttons[part].IncrementCount();
+            return;
+        }
+        int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+        FusionStationInventoryScript dictInvButton = Instantiate(buttonPrefab,
+        contentsArray[size]).GetComponent<FusionStationInventoryScript>();
+        dictInvButton.IncrementCount();
+        dictInvButton.partDisplayBase = partDisplayBase;
+        dictInvButton.part = part;
+        dictInvButton.fusionStationScript = this;
+        buttons.Add(part, dictInvButton);
+    }
+
     void OnEnable()
     {
 
         ShardCountScript.StickySlideIn();
+        part1.part = new EntityBlueprint.PartInfo();
+        part2.part = new EntityBlueprint.PartInfo();
+        part1.partDisplayBase = partDisplayBase;
+        part2.partDisplayBase = partDisplayBase;
 
         foreach (var a in contentsArray)
         {
@@ -45,19 +67,7 @@ public class FusionStationScript : GUIWindowScripts
 
         foreach (var part in PlayerCore.Instance.GetInventory())
         {
-            if (buttons.ContainsKey(part)) 
-            {
-                buttons[part].IncrementCount();
-                continue;
-            }
-            int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
-            FusionStationInventoryScript dictInvButton = Instantiate(buttonPrefab,
-            contentsArray[size]).GetComponent<FusionStationInventoryScript>();
-            dictInvButton.IncrementCount();
-            dictInvButton.partDisplayBase = partDisplayBase;
-            dictInvButton.part = part;
-            dictInvButton.fusionStationScript = this;
-            buttons.Add(part, dictInvButton);
+            AddOrIncrement(part);
         }
 
         partDisplayBase.SetInactive();
@@ -84,12 +94,12 @@ public class FusionStationScript : GUIWindowScripts
     {
         if (string.IsNullOrEmpty(part1.part.partID))
         {
-            part1.part = info;
+            part1.part = ShipBuilder.CullSpatialValues(info);
             part1.Restart();
         }
         else if (string.IsNullOrEmpty(part2.part.partID))
         {
-            part2.part = info;
+            part2.part = ShipBuilder.CullSpatialValues(info);
             part2.Restart();
         }
     }
@@ -133,11 +143,21 @@ public class FusionStationScript : GUIWindowScripts
         {
             return;
         }
+
+        if (!buttons.ContainsKey(part1.part) || !buttons.ContainsKey(part2.part)
+            || buttons[part1.part].GetCount() <= 0 || buttons[part2.part].GetCount() <= 0)
+        {
+            return;
+        }
+
         var finalCost = GetFinalCost();
         if (PlayerCore.Instance.cursave.fusionEnergy < finalCost)
         {
             return;
         }
+
+
+        
         PlayerCore.Instance.cursave.fusionEnergy -= finalCost;
         ShardCountScript.DisplayCount();
 
@@ -146,7 +166,22 @@ public class FusionStationScript : GUIWindowScripts
         pi.abilityID = part2.part.abilityID;
         pi.tier = part2.part.tier;
         pi.secondaryData = part2.part.secondaryData;
+        pi = ShipBuilder.CullSpatialValues(pi);
         finalPart.part = pi;
         finalPart.Restart();
+
+        buttons[part1.part].DecrementCount();
+        if (buttons[part1.part].GetCount() <= 0)
+        {
+            part1.part = new EntityBlueprint.PartInfo();
+            part1.Restart();
+        }
+        buttons[part2.part].DecrementCount();
+        if (buttons[part2.part].GetCount() <= 0)
+        {
+            part2.part = new EntityBlueprint.PartInfo();
+            part2.Restart();
+        }
+        AddOrIncrement(pi);
     }
 }
