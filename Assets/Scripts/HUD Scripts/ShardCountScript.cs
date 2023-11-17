@@ -18,7 +18,6 @@ public class ShardCountScript : MonoBehaviour
         instance = this;
         instance.sizeDeltaY = rectTransform.sizeDelta.y;
         instance.stickySlide = false;
-        DisplayCount();
     }
 
     void FixedUpdate()
@@ -49,12 +48,12 @@ public class ShardCountScript : MonoBehaviour
     float sizeDeltaY;
 
     /// sticky slides used when you want the player to see their shard count
-    public static void StickySlideIn(int count)
+    public static void StickySlideIn()
     {
-//        instance.rectTransform.anchoredPosition += new Vector2(-instance.rectTransform.anchoredPosition.x -71F, 0);
         DisplayCount();
         instance.stickySlide = true;
         instance.StopAllCoroutines();
+        if (!instance.enabled) return;
         instance.StartCoroutine("SlideIn");
     }
 
@@ -62,6 +61,7 @@ public class ShardCountScript : MonoBehaviour
     {
         instance.stickySlide = false;
         instance.StopAllCoroutines();
+        if (!instance.enabled) return;
         instance.StartCoroutine("SlideOut");
     }
 

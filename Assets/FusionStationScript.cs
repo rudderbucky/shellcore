@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class FusionStationScript : GUIWindowScripts
 {
@@ -20,9 +21,19 @@ public class FusionStationScript : GUIWindowScripts
     private Dictionary<EntityBlueprint.PartInfo, FusionStationInventoryScript> buttons = new Dictionary<EntityBlueprint.PartInfo, FusionStationInventoryScript>();
     [SerializeField]
     private PartDisplayBase partDisplayBase;
+    [SerializeField]
+    private Text fusePartsButtonText;
+
+    void OnDisable()
+    {
+        ShardCountScript.StickySlideOut();
+    }
 
     void OnEnable()
     {
+
+        ShardCountScript.StickySlideIn();
+
         foreach (var a in contentsArray)
         {
             for (int i = 0; i < a.childCount; i++)
@@ -56,6 +67,19 @@ public class FusionStationScript : GUIWindowScripts
         }
     }
 
+    protected override void Update()
+    {
+        base.Update();
+        if (!ReadyToFuse())
+        {
+            fusePartsButtonText.text = "Click 2 parts to fuse (Shift click clears part)".ToUpper();
+        }
+        else
+        {
+            fusePartsButtonText.text = $"Fuse parts ({GetFinalCost()} fusion energy)".ToUpper();
+        }
+    }
+
     public void SetSelectedPart(EntityBlueprint.PartInfo info)
     {
         if (string.IsNullOrEmpty(part1.part.partID))
@@ -70,8 +94,53 @@ public class FusionStationScript : GUIWindowScripts
         }
     }
 
+    private int GetSize(EntityBlueprint.PartInfo info)
+    {
+        return ResourceManager.GetAsset<PartBlueprint>(info.partID).size;
+    }
+
+    public void CreateFusionEnergy()
+    {
+        if (PlayerCore.Instance.cursave.gas < 100)
+        {
+            return;
+        }
+        if (PlayerCore.Instance.cursave.shards < 10)
+        {
+            return;
+        }
+        PlayerCore.Instance.cursave.gas -= 100;
+        PlayerCore.Instance.cursave.shards -= 10;
+        PlayerCore.Instance.cursave.fusionEnergy += 10;
+        ShardCountScript.DisplayCount();
+    }
+
+    private int GetFinalCost()
+    {
+        var sizeSum = Mathf.Abs(GetSize(part1.part) - GetSize(part2.part));
+        var finalCost = 10 + sizeSum * 10 + part2.part.tier * 5;
+        return finalCost;
+    }
+
+    private bool ReadyToFuse()
+    {
+        return !string.IsNullOrEmpty(part1.part.partID) && !string.IsNullOrEmpty(part2.part.partID);
+    }
+
     public void Fuse()
     {
+        if (!ReadyToFuse())
+        {
+            return;
+        }
+        var finalCost = GetFinalCost();
+        if (PlayerCore.Instance.cursave.fusionEnergy < finalCost)
+        {
+            return;
+        }
+        PlayerCore.Instance.cursave.fusionEnergy -= finalCost;
+        ShardCountScript.DisplayCount();
+
         var pi = new EntityBlueprint.PartInfo();
         pi.partID = part1.part.partID;
         pi.abilityID = part2.part.abilityID;

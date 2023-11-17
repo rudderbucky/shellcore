@@ -203,6 +203,22 @@ public class DevConsoleScript : MonoBehaviour
                 int number = int.Parse(command.Substring(11).Trim());
                 PlayerCore.Instance.cursave.shards += number;
                 textBox.text += "\n<color=lime>I forgot about the shards.</color>";
+                ShardCountScript.DisplayCount();
+            }
+            else if (command.StartsWith("Add gas ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(8).Trim());
+                PlayerCore.Instance.cursave.gas += number;
+                textBox.text += "\n<color=lime>All gassed up.</color>";
+                ShardCountScript.DisplayCount();
+            }
+            else if (command.StartsWith("Add fe ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(7).Trim());
+                PlayerCore.Instance.cursave.fusionEnergy += number;
+                textBox.text += "\n<color=lime>Fu-sion ha.</color>";
+                ShardCountScript.DisplayCount();
+
             }
             else if (command.StartsWith("Add money ", StringComparison.CurrentCultureIgnoreCase))
             {

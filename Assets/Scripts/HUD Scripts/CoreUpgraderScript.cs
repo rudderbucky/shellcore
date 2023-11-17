@@ -32,7 +32,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         gameObject.SetActive(true);
         drawScreen();
         // TODO: Fix the shard count script
-        ShardCountScript.StickySlideIn(player.cursave.shards);
+        ShardCountScript.StickySlideIn();
     }
 
     public override void CloseUI()
