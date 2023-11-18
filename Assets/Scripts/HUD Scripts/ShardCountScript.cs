@@ -53,7 +53,7 @@ public class ShardCountScript : MonoBehaviour
         DisplayCount();
         instance.stickySlide = true;
         instance.StopAllCoroutines();
-        if (!instance.enabled) return;
+        if (!instance.gameObject.activeSelf) return;
         instance.StartCoroutine("SlideIn");
     }
 
@@ -61,7 +61,7 @@ public class ShardCountScript : MonoBehaviour
     {
         instance.stickySlide = false;
         instance.StopAllCoroutines();
-        if (!instance.enabled) return;
+        if (!instance.gameObject.activeSelf) return;
         instance.StartCoroutine("SlideOut");
     }
 
