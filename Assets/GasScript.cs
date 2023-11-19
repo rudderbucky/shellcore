@@ -11,6 +11,9 @@ public class GasScript : MonoBehaviour
     public float radius;
     public float multiplier;
     public float arc = 0.3333f;
+    public ParticleSystem partSys;
+    public ParticleSystem auxillaryPartSys;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -22,31 +25,40 @@ public class GasScript : MonoBehaviour
 
         GetComponent<Rigidbody2D>().angularDrag = 0;
         GetComponent<Rigidbody2D>().angularVelocity = angularVelocity * multiplier;
-        var partSys = GetComponent<ParticleSystem>();
         var main = partSys.main;
-        main.startLifetime = 0.3f * radius;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.3f * radius);
         var velo = partSys.velocityOverLifetime;
         velo.orbitalZ = orbitalZ * Mathf.Sqrt(multiplier);
         velo.radial = radial * multiplier;
         var emission = partSys.emission;
         var shape = partSys.shape;
         shape.radius = radius * multiplier;
+        
+        var auxillaryPartSys = GetComponentsInChildren<ParticleSystem>()[0];
+        var shape2 = auxillaryPartSys.shape;
+        shape2.radius = shape.radius;
+
         shape.arcSpread = 1 / arc;
         emission.rateOverTime = 0 * emissionPerSecond * Mathf.Sqrt(multiplier);
         partSys.Stop();
         partSys.Clear();
         partSys.Play();
+        
+        auxillaryPartSys.Stop();
+        auxillaryPartSys.Clear();
+        auxillaryPartSys.Play();
         AIData.gas.Add(this);
     }
 
     public void Shrink(float val)
     {
         radius -= val;
-        var partSys = GetComponent<ParticleSystem>();
         var main = partSys.main;
         main.startLifetime = 0.3f * radius; 
         var shape = partSys.shape;
         shape.radius = radius * multiplier;
+        var shape2 = auxillaryPartSys.shape;
+        shape2.radius = shape.radius;
     }
 
     private void OnDestroy()
