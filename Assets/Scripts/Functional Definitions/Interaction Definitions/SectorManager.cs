@@ -1534,8 +1534,8 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        if (gasPrefab && current.type == SectorType.DangerZone)
-            for (int i = 0; i < 5; i++)
+        if (gasPrefab)
+            for (int i = 0; i < current.gasVortices; i++)
             {
                 var shard = Instantiate(gasPrefab, new Vector3(
                             Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f),

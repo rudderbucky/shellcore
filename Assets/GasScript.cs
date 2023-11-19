@@ -34,18 +34,24 @@ public class GasScript : MonoBehaviour
         var shape = partSys.shape;
         shape.radius = radius * multiplier;
         
-        var auxillaryPartSys = GetComponentsInChildren<ParticleSystem>()[0];
         var shape2 = auxillaryPartSys.shape;
+        
         shape2.radius = shape.radius;
+        var main2 = auxillaryPartSys.main;
+        velo = auxillaryPartSys.velocityOverLifetime;
+        velo.radial = -shape.radius;
+        main2.startLifetime = 1;
 
         shape.arcSpread = 1 / arc;
         emission.rateOverTime = 0 * emissionPerSecond * Mathf.Sqrt(multiplier);
         partSys.Stop();
         partSys.Clear();
+        partSys.Simulate(partSys.main.duration);
         partSys.Play();
         
         auxillaryPartSys.Stop();
         auxillaryPartSys.Clear();
+        auxillaryPartSys.Simulate(auxillaryPartSys.main.duration);
         auxillaryPartSys.Play();
         AIData.gas.Add(this);
     }
@@ -59,6 +65,8 @@ public class GasScript : MonoBehaviour
         shape.radius = radius * multiplier;
         var shape2 = auxillaryPartSys.shape;
         shape2.radius = shape.radius;
+        var velo = auxillaryPartSys.velocityOverLifetime;
+        velo.radial = -shape.radius;
     }
 
     private void OnDestroy()
