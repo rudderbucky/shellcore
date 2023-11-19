@@ -1107,6 +1107,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (this is PlayerCore core) 
         {
             core.cursave.gas = Mathf.Max(0, core.cursave.gas - 100);
+            Radar.ResetRadarOdds();
             ShardCountScript.DisplayCount();
         }
         IsInvisible = false;

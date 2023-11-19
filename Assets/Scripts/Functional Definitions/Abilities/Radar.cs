@@ -9,6 +9,18 @@ using static TaskManager;
 public class Radar : Ability
 {
     private static int radarChain;
+    public static void ResetRadarChain()
+    {   
+        ResetRadarOdds();
+        if (currAction != null) SectorManager.OnSectorLoad -= currAction;
+        location = null;
+    }
+
+    public static void ResetRadarOdds()
+    {
+        radarChain = 0;
+    }
+
     public static int GetRadarChain()
     {
         return radarChain;
@@ -62,8 +74,7 @@ public class Radar : Ability
         AddObjectiveMarker(nextSector);
         if (currAction != null)
         {
-            radarChain = 0;
-            SectorManager.OnSectorLoad -= currAction;
+            ResetRadarChain();
         }
         currAction = (s) => { SectorCheck(s); };
         SectorManager.OnSectorLoad += currAction;
