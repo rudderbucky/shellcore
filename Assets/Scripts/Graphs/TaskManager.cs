@@ -48,6 +48,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         public Entity followEntity;
         public string missionName;
         public int dimension;
+        public Color color = Color.red + Color.green / 2;
 
         public ObjectiveLocation(Vector2 location, string missionName, int dimension, Entity followEntity = null)
         {

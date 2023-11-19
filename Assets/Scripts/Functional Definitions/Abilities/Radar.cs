@@ -4,12 +4,18 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.Events;
 using static SectorManager;
+using static TaskManager;
 
 public class Radar : Ability
 {
     private static int radarChain;
+    public static int GetRadarChain()
+    {
+        return radarChain;
+    }
     private static string nextSector;
     private static SectorLoadDelegate currAction;
+    public static ObjectiveLocation location;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -48,9 +54,10 @@ public class Radar : Ability
     protected override void Execute()
     {
         ActivationCosmetic(transform.position);
-        var ls = SectorManager.instance.sectors.Where(s => s.dimension == 0).ToList();
+        var ls = SectorManager.instance.sectors.Where(s => s.dimension == 0 && s != SectorManager.instance.current).ToList();
         int randInt = Random.Range(0, ls.Count);
         nextSector = ls[randInt].sectorName;
+        AddObjectiveMarker(nextSector);
         if (currAction != null)
         {
             radarChain = 0;
@@ -68,8 +75,43 @@ public class Radar : Ability
             return;
         }
 
+        RemoveObjectiveMarker();
         radarChain += 1;
         SectorManager.OnSectorLoad -= currAction;
         currAction = null;
+    }
+
+
+
+    public static void AddObjectiveMarker(string sectorName)
+    {
+        Vector2 pos = Vector2.zero;
+        int dim = 0;
+        
+        var sect = SectorManager.GetSectorByName(sectorName);
+        if (sect)
+        {
+            var bounds = sect.bounds;
+            pos = new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2);
+            dim = sect.dimension;
+        }
+
+
+        var objectiveLocation = new TaskManager.ObjectiveLocation
+        (
+            pos,
+            null,
+            dim,
+            null
+        );
+        objectiveLocation.color = Color.white;
+
+        location = objectiveLocation;
+        TaskManager.DrawObjectiveLocations();
+    }
+    public static void RemoveObjectiveMarker()
+    {
+        location = null;
+        TaskManager.DrawObjectiveLocations();
     }
 }

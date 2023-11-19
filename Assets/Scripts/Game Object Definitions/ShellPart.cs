@@ -447,7 +447,8 @@ public class ShellPart : MonoBehaviour
 
     private void ShinyCheck()
     {
-        if (Random.Range(0, 4000) == 3999)
+
+        if (Random.Range(0, 4000) >= 3999 - Mathf.Min(400, Radar.GetRadarChain() * 10))
         {
             info.shiny = true;
             StartEmitting();
