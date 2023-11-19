@@ -183,5 +183,8 @@ public class FusionStationScript : GUIWindowScripts
             part2.Restart();
         }
         AddOrIncrement(pi);
+        PartIndexScript.AttemptAddToPartsObtained(pi);
+        PartIndexScript.AttemptAddToPartsSeen(pi);
+
     }
 }
