@@ -48,7 +48,8 @@ public enum AbilityID
     SpeedAura,
     EnergyAura,
     ChainBeam,
-    SpeederMissile
+    SpeederMissile,
+    Radar
 }
 
 public static class AbilityUtilities
@@ -124,6 +125,7 @@ public static class AbilityUtilities
             case 35:
             case 40:
             case 41:
+            case 47:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -240,6 +242,8 @@ public static class AbilityUtilities
                 return $"Instant attack that deals {Beam.beamDamage * tier} damage to multiple targets.";
             case 46:
                 return $"Slow homing projectile that deals {Missile.missileDamage * tier} damage plus more if the target was moving.";
+            case 47:
+                return "Marks unknown sectors on the map, or a random sector if all have been found.";
             default:
                 return "Description unset";
         }
@@ -462,6 +466,8 @@ public static class AbilityUtilities
                 return "Chain Beam";
             case 46:
                 return "Speeder Missile";
+            case 47:
+                return "Radar";
             default:
                 return "Name unset";
         }
@@ -659,6 +665,9 @@ public static class AbilityUtilities
                 break;
             case 46:
                 ability = obj.AddComponent<SpeederMissile>();
+                break;
+            case 47:
+                ability = obj.AddComponent<Radar>();
                 break;
         }
 
