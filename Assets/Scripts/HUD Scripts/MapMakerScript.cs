@@ -558,7 +558,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                     var imgpos = img.rectTransform.position;
                     var imgsizeDelta = img.rectTransform.sizeDelta;
                     var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
-                    if (imgnewRect.Contains(Input.mousePosition))
+                    if (imgnewRect.Contains(Input.mousePosition) && !string.IsNullOrEmpty(objective.missionName))
                     {
                         var missionName = CoreScriptsManager.instance.GetLocalMapString(objective.missionName);
                         if (string.IsNullOrEmpty(missionName)) missionName = objective.missionName;

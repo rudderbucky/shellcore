@@ -55,6 +55,8 @@ public class Radar : Ability
     {
         ActivationCosmetic(transform.position);
         var ls = SectorManager.instance.sectors.Where(s => s.dimension == 0 && s != SectorManager.instance.current).ToList();
+        var unseenSectors = ls.Where(s => !PlayerCore.Instance.cursave.sectorsSeen.Contains(s.sectorName)).ToList();
+        if (unseenSectors.Count > 0) ls = unseenSectors;
         int randInt = Random.Range(0, ls.Count);
         nextSector = ls[randInt].sectorName;
         AddObjectiveMarker(nextSector);
