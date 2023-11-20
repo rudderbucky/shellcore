@@ -279,10 +279,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         CurrentHealth = fracs;
     }
 
+    public bool damageBoostGasBoosted;
+    public int flatDamageIncrease;
     // Performs calculations based on current damage boost and control stats to determine final damage addition
     private void CalculateDamageBoost()
     {
-        damageFactor = controlStacks * Control.damageFactor + damageBoostStacks * DamageBoost.damageFactor;
+        flatDamageIncrease = damageBoostGasBoosted ? 200 * damageBoostStacks : 0;
+        var damageBoostFactorAddition = damageBoostGasBoosted ? 0 : damageBoostStacks * DamageBoost.damageFactor;
+        damageFactor = controlStacks * Control.damageFactor + damageBoostFactorAddition;
     }
 
     private int stealths = 0;

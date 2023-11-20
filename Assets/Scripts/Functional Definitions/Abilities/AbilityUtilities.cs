@@ -498,7 +498,7 @@ public static class AbilityUtilities
         switch ((AbilityID)ID)
         {
             case AbilityID.DamageBoost:
-                builder.Append("Damage Boost applies a flat damage increase to projectiles.");
+                builder.Append("Damage Boost applies a flat damage increase of 200 to projectiles.");
                 break;
             case AbilityID.Bullet:
                 builder.Append("Bullet pierces through struck enemies once.");
