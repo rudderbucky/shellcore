@@ -280,6 +280,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     }
 
     public bool damageBoostGasBoosted;
+    public bool stealthGasBoosted;
     public int flatDamageIncrease;
     // Performs calculations based on current damage boost and control stats to determine final damage addition
     private void CalculateDamageBoost()
@@ -1328,6 +1329,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// <param name="maxHealth">the maximum value this health can have</param>
     protected void RegenHealth(ref float currentHealth, float regenRate, float maxHealth)
     {
+        if (this.IsInvisible && !stealthGasBoosted && !(this is PlayerCore && DevConsoleScript.godModeEnabled))
+            return;
+            
         var oldCurrentHealth = currentHealth;
         if (currentHealth + (regenRate * Time.deltaTime) > maxHealth) // if it would overheal
         {

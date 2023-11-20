@@ -50,9 +50,14 @@ public class DamageBoost : ActiveAbility
         if (Core)
         {
             Core.DamageBoostStacks += Mathf.Max(1, abilityTier);
-            Core.damageBoostGasBoosted = gasBoosted;
             ActivationCosmetic(transform.position);
             base.Execute();
         }
+    }
+
+
+    protected void Update()
+    {
+        if (Core) Core.damageBoostGasBoosted = gasBoosted;
     }
 }
