@@ -67,6 +67,7 @@ public class FusionStationScript : GUIWindowScripts
 
         foreach (var part in PlayerCore.Instance.GetInventory())
         {
+            if (part.shiny) continue;
             AddOrIncrement(part);
         }
 
