@@ -171,6 +171,10 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         abilities.Add(ability);
     }
 
+    private bool gasBoosted = false;
+    public Image gasBoostedImage;
+
+
     private void Update()
     {
 
@@ -305,6 +309,14 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             gleaming = true;
             gleam.color = Color.white;
         }
+
+        gasBoosted = gasBoosted && PlayerCore.Instance.cursave.gas > 0;
+        if (gasBoosted)
+        {
+            PlayerCore.Instance.cursave.gas -= Time.deltaTime * 0.25F;
+            ShardCountScript.DisplayCount();
+        }
+        gasBoostedImage.enabled = gasBoosted;
     }
 
     private void UpdateAbilityActivation()
@@ -328,6 +340,12 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                             && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
 
         if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) return;
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            gasBoosted = !gasBoosted;
+            return;
+        }
+
         if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
         {
             bool autoCast = !abilities[0].AutoCast;
