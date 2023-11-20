@@ -374,6 +374,14 @@ public class AbilityHandler : MonoBehaviour
         {
             for (int i = 0; i < core.GetAbilities().Length; i++)
             {
+
+                if (abilities[i].gasBoosted)
+                {
+                    PlayerCore.Instance.cursave.gas -= Time.deltaTime * 0.25F;
+                    ShardCountScript.DisplayCount();
+                }
+
+
                 // update all abilities
                 if (abilities[i] == null || core.GetIsDead())
                 {

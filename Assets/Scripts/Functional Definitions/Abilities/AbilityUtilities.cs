@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 
 public enum AbilityID
@@ -483,6 +484,47 @@ public static class AbilityUtilities
                 return GetAbilityNameByID(ability.GetID(), "");
         }
     }
+
+    public static bool AbilityIsGasBoostable(int ID)
+    {
+        return GetAbilityTypeByID(ID) != AbilityHandler.AbilityTypes.Passive;
+    }
+
+
+    public static string GasBoostDescription(int ID)
+    {
+        var builder = new StringBuilder();
+        builder.Append("GAS BOOSTED: ");
+        switch ((AbilityID)ID)
+        {
+            case AbilityID.DamageBoost:
+                builder.Append("Damage Boost applies a flat damage increase to projectiles.");
+                break;
+            case AbilityID.Bullet:
+                builder.Append("Bullet pierces through struck enemies once.");
+                break;
+            case AbilityID.Cannon:
+                builder.Append("Weapon deals 250% more damage 10% of the time.");
+                break;
+            case AbilityID.Ion:
+                builder.Append("Weapon adjustment speed doubled.");
+                break;
+            case AbilityID.Flak:
+                builder.Append("Projectiles temporarily disable drones.");
+                break;
+            case AbilityID.Stealth:
+                builder.Append("Enables regeneration while stealthed.");
+                break;
+            case AbilityID.Beam:
+                builder.Append("Weapon strikes 2 more times from where it last struck.");
+                break;
+            default:
+                builder.Append("Ability cooldown lowered by 25%.");
+                break;
+        }
+        return builder.ToString();
+    }
+
 
     public static Ability AddAbilityToGameObjectByID(GameObject obj, int ID, string data = null, int tier = 0)
     {

@@ -46,6 +46,7 @@ public abstract class Ability : MonoBehaviour
     protected int abilityTier;
     protected string description = "Does things";
     protected ShellPart part;
+    public bool gasBoosted;
 
     public ShellPart Part
     {
@@ -239,12 +240,14 @@ public abstract class Ability : MonoBehaviour
             return;
         }
 
+        var trueCD = cooldownDuration;
+        if (gasBoosted) trueCD *= 0.75F;
         if (!isEnabled)
         {
             charging = false;
             State = AbilityState.Disabled;
         }
-        else if (Time.time >= startTime + cooldownDuration && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + cooldownDuration + 0.5F))
+        else if (Time.time >= startTime + trueCD && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + trueCD + 0.5F))
         {
             charging = false;
             if (!MasterNetworkAdapter.lettingServerDecide && State != AbilityState.Ready && Core && Core.networkAdapter && Core.networkAdapter.isPlayer.Value)

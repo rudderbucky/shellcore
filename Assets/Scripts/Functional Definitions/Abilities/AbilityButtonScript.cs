@@ -170,8 +170,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     {
         abilities.Add(ability);
     }
-
-    private bool gasBoosted = false;
     public Image gasBoostedImage;
 
 
@@ -310,13 +308,12 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             gleam.color = Color.white;
         }
 
-        gasBoosted = gasBoosted && PlayerCore.Instance.cursave.gas > 0;
-        if (gasBoosted)
+        foreach (var ability in abilities)
         {
-            PlayerCore.Instance.cursave.gas -= Time.deltaTime * 0.25F;
-            ShardCountScript.DisplayCount();
+            ability.gasBoosted = ability.gasBoosted && PlayerCore.Instance.cursave.gas > 0;
+            gasBoostedImage.enabled = ability.gasBoosted;
         }
-        gasBoostedImage.enabled = gasBoosted;
+        
     }
 
     private void UpdateAbilityActivation()
@@ -342,7 +339,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) return;
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            gasBoosted = !gasBoosted;
+            foreach (var ability in abilities)
+                ability.gasBoosted = !ability.gasBoosted;
             return;
         }
 
