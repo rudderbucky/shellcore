@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
@@ -250,15 +251,42 @@ public static class AbilityUtilities
         }
     }
 
+
+    public static string GetPrettyStringFromKeycode(KeyCode code)
+    {
+        var str = code.ToString();
+
+        if (str.Length >= 5 && str.Substring(0, 5) == "Alpha")
+        {
+            str = str.Remove(0, 5);
+        }
+
+        return str;
+    }
+
     public static string GetDescription(Ability ability)
     {
+        var description = "";
         switch (ability.GetID())
         {
             case 10:
-                return DroneUtilities.GetDescriptionByType((ability as SpawnDrone).spawnData.type);
+                description = DroneUtilities.GetDescriptionByType((ability as SpawnDrone).spawnData.type);
+                break;
             default:
-                return GetDescriptionByID(ability.GetID(), ability.GetTier(), "");
+                description = GetDescriptionByID(ability.GetID(), ability.GetTier(), "");
+                break;
         }
+
+        if (ability is SpawnDrone || (ability.GetAbilityType() == AbilityHandler.AbilityTypes.Skills && PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True"))
+        {
+            description += $"\nHold {GetPrettyStringFromKeycode(InputManager.keys[KeyName.AutoCastBuyTurret].overrideKey)} to toggle auto cast";
+        }
+
+        if (ability.gasBoosted)
+        {
+            description += $"\n{GasBoostDescription(ability.GetID())}";
+        }
+        return description;
     }
 
     public static string GetShooterByID(int ID, string data = null)
@@ -488,6 +516,21 @@ public static class AbilityUtilities
     public static bool AbilityIsGasBoostable(int ID)
     {
         return GetAbilityTypeByID(ID) != AbilityHandler.AbilityTypes.Passive;
+    }
+
+    public static bool AbilityIsStandardGasBoostable(int ID)
+    {
+        var customEffects = new List<AbilityID>()
+        {
+            AbilityID.DamageBoost,
+            AbilityID.Bullet,
+            AbilityID.Cannon,
+            AbilityID.Ion,
+            AbilityID.Flak,
+            AbilityID.Stealth,
+            AbilityID.Beam
+        };
+        return AbilityIsGasBoostable(ID) && !customEffects.Contains((AbilityID)ID);
     }
 
 

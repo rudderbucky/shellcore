@@ -196,7 +196,8 @@ public abstract class Ability : MonoBehaviour
     /// <returns>The cooldown of the ability</returns>
     public float GetCDDuration()
     {
-        return cooldownDuration; // cooldown duration
+        var trueCD = cooldownDuration;
+        return trueCD; // cooldown duration
     }
 
     /// <summary>
@@ -214,6 +215,7 @@ public abstract class Ability : MonoBehaviour
         charging = false;
     }
 
+    private float gasBoostedTime = 0;
     /// <summary>
     /// Get the cooldown remaining on the ability
     /// </summary>
@@ -222,10 +224,11 @@ public abstract class Ability : MonoBehaviour
     {
         if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active || (this is WeaponAbility && State == AbilityState.Disabled)) // active or on cooldown
         {
-            return Mathf.Max(cooldownDuration - (Time.time - startTime), 0); // return the cooldown remaining, calculated prior to this call via TickDown
+            return Mathf.Max(GetCDDuration() - (Time.time - startTime) - gasBoostedTime, 0); // return the cooldown remaining, calculated prior to this call via TickDown
         }
         else
         {
+            gasBoostedTime = 0;
             return 0; // not on cooldown
         }
     }
@@ -240,14 +243,12 @@ public abstract class Ability : MonoBehaviour
             return;
         }
 
-        var trueCD = cooldownDuration;
-        if (gasBoosted) trueCD *= 0.75F;
         if (!isEnabled)
         {
             charging = false;
             State = AbilityState.Disabled;
         }
-        else if (Time.time >= startTime + trueCD && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + trueCD + 0.5F))
+        else if (Time.time >= startTime + GetCDDuration() && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + GetCDDuration() + 0.5F))
         {
             charging = false;
             if (!MasterNetworkAdapter.lettingServerDecide && State != AbilityState.Ready && Core && Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
@@ -353,6 +354,7 @@ public abstract class Ability : MonoBehaviour
         }
 
         AbilityState prevState = State;
+        if (gasBoosted && cooldownDuration > 0 && AbilityUtilities.AbilityIsStandardGasBoostable((int)ID)) gasBoostedTime += 0.25F * Time.deltaTime;
         UpdateState();
 
         UpdateBlinker();

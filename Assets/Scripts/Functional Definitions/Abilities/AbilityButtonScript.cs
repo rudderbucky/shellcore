@@ -31,18 +31,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     GameObject rangeCirclePrefab;
     Dictionary<Ability, CircleGraphic> circles = new Dictionary<Ability, CircleGraphic>();
 
-    string GetPrettyStringFromKeycode(KeyCode code)
-    {
-        var str = code.ToString();
-
-        if (str.Length >= 5 && str.Substring(0, 5) == "Alpha")
-        {
-            str = str.Remove(0, 5);
-        }
-
-        return str;
-    }
-
     public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode, bool visualMode = false)
     {
         this.entity = entity;
@@ -73,7 +61,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
 
                 this.hotkeyText.transform.parent.gameObject.SetActive(true);
-                this.hotkeyText.text = GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
+                this.hotkeyText.text = AbilityUtilities.GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
             }
             else
             {
@@ -114,18 +102,20 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             }
         }
 
+        var oldDesc = abilityInfo;
         description += $"\n{AbilityUtilities.GetDescription(ability)}";
-
-        if (ability is SpawnDrone || (ability.GetAbilityType() == AbilityHandler.AbilityTypes.Skills && PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True"))
-        {
-            description += $"\nHold {GetPrettyStringFromKeycode(InputManager.keys[KeyName.AutoCastBuyTurret].overrideKey)} to toggle auto cast";
-        }
 
         abilityInfo = description;
 
-        if (tooltip)
+        if (!tooltip)
         {
-            tooltip.transform.Find("Text").GetComponent<Text>().text = abilityInfo;
+            return;
+        }
+
+        tooltip.transform.Find("Text").GetComponent<Text>().text = abilityInfo;
+        if (oldDesc != description)
+        {
+            UpdateTooltipSize();
         }
     }
 
@@ -427,7 +417,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             rect.SetAsLastSibling();
             Text text = tooltip.transform.Find("Text").GetComponent<Text>();
             text.text = abilityInfo;
-            rect.sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
+            UpdateTooltipSize();
         }
 
         ClearCircles();
@@ -447,6 +437,12 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         PollRangeCircle();
     }
 
+    private void UpdateTooltipSize()
+    {
+        RectTransform rect = tooltip.GetComponent<RectTransform>();
+        Text text = tooltip.transform.Find("Text").GetComponent<Text>();
+        rect.sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
+    }
     private void ClearCircles()
     {
         foreach (var value in circles.Values)

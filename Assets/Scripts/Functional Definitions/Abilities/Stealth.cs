@@ -57,6 +57,6 @@ public class Stealth : ActiveAbility
 
     protected void Update()
     {
-        craft.stealthGasBoosted = gasBoosted;
+        if (craft) craft.stealthGasBoosted = gasBoosted;
     }
 }
