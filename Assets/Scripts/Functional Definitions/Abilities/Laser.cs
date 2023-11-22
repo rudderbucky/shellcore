@@ -27,6 +27,7 @@ public class Laser : Bullet
         bonusDamageType = typeof(Tank);
         pierceFactor = laserPierceFactor;
         bulletSound = "clip_laser";
+        entityPierce = 1;
     }
 
     protected override void Start()

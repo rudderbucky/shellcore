@@ -15,5 +15,6 @@ public class SpeederBullet : Bullet
         damage = 100;
         prefabScale = 1 * Vector3.one;
         category = Entity.EntityCategory.All;
+        entityPierce = 1;
     }
 }

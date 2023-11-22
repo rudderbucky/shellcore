@@ -119,7 +119,7 @@ public class Flak : WeaponAbility
             script.SetPierceFactor(pierceFactor);
             script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
             script.missParticles = true;
-            script.disableDrones = true;
+            script.disableDrones = gasBoosted;
 
             var normalizedVec = Vector3.Normalize(relativeDistance + targetVelocity * t);
             //var angle = (-(bullets / 2) + i) * 20;
