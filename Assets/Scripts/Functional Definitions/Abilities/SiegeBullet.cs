@@ -15,5 +15,6 @@ public class SiegeBullet : Bullet
         damage = 1000;
         prefabScale = 2 * Vector2.one;
         category = Entity.EntityCategory.Station;
+        entityPierce = 1;
     }
 }

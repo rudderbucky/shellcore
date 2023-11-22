@@ -83,6 +83,7 @@ public class SectorManager : MonoBehaviour
 
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
+    public GameObject gasPrefab;
     public Sector overrideProperties = null;
     public SkirmishMenu skirmishMenu;
     int maxID = 0;
@@ -1541,7 +1542,6 @@ public class SectorManager : MonoBehaviour
         }
 
 
-        // shards
         for (int i = 0; i < current.shardCountSet.Length; i++)
         {
             for (int j = 0; j < current.shardCountSet[i]; j++)
@@ -1555,7 +1555,15 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        // music
+        if (gasPrefab)
+            for (int i = 0; i < current.gasVortices; i++)
+            {
+                var shard = Instantiate(gasPrefab, new Vector3(
+                            Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f),
+                            Random.Range(current.bounds.y - current.bounds.h * 0.2f, current.bounds.y - current.bounds.h * 0.8f), 0)
+                        , Quaternion.identity);
+            }
+
         PlayCurrentSectorMusic();
 
         if (info)
@@ -1579,7 +1587,6 @@ public class SectorManager : MonoBehaviour
 
     private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null, int lastDimension = 0)
     {
-        // destroy existing shard rocks
         foreach (var rock in shardRocks)
         {
             if (rock)
@@ -1587,6 +1594,15 @@ public class SectorManager : MonoBehaviour
                 Destroy(rock.gameObject);
             }
         }
+
+        foreach (var gas in AIData.gas)
+        {
+            if (gas)
+            {
+                Destroy(gas.gameObject);
+            }
+        }
+
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var shard in AIData.rockFragments)

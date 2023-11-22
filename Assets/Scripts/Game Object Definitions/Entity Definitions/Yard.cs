@@ -120,7 +120,7 @@ public class Yard : AirConstruct, IShipBuilder
                     var shard = currentTarget.GetComponent<Shard>();
                     var tiers = new int[] { 1, 5, 20 };
                     PlayerCore.Instance.cursave.shards += tiers[shard.tier];
-                    ShardCountScript.DisplayCount(PlayerCore.Instance.cursave.shards);
+                    ShardCountScript.DisplayCount();
                     Destroy(shard.gameObject);
                 }
             }

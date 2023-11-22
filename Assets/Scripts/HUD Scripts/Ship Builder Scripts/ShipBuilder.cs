@@ -981,7 +981,7 @@ public class ShipBuilder : GUIWindowScripts
 
             if (initialShards != player.cursave.shards)
             {
-                ShardCountScript.DisplayCount(player.cursave.shards);
+                ShardCountScript.DisplayCount();
             }
 
             foreach (ShellPart part in partsToAdd)
@@ -1372,6 +1372,8 @@ public class ShipBuilder : GUIWindowScripts
 
     public void LoadBlueprint(EntityBlueprint blueprint)
     {
+
+        AssetDatabase.CreateAsset(blueprint, System.IO.Path.Combine("Assets", "SavedPrint.asset"));
         if (editorMode)
         {
             cursorScript.ClearAllParts();

@@ -170,7 +170,7 @@ public abstract class WeaponAbility : ActiveAbility
         {
             if (finalBonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
             {
-                final = (damage * (1+Core.GetDamageFactor())) * bonusDamageMultiplier;
+                final = ((damage * (1+Core.GetDamageFactor())) + Core.flatDamageIncrease) * bonusDamageMultiplier;
             }
         }
 
@@ -298,45 +298,64 @@ public abstract class WeaponAbility : ActiveAbility
         for (int i = 0; i < count; i++) // go through all entities and check them for several factors
         {
             Entity target = potentialTargets[i];
+
             Transform tr = target.transform;
             // check if the target's category matches
-            if (category == Entity.EntityCategory.All || target.Category == category)
+            if (category != Entity.EntityCategory.All && target.Category != category)
             {
-                // check if it is the closest entity that passed the checks so far
-                float sqrD = Vector3.SqrMagnitude(pos - tr.position);
+                continue;
+            }
 
-                if (target == Core)
-                    continue;
-                if (sqrD >= GetRange() * GetRange())
-                    continue;
+            // check if it is the closest entity that passed the checks so far
+            float sqrD = Vector3.SqrMagnitude(pos - tr.position);
 
-                if (dronesAreFree && target is Drone)
+            if (target == Core)
+            {
+                continue;
+            }
+
+            if (sqrD >= GetRange() * GetRange())
+            {
+                continue;
+            }
+
+            if (dronesAreFree && target is Drone)
+            {                    
+                drones.Add(tr);
+                continue;
+            }
+
+            if (targets.Count == 0)
+            {
+                targets.Add(tr);
+                closestD.Add(sqrD);
+                continue;
+            }
+
+            bool added = false;
+            for (int j = 0; j < targets.Count; j++)
+            {
+                if (sqrD >= closestD[j])
                 {
-                    drones.Add(tr);
                     continue;
                 }
 
-                if (targets.Count == 0)
-                {
-                    targets.Add(tr);
-                    closestD.Add(sqrD);
-                    continue;
-                }
+                targets.Insert(j, tr);
+                closestD.Insert(j, sqrD);
 
-                for (int j = 0; j < targets.Count; j++)
+                if (targets.Count > num)
                 {
-                    if (sqrD < closestD[j])
-                    {
-                        targets.Insert(j, tr);
-                        closestD.Insert(j, sqrD);
-
-                        if (targets.Count > num)
-                        {
-                            targets.RemoveAt(targets.Count - 1);
-                            closestD.RemoveAt(targets.Count - 1);
-                        }
-                    }
+                    targets.RemoveAt(targets.Count - 1);
+                    closestD.RemoveAt(targets.Count - 1);
                 }
+                added = true;
+                break;
+            }
+
+            if (!added && targets.Count < num)
+            {
+                targets.Add(tr);
+                closestD.Add(sqrD);
             }
         }
         targets.AddRange(drones);

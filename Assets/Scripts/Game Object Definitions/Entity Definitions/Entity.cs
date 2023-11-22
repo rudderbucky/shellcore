@@ -279,10 +279,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         CurrentHealth = fracs;
     }
 
+    public bool damageBoostGasBoosted;
+    public bool stealthGasBoosted;
+    public int flatDamageIncrease;
     // Performs calculations based on current damage boost and control stats to determine final damage addition
     private void CalculateDamageBoost()
     {
-        damageFactor = controlStacks * Control.damageFactor + damageBoostStacks * DamageBoost.damageFactor;
+        flatDamageIncrease = damageBoostGasBoosted ? 200 * damageBoostStacks : 0;
+        var damageBoostFactorAddition = damageBoostGasBoosted ? 0 : damageBoostStacks * DamageBoost.damageFactor;
+        damageFactor = controlStacks * Control.damageFactor + damageBoostFactorAddition;
     }
 
     private int stealths = 0;
@@ -1104,6 +1109,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected virtual void OnDeath()
     {
         // set death, interactibility and immobility
+        if (this is PlayerCore core) 
+        {
+            core.cursave.gas = Mathf.Max(0, core.cursave.gas - 100);
+            Radar.ResetRadarOdds();
+            ShardCountScript.DisplayCount();
+        }
         IsInvisible = false;
         serverSyncHealthDirty = true;
         RememberWeaponActivationStates();
@@ -1318,6 +1329,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// <param name="maxHealth">the maximum value this health can have</param>
     protected void RegenHealth(ref float currentHealth, float regenRate, float maxHealth)
     {
+        if (this.IsInvisible && !stealthGasBoosted && !(this is PlayerCore && DevConsoleScript.godModeEnabled))
+            return;
+            
         var oldCurrentHealth = currentHealth;
         if (currentHealth + (regenRate * Time.deltaTime) > maxHealth) // if it would overheal
         {
@@ -1395,6 +1409,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             DeathHandler();
         UpdateInteractible();
         UpdateAuras();
+        
+        foreach (var gas in AIData.gas)
+        {
+            var radius = gas.radius;
+            if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < 10F)
+            {
+                TakeCoreDamage(500);
+            }
+        }
+        
+
         if (isDead) // if the craft is dead
         {
             GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite

@@ -79,7 +79,7 @@ public abstract class AirCraft : Craft
             return;
         }
 
-        if (IsMoving()) // if core is supposed to be moving 
+        if (IsMoving() || restAccel != Vector2.zero) // if core is supposed to be moving 
         {
             if (timePassed != 0)
             {

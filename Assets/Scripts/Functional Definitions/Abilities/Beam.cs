@@ -11,6 +11,8 @@ public class Beam : WeaponAbility
     public static readonly int beamDamage = 525;
     protected List<Transform> targetArray;
 
+    protected int numShots = 0;
+    protected static int MAX_BOUNCES = 1;
 
     protected override void Awake()
     {
@@ -107,7 +109,49 @@ public class Beam : WeaponAbility
 
     protected virtual void Update()
     {
-        RenderBeam(0);
+        PlayerCore.Instance.cursave.gas = 100;
+        if (!firing)
+        {
+            numShots = 0;
+            if (!(this is ChainBeam))
+            {
+                MAX_BOUNCES = gasBoosted ? 3 : 1;
+            }
+            else MAX_BOUNCES = 3;
+            return;
+        }
+        if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
+        {
+            var vec = line.GetPosition(numShots);
+            var ents = GetClosestTargets(MAX_BOUNCES, vec);
+            Transform closestEntity = null;
+            foreach (var ent in ents)
+            {
+                if (targetArray.Contains(ent))
+                {
+                    continue;
+                }
+                closestEntity = ent;
+                break;
+            }
+
+            if (!closestEntity)
+            {
+                firing = false;
+            }
+            else
+            {
+                targetArray.Add(closestEntity);
+                FireBeam(closestEntity.position);
+                numShots++;
+            }
+        }
+
+
+        for (int i = 0; i < numShots; i++)
+        {
+            RenderBeam(i);
+        }
     }
 
     protected override bool Execute(Vector3 victimPos)
@@ -119,6 +163,7 @@ public class Beam : WeaponAbility
         targetArray.Clear();
         targetArray.Add(targetingSystem.GetTarget());
         FireBeam(victimPos);
+        numShots++;
         return true;
     }
 
@@ -171,6 +216,20 @@ public class Beam : WeaponAbility
         ActivationCosmetic(victimPos);
     }
 
+    protected override Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
+    {
+        var list = base.GetClosestTargets(num, pos);
+        if (list.Length > 0)
+        {
+            foreach (var ent in list)
+            {
+                if (targetArray.Contains(ent)) continue;
+                GetClosestPart(pos, ent.GetComponentsInChildren<ShellPart>());
+                break;
+            }
+        }
+        return list;
+    }
 
     public GameObject particlePrefab;
 

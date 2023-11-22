@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public enum AbilityID
@@ -48,7 +50,8 @@ public enum AbilityID
     SpeedAura,
     EnergyAura,
     ChainBeam,
-    SpeederMissile
+    SpeederMissile,
+    Radar
 }
 
 public static class AbilityUtilities
@@ -124,6 +127,7 @@ public static class AbilityUtilities
             case 35:
             case 40:
             case 41:
+            case 47:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -240,20 +244,49 @@ public static class AbilityUtilities
                 return $"Instant attack that deals {Beam.beamDamage * tier} damage to multiple targets.";
             case 46:
                 return $"Slow homing projectile that deals {Missile.missileDamage * tier} damage plus more if the target was moving.";
+            case 47:
+                return "Marks unknown sectors on the map, or a random sector if all have been found.";
             default:
                 return "Description unset";
         }
     }
 
+
+    public static string GetPrettyStringFromKeycode(KeyCode code)
+    {
+        var str = code.ToString();
+
+        if (str.Length >= 5 && str.Substring(0, 5) == "Alpha")
+        {
+            str = str.Remove(0, 5);
+        }
+
+        return str;
+    }
+
     public static string GetDescription(Ability ability)
     {
+        var description = "";
         switch (ability.GetID())
         {
             case 10:
-                return DroneUtilities.GetDescriptionByType((ability as SpawnDrone).spawnData.type);
+                description = DroneUtilities.GetDescriptionByType((ability as SpawnDrone).spawnData.type);
+                break;
             default:
-                return GetDescriptionByID(ability.GetID(), ability.GetTier(), "");
+                description = GetDescriptionByID(ability.GetID(), ability.GetTier(), "");
+                break;
         }
+
+        if (ability is SpawnDrone || (ability.GetAbilityType() == AbilityHandler.AbilityTypes.Skills && PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True"))
+        {
+            description += $"\nHold {GetPrettyStringFromKeycode(InputManager.keys[KeyName.AutoCastBuyTurret].overrideKey)} to toggle auto cast";
+        }
+
+        if (ability.gasBoosted)
+        {
+            description += $"\n{GasBoostDescription(ability.GetID())}";
+        }
+        return description;
     }
 
     public static string GetShooterByID(int ID, string data = null)
@@ -462,6 +495,8 @@ public static class AbilityUtilities
                 return "Chain Beam";
             case 46:
                 return "Speeder Missile";
+            case 47:
+                return "Radar";
             default:
                 return "Name unset";
         }
@@ -477,6 +512,62 @@ public static class AbilityUtilities
                 return GetAbilityNameByID(ability.GetID(), "");
         }
     }
+
+    public static bool AbilityIsGasBoostable(int ID)
+    {
+        return GetAbilityTypeByID(ID) != AbilityHandler.AbilityTypes.Passive;
+    }
+
+    public static bool AbilityIsStandardGasBoostable(int ID)
+    {
+        var customEffects = new List<AbilityID>()
+        {
+            AbilityID.DamageBoost,
+            AbilityID.Bullet,
+            AbilityID.Cannon,
+            AbilityID.Ion,
+            AbilityID.Flak,
+            AbilityID.Stealth,
+            AbilityID.Beam
+        };
+        return AbilityIsGasBoostable(ID) && !customEffects.Contains((AbilityID)ID);
+    }
+
+
+    public static string GasBoostDescription(int ID)
+    {
+        var builder = new StringBuilder();
+        builder.Append("GAS BOOSTED: ");
+        switch ((AbilityID)ID)
+        {
+            case AbilityID.DamageBoost:
+                builder.Append("Damage Boost applies a flat damage increase of 200 to projectiles.");
+                break;
+            case AbilityID.Bullet:
+                builder.Append("Bullet pierces through struck enemies once.");
+                break;
+            case AbilityID.Cannon:
+                builder.Append("Weapon deals 250% more damage 10% of the time.");
+                break;
+            case AbilityID.Ion:
+                builder.Append("Weapon adjustment speed doubled.");
+                break;
+            case AbilityID.Flak:
+                builder.Append("Projectiles temporarily disable drones.");
+                break;
+            case AbilityID.Stealth:
+                builder.Append("Enables regeneration while stealthed.");
+                break;
+            case AbilityID.Beam:
+                builder.Append("Weapon strikes 2 more times from where it last struck.");
+                break;
+            default:
+                builder.Append("Ability cooldown lowered by 25%.");
+                break;
+        }
+        return builder.ToString();
+    }
+
 
     public static Ability AddAbilityToGameObjectByID(GameObject obj, int ID, string data = null, int tier = 0)
     {
@@ -659,6 +750,9 @@ public static class AbilityUtilities
                 break;
             case 46:
                 ability = obj.AddComponent<SpeederMissile>();
+                break;
+            case 47:
+                ability = obj.AddComponent<Radar>();
                 break;
         }
 

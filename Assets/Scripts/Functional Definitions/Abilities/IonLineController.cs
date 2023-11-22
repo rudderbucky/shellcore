@@ -22,6 +22,7 @@ public class IonLineController : MonoBehaviour
     public static float damageC = 1500;
     public static float energyC = 150;
     private Entity.TerrainType terrain;
+    public bool gasBoosted;
 
     public void SetTerrain(Entity.TerrainType terrain)
     {
@@ -108,6 +109,7 @@ public class IonLineController : MonoBehaviour
         }
     }
 
+    private readonly float TURN_RATE = 65;
     private float UpdateBearing()
     {
         var pos = targetingSystem.GetTarget().position;
@@ -121,7 +123,8 @@ public class IonLineController : MonoBehaviour
 
         var diff = targetBearing - originalBearing;
 
-        var c = 65 * Time.deltaTime;
+        var c = TURN_RATE * Time.deltaTime;
+        if (gasBoosted) c *= 2;
         bool goForwards = false;
 
         if (originalBearing < 180)

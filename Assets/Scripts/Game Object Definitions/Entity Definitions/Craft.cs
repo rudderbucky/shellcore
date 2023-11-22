@@ -173,11 +173,36 @@ public abstract class Craft : Entity
             return;
         }
 
-        if (physicsDirection == Vector2.zero)
+        restAccel = Vector3.zero;
+
+        if (!GetIsDead())
+        {
+            foreach (var gas in AIData.gas)
+            {
+                var radius = gas.radius;
+                if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < radius * radius)
+                {
+                    var diff = radius * radius - Vector2.SqrMagnitude(transform.position - gas.transform.position);
+                    if (this is PlayerCore core)
+                    { 
+                        core.cursave.gas += Mathf.Pow(diff, 0.75F) * Time.deltaTime / 10;
+                        gas.Shrink(diff * Time.deltaTime / (radius * radius));
+                        ShardCountScript.DisplayCount();
+                    }
+                    var vec = (Vector2)(gas.transform.position - transform.position);
+                    restAccel += (vec.normalized * Mathf.Sqrt(diff)) * 2F;
+                    var normal = Vector2.Dot(Vector2.Perpendicular(vec), entityBody.velocity);
+                }
+            }
+        }
+        
+
+
+        if (physicsDirection == Vector2.zero && restAccel == Vector2.zero)
         {
             var dir = entityBody.velocity.normalized;
             entityBody.velocity -= entityBody.velocity.normalized * physicsAccel * Time.fixedDeltaTime;
-            if (dir != entityBody.velocity.normalized)
+            if (dir != entityBody.velocity.normalized && restAccel == Vector2.zero)
             {
                 entityBody.velocity = Vector2.zero;
             }
@@ -220,6 +245,8 @@ public abstract class Craft : Entity
 
     public bool rotateWhileMoving = true;
     protected const float maxVelocity = 40f;
+    protected Vector2 restAccel;
+    
 
     /// <summary>
     /// Applies a force to the craft on the given vector
@@ -228,7 +255,7 @@ public abstract class Craft : Entity
     {
         if (isImmobile)
         {
-            entityBody.velocity = Vector2.zero;
+            entityBody.velocity = restAccel;
             return;
         }
 
@@ -260,10 +287,16 @@ public abstract class Craft : Entity
         */
         vec += directionVector * physicsAccel * Time.fixedDeltaTime;
         var sqr = vec.sqrMagnitude;
-        if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
+        if (restAccel != Vector2.zero && (sqr > maxVelocity * maxVelocity / 4))
+        {
+            vec = vec.normalized * maxVelocity / 2;
+        }
+        else if ((sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity))
         {
             vec = vec.normalized * Mathf.Min(physicsSpeed, maxVelocity);
         }
+
+        vec += restAccel * Time.fixedDeltaTime;
         return vec;
     }
 

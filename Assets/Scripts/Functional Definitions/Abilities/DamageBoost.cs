@@ -22,6 +22,7 @@ public class DamageBoost : ActiveAbility
     {
         if (Core)
         {
+            Core.damageBoostGasBoosted = gasBoosted;
             Core.DamageBoostStacks -= Mathf.Max(1, abilityTier);
             base.Deactivate();
         }
@@ -52,5 +53,11 @@ public class DamageBoost : ActiveAbility
             ActivationCosmetic(transform.position);
             base.Execute();
         }
+    }
+
+
+    protected void Update()
+    {
+        if (Core) Core.damageBoostGasBoosted = gasBoosted;
     }
 }

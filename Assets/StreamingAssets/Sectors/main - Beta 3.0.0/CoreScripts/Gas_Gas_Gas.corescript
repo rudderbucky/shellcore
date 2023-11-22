@@ -1,0 +1,85 @@
+Text("GGG_missionName", "Gas Gas Gas")
+Text("GGG_entryPoint", "Speak to Perseus at the exterminator hideout.")
+MissionTrigger(
+    name=GGG_missionName,
+    entryPoint=Abandonment_entryPoint,
+    prerequisites=(Abandonment_missionName),
+    episode=3,
+    sequence=(
+        Call(GGG_start)
+    )
+)
+
+Function(
+    name=GGG_start,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(GGG_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+// stop if the mission's complete
+                )
+            ),
+// TODO: checkpoints
+            Comparison(
+                val1=MissionStatus(Abandonment_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    
+                )
+            )
+        )
+    )
+)
+
+Text("GGG_perseus_start_d1", "Hello newcomer. I know there's a lot to absorb around here, I can help you get started.")
+Text("GGG_perseus_start_d2", "Who are you?")
+Text("GGG_perseus_start_d3", "My name is Perseus. Ex-red at your service. With the exterminators, talk to those around here to learn more.")
+Text("GGG_perseus_start_d4", "What do you want to help me with?")
+Text("GGG_perseus_start_d5", "Well, there's a new resource around these areas. We're not sure how it got here or what it really is, but we have an affinity for it.")
+Text("GGG_perseus_start_d6", "Elaborate.")
+Text("GGG_perseus_start_d7", "We here have been calling it \"Ancient Gas\", or just \"Gas\" for short. It's been around since the first of us were abandoned.")
+Text("GGG_perseus_start_d8", "Where can I find it?")
+Text("GGG_perseus_start_d9", "It's found as swirling vortices. We've seen them scattered in sectors in no specific pattern. However, vortices are much larger in DeadZones for some reason.")
+Text("GGG_perseus_start_d10", "How do I extract it?")
+Text("GGG_perseus_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. It appears wading closer to the core gets you more.")
+Text("GGG_perseus_start_d12", "Do you know any sectors where I can find some?")
+Text("GGG_perseus_start_d13", "Yep, I can mark them on the map for you. In fact, let's give you a little mission to get some.")
+Text("GGG_perseus_start_d14", "Okay...")
+Text("GGG_perseus_start_d15", "Marked one sector on your map. Come back with 100 gas -- note that entering the center of a vortex will kill you, and destruction will take 100 gas away from you!")
+Text("GGG_perseus_start_d16", "Gotta be careful then.")
+Dialogue(
+    dialogueID=GGG_perseus_start_d
+)
+
+Function(
+    name=GGG_startTask,
+    sequence=(
+        AddObjectiveMarker(
+            name=GGG_startMarker,
+            entityName=perseus,
+        )
+    )
+)
+
+Text("GGG_perseus_postCollection_d1", "Congrats! It's fun to wade into the vortices but some don't like the risk of imminent doom. I guess it's an acquired taste.")
+Text("GGG_perseus_postCollection_d2", "What do I do with this resource?")
+Text("GGG_perseus_postCollection_d3", "Well, for now we've discovered a handful of uses. Abilities seem to be \"boostable\" with gas, with unique enhancements if you let them drain some over time.")
+Text("GGG_perseus_postCollection_d4", "To GAS BOOST your abilities, Ctrl-click them. GAS BOOSTED abilities slowly drain GAS over time.")
+Text("GGG_perseus_postCollection_d5", "Cool.")
+Text("GGG_perseus_postCollection_d6", "What else can I do with gas?")
+Text("GGG_perseus_postCollection_d7", "Well, there's also Part Fusion. I can help you with that too.")
+Text("GGG_perseus_postCollection_d8", "You can combine the part type of one part and the ability of another into one at this station. Best part about it is that it marks the entry for that part on your index!")
+Text("GGG_perseus_postCollection_d9", "Fusing parts requires Fusion Energy, which can be made with gas and shards. Unlike gas, you don't lose Fusion Energy if you get destroyed!")
+Text("GGG_perseus_postCollection_d10", "You'll need more Fusion Energy to create parts with higher-tier abilities or when you fuse parts with different size categories.")
+Text("GGG_perseus_postCollection_d11", "Why don't you come back to me after you fuse two parts together? I'll give you a cool new ability you can only find here if you do.")
+Text("GGG_perseus_postCollection_d12", "Why are you being so helpful to me?")
+Text("GGG_perseus_postCollection_d13", "Want me to be honest? We need more recruits to join the exterminators! But I'd have no hard feelings if you choose not to join.")
+Text("GGG_perseus_postCollection_d14", "")
+Text("GGG_perseus_postCollection_d15", "")
+Text("GGG_perseus_postCollection_d16", "")
+Text("GGG_perseus_postCollection_d17", "")
+Text("GGG_perseus_postCollection_d18", "")

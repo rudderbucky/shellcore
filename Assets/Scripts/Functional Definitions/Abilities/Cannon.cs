@@ -86,7 +86,8 @@ public class Cannon : WeaponAbility
         ActivationCosmetic(Vector3.zero);
         this.target = target;
         GetDamage();
-        var residue = target.TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
+        var trueDamage = gasBoosted && Random.Range(0, 100) == 0 ? target.GetMaxHealth()[0] + target.GetMaxHealth()[1] : GetDamage();
+        var residue = target.TakeShellDamage(trueDamage, 0, GetComponentInParent<Entity>());
         if (target is Entity entity)
         {
             entity.TakeCoreDamage(residue);

@@ -151,10 +151,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
     {
         if (obeyDroneCount)
         {
-            for (int i = 0; i < ShipBuilder.instance.GetDronePartCount(); i++)
-            {
-                count++;
-            }
+            count += ShipBuilder.instance.GetDronePartCount();
         }
         else count++;
     }
@@ -163,10 +160,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
     {
         if (obeyDroneCount)
         {
-            for (int i = 0; i < ShipBuilder.instance.GetDronePartCount(); i++)
-            {
-                count--;
-            }
+            count -= ShipBuilder.instance.GetDronePartCount();
         }
         else count--;
         if (destroyIfZero && count <= 0)

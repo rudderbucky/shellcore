@@ -21,6 +21,7 @@ public class MainBullet : Bullet
         abilityName = "Main Bullet";
         bulletSound = "clip_bullet";
         muzzleFlash = ResourceManager.GetAsset<GameObject>("main_bullet_muzzle_flash");
+        entityPierce = 1;
     }
 
     protected override void Start()

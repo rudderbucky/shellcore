@@ -22,6 +22,7 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField colorG;
     public InputField colorB;
     public InputField waveSet;
+    public InputField gasVorticesCount;
     public GameObject bgSpawnInputFieldPrefab;
     public GameObject deleteButton;
     public GameObject insertBGSpawnsButton;
@@ -99,6 +100,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         mirrorXButton.SetActive(notDefault);
         mirrorYButton.SetActive(notDefault);
         deleteButton.SetActive(notDefault);
+        gasVorticesCount.transform.parent.gameObject.SetActive(notDefault);
         if (shardCounts != null && shardCounts.Count > 0)
             shardCounts[0].transform.parent.gameObject.SetActive(notDefault);
     }
@@ -137,6 +139,7 @@ public class SectorPropertyDisplay : MonoBehaviour
 
 
         waveSet.text = sector.waveSetPath;
+        gasVorticesCount.text = currentSector.gasVortices.ToString();
 
         x.text = currentSector.bounds.x.ToString();
         y.text = currentSector.bounds.y.ToString();
@@ -486,5 +489,16 @@ public class SectorPropertyDisplay : MonoBehaviour
         }
 
         currentSector.waveSetPath = waveSet.text;
+    }
+
+    public void UpdateGasVortices()
+    {
+        if (opening || editingDefaults)
+        {
+            return;
+        }
+
+        currentSector.gasVortices = int.Parse(gasVorticesCount.text);
+
     }
 }

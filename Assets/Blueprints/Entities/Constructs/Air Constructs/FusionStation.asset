@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7d7e5869cbeb124cb1b9b13d1ff34ec, type: 3}
+  m_Name: FusionStation
+  m_EditorClassIdentifier: 
+  entityName: Drone Workshop
+  coreSpriteID: core1_light
+  coreShellSpriteID: core3_shell
+  shellHealth:
+  - 1000
+  - 250
+  - 500
+  baseRegen:
+  - 60
+  - 0
+  - 60
+  intendedType: 0
+  parts:
+  - location: {x: -1.8, y: -0.4}
+    rotation: 0
+    mirrored: 0
+    abilityID: 9
+    tier: 3
+    secondaryData: mini_drone
+    partID: BigSide5
+    shiny: 0
+    playerGivenName: 
+  - location: {x: 1.8, y: -0.4}
+    rotation: 0
+    mirrored: 1
+    abilityID: 10
+    tier: 0
+    secondaryData: mini_drone
+    partID: BigSide5
+    shiny: 0
+    playerGivenName: 
+  - location: {x: -0.8, y: 0}
+    rotation: 0
+    mirrored: 1
+    abilityID: 5
+    tier: 3
+    secondaryData: mini_drone
+    partID: BigWing1
+    shiny: 0
+    playerGivenName: 
+  - location: {x: 0.8, y: 0}
+    rotation: 0
+    mirrored: 0
+    abilityID: 10
+    tier: 0
+    secondaryData: mini_drone
+    partID: BigWing1
+    shiny: 0
+    playerGivenName: 
+  dialogue: {fileID: 11400000, guid: ec84f30683f7640d2b8d1cce5bd24235, type: 2}
+  useCustomDroneType: 0
+  customDroneType: 0

@@ -54,4 +54,9 @@ public class Stealth : ActiveAbility
             base.Execute();
         }
     }
+
+    protected void Update()
+    {
+        if (craft) craft.stealthGasBoosted = gasBoosted;
+    }
 }

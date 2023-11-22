@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -150,10 +151,16 @@ public class BulletScript : MonoBehaviour, IProjectile
         return damage;
     }
 
+
+    public int allowedHits = 1;
+    public List<Entity> entitiesHit = new List<Entity>();
     public void HitPart(ShellPart part)
     {
         DetachTrail();
-        Destroy(gameObject); // bullet has collided with a target, delete immediately
+        if (entitiesHit.Contains(part.craft)) return;
+        allowedHits--;
+        entitiesHit.Add(part.craft);
+        if (allowedHits <= 0) Destroy(gameObject); // bullet has collided with a target, delete immediately
         if (!part) return;
 
         var networkReady = MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off 

@@ -60,6 +60,7 @@ public class Ion : WeaponAbility
 
     void Update()
     {
+        lineController.gasBoosted = gasBoosted;
         if (lineController.GetDuration() <= 0 && source)
         {
             Destroy(source);

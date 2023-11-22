@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 
 
-public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
+public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public EntityBlueprint.PartInfo part;
     protected Image image;
@@ -17,6 +17,16 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
     {
     }
 
+
+    public virtual void OnPointerEnter(PointerEventData eventData)
+    {
+    }
+
+
+    public virtual void OnPointerExit(PointerEventData eventData)
+    {
+    }
+    
     protected virtual void Start()
     {
         image = GetComponentsInChildren<Image>()[1];
@@ -43,6 +53,7 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
             shooter.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
             shooter.color = activeColor;
             shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+            shooter.enabled = true;
         }
         else
         {
