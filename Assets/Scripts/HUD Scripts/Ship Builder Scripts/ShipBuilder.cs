@@ -60,6 +60,8 @@ public class ShipBuilder : GUIWindowScripts
     private bool[] displayingTypes;
     [SerializeField]
     private GameObject jsonButtonHolder;
+    [SerializeField]
+    private ShpBuilderSearch searchBar;
 
     public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
     {
@@ -760,14 +762,24 @@ public class ShipBuilder : GUIWindowScripts
         droneSpawnData = DroneUtilities.GetDroneSpawnDataByShorthand(dronePart.secondaryData);
         droneWorkshopPhaseHider.SetActive(false);
         cursorScript.ClearAllParts();
+        searcherString = "";
         if (sortingObject)
         {
             sortingObject.SetActive(true);
+            
+            for (int i = 0; i < displayingTypes.Length; i++)
+            {
+                displayingTypes[i] = true;
+            }
+            
             foreach (var sortingButton in sortingButtons) 
             {
                 sortingButton.DroneWorkshopModifications();
             }
+
+            searchBar.input.text = "";
         }
+
         var parts = new List<EntityBlueprint.PartInfo>();
         SetUpInventory(parts);
         foreach(var part in parts)
