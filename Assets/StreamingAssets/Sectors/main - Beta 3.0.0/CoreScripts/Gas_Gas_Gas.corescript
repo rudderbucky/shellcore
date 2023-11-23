@@ -1,5 +1,5 @@
 Text("GGG_missionName", "Gas Gas Gas")
-Text("GGG_entryPoint", "Speak to Perseus at the exterminator hideout.")
+Text("GGG_entryPoint", "Speak to Heavensgate at the exterminator hideout.")
 MissionTrigger(
     name=GGG_missionName,
     entryPoint=Abandonment_entryPoint,
@@ -35,24 +35,93 @@ Function(
     )
 )
 
-Text("GGG_perseus_start_d1", "Hello newcomer. I know there's a lot to absorb around here, I can help you get started.")
-Text("GGG_perseus_start_d2", "Who are you?")
-Text("GGG_perseus_start_d3", "My name is Perseus. Ex-red at your service. With the exterminators, talk to those around here to learn more.")
-Text("GGG_perseus_start_d4", "What do you want to help me with?")
-Text("GGG_perseus_start_d5", "Well, there's a new resource around these areas. We're not sure how it got here or what it really is, but we have an affinity for it.")
-Text("GGG_perseus_start_d6", "Elaborate.")
-Text("GGG_perseus_start_d7", "We here have been calling it \"Ancient Gas\", or just \"Gas\" for short. It's been around since the first of us were abandoned.")
-Text("GGG_perseus_start_d8", "Where can I find it?")
-Text("GGG_perseus_start_d9", "It's found as swirling vortices. We've seen them scattered in sectors in no specific pattern. However, vortices are much larger in DeadZones for some reason.")
-Text("GGG_perseus_start_d10", "How do I extract it?")
-Text("GGG_perseus_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. It appears wading closer to the core gets you more.")
-Text("GGG_perseus_start_d12", "Do you know any sectors where I can find some?")
-Text("GGG_perseus_start_d13", "Yep, I can mark them on the map for you. In fact, let's give you a little mission to get some.")
-Text("GGG_perseus_start_d14", "Okay...")
-Text("GGG_perseus_start_d15", "Marked one sector on your map. Come back with 100 gas -- note that entering the center of a vortex will kill you, and destruction will take 100 gas away from you!")
-Text("GGG_perseus_start_d16", "Gotta be careful then.")
+Text("GGG_heavensgate_start_d1", "Hello newcomer. I know there's a lot to absorb around here, I can help you get started.")
+Text("GGG_heavensgate_start_d2", "Who are you?")
+Text("GGG_heavensgate_start_d3", "My name is Heavensgate. Ex-red at your service. With the exterminators, talk to those around here to learn more.")
+Text("GGG_heavensgate_start_d4", "What do you want to help me with?")
+Text("GGG_heavensgate_start_d5", "Well, there's a new resource around these areas. We're not sure how it got here or what it really is, but we have an affinity for it.")
+Text("GGG_heavensgate_start_d6", "Elaborate.")
+Text("GGG_heavensgate_start_d7", "We here have been calling it \"Ancient Gas\", or just \"Gas\" for short. It's been around since the first of us were abandoned.")
+Text("GGG_heavensgate_start_d8", "Where can I find it?")
+Text("GGG_heavensgate_start_d9", "It's found as swirling vortices. We've seen them scattered in sectors in no specific pattern. However, vortices are much larger in DeadZones for some reason.")
+Text("GGG_heavensgate_start_d10", "How do I extract it?")
+Text("GGG_heavensgate_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. It appears wading closer to the core gets you more.")
+Text("GGG_heavensgate_start_d12", "Do you know any sectors where I can find some?")
+Text("GGG_heavensgate_start_d13", "Yep, I can mark them on the map for you. In fact, let's give you a little mission to get some.")
+Text("GGG_heavensgate_start_d14", "Okay...")
+Text("GGG_heavensgate_start_d15", "Marked one sector on your map. Come back with 100 gas -- note that entering the center of a vortex will kill you, and death will always take 100 gas away from you!")
+Text("GGG_heavensgate_start_d16", "Gotta be careful then.")
 Dialogue(
-    dialogueID=GGG_perseus_start_d
+    dialogueID=GGG_heavensgate_start_d,
+    dialogueText=GGG_heavensgate_start_d1,
+    entityID=heavensgate,
+    responses=(
+        Response(
+            responseText=GGG_heavensgate_start_d2,
+            next=Dialogue(
+                dialogueText=GGG_heavensgate_start_d3,
+                responses=(
+                    Response(
+                        responseText=GGG_heavensgate_start_d4,
+                        next=SetID(1)
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=GGG_heavensgate_start_d4,
+            next=Dialogue(
+                nodeID=1,
+                dialogueText=GGG_heavensgate_start_d5,
+                responses=(
+                    Response(
+                        responseText=GGG_heavensgate_start_d6,
+                        next=Dialogue(
+                            dialogueID=GGG_heavensgate_start_d7,
+                            responses=(
+                                Response(
+                                    responseText=GGG_heavensgate_start_d8,
+                                    next=Dialogue(
+                                        dialogueID=GGG_heavensgate_start_d9,
+                                        responses=(
+                                            Response(
+                                                responseID=GGG_heavensgate_start_d10,
+                                                next=Dialogue(
+                                                    dialogueID=GGG_heavensgate_start_d11,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=GGG_heavensgate_start_d12,
+                                                            next=Dialogue(
+                                                                dialogueID=GGG_heavensgate_start_d13,
+                                                                responses=(
+                                                                    Response(
+                                                                        responseText=GGG_heavensgate_start_d14
+                                                                        next=Dialogue(
+                                                                            dialogueID=GGG_heavensgate_start_d15,
+                                                                            responses=(
+                                                                                Response(
+                                                                                    responseText=GGG_heavensgate_start_d16,
+                                                                                    next=End()
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
 )
 
 Function(
@@ -60,26 +129,162 @@ Function(
     sequence=(
         AddObjectiveMarker(
             name=GGG_startMarker,
-            entityName=perseus,
+            entityName=heavensgate,
         )
     )
 )
 
-Text("GGG_perseus_postCollection_d1", "Congrats! It's fun to wade into the vortices but some don't like the risk of imminent doom. I guess it's an acquired taste.")
-Text("GGG_perseus_postCollection_d2", "What do I do with this resource?")
-Text("GGG_perseus_postCollection_d3", "Well, for now we've discovered a handful of uses. Abilities seem to be \"boostable\" with gas, with unique enhancements if you let them drain some over time.")
-Text("GGG_perseus_postCollection_d4", "To GAS BOOST your abilities, Ctrl-click them. GAS BOOSTED abilities slowly drain GAS over time.")
-Text("GGG_perseus_postCollection_d5", "Cool.")
-Text("GGG_perseus_postCollection_d6", "What else can I do with gas?")
-Text("GGG_perseus_postCollection_d7", "Well, there's also Part Fusion. I can help you with that too.")
-Text("GGG_perseus_postCollection_d8", "You can combine the part type of one part and the ability of another into one at this station. Best part about it is that it marks the entry for that part on your index!")
-Text("GGG_perseus_postCollection_d9", "Fusing parts requires Fusion Energy, which can be made with gas and shards. Unlike gas, you don't lose Fusion Energy if you get destroyed!")
-Text("GGG_perseus_postCollection_d10", "You'll need more Fusion Energy to create parts with higher-tier abilities or when you fuse parts with different size categories.")
-Text("GGG_perseus_postCollection_d11", "Why don't you come back to me after you fuse two parts together? I'll give you a cool new ability you can only find here if you do.")
-Text("GGG_perseus_postCollection_d12", "Why are you being so helpful to me?")
-Text("GGG_perseus_postCollection_d13", "Want me to be honest? We need more recruits to join the exterminators! But I'd have no hard feelings if you choose not to join.")
-Text("GGG_perseus_postCollection_d14", "")
-Text("GGG_perseus_postCollection_d15", "")
-Text("GGG_perseus_postCollection_d16", "")
-Text("GGG_perseus_postCollection_d17", "")
-Text("GGG_perseus_postCollection_d18", "")
+Text("GGG_heavensgate_postCollection_d1", "Congrats! It's fun to wade into the vortices but some don't like the risk of being disassembled. I guess it's an acquired taste.")
+Text("GGG_heavensgate_postCollection_d2", "What do I do with this resource?")
+Text("GGG_heavensgate_postCollection_d3", "Well, we've discovered two uses. Abilities seem to be \"boostable\" with gas, with unique enhancements if you let them drain some over time.")
+Text("GGG_heavensgate_postCollection_d6", "What else can I do with gas?")
+Text("GGG_heavensgate_postCollection_d7", "There's also Part Fusion. I can help you with that too.")
+Text("GGG_heavensgate_postCollection_d8", "...")
+Text("GGG_heavensgate_postCollection_d9", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
+Text("GGG_heavensgate_postCollection_d10", "Okay, I'll meet you there...")
+
+
+Text("GGG_heavensgate_postCollection_d4", "To GAS BOOST your abilities, Ctrl-click them. GAS BOOSTED abilities slowly drain GAS over time.")
+
+
+Dialogue(
+    dialogueID=GGG_heavensgate_postCollection_d,
+    dialogueText=GGG_heavensgate_postCollection_d1,
+    responses=(
+        Response(
+            responseText=GGG_heavensgate_postCollection_d2,
+            next=Dialogue(
+                dialogueText=GGG_heavensgate_postCollection_d3,
+                responses=(
+                    Response(
+                        responseText=GGG_heavensgate_postCollection_d6
+                        next=Dialogue(
+                            dialogueText=GGG_heavensgate_postCollection_d7,
+                            responses=(
+                                Response(
+                                    responseText=GGG_heavensgate_postCollection_d8,
+                                    next=Dialogue(
+                                        dialogueText=GGG_heavensgate_postCollection_d9,
+                                        responses=(
+                                            Response(
+                                                responseText=GGG_heavensgate_postCollection_d10,
+                                                next=End()
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("GGG_heavensgate_FS_d1", "...and when you unharness their core energy you should attach stabilizers beforehand, not after the fact. It's harder at first but the rest becomes easier and you get used to it.")
+Text("GGG_heavensgate_FS_d2", "...")
+Text("GGG_heavensgate_FS_d3", "Hmm... probably should've thought of that before...")
+Text("GGG_heavensgate_FS_d4", "I see you've acquainted yourselves with each other.")
+Text("GGG_heavensgate_FS_d5", "Ah, there you are! We've already set up the Fusion Station. Now for me to explain how to use it.")
+Text("GGG_heavensgate_FS_d6", "Go on...")
+Text("GGG_heavensgate_FS_d7", "You can combine the part type of one part and the ability of another into one at this station. Best part about it is that it marks the entry for that part on your index!")
+Text("GGG_heavensgate_FS_d8", "Fusing parts requires Fusion Energy, which can be made with gas and shards. Unlike gas, you don't lose Fusion Energy if you are killed!")
+Text("GGG_heavensgate_FS_d9", "You'll need more Fusion Energy to create parts with higher-tier abilities or when you fuse parts with different size categories.")
+Text("GGG_heavensgate_FS_d10", "Why don't you try fusing two parts together? I'll give you a cool new ability you can only find here if you do.")
+Text("GGG_heavensgate_FS_d11", "Okay...")
+
+
+Dialogue(
+    dialogueID=GGG_heavensgate_FS_d,
+    entityID=heavensgate,
+    responses=(
+        responseText=GGG_heavensgate_FS_d2,
+        next=Dialogue(
+            entityID=the-architect,
+            dialogueText=GGG_heavensgate_FS_d3,
+            responses=(
+                Response(
+                    responseText=GGG_heavensgate_FS_d4,
+                    next=Dialogue(
+                        dialogueText=GGG_heavensgate_FS_d5,
+                        entityID=heavensgate,
+                        responses=(
+                            Response(
+                                responseText=GGG_heavensgate_FS_d6,
+                                next=Dialogue(
+                                    dialogueText=GGG_heavensgate_FS_d7,
+                                    responses=(
+                                        Response(
+                                            responseText=GGG_heavensgate_FS_d2,
+                                            next=Dialogue(
+                                                dialogueText=GGG_heavensgate_FS_d8,
+                                                responses=(
+                                                    Response(
+                                                        responseText=GGG_heavensgate_FS_d2,
+                                                        next=Dialogue(
+                                                            dialogueText=GGG_heavensgate_FS_d9
+                                                            responses=(
+                                                                Response(
+                                                                    responseText=GGG_heavensgate_FS_d2,
+                                                                    next=Dialogue(
+                                                                        dialogueText=GGG_heavensgate_FS_d10,
+                                                                        responses=(
+                                                                            Response(
+                                                                                responseText=GGG_heavensgate_FS_d11,
+                                                                                next=End()
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("GGG_heavensgate_postFS_d1", "Nice going! Fusion can be really handy when trying to create powerful parts for tough combat situations.")
+Text("GGG_heavensgate_postFS_d2", "Why are you being so helpful to us?")
+Text("GGG_heavensgate_postFS_d3", "Want me to be honest? We need more recruits to join the exterminators! But I'd have no hard feelings if you choose not to join.")
+Text("GGG_heavensgate_postFS_d4", "Anyway, that's really all there is to gas! Congrats. Here's your new ability.")
+Text("GGG_heavensgate_postFS_d5", "Thanks!")
+
+Dialogue(
+    dialogueID=GGG_heavensgate_postFS_d,
+    dialogueText=GGG_heavensgate_postFS_d1,
+    entityID=heavensgate,
+    responses=(
+        Response(
+            responseText=GGG_heavensgate_postFS_d2,
+            next=Dialogue(
+                dialogueText=GGG_heavensgate_postFS_d3,
+                responses=(
+                    Response(
+                        responseText=GGG_heavensgate_FS_d2,
+                        next=Dialogue(
+                            dialogueText=GGG_heavensgate_postFS_d4,
+                            responses=(
+                                Response(
+                                    responseText=GGG_heavensgate_postFS_d5,
+                                    next=End()
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
