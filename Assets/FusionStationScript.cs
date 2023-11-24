@@ -187,5 +187,6 @@ public class FusionStationScript : GUIWindowScripts
         PartIndexScript.AttemptAddToPartsObtained(pi);
         PartIndexScript.AttemptAddToPartsSeen(pi);
 
+        CoreScriptsManager.instance.RunFuseChecks();
     }
 }

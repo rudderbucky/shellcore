@@ -17,7 +17,31 @@ public class Variable : MonoBehaviour
 
     public static bool ComparisonOfType(string type, string val1, string val2)
     {
-        return (ValueStartsWith(val1, type) || ValueStartsWith(val2, type));
+        return ValueStartsWith(val1, type) || ValueStartsWith(val2, type);
+    }
+
+    public static bool ComparisonOfType(string type, string val1, string val2, string comp, out string outVal1, out string outVal2, out string outComp)
+    {
+        outVal1 = val1;
+        outVal2 = val2;
+        if (ValueStartsWith(val1, type))
+        {
+            outComp = comp;
+            return true;
+        }
+        if (ValueStartsWith(val2, type))
+        {
+            outVal1 = val2;
+            outVal2 = val1;
+            outComp = comp;
+            if (comp == "Lt")
+                outComp = "Gt";
+            else if (comp == "Gt")
+                outComp = "Lt";
+            return true;
+        }
+        outComp = comp;
+        return false;
     }
 
     // TODO: Make SqrDistance maybe work with two SqrDistance operations (dynamically checking two distances against each other)
@@ -25,57 +49,59 @@ public class Variable : MonoBehaviour
     {
         if (string.IsNullOrEmpty(comp)) comp = "Eq";
         var ID = $"{cb.ID}-{c.ID}";
-        var sqDistComp = ComparisonOfType("SqrDistance", val1, val2);
+        var sqDistComp = ComparisonOfType("SqrDistance", val1, val2, comp, out val1, out val2, out comp);
         if (sqDistComp)
         {
-            var data = new ProximityData();
-            var distVal = val1;
-            if (val2.StartsWith("SqrDistance"))
-            {
-                distVal = val2;
-                if (comp == "Lt") comp = "Gt";
-                else if (comp == "Gt") comp = "Lt";
-                data.distanceValue = float.Parse(val1);
-            }
-            else data.distanceValue = float.Parse(val2);
-            if (distVal.StartsWith("SqrDistance"))
-            {
-                GetEntitiesForSqrDistance(val1, out data.ent1ID, out data.ent2ID, out data.t1, out data.t2);
-                data.cond = c;
-                data.block = cb;
-                data.comp = comp;
-                if (RunDistanceCondition(data)) SatisfyCondition(c, cb);
-                else
-                {
-                    var dCond = CoreScriptsManager.instance.distanceConditions;
-                    if (dCond.ContainsKey(ID)) dCond.Remove(ID);
-                    dCond.Add(ID, data);
-                }
-                
-                return;
-            }
+            SqDistComp(val1, val2, comp, ID, c, cb);
+            return;
         }
 
+        ComparisonOfType("MissionStatus", val1, val2, comp, out val1, out val2, out comp);
 
-        if (!CompareValsHelper(val1, val2, comp, c, cb))
+        // if the var is already done just return
+        if (CompareValsHelper(val1, val2, comp, c, cb))
         {
-            VariableChangedDelegate del = (x) =>
-            {
-                if (x == val1 || x == val2 || 
-                    ComparisonOfType("MissionStatus", val1, val2))
-                {
-                    CompareValsHelper(val1, val2, comp, c, cb);
-                }
-
-            };
-
-            var varCond = CoreScriptsManager.instance.variableChangedDelegates;
-            if (varCond.ContainsKey(ID)) varCond.Remove(ID);
-            varCond.Add(ID, del);
-            CoreScriptsManager.OnVariableUpdate += del;
+            return;
         }
+
+        AddDelegate(val1, val2, comp, c, cb, ID);
     }
 
+    private static void AddDelegate(string val1, string val2, string comp, Condition c, ConditionBlock cb, string ID)
+    {
+        VariableChangedDelegate del = (x) =>
+        {
+            if (x == val1 || x == val2 || val1.StartsWith("MissionStatus"))
+            {
+                CompareValsHelper(val1, val2, comp, c, cb);
+            }
+
+        };
+
+        var varCond = CoreScriptsManager.instance.variableChangedDelegates;
+        if (varCond.ContainsKey(ID)) varCond.Remove(ID);
+        varCond.Add(ID, del);
+        CoreScriptsManager.OnVariableUpdate += del;
+    }
+
+    // val1 must be the sqrdistance
+    private static void SqDistComp(string val1, string val2, string comp, string ID, Condition c, ConditionBlock cb)
+    {
+        var data = new ProximityData();
+        var distVal = val1;
+        data.distanceValue = float.Parse(val2);
+        GetEntitiesForSqrDistance(val1, out data.ent1ID, out data.ent2ID, out data.t1, out data.t2);
+        data.cond = c;
+        data.block = cb;
+        data.comp = comp;
+        if (RunDistanceCondition(data)) SatisfyCondition(c, cb);
+        else
+        {
+            var dCond = CoreScriptsManager.instance.distanceConditions;
+            if (dCond.ContainsKey(ID)) dCond.Remove(ID);
+            dCond.Add(ID, data);
+        }
+    }
 
     private static void GetEntitiesForSqrDistance(string sqrDistanceStr, out string ent1ID, out string ent2ID, out Transform t1, out Transform t2)
     {
@@ -107,6 +133,18 @@ public class Variable : MonoBehaviour
                 case Mission.MissionStatus.Complete:
                     return "complete";
             }
+        }
+        if (val.StartsWith("Shards"))
+        {
+            return PlayerCore.Instance.cursave.shards.ToString();
+        }
+        if (val.StartsWith("Gas"))
+        {
+            return PlayerCore.Instance.cursave.gas.ToString();
+        }
+        if (val.StartsWith("FusionEnergy"))
+        {
+            return PlayerCore.Instance.cursave.fusionEnergy.ToString();
         }
         return val;
     }

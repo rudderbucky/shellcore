@@ -20,7 +20,8 @@ public class CoreScriptsCondition : MonoBehaviour
         Time,
         Status,
         EnterSector,
-        Comparison
+        Comparison,
+        FusePart
     }
 
     public struct Condition
@@ -169,6 +170,12 @@ public class CoreScriptsCondition : MonoBehaviour
                 
                 if (!invert) SectorCheck(SectorManager.instance.current.sectorName, sectorName, c, cb, invert);
                 break;
+            case ConditionType.FusePart:
+                var data = new FusionData();
+                data.cond = c;
+                data.block = cb;
+                CoreScriptsManager.instance.fusionConditions.Add(ID, data);
+                break;
         }
     }
 
@@ -272,6 +279,10 @@ public class CoreScriptsCondition : MonoBehaviour
                 if (!CoreScriptsManager.instance.variableChangedDelegates.ContainsKey(ID)) break;
                 CoreScriptsManager.OnVariableUpdate -= CoreScriptsManager.instance.variableChangedDelegates[ID];
                 CoreScriptsManager.instance.variableChangedDelegates.Remove(ID);
+                break;
+            case ConditionType.FusePart:
+                if (!CoreScriptsManager.instance.fusionConditions.ContainsKey(ID)) break;
+                CoreScriptsManager.instance.fusionConditions.Remove(ID);
                 break;
             default:
                 return;

@@ -24,6 +24,8 @@ public class CoreScriptsManager : MonoBehaviour
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
     public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
     public Dictionary<string, ProximityData> distanceConditions = new Dictionary<string, ProximityData>();
+    public Dictionary<string, FusionData> fusionConditions = new Dictionary<string, FusionData>();
+
     private List<Context> missionTriggers = new List<Context>();
     private List<Context> startTriggers = new List<Context>();
     private List<Context> sectorTriggers = new List<Context>();     
@@ -62,6 +64,12 @@ public class CoreScriptsManager : MonoBehaviour
         public ConditionBlock block;
     }
 
+    public class FusionData
+    {
+        public Condition cond;
+        public ConditionBlock block;
+    }
+
     public Task GetTask(string taskID)
     {
         if (!tasks.ContainsKey(taskID))
@@ -74,6 +82,18 @@ public class CoreScriptsManager : MonoBehaviour
     private void Update()
     {
         while (RunDistanceChecks()) {}
+    }
+
+    public void RunFuseChecks()
+    {
+        while (fusionConditions.Values.Count > 0)
+        {
+            foreach (var data in fusionConditions.Values)
+            {
+                SatisfyCondition(data.cond, data.block);
+                break;
+            }
+        }
     }
 
     private bool RunDistanceChecks()
