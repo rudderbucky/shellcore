@@ -1,5 +1,5 @@
 Text("GGG_missionName", "Gas Gas Gas")
-Text("GGG_entryPoint", "Speak to Heavensgate at the exterminator hideout.")
+Text("GGG_entryPoint", "Speak to Heavensgate at the Exterminator Settlement.")
 MissionTrigger(
     name=GGG_missionName,
     entryPoint=Abandonment_entryPoint,
@@ -28,7 +28,25 @@ Function(
                 val2=complete,
                 comp=Eq,
                 sequence=(
-                    
+                    Call(GGG_startHelper)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=GGG_startHelper,
+    sequence=(
+        AddObjectiveMarker(
+            ID=Abandonment_jumpSectorMarker,
+            sectorName=Exterminator Settlement
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Exterminator Settlement,
+                sequence=(
+                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_start_d)
                 )
             )
         )
@@ -125,11 +143,17 @@ Dialogue(
 )
 
 Function(
-    name=GGG_startTask,
+    name=GGG_preCollection,
     sequence=(
-        AddObjectiveMarker(
-            name=GGG_startMarker,
-            entityName=heavensgate,
+        ConditionBlock(
+            Comparison(
+                val1=Gas(),
+                val2=100,
+                comp=Gt,
+                sequence=(
+                    
+                )
+            )
         )
     )
 )
