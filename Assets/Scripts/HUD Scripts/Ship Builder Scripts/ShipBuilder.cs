@@ -1431,7 +1431,7 @@ public class ShipBuilder : GUIWindowScripts
 #if UNITY_EDITOR
         else
         {
-            AssetDatabase.CreateAsset(blueprint, System.IO.Path.Combine("Assets", "SavedPrint.asset"));
+            //AssetDatabase.CreateAsset(blueprint, System.IO.Path.Combine("Assets", "SavedPrint.asset"));
         }
 #endif
     }
