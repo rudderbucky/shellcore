@@ -594,11 +594,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
         }
 
-        if (!transform.Find("Shell Sprite")) // no shell in hierarchy yet? no problem
+        if (!transform.Find("Shell Sprite"))
         {
-            GameObject childObject = new GameObject("Shell Sprite"); // create the child gameobject
-            childObject.transform.SetParent(transform, false); // set to child
-            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>(); // add renderer
+            GameObject childObject = new GameObject("Shell Sprite");
+            childObject.transform.SetParent(transform, false);
+            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
             if (blueprint)
             {
                 // check if it contains a blueprint (it should)

@@ -59,7 +59,8 @@ public class EntityBlueprint : ScriptableObject
         CoreUpgrader,
         DroneWorkshop,
         AirWeaponStation,
-        TowerBase
+        TowerBase,
+        FusionStation
     }
 
     public IntendedType intendedType;

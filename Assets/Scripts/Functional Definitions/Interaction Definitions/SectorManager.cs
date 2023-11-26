@@ -1121,6 +1121,9 @@ public class SectorManager : MonoBehaviour
                 Yard workshop = gObj.AddComponent<Yard>();
                 workshop.mode = BuilderMode.Workshop;
                 break;
+            case EntityBlueprint.IntendedType.FusionStation:
+                gObj.AddComponent<Yard>();
+                break;
             default:
                 break;
         }
