@@ -197,10 +197,28 @@ public class IonLineController : MonoBehaviour
                 line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
                 Core.TakeEnergy(energyCost * Time.deltaTime);
 
-                var part = hitTransform.GetComponentInChildren<ShellPart>();
+
+                ShellPart part = null;
+                var dEnt = damageable as Entity;
+                var colliders = dEnt.GetColliders();
+                if (dEnt)
+                {
+                    for (int i = 0; i < dEnt.parts.Count; i++)
+                    {
+                        if (SATCollision.PointInRectangle(
+                            colliders[i * 4 + 0],
+                            colliders[i * 4 + 1],
+                            colliders[i * 4 + 2],
+                            colliders[i * 4 + 3],
+                            line.GetPosition(1)))
+                        {
+                            part = dEnt.parts[i];
+                            break;
+                        }
+                    }
+                }
 
                 var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
-
                 // deal instant damage
 
                 if (part)
