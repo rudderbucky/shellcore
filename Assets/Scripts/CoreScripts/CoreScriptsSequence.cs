@@ -277,7 +277,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.SetInteraction:
                     entityID = GetArgument(inst.arguments, "entityID");
                     var dialogueID = GetArgument(inst.arguments, "dialogueID");
-                    Interaction.SetInteraction(context, entityID, dialogueID);
+                    Interaction.SetInteraction(context, entityID, dialogueID, inst.sequence);
                     break;
                 case InstructionCommand.ForceStartDialogue:
                     dialogueID = GetArgument(inst.arguments, "dialogueID");

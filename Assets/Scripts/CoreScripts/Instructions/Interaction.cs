@@ -29,11 +29,16 @@ public class Interaction : MonoBehaviour
         DialogueSystem.StartDialogue(CoreScriptsManager.instance.dialogues[dialogueID], null, context);
     }
 
-    public static void SetInteraction(Context context, string entityID, string dialogueID)
+    public static void SetInteraction(Context context, string entityID, string dialogueID, Sequence sequence)
     {
         InteractAction action = new InteractAction();
             action.action = new UnityEngine.Events.UnityAction(() =>
                 {
+                    if (sequence.instructions != null)
+                    {
+                        CoreScriptsSequence.RunSequence(sequence, context);
+                    }
+                    
                     switch (context.type)
                     {
                         case TriggerType.Mission:

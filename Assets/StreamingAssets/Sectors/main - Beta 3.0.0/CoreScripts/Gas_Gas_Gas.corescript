@@ -1,5 +1,5 @@
 Text("GGG_missionName", "Gas Gas Gas")
-Text("GGG_entryPoint", "Speak to Heavensgate at the Exterminator Settlement.")
+Text("GGG_entryPoint", "Speak to Heavensgate at the Exterminator Lair.")
 MissionTrigger(
     name=GGG_missionName,
     entryPoint=Abandonment_entryPoint,
@@ -22,6 +22,38 @@ Function(
 // stop if the mission's complete
                 )
             ),
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_preCollection)
+                )
+            ),
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=2,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_checkpoint2func)
+                )
+            ),
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=3,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_gasBoostPromptAndNext)
+                )
+            ),
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=4,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_finishMissionImmediately)
+                )
+            ),
 // TODO: checkpoints
             Comparison(
                 val1=MissionStatus(Abandonment_missionName),
@@ -40,11 +72,11 @@ Function(
     sequence=(
         AddObjectiveMarker(
             ID=Abandonment_jumpSectorMarker,
-            sectorName=Exterminator Settlement
+            sectorName=Exterminator Lair
         ),
         ConditionBlock(
             EnterSector(
-                sectorName=Exterminator Settlement,
+                sectorName=Exterminator Lair,
                 sequence=(
                     SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_start_d)
                 )
@@ -116,10 +148,11 @@ Dialogue(
                                                                         responseText=GGG_heavensgate_start_d14
                                                                         next=Dialogue(
                                                                             dialogueID=GGG_heavensgate_start_d15,
+                                                                            taskID=GGG_gasCollectionTask,
                                                                             responses=(
                                                                                 Response(
                                                                                     responseText=GGG_heavensgate_start_d16,
-                                                                                    next=End()
+                                                                                    next=Call(GGG_preCollection)
                                                                                 )
                                                                             )
                                                                         )
@@ -142,16 +175,60 @@ Dialogue(
     )
 )
 
+Text("GGG_heavensgate_gasCollectionTaskReminder_d1", "You should go collect 100 gas from one of the sectors I've marked and return to me.")
+Text("GGG_heavensgate_gasCollectionTaskReminder_d2", "Sounds good...")
+
+Dialogue(
+    dialogueID=GGG_heavensgate_gasCollectionTaskReminder_d,
+    dialogueText=GGG_heavensgate_gasCollectionTaskReminder_d1,
+    entityID=heavensgate,
+    responses=(
+        Response(
+            responseText=GGG_heavensgate_gasCollectionTaskReminder_d2,
+            next=End()
+        )
+    )
+)
+
+Text("GGG_gasCollectionTaskObjective", "- Head to one of the sectors marked by Heavensgate on your map.
+- Find a gas vortex and fly into it to start absorbing gas.
+- Avoid flying into the center as that will kill you.
+- Return to Heavensgate with 100 gas for your reward.")
+
+Task(
+    taskID=GGG_gasCollectionTask,
+    objectives=GGG_gasCollectionTaskObjective
+)
+
 Function(
     name=GGG_preCollection,
     sequence=(
+        SetVariable(
+            name=$$$GGG_checkpoint1,
+            value=1
+        ),
+        ClearInteraction(entityID=heavensgate),
+        AddInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_gasCollectionTaskReminder_d),
         ConditionBlock(
             Comparison(
                 val1=Gas(),
                 val2=100,
                 comp=Gt,
                 sequence=(
-                    
+                    FinishTask(),
+                    AddObjectiveMarker(ID=GGG_heavensgateObjective, sectorName=Exterminator Lair, entityID=heavensgate),
+                    ClearInteraction(entityID=heavensgate),
+                    SetInteraction(
+                        entityID=heavensgate, 
+                        dialogueID=GGG_heavensgate_postCollection_d,
+                        sequence=(
+                            RemoveObjectiveMarker(ID=GGG_heavensgateObjective),
+                            SetVariable(
+                                name=$$$GGG_checkpoint1,
+                                value=2
+                            ),
+                        )
+                    )
                 )
             )
         )
@@ -162,10 +239,8 @@ Text("GGG_heavensgate_postCollection_d1", "Congrats! It's fun to wade into the v
 Text("GGG_heavensgate_postCollection_d2", "What do I do with this resource?")
 Text("GGG_heavensgate_postCollection_d3", "Well, we've discovered two uses. Abilities seem to be \"boostable\" with gas, with unique enhancements if you let them drain some over time.")
 Text("GGG_heavensgate_postCollection_d6", "What else can I do with gas?")
-Text("GGG_heavensgate_postCollection_d7", "There's also Part Fusion. I can help you with that too.")
+Text("GGG_heavensgate_postCollection_d7", "There's also Part Fusion. I can help you with that too if you speak to me.")
 Text("GGG_heavensgate_postCollection_d8", "...")
-Text("GGG_heavensgate_postCollection_d9", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
-Text("GGG_heavensgate_postCollection_d10", "Okay, I'll meet you there...")
 
 
 Text("GGG_heavensgate_postCollection_d4", "To GAS BOOST your abilities, Ctrl-click them. GAS BOOSTED abilities slowly drain GAS over time.")
@@ -174,6 +249,7 @@ Text("GGG_heavensgate_postCollection_d4", "To GAS BOOST your abilities, Ctrl-cli
 Dialogue(
     dialogueID=GGG_heavensgate_postCollection_d,
     dialogueText=GGG_heavensgate_postCollection_d1,
+    finishTask=true,
     responses=(
         Response(
             responseText=GGG_heavensgate_postCollection_d2,
@@ -187,19 +263,70 @@ Dialogue(
                             responses=(
                                 Response(
                                     responseText=GGG_heavensgate_postCollection_d8,
-                                    next=Dialogue(
-                                        dialogueText=GGG_heavensgate_postCollection_d9,
-                                        responses=(
-                                            Response(
-                                                responseText=GGG_heavensgate_postCollection_d10,
-                                                next=End()
-                                            )
-                                        )
-                                    )
+                                    next=Call(GGG_checkpoint2func)
                                 )
                             )
                         )
                     )
+                )
+            )
+        )
+    )
+)
+
+Text("GGG_fusionTaskObjectives", "- Meet Heavensgate at The Makeshift.
+- There, listen to Heavensgate to understand part fusion.
+- Fuse two parts.
+- Return to Heavensgate for your reward.")
+Task(
+    task=GGG_fusionTask,
+    objectives=GGG_fusionTaskObjectives
+)
+
+Text("GGG_heavensgate_preFusion_d1", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
+Text("GGG_heavensgate_preFusion_d2", "Okay, I'll meet you there...")
+Text("GGG_heavensgate_preFusion_d2", "There's something else I need to do first.")
+Function(
+    name=GGG_checkpoint2func,
+    sequence=(
+        ShowPopup(text=GGG_heavensgate_postCollection_d4),
+        AddObjectiveMarker(GGG_checkpoint1heavensgate, sectorName=Exterminator Lair),
+        SetInteraction(dialogueID=GGG_heavensgate_preFusion_d, entityID=heavensgate)
+    )
+)
+
+Dialogue(
+    dialogueID=GGG_heavensgate_preFusion_d,
+    dialogueText=GGG_heavensgate_preFusion_d1,
+    taskID=GGG_fusionTask,
+    responses=(
+        Response(
+            responseText=GGG_heavensgate_preFusion_d2,
+            next=Call(GGG_gasBoostPromptAndNext)
+        ),
+        Response(
+            responseText=GGG_heavensgate_preFusion_d3,
+            next=End()
+        ),
+    )
+)
+
+
+Function(
+    name=GGG_gasBoostPromptAndNext,
+    sequence=(
+        SetVariable(
+            name=$$$GGG_checkpoint,
+            value=3
+        ),
+        RemoveObjectiveMarker(ID=GGG_heavensgateObjective),
+        ShowPopup(text=GGG_heavensgate_postCollection_d4),
+        ClearInteraction(entityID=heavensgate),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Makeshift,
+                sequence=(
+                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d)
                 )
             )
         )
@@ -256,7 +383,7 @@ Dialogue(
                                                                         responses=(
                                                                             Response(
                                                                                 responseText=GGG_heavensgate_FS_d11,
-                                                                                next=End()
+                                                                                next=Call(GGG_fusionCondition)
                                                                             )
                                                                         )
                                                                     )
@@ -278,6 +405,28 @@ Dialogue(
     )
 )
 
+Function(
+    name=GGG_fusionCondition,
+    sequence=(
+        AddTask(taskID=GGG_fusionTaskObjectives),
+        ConditionBlock(
+            FusePart(
+                sequence=(
+                    SetInteraction(
+                        entityID=heavensgate, 
+                        dialogueID=GGG_heavensgate_postFS_d,
+                        sequence=(
+                            SetVariable(
+                                name=$$$GGG_checkpoint,
+                                value=4
+                            ),
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
 
 Text("GGG_heavensgate_postFS_d1", "Nice going! Fusion can be really handy when trying to create powerful parts for tough combat situations.")
 Text("GGG_heavensgate_postFS_d2", "Why are you being so helpful to us?")
@@ -289,6 +438,7 @@ Dialogue(
     dialogueID=GGG_heavensgate_postFS_d,
     dialogueText=GGG_heavensgate_postFS_d1,
     entityID=heavensgate,
+    finishTask=true,
     responses=(
         Response(
             responseText=GGG_heavensgate_postFS_d2,
@@ -302,7 +452,7 @@ Dialogue(
                             responses=(
                                 Response(
                                     responseText=GGG_heavensgate_postFS_d5,
-                                    next=End()
+                                    next=Call(GGG_finishMission)
                                 )
                             )
                         )
@@ -310,5 +460,20 @@ Dialogue(
                 )
             )
         )
+    )
+)
+
+Function(
+    name=GGG_finishMissionImmediately,
+    sequence=(
+        FinishMission()
+    )
+)
+
+
+Function(
+    name=GGG_finishMission,
+    sequence=(
+        FinishMission(soundID=clip_missioncompleteep3)
     )
 )
