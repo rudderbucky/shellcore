@@ -301,7 +301,7 @@ public class CoreScriptsManager : MonoBehaviour
                 && (c == 0 || lines[i][c] == ' '))
             {
                 var task = CoreScriptsTask.ParseTask(i, c, lines, data, out d);
-                tasks.Add(task.taskID, task); 
+                tasks.Add(task.taskID, task);
             }
             d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
         }
@@ -503,7 +503,7 @@ public class CoreScriptsManager : MonoBehaviour
 
     public static string GetScope(int startLineNum, string[] lines, 
     Dictionary<FileCoord, FileCoord> stringScopes, HashSet<int> commentLines,
-     out FileCoord endOfScope)
+     out FileCoord endOfScope, bool debug = false)
     {
         int bCount = 0;
         var searchStarted = false;
@@ -525,6 +525,7 @@ public class CoreScriptsManager : MonoBehaviour
             builder.Append(ch);
             if (ch != '(' && ch != ')')
             {
+                if (debug) Debug.Log(lines[i].Substring(c) + bCount);
                 continue;
             }
 
@@ -536,11 +537,15 @@ public class CoreScriptsManager : MonoBehaviour
             }
 
             if (ch == '(') bCount++;
-            if (!searchStarted && bCount > 1)
+            if (!searchStarted && bCount >= 1)
             {
                 searchStarted = true;
             }
-            else if (ch == ')') bCount--;
+            else if (ch == ')')
+            {
+                bCount--;
+            }
+            if (debug) Debug.Log(lines[i].Substring(c) + bCount);
             if (searchStarted && bCount == 0)
             {
                 endOfScope = d;

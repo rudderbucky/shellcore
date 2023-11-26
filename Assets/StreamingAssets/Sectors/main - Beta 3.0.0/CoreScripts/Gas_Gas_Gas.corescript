@@ -196,6 +196,11 @@ Text("GGG_gasCollectionTaskObjective", "- Head to one of the sectors marked by H
 - Return to Heavensgate with 100 gas for your reward.")
 
 Task(
+    taskID=GGG_fusionTask,
+    objectives=GGG_fusionTaskObjectives
+)
+
+Task(
     taskID=GGG_gasCollectionTask,
     objectives=GGG_gasCollectionTaskObjective
 )
@@ -278,14 +283,11 @@ Text("GGG_fusionTaskObjectives", "- Meet Heavensgate at The Makeshift.
 - There, listen to Heavensgate to understand part fusion.
 - Fuse two parts.
 - Return to Heavensgate for your reward.")
-Task(
-    task=GGG_fusionTask,
-    objectives=GGG_fusionTaskObjectives
-)
+
 
 Text("GGG_heavensgate_preFusion_d1", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
 Text("GGG_heavensgate_preFusion_d2", "Okay, I'll meet you there...")
-Text("GGG_heavensgate_preFusion_d2", "There's something else I need to do first.")
+Text("GGG_heavensgate_preFusion_d3", "There's something else I need to do first.")
 Function(
     name=GGG_checkpoint2func,
     sequence=(
