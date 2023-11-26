@@ -109,7 +109,6 @@ public class Beam : WeaponAbility
 
     protected virtual void Update()
     {
-        PlayerCore.Instance.cursave.gas = 100;
         if (!firing)
         {
             numShots = 0;
