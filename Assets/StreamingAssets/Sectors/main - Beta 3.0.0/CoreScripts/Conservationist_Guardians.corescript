@@ -1,0 +1,49 @@
+Text("Conservationist_Guardian1_d1", "We don't even know what the defects are inflicted with. If you ask me, it might just be curable.")
+Text("Conservationist_Guardian1_d2", "Huh.")
+Text("Conservationist_Guardian2_d1", "If we can establish communication with the defects, it will prove those exterminators wrong once and for all.")
+Text("Conservationist_Guardian2_d2", "Hmm...")
+Text("Conservationist_Guardian3_d1", "Please grab whatever wares you need from the nearby trader. Our leader's off protecting the jump gates right now, though you've met them before I'm sure.")
+Text("Conservationist_Guardian3_d2", "...")
+
+Dialogue(
+    dialogueID=Conservationist_Guardian1_d,
+    dialogueText=Conservationist_Guardian1_d1,
+    entityID=Conservationist_Guardian1,
+    responses=(
+        Response(
+            responseText=Conservationist_Guardian1_d2,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=Conservationist_Guardian2_d,
+    dialogueText=Conservationist_Guardian2_d1,
+    entityID=Conservationist_Guardian2,
+    responses=(
+        Response(
+            responseText=Conservationist_Guardian2_d2,
+            next=End()
+        )
+    )
+)
+Dialogue(
+    dialogueID=Conservationist_Guardian3_d,
+    dialogueText=Conservationist_Guardian3_d1,
+    entityID=Conservationist_Guardian3,
+    responses=(
+        Response(
+            responseText=Conservationist_Guardian3_d2,
+            next=End()
+        )
+    )
+)
+
+StartTrigger(
+    sequence=(
+        SetInteraction(dialogueID=Conservationist_Guardian2_d, entityID=Conservationist_Guardian2),
+        SetInteraction(dialogueID=Conservationist_Guardian1_d, entityID=Conservationist_Guardian1),
+        SetInteraction(dialogueID=Conservationist_Guardian3_d, entityID=Conservationist_Guardian3),
+    )
+)

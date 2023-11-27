@@ -1,0 +1,49 @@
+Text("Exterminator_Guardian1_d1", "You seem like a nice enough core. Feel free to buy some wares from us by our leader.")
+Text("Exterminator_Guardian1_d2", "Thanks!")
+Text("Exterminator_Guardian2_d1", "Ave, fellow abandoned. Join our cause and we will free our lands of the defects once and for all.")
+Text("Exterminator_Guardian2_d2", "I'll think about it...")
+Text("Exterminator_Guardian3_d1", "You should speak to our leader. They do the talking...")
+Text("Exterminator_Guardian3_d2", "And you just shoot things, got it, got it.")
+
+Dialogue(
+    dialogueID=Exterminator_Guardian1_d,
+    dialogueText=Exterminator_Guardian1_d1,
+    entityID=Exterminator_Guardian1,
+    responses=(
+        Response(
+            responseText=Exterminator_Guardian1_d2,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=Exterminator_Guardian2_d,
+    dialogueText=Exterminator_Guardian2_d1,
+    entityID=Exterminator_Guardian2,
+    responses=(
+        Response(
+            responseText=Exterminator_Guardian2_d2,
+            next=End()
+        )
+    )
+)
+Dialogue(
+    dialogueID=Exterminator_Guardian3_d,
+    dialogueText=Exterminator_Guardian3_d1,
+    entityID=Exterminator_Guardian3,
+    responses=(
+        Response(
+            responseText=Exterminator_Guardian3_d2,
+            next=End()
+        )
+    )
+)
+
+StartTrigger(
+    sequence=(
+        SetInteraction(dialogueID=Exterminator_Guardian2_d, entityID=Exterminator_Guardian2),
+        SetInteraction(dialogueID=Exterminator_Guardian1_d, entityID=Exterminator_Guardian1),
+        SetInteraction(dialogueID=Exterminator_Guardian3_d, entityID=Exterminator_Guardian3),
+    )
+)

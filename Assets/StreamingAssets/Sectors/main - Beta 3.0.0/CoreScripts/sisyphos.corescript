@@ -1,0 +1,80 @@
+Text("sisyphos_d1", "We call these sectors the Kappa Outskirts. Every conscious warring group helps clear these sectors of the defects and avoid fighting against each other here. A little civility in our insane world. Outside here, it’s anyone’s game.")
+Text("sisyphos_d2", "If you like this civility why not just band together?")
+Text("sisyphos_d3", "Because we can’t afford to be peaceful with the defects. The conservationists use various bizarre methods to lure the defects out from here. It just doesn’t scale without our extermination processes. They need to see reason.")
+Text("sisyphos_d4", "I take it you’re an exterminator.")
+Text("sisyphos_d5", "Yes. This is our lair. I take it you are still searching for what’s right.")
+Text("sisyphos_d6", "Your side seems like it’s telling the truth.")
+Text("sisyphos_d7", "If you really believe in our cause, prove it by fighting for us. Our operation to take BattleZone Lambda is nearly ready.")
+Text("sisyphos_d8", "(Come back next update) I'll wait for that then.")
+Text("sisyphos_d9", "I know you’re wrong.")
+Text("sisyphos_d10", "I see. We’ll be seeing each other in battle as enemies then. Unfortunate. Know that you can still change your mind.")
+Text("sisyphos_d11", "I am.")
+Text("sisyphos_d12", "I’ll leave you with this to ponder then... We welcome all those who change their mind.")
+Text("sisyphos_d13", "...")
+
+
+Dialogue(
+    dialogueID=sisyphos_d,
+    dialogueText=sisyphos_d1,
+    entityID=sisyphos,
+    responses=(
+        Response(
+            responseText=sisyphos_d2,
+            next=Dialogue(
+                dialogueText=sisyphos_d3,
+                responses=(
+                    Response(
+                        responseText=sisyphos_d4,
+                        next=Dialogue(
+                            dialogueText=sisyphos_d5,
+                            responses=(
+                                Response(
+                                    responseText=sisyphos_d6,
+                                    next=Dialogue(
+                                        dialogueText=sisyphos_d7,
+                                        responses=(
+                                            Response(
+                                                responseText=sisyphos_d8,
+                                                next=End()
+                                            ),
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=sisyphos_d9,
+                                    next=Dialogue(
+                                        dialogueText=sisyphos_d10,
+                                        responses=(
+                                            Response(
+                                                responseText=sisyphos_d13,
+                                                next=End()
+                                            ),
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=sisyphos_d11,
+                                    next=Dialogue(
+                                        dialogueText=sisyphos_d12,
+                                        responses=(
+                                            Response(
+                                                responseText=sisyphos_d13,
+                                                next=End()
+                                            ),
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+StartTrigger(
+    sequence=(
+        SetInteraction(dialogueID=sisyphos_d, entityID=sisyphos)
+    )
+)

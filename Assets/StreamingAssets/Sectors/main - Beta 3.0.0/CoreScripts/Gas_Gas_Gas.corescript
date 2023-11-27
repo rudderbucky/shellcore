@@ -2,7 +2,7 @@ Text("GGG_missionName", "Gas Gas Gas")
 Text("GGG_entryPoint", "Speak to Heavensgate at the Exterminator Lair.")
 MissionTrigger(
     name=GGG_missionName,
-    entryPoint=Abandonment_entryPoint,
+    entryPoint=GGG_entryPoint,
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
@@ -95,7 +95,7 @@ Text("GGG_heavensgate_start_d7", "We here have been calling it \"Ancient Gas\", 
 Text("GGG_heavensgate_start_d8", "Where can I find it?")
 Text("GGG_heavensgate_start_d9", "It's found as swirling vortices. We've seen them scattered in sectors in no specific pattern. However, vortices are much larger in DeadZones for some reason.")
 Text("GGG_heavensgate_start_d10", "How do I extract it?")
-Text("GGG_heavensgate_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. It appears wading closer to the core gets you more.")
+Text("GGG_heavensgate_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. Wading closer to the center gets you more.")
 Text("GGG_heavensgate_start_d12", "Do you know any sectors where I can find some?")
 Text("GGG_heavensgate_start_d13", "Yep, I can mark them on the map for you. In fact, let's give you a little mission to get some.")
 Text("GGG_heavensgate_start_d14", "Okay...")
@@ -127,27 +127,27 @@ Dialogue(
                     Response(
                         responseText=GGG_heavensgate_start_d6,
                         next=Dialogue(
-                            dialogueID=GGG_heavensgate_start_d7,
+                            dialogueText=GGG_heavensgate_start_d7,
                             responses=(
                                 Response(
                                     responseText=GGG_heavensgate_start_d8,
                                     next=Dialogue(
-                                        dialogueID=GGG_heavensgate_start_d9,
+                                        dialogueText=GGG_heavensgate_start_d9,
                                         responses=(
                                             Response(
-                                                responseID=GGG_heavensgate_start_d10,
+                                                responseText=GGG_heavensgate_start_d10,
                                                 next=Dialogue(
-                                                    dialogueID=GGG_heavensgate_start_d11,
+                                                    dialogueText=GGG_heavensgate_start_d11,
                                                     responses=(
                                                         Response(
                                                             responseText=GGG_heavensgate_start_d12,
                                                             next=Dialogue(
-                                                                dialogueID=GGG_heavensgate_start_d13,
+                                                                dialogueText=GGG_heavensgate_start_d13,
                                                                 responses=(
                                                                     Response(
-                                                                        responseText=GGG_heavensgate_start_d14
+                                                                        responseText=GGG_heavensgate_start_d14,
                                                                         next=Dialogue(
-                                                                            dialogueID=GGG_heavensgate_start_d15,
+                                                                            dialogueText=GGG_heavensgate_start_d15,
                                                                             taskID=GGG_gasCollectionTask,
                                                                             responses=(
                                                                                 Response(
