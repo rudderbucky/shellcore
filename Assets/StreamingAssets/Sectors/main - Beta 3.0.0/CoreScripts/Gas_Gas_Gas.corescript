@@ -6,7 +6,14 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
-        Call(GGG_start)
+        Call(test)
+    )
+)
+
+Function(
+    name=test,
+    sequence=(
+        Call(GGG_checkpoint2func)
     )
 )
 
@@ -71,8 +78,9 @@ Function(
     name=GGG_startHelper,
     sequence=(
         AddObjectiveMarker(
-            ID=Abandonment_jumpSectorMarker,
-            sectorName=Exterminator Lair
+            ID=GGG_exterminatorLairMarker,
+            sectorName=Exterminator Lair,
+            entityID=heavensgate
         ),
         ConditionBlock(
             EnterSector(
@@ -175,6 +183,7 @@ Dialogue(
     )
 )
 
+// Danger Zone 1900-5410
 Text("GGG_heavensgate_gasCollectionTaskReminder_d1", "You should go collect 100 gas from one of the sectors I've marked and return to me.")
 Text("GGG_heavensgate_gasCollectionTaskReminder_d2", "Sounds good...")
 
@@ -205,6 +214,8 @@ Task(
     objectives=GGG_gasCollectionTaskObjective
 )
 
+Text("GGG_taskComplete", "TASK COMPLETE")
+
 Function(
     name=GGG_preCollection,
     sequence=(
@@ -212,15 +223,18 @@ Function(
             name=$$$GGG_checkpoint1,
             value=1
         ),
+        RemoveObjectiveMarker(ID=GGG_exterminatorLairMarker),
+        AddObjectiveMarker(ID=GGG_dangerZoneMarker, sectorName=Danger Zone 1900-5410),
         ClearInteraction(entityID=heavensgate),
-        AddInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_gasCollectionTaskReminder_d),
+        SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_gasCollectionTaskReminder_d),
         ConditionBlock(
             Comparison(
                 val1=Gas(),
                 val2=100,
                 comp=Gt,
                 sequence=(
-                    FinishTask(),
+                    ShowAlert(text=GGG_taskComplete, soundID=clip_victory),
+                    RemoveObjectiveMarker(ID=GGG_dangerZoneMarker),
                     AddObjectiveMarker(ID=GGG_heavensgateObjective, sectorName=Exterminator Lair, entityID=heavensgate),
                     ClearInteraction(entityID=heavensgate),
                     SetInteraction(
@@ -254,6 +268,7 @@ Text("GGG_heavensgate_postCollection_d4", "To GAS BOOST your abilities, Ctrl-cli
 Dialogue(
     dialogueID=GGG_heavensgate_postCollection_d,
     dialogueText=GGG_heavensgate_postCollection_d1,
+    entityID=heavensgate,
     finishTask=true,
     responses=(
         Response(
@@ -262,7 +277,7 @@ Dialogue(
                 dialogueText=GGG_heavensgate_postCollection_d3,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_postCollection_d6
+                        responseText=GGG_heavensgate_postCollection_d6,
                         next=Dialogue(
                             dialogueText=GGG_heavensgate_postCollection_d7,
                             responses=(
@@ -291,8 +306,8 @@ Text("GGG_heavensgate_preFusion_d3", "There's something else I need to do first.
 Function(
     name=GGG_checkpoint2func,
     sequence=(
-        ShowPopup(text=GGG_heavensgate_postCollection_d4),
-        AddObjectiveMarker(GGG_checkpoint1heavensgate, sectorName=Exterminator Lair),
+        AddObjectiveMarker(ID=GGG_checkpoint1heavensgate, sectorName=Exterminator Lair, entityID=heavensgate),
+//        ShowPopup(text=GGG_heavensgate_postCollection_d4),
         SetInteraction(dialogueID=GGG_heavensgate_preFusion_d, entityID=heavensgate)
     )
 )
@@ -301,6 +316,7 @@ Dialogue(
     dialogueID=GGG_heavensgate_preFusion_d,
     dialogueText=GGG_heavensgate_preFusion_d1,
     taskID=GGG_fusionTask,
+    entityID=heavensgate,
     responses=(
         Response(
             responseText=GGG_heavensgate_preFusion_d2,
@@ -321,16 +337,92 @@ Function(
             name=$$$GGG_checkpoint,
             value=3
         ),
-        RemoveObjectiveMarker(ID=GGG_heavensgateObjective),
-        ShowPopup(text=GGG_heavensgate_postCollection_d4),
+        RemoveObjectiveMarker(ID=GGG_checkpoint1heavensgate),
+        AddObjectiveMarker(ID=GGG_heavensgateinmakeshift, sectorName=The Makeshift),
         ClearInteraction(entityID=heavensgate),
+        SetVariable(name=$$GGG_heavensgate_makeshift_var, value=0),
+        Call(GGG_loopMakeshiftUntilTaskDone)
+    )
+)
+
+Function(
+    name=GGG_loopMakeshiftUntilTaskDone,
+    sequence=(        
         ConditionBlock(
             EnterSector(
                 sectorName=The Makeshift,
                 sequence=(
-                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d)
+                    Call(GGG_loopMakeshiftUntilTaskDoneHelper),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=The Makeshift,
+                            invert=true,
+                            sequence=(
+                                Call(GGG_loopMakeshiftUntilTaskDone)
+                            )
+                        ),
+                        Comparison(
+                            val1=MissionStatus(GGG_missionName),
+                            val2=complete,
+                            comp=Eq,
+                            sequence=(
+// stop if the mission's complete
+                            )
+                        ),
+                    )
                 )
             )
+        )
+    )
+)
+
+Function(
+    name=GGG_loopMakeshiftUntilTaskDoneHelper,
+    sequence=(
+        SetVariable(
+            name=$$$Makeshift_stage2,
+            value=1
+        ),
+        SpawnEntity(
+            entityID=the-architect,
+            flagName=GGG_architectspawn
+        ),
+        SpawnEntity(
+            entityID=heavensgate,
+            blueprintJSON=heavensgate,
+            faction=4,
+            name=Heavensgate,
+            flagName=GGG_heavensgatespawn
+        ),
+
+        ClearInteraction(entityID=heavensgate),
+        ClearInteraction(entityID=the-architect),
+        SetInteraction(entityID=the-architect, dialogueID=GGG_architect_FS_d),
+        ConditionBlock(
+            Comparison(
+                val1=$$GGG_heavensgate_makeshift_var,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d),
+                )
+            ),
+            Comparison(
+                val1=$$GGG_heavensgate_makeshift_var,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FSreexp_d),
+                )
+            ),
+            Comparison(
+                val1=$$GGG_heavensgate_makeshift_var,
+                val2=2,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_heavensgateFinalInteraction)
+                )
+            ),
         )
     )
 )
@@ -347,45 +439,101 @@ Text("GGG_heavensgate_FS_d9", "You'll need more Fusion Energy to create parts wi
 Text("GGG_heavensgate_FS_d10", "Why don't you try fusing two parts together? I'll give you a cool new ability you can only find here if you do.")
 Text("GGG_heavensgate_FS_d11", "Okay...")
 
+Text("GGG_heavensgate_FSreexp_d1", "Want me to re-explain fusion?")
+Text("GGG_heavensgate_FSreexp_d2", "Yes...")
+Text("GGG_heavensgate_FSreexp_d3", "No thanks.")
+Text("GGG_heavensgate_FSreexp_d4", "That's it! Go give it a shot now.")
+Text("GGG_heavensgate_FSreexp_d5", "Okay.")
+
+Dialogue(
+    dialogueID=GGG_heavensgate_FSreexp_d,
+    dialogueText=GGG_heavensgate_FSreexp_d1,
+    entityID=heavensgate,
+    responses=(
+        Response(
+            responseText=GGG_heavensgate_FSreexp_d2,
+            next=Dialogue(
+                dialogueText=GGG_heavensgate_FS_d7,
+                responses=(
+                    Response(
+                        responseText=GGG_heavensgate_FS_d2,
+                        next=Dialogue(
+                            dialogueText=GGG_heavensgate_FS_d8,
+                            responses=(
+                                Response(
+                                    responseText=GGG_heavensgate_FS_d2,
+                                    next=Dialogue(
+                                        dialogueText=GGG_heavensgate_FS_d9,
+                                        responses=(
+                                            Response(
+                                                responseText=GGG_heavensgate_FS_d2,
+                                                next=Dialogue(
+                                                    dialogueText=GGG_heavensgate_FSreexp_d4,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=GGG_heavensgate_FSreexp_d5,
+                                                            next=End()
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=GGG_heavensgate_FSreexp_d3,
+            next=End()
+        ),
+    )
+)
 
 Dialogue(
     dialogueID=GGG_heavensgate_FS_d,
+    dialogueText=GGG_heavensgate_FS_d1,
     entityID=heavensgate,
     responses=(
-        responseText=GGG_heavensgate_FS_d2,
-        next=Dialogue(
-            entityID=the-architect,
-            dialogueText=GGG_heavensgate_FS_d3,
-            responses=(
-                Response(
-                    responseText=GGG_heavensgate_FS_d4,
-                    next=Dialogue(
-                        dialogueText=GGG_heavensgate_FS_d5,
-                        entityID=heavensgate,
-                        responses=(
-                            Response(
-                                responseText=GGG_heavensgate_FS_d6,
-                                next=Dialogue(
-                                    dialogueText=GGG_heavensgate_FS_d7,
-                                    responses=(
-                                        Response(
-                                            responseText=GGG_heavensgate_FS_d2,
-                                            next=Dialogue(
-                                                dialogueText=GGG_heavensgate_FS_d8,
-                                                responses=(
-                                                    Response(
-                                                        responseText=GGG_heavensgate_FS_d2,
-                                                        next=Dialogue(
-                                                            dialogueText=GGG_heavensgate_FS_d9
-                                                            responses=(
-                                                                Response(
-                                                                    responseText=GGG_heavensgate_FS_d2,
-                                                                    next=Dialogue(
-                                                                        dialogueText=GGG_heavensgate_FS_d10,
-                                                                        responses=(
-                                                                            Response(
-                                                                                responseText=GGG_heavensgate_FS_d11,
-                                                                                next=Call(GGG_fusionCondition)
+        Response(
+            responseText=GGG_heavensgate_FS_d2,
+            next=Dialogue(
+                entityID=the-architect,
+                dialogueText=GGG_heavensgate_FS_d3,
+                responses=(
+                    Response(
+                        responseText=GGG_heavensgate_FS_d4,
+                        next=Dialogue(
+                            dialogueText=GGG_heavensgate_FS_d5,
+                            entityID=heavensgate,
+                            responses=(
+                                Response(
+                                    responseText=GGG_heavensgate_FS_d6,
+                                    next=Dialogue(
+                                        dialogueText=GGG_heavensgate_FS_d7,
+                                        responses=(
+                                            Response(
+                                                responseText=GGG_heavensgate_FS_d2,
+                                                next=Dialogue(
+                                                    dialogueText=GGG_heavensgate_FS_d8,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=GGG_heavensgate_FS_d2,
+                                                            next=Dialogue(
+                                                                dialogueText=GGG_heavensgate_FS_d9,
+                                                                responses=(
+                                                                    Response(
+                                                                        responseText=GGG_heavensgate_FS_d2,
+                                                                        next=Dialogue(
+                                                                            dialogueText=GGG_heavensgate_FS_d10,
+                                                                            responses=(
+                                                                                Response(
+                                                                                    responseText=GGG_heavensgate_FS_d11,
+                                                                                    next=Call(GGG_fusionCondition)
+                                                                                )
                                                                             )
                                                                         )
                                                                     )
@@ -407,28 +555,63 @@ Dialogue(
     )
 )
 
+Text("GGG_architect_FS_d1", "Well that was fun. Who knows how many more secrets the old codgers over here are hiding?")
+Text("GGG_architect_FS_d2", "Hmm...")
+Dialogue(
+    dialogueID=GGG_architect_FS_d,
+    entityID=the-architect,
+    dialogueText=GGG_architect_FS_d1,
+    responses=(
+        Response(
+            responseText=GGG_architect_FS_d2,
+            next=End()
+        )
+    )
+)
+
 Function(
     name=GGG_fusionCondition,
     sequence=(
-        AddTask(taskID=GGG_fusionTaskObjectives),
+        SetVariable(name=$$GGG_heavensgate_makeshift_var, value=1),
+        RemoveObjectiveMarker(ID=GGG_heavensgateinmakeshift),
+        AddObjectiveMarker(
+            ID=GGG_fusionStationMarker, 
+            entityID=Makeshift_fusionStation,
+            sectorName=The Makeshift
+        ),
+        ClearInteraction(entityID=heavensgate),
+        SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FSreexp_d),
         ConditionBlock(
             FusePart(
                 sequence=(
-                    SetInteraction(
-                        entityID=heavensgate, 
-                        dialogueID=GGG_heavensgate_postFS_d,
-                        sequence=(
-                            SetVariable(
-                                name=$$$GGG_checkpoint,
-                                value=4
-                            ),
-                        )
-                    )
+                    RemoveObjectiveMarker(ID=GGG_fusionStationMarker),
+                    AddObjectiveMarker(ID=GGG_heavensgatefinal, entityID=heavensgate),
+                    FinishTask(),
+                    Call(GGG_heavensgateFinalInteraction),
                 )
             )
         )
     )
 )
+
+Function(
+    name=GGG_heavensgateFinalInteraction,
+    sequence=(
+        SetVariable(name=$$GGG_heavensgate_makeshift_var, value=2),
+        SetInteraction(
+            entityID=heavensgate, 
+            dialogueID=GGG_heavensgate_postFS_d,
+            sequence=(
+                RemoveObjectiveMarker(ID=GGG_heavensgatefinal),
+                SetVariable(
+                    name=$$$GGG_checkpoint,
+                    value=4
+                ),
+            )
+        )
+    )
+)
+
 
 Text("GGG_heavensgate_postFS_d1", "Nice going! Fusion can be really handy when trying to create powerful parts for tough combat situations.")
 Text("GGG_heavensgate_postFS_d2", "Why are you being so helpful to us?")
@@ -440,7 +623,6 @@ Dialogue(
     dialogueID=GGG_heavensgate_postFS_d,
     dialogueText=GGG_heavensgate_postFS_d1,
     entityID=heavensgate,
-    finishTask=true,
     responses=(
         Response(
             responseText=GGG_heavensgate_postFS_d2,
@@ -476,6 +658,9 @@ Function(
 Function(
     name=GGG_finishMission,
     sequence=(
+        ClearInteraction(entityID=heavensgate),
+        ClearInteraction(entityID=the-architect),
+        ShowAlert(text=Abandonment_missionComplete),
         FinishMission(soundID=clip_missioncompleteep3)
     )
 )

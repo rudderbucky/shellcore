@@ -52,8 +52,24 @@ public class ObjectiveMarker : MonoBehaviour
         var sect = SectorManager.GetSectorByName(sectorName);
         if (sect)
         {
-            var bounds = sect.bounds;
-            pos = new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2);
+            if (entityID != null)
+            {
+                foreach (var ent in sect.entities)
+                {
+                    if (ent.ID != entityID)
+                    {
+                        continue;
+                    }
+                    
+                    pos = ent.position;
+                    break;
+                }
+            }
+            else
+            {
+                var bounds = sect.bounds;
+                pos = new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2);
+            }
             dim = sect.dimension;
         }
 

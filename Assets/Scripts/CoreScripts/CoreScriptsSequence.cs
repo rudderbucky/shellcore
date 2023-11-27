@@ -179,7 +179,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 retVal = CoreScriptsManager.instance.globalVariables[key];
             else 
             {
-                Debug.LogWarning($"Variable syntax was used but variable was not found: {val}");
+                Debug.Log($"Variable syntax was used but variable was not found: {val}");
                 return "";
             }
         }
@@ -549,7 +549,7 @@ public class CoreScriptsSequence : MonoBehaviour
 
         if (!TaskManager.objectiveLocations.ContainsKey(context.missionName))
         {
-            Debug.LogWarning($"Task Manager does not contain an objective list for mission {context.missionName}");
+            Debug.Log($"Task Manager does not contain an objective list for mission {context.missionName}");
         }
         // TODO: prevent using this node in DialogueCanvases
         var mission = PlayerCore.Instance.cursave.missions.Find(

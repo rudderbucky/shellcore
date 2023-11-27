@@ -81,6 +81,7 @@ public class PartDisplayBase : MonoBehaviour
             partName.text = info.playerGivenName + " (" + info.partID + ")";
         }
         var blueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
+        if (!blueprint) return;
         float mass = blueprint.mass;
         float health = blueprint.health;
         int value = EntityBlueprint.GetPartValue(info);

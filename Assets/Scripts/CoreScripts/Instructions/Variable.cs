@@ -56,6 +56,7 @@ public class Variable : MonoBehaviour
             return;
         }
 
+        // call this to make sure mission status is arg 1
         ComparisonOfType("MissionStatus", val1, val2, comp, out val1, out val2, out comp);
 
         // if the var is already done just return

@@ -52,12 +52,6 @@ public class SaveHandler : MonoBehaviour
 
             player.cursave = save;
 
-            if (save.factions != null)
-                for (int i = 0; i < save.factions.Length; i++)
-                {
-                    FactionManager.SetFactionRelations(save.factions[i], save.relations[i]);
-                }
-
             SectorManager.instance.LoadSectorFile(save.resourcePath);
             CoreScriptsManager.canvasMissions = taskManager.questCanvasPaths;
             taskManager.Initialize(true); // Re-init
@@ -164,8 +158,6 @@ public class SaveHandler : MonoBehaviour
                 relations.Add(FactionManager.GetFactionRelations(i));
             }
         }
-        playerSave.factions = factions.ToArray();
-        playerSave.relations = relations.ToArray();
 
 
         for (int i = 0; i < taskManager.traversers.Count; i++)

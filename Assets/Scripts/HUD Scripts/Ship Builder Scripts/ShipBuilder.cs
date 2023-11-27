@@ -1385,7 +1385,6 @@ public class ShipBuilder : GUIWindowScripts
     public void LoadBlueprint(EntityBlueprint blueprint)
     {
 
-        AssetDatabase.CreateAsset(blueprint, System.IO.Path.Combine("Assets", "SavedPrint.asset"));
         if (editorMode)
         {
             cursorScript.ClearAllParts();

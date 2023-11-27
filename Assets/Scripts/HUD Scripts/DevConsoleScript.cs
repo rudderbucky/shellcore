@@ -536,12 +536,15 @@ public class DevConsoleScript : MonoBehaviour
             doNotAttemptBackup |= coreScript;
 
 
+#if UNITY_EDITOR
+#else
             if (!doNotAttemptBackup && !cheatBackup)
             {
                 Debug.LogWarning("Backing up...");
                 cheatBackup = true;
                 SaveHandler.instance.BackupSave(" (cheat)");
             }
+#endif
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {
