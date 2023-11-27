@@ -6,17 +6,9 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
-        Call(test)
+        Call(GGG_start)
     )
 )
-
-Function(
-    name=test,
-    sequence=(
-        Call(GGG_checkpoint2func)
-    )
-)
-
 Function(
     name=GGG_start,
     sequence=(
@@ -45,23 +37,39 @@ Function(
                     Call(GGG_checkpoint2func)
                 )
             ),
+// all the others happen in the makeshift during fusion
             Comparison(
                 val1=$$$GGG_checkpoint,
                 val2=3,
                 comp=Eq,
-                sequence=(
-                    Call(GGG_gasBoostPromptAndNext)
+                sequence=(        
+                    Call(GGG_loopMakeshiftUntilTaskDone)
                 )
             ),
             Comparison(
                 val1=$$$GGG_checkpoint,
                 val2=4,
                 comp=Eq,
-                sequence=(
-                    Call(GGG_finishMissionImmediately)
+                sequence=(        
+                    Call(GGG_loopMakeshiftUntilTaskDone)
                 )
             ),
-// TODO: checkpoints
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=5,
+                comp=Eq,
+                sequence=(        
+                    Call(GGG_loopMakeshiftUntilTaskDone)
+                )
+            ),
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=6,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_loopMakeshiftUntilTaskDone)
+                )
+            ),
             Comparison(
                 val1=MissionStatus(Abandonment_missionName),
                 val2=complete,
@@ -202,7 +210,7 @@ Dialogue(
 Text("GGG_gasCollectionTaskObjective", "- Head to one of the sectors marked by Heavensgate on your map.
 - Find a gas vortex and fly into it to start absorbing gas.
 - Avoid flying into the center as that will kill you.
-- Return to Heavensgate with 100 gas for your reward.")
+- Return to Heavensgate with 100 gas to continue.")
 
 Task(
     taskID=GGG_fusionTask,
@@ -220,7 +228,7 @@ Function(
     name=GGG_preCollection,
     sequence=(
         SetVariable(
-            name=$$$GGG_checkpoint1,
+            name=$$$GGG_checkpoint,
             value=1
         ),
         RemoveObjectiveMarker(ID=GGG_exterminatorLairMarker),
@@ -233,17 +241,17 @@ Function(
                 val2=100,
                 comp=Gt,
                 sequence=(
-                    ShowAlert(text=GGG_taskComplete, soundID=clip_victory),
                     RemoveObjectiveMarker(ID=GGG_dangerZoneMarker),
                     AddObjectiveMarker(ID=GGG_heavensgateObjective, sectorName=Exterminator Lair, entityID=heavensgate),
                     ClearInteraction(entityID=heavensgate),
+                    FinishTask(),
                     SetInteraction(
                         entityID=heavensgate, 
                         dialogueID=GGG_heavensgate_postCollection_d,
                         sequence=(
                             RemoveObjectiveMarker(ID=GGG_heavensgateObjective),
                             SetVariable(
-                                name=$$$GGG_checkpoint1,
+                                name=$$$GGG_checkpoint,
                                 value=2
                             ),
                         )
@@ -269,7 +277,6 @@ Dialogue(
     dialogueID=GGG_heavensgate_postCollection_d,
     dialogueText=GGG_heavensgate_postCollection_d1,
     entityID=heavensgate,
-    finishTask=true,
     responses=(
         Response(
             responseText=GGG_heavensgate_postCollection_d2,
@@ -297,7 +304,7 @@ Dialogue(
 Text("GGG_fusionTaskObjectives", "- Meet Heavensgate at The Makeshift.
 - There, listen to Heavensgate to understand part fusion.
 - Fuse two parts.
-- Return to Heavensgate for your reward.")
+- Return to Heavensgate to continue.")
 
 
 Text("GGG_heavensgate_preFusion_d1", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
@@ -307,7 +314,7 @@ Function(
     name=GGG_checkpoint2func,
     sequence=(
         AddObjectiveMarker(ID=GGG_checkpoint1heavensgate, sectorName=Exterminator Lair, entityID=heavensgate),
-//        ShowPopup(text=GGG_heavensgate_postCollection_d4),
+        ShowPopup(text=GGG_heavensgate_postCollection_d4),
         SetInteraction(dialogueID=GGG_heavensgate_preFusion_d, entityID=heavensgate)
     )
 )
@@ -338,16 +345,16 @@ Function(
             value=3
         ),
         RemoveObjectiveMarker(ID=GGG_checkpoint1heavensgate),
-        AddObjectiveMarker(ID=GGG_heavensgateinmakeshift, sectorName=The Makeshift),
-        ClearInteraction(entityID=heavensgate),
-        SetVariable(name=$$GGG_heavensgate_makeshift_var, value=0),
         Call(GGG_loopMakeshiftUntilTaskDone)
     )
 )
 
 Function(
     name=GGG_loopMakeshiftUntilTaskDone,
-    sequence=(        
+    sequence=(
+        RemoveObjectiveMarker(ID=GGG_heavensgateinmakeshift),
+        AddObjectiveMarker(ID=GGG_heavensgateinmakeshift, sectorName=The Makeshift),
+        ClearInteraction(entityID=heavensgate),       
         ConditionBlock(
             EnterSector(
                 sectorName=The Makeshift,
@@ -400,24 +407,32 @@ Function(
         SetInteraction(entityID=the-architect, dialogueID=GGG_architect_FS_d),
         ConditionBlock(
             Comparison(
-                val1=$$GGG_heavensgate_makeshift_var,
-                val2=0,
+                val1=$$$GGG_checkpoint,
+                val2=3,
                 comp=Eq,
                 sequence=(
                     SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d),
                 )
             ),
             Comparison(
-                val1=$$GGG_heavensgate_makeshift_var,
-                val2=1,
+                val1=$$$GGG_checkpoint,
+                val2=4,
                 comp=Eq,
                 sequence=(
                     SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FSreexp_d),
                 )
             ),
             Comparison(
-                val1=$$GGG_heavensgate_makeshift_var,
-                val2=2,
+                val1=$$$GGG_checkpoint,
+                val2=5,
+                comp=Eq,
+                sequence=(
+                    Call(GGG_fusionCondition)
+                )
+            ),
+            Comparison(
+                val1=$$$GGG_checkpoint,
+                val2=6,
                 comp=Eq,
                 sequence=(
                     Call(GGG_heavensgateFinalInteraction)
@@ -572,7 +587,7 @@ Dialogue(
 Function(
     name=GGG_fusionCondition,
     sequence=(
-        SetVariable(name=$$GGG_heavensgate_makeshift_var, value=1),
+        SetVariable(name=$$$GGG_checkpoint, value=5),
         RemoveObjectiveMarker(ID=GGG_heavensgateinmakeshift),
         AddObjectiveMarker(
             ID=GGG_fusionStationMarker, 
@@ -589,6 +604,11 @@ Function(
                     FinishTask(),
                     Call(GGG_heavensgateFinalInteraction),
                 )
+            ),
+            EnterSector(
+                sectorName=The Makeshift,
+                invert=true,
+                sequence=()
             )
         )
     )
@@ -597,7 +617,7 @@ Function(
 Function(
     name=GGG_heavensgateFinalInteraction,
     sequence=(
-        SetVariable(name=$$GGG_heavensgate_makeshift_var, value=2),
+        ClearInteraction(entityID=heavensgate),
         SetInteraction(
             entityID=heavensgate, 
             dialogueID=GGG_heavensgate_postFS_d,
@@ -605,7 +625,7 @@ Function(
                 RemoveObjectiveMarker(ID=GGG_heavensgatefinal),
                 SetVariable(
                     name=$$$GGG_checkpoint,
-                    value=4
+                    value=6
                 ),
             )
         )
@@ -646,14 +666,6 @@ Dialogue(
         )
     )
 )
-
-Function(
-    name=GGG_finishMissionImmediately,
-    sequence=(
-        FinishMission()
-    )
-)
-
 
 Function(
     name=GGG_finishMission,
