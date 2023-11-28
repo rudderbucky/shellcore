@@ -232,6 +232,22 @@ public class FusionStationScript : GUIWindowScripts
         PartIndexScript.AttemptAddToPartsObtained(pi);
         PartIndexScript.AttemptAddToPartsSeen(pi);
 
+
+        if (PlayerCore.Instance)
+        {
+            PlayerCore.Instance.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
+            foreach (EntityBlueprint.PartInfo info in buttons.Keys)
+            {
+                if (buttons[info].GetCount() > 0)
+                {
+                    for (int i = 0; i < buttons[info].GetCount(); i++)
+                    {
+                        PlayerCore.Instance.cursave.partInventory.Add(info);
+                    }
+                }
+            }
+        }
+        
         CoreScriptsManager.instance.RunFuseChecks();
     }
 }
