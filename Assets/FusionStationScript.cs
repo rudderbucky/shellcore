@@ -23,9 +23,24 @@ public class FusionStationScript : GUIWindowScripts
     private PartDisplayBase partDisplayBase;
     [SerializeField]
     private Text fusePartsButtonText;
+    protected string searcherString;
+    private bool[] displayingTypes;
+
+    public void SetSearcherString(string searcher)
+    {
+        searcherString = searcher.ToLower();
+        ChangeDisplayFactors();
+    }
+
+    public void UpdateDisplayingCategories(int type)
+    {
+        displayingTypes[type] = !displayingTypes[type];
+        ChangeDisplayFactors();
+    }
 
     void OnDisable()
-    {
+    {       
+        if (PlayerCore.Instance) PlayerCore.Instance.SetIsInteracting(false);
         ShardCountScript.StickySlideOut();
     }
 
@@ -49,12 +64,14 @@ public class FusionStationScript : GUIWindowScripts
 
     void OnEnable()
     {
-
+        if (PlayerCore.Instance) PlayerCore.Instance.SetIsInteracting(true);
         ShardCountScript.StickySlideIn();
         part1.part = new EntityBlueprint.PartInfo();
         part2.part = new EntityBlueprint.PartInfo();
         part1.partDisplayBase = partDisplayBase;
         part2.partDisplayBase = partDisplayBase;
+        finalPart.partDisplayBase = partDisplayBase;
+        displayingTypes = new bool[] { true, true, true, true, true };
 
         foreach (var a in contentsArray)
         {
@@ -137,7 +154,35 @@ public class FusionStationScript : GUIWindowScripts
     {
         return !string.IsNullOrEmpty(part1.part.partID) && !string.IsNullOrEmpty(part2.part.partID);
     }
+    public void ChangeDisplayFactors()
+    {
+        foreach (GameObject obj in contentTexts)
+        {
+            obj.SetActive(false);
+        }
 
+        foreach (FusionStationInventoryScript inv in buttons.Values)
+        {
+            string partName = inv.part.partID.ToLower();
+            string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID, inv.part.secondaryData).ToLower() + (inv.part.tier > 0 ? " " + inv.part.tier : "");
+            if (partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "")
+            {
+                if (displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)])
+                {
+                    inv.gameObject.SetActive(true);
+                    contentTexts[ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size].SetActive(true);
+                }
+                else
+                {
+                    inv.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                inv.gameObject.SetActive(false);
+            }
+        }
+    }
     public void Fuse()
     {
         if (!ReadyToFuse())
