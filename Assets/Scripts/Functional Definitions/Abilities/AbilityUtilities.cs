@@ -541,7 +541,7 @@ public static class AbilityUtilities
         switch ((AbilityID)ID)
         {
             case AbilityID.DamageBoost:
-                builder.Append("Damage Boost applies a flat damage increase of 200 to projectiles.");
+                builder.Append("Damage Boost instead applies a flat damage increase of 200 to projectiles.");
                 break;
             case AbilityID.Bullet:
                 builder.Append("Bullet pierces through struck enemies once.");
@@ -559,7 +559,7 @@ public static class AbilityUtilities
                 builder.Append("Enables regeneration while stealthed.");
                 break;
             case AbilityID.Beam:
-                builder.Append("Weapon strikes 2 more times from where it last struck.");
+                builder.Append("Weapon bounces between upto two more targets.");
                 break;
             default:
                 builder.Append("Ability cooldown lowered by 25%.");

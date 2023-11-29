@@ -38,11 +38,6 @@ public abstract class ActiveAbility : Ability
         base.SetDestroyed(input);
     }
 
-    public override void Tick()
-    {
-        base.Tick();
-    }
-
     private void OnDestroy()
     {
         if (State != AbilityState.Destroyed)

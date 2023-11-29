@@ -1112,6 +1112,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (this is PlayerCore core) 
         {
             core.cursave.gas = Mathf.Max(0, core.cursave.gas - 100);
+            if (CoreScriptsManager.instance)
+            {
+                CoreScriptsManager.OnVariableUpdate.Invoke("Gas()");
+            }
             Radar.ResetRadarOdds();
             ShardCountScript.DisplayCount();
         }

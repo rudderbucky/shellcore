@@ -228,7 +228,7 @@ public abstract class WeaponAbility : ActiveAbility
         }
 
         UpdateState(); // Update state
-
+        GasBoostCheck();
         Shoot();
     }
 

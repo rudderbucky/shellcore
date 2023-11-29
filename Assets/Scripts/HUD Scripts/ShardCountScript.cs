@@ -31,10 +31,6 @@ public class ShardCountScript : MonoBehaviour
     {
         var save = PlayerCore.Instance.cursave;
         DisplayCount(save.shards, save.gas, save.fusionEnergy);
-        if (CoreScriptsManager.instance)
-        {
-            CoreScriptsManager.OnVariableUpdate.Invoke("Gas()");
-        }
     }
     private static void DisplayCount(int shardCount, float gasCount, int feCount)
     {

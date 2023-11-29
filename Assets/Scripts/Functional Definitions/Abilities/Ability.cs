@@ -233,6 +233,14 @@ public abstract class Ability : MonoBehaviour
         }
     }
 
+    public void GasBoostCheck()
+    {
+        if (gasBoosted && cooldownDuration > 0 && AbilityUtilities.AbilityIsStandardGasBoostable((int)ID)) 
+        {
+            gasBoostedTime += 0.25F * Time.deltaTime;
+        }
+    }
+
     /// <summary>
     /// Updates the internal state of the ability
     /// </summary>
@@ -354,9 +362,9 @@ public abstract class Ability : MonoBehaviour
         }
 
         AbilityState prevState = State;
-        if (gasBoosted && cooldownDuration > 0 && AbilityUtilities.AbilityIsStandardGasBoostable((int)ID)) gasBoostedTime += 0.25F * Time.deltaTime;
+        
         UpdateState();
-
+        GasBoostCheck();
         UpdateBlinker();
 
         // If ability activated

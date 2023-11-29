@@ -186,6 +186,10 @@ public abstract class Craft : Entity
                     if (this is PlayerCore core)
                     { 
                         core.cursave.gas += Mathf.Pow(diff, 0.75F) * Time.deltaTime / 10;
+                        if (CoreScriptsManager.instance)
+                        {
+                            CoreScriptsManager.OnVariableUpdate.Invoke("Gas()");
+                        }
                         gas.Shrink(diff * Time.deltaTime / (radius * radius));
                         ShardCountScript.DisplayCount();
                     }
