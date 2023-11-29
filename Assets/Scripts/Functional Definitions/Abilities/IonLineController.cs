@@ -201,9 +201,10 @@ public class IonLineController : MonoBehaviour
                 ShellPart part = null;
                 var dEnt = damageable as Entity;
                 var colliders = dEnt.GetColliders();
+                var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
                 if (dEnt)
                 {
-                    for (int i = 0; i < dEnt.parts.Count; i++)
+                    for (int i = 0; i < colliders.Length / 4; i++)
                     {
                         if (SATCollision.PointInRectangle(
                             colliders[i * 4 + 0],
@@ -212,14 +213,16 @@ public class IonLineController : MonoBehaviour
                             colliders[i * 4 + 3],
                             line.GetPosition(1)))
                         {
-                            part = dEnt.parts[i];
+                            if (i == (colliders.Length / 4) - 1)
+                            {
+                                dEnt.TakeCoreDamage(residue);
+                            }
+                            else part = dEnt.parts[i];
                             break;
                         }
                     }
                 }
 
-                var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
-                // deal instant damage
 
                 if (part)
                 {
