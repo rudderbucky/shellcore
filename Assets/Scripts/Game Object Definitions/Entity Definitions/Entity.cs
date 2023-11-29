@@ -1112,7 +1112,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (this is PlayerCore core) 
         {
             core.cursave.gas = Mathf.Max(0, core.cursave.gas - 100);
-            if (CoreScriptsManager.instance)
+            if (CoreScriptsManager.instance && CoreScriptsManager.OnVariableUpdate != null)
             {
                 CoreScriptsManager.OnVariableUpdate.Invoke("Gas()");
             }
@@ -1638,7 +1638,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         serverSyncHealthDirty = true;
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
         {
-            Debug.Log($"Damage: {amount} (f {lastDamagedBy?.faction} -> {faction})");
+            Debug.Log($"Damage: {amount} (Factions: {lastDamagedBy?.faction} -> {faction})");
         }
 
         if (isAbsorbing && amount > 0f)

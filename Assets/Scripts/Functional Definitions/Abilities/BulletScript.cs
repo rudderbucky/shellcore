@@ -153,13 +153,13 @@ public class BulletScript : MonoBehaviour, IProjectile
 
 
     public int allowedHits = 1;
-    public List<Entity> entitiesHit = new List<Entity>();
+    public List<IDamageable> damageablesHit = new List<IDamageable>();
     public void HitPart(ShellPart part)
     {
         DetachTrail();
-        if (entitiesHit.Contains(part.craft)) return;
+        if (damageablesHit.Contains(part.craft)) return;
         allowedHits--;
-        entitiesHit.Add(part.craft);
+        damageablesHit.Add(part.craft);
         if (allowedHits <= 0) Destroy(gameObject); // bullet has collided with a target, delete immediately
         if (!part) return;
 
@@ -193,7 +193,12 @@ public class BulletScript : MonoBehaviour, IProjectile
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
         {
+            DetachTrail();
+            if (damageablesHit.Contains(damageable)) return;
+            allowedHits--;
+            damageablesHit.Add(damageable);
             float residue = damageable.TakeShellDamage(damage, pierceFactor, owner);
+            if (allowedHits <= 0) Destroy(gameObject); // bullet has collided with a target, delete immediately
 
             if (damageable is Entity)
             {
@@ -210,8 +215,6 @@ public class BulletScript : MonoBehaviour, IProjectile
                 if (GetComponent<NetworkObject>().IsSpawned)
                     GetComponent<NetworkObject>().Despawn();
             }
-            DetachTrail();
-            Destroy(gameObject); // bullet has collided with a target, delete immediately
         }
     }
 

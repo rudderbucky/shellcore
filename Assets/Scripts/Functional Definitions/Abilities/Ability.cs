@@ -228,7 +228,6 @@ public abstract class Ability : MonoBehaviour
         }
         else
         {
-            gasBoostedTime = 0;
             return 0; // not on cooldown
         }
     }
@@ -256,13 +255,16 @@ public abstract class Ability : MonoBehaviour
             charging = false;
             State = AbilityState.Disabled;
         }
-        else if (Time.time >= startTime + GetCDDuration() && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + GetCDDuration() + 0.5F))
+        else if (Time.time >= startTime + GetCDDuration() - gasBoostedTime
+            && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + GetCDDuration() - gasBoostedTime + 0.5F))
         {
             charging = false;
             if (!MasterNetworkAdapter.lettingServerDecide && State != AbilityState.Ready && Core && Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
             {
                 Core.networkAdapter.SetAbilityReadyClientRpc(part ? part.info.location : Vector2.zero);
             }
+            startTime -= gasBoostedTime; // gasBoostedTime gets set to 0 when it's no longer needed. This way we keep the ability ready.
+            gasBoostedTime = 0;
             State = AbilityState.Ready;
         }
         else if (Time.time >= startTime + activeDuration)

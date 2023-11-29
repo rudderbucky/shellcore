@@ -161,7 +161,7 @@ public abstract class WeaponAbility : ActiveAbility
     protected float GetDamage()
     {
 
-        var final = damage * (1+Core.GetDamageFactor());
+        var final = (damage * (1+Core.GetDamageFactor())) + Core.flatDamageIncrease;
         var finalBonusDamageType = bonusDamageType;
 
         // counter drones deal double damage vs drones at all times
@@ -170,7 +170,7 @@ public abstract class WeaponAbility : ActiveAbility
         {
             if (finalBonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
             {
-                final = ((damage * (1+Core.GetDamageFactor())) + Core.flatDamageIncrease) * bonusDamageMultiplier;
+                final *= bonusDamageMultiplier;
             }
         }
 
