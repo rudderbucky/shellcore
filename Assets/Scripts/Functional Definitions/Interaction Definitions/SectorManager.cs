@@ -1608,15 +1608,17 @@ public class SectorManager : MonoBehaviour
 
 
         var remainingObjects = new Dictionary<string, GameObject>();
+        var remainingRocks = new List<Draggable>();
         foreach (var shard in AIData.rockFragments)
         {
             if (shard && !shard.dragging)
             {
                 Destroy(shard.gameObject);
             }
-        }
+            else remainingRocks.Add(shard);
 
-        AIData.rockFragments.Clear();
+        }
+        AIData.rockFragments = remainingRocks;
         shardRocks.Clear();
 
         // clear minimap core arrows
