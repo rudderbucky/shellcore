@@ -31,7 +31,7 @@ public class TaskFlow : MonoBehaviour
                 {
                     partID = latestTask.partReward.partID,
                     abilityID = latestTask.partReward.abilityID,
-                    tier = latestTask.partReward.abilityID,
+                    tier = latestTask.partReward.tier,
                     secondaryData = latestTask.partReward.secondaryData
                 });
         }
