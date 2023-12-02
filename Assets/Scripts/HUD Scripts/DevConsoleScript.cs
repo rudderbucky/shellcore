@@ -30,9 +30,10 @@ public class DevConsoleScript : MonoBehaviour
     public static DevConsoleScript Instance;
     public static bool bugTrackPartDebug = false;
     public static bool bugTrackTankDebug = false;
-
+#if UNITY_EDITOR
+#else
     private static bool cheatBackup = false;
-
+#endif
     void OnEnable()
     {
         Application.logMessageReceived += HandleLog;
@@ -42,7 +43,10 @@ public class DevConsoleScript : MonoBehaviour
         PartIndexScript.partsObtainedCheat = false;
         Instance = this;
         componentEnabled = false;
+#if UNITY_EDITOR
+#else
         cheatBackup = false;
+#endif
     }
 
     void Disable()
