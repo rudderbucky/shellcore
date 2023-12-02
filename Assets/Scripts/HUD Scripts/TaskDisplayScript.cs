@@ -134,6 +134,7 @@ public class TaskDisplayScript : MonoBehaviour
 
     public static void ShowMission(Mission mission)
     {
+        if (mission == null) return;
         instance.ClearMissionObjectivesSpace();
         var name = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.name) : mission.name;
         var entryPoint = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.entryPoint) : mission.entryPoint;
