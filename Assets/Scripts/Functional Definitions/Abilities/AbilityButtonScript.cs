@@ -301,9 +301,16 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         foreach (var ability in abilities)
         {
             ability.gasBoosted = ability.gasBoosted && PlayerCore.Instance.cursave.gas > 0;
-            gasBoostedImage.enabled = ability.gasBoosted;
+            ReflectGasBoost();
         }
         
+    }
+
+    public void ReflectGasBoost()
+    {
+        if (abilities.Count == 0) return;
+        var ab = abilities[0];
+        gasBoostedImage.enabled = ab.gasBoosted;
     }
 
     private void UpdateAbilityActivation()

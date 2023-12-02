@@ -153,6 +153,11 @@ public class AbilityHandler : MonoBehaviour
             }
         }
 
+        foreach (var val in betterBGboxArray.Values)
+        {
+            val.ReflectGasBoost();
+        }
+
         var HUDbgrectTransform = HUDbg.GetComponent<RectTransform>();
         if (visibleAbilities.Count > 0)
         {
