@@ -300,7 +300,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         foreach (var ability in abilities)
         {
-            ability.gasBoosted = ability.gasBoosted && PlayerCore.Instance.cursave.gas > 0;
+            ability.gasBoosted = AbilityUtilities.AbilityIsGasBoostable(ability.GetID()) && ability.gasBoosted && PlayerCore.Instance.cursave.gas > 0;
             ReflectGasBoost();
         }
         
