@@ -12,7 +12,7 @@ public class Beam : WeaponAbility
     protected List<Transform> targetArray;
 
     protected int numShots = 0;
-    protected static int MAX_BOUNCES = 1;
+    protected int MAX_BOUNCES = 1;
 
     protected override void Awake()
     {
@@ -119,6 +119,7 @@ public class Beam : WeaponAbility
             else MAX_BOUNCES = 3;
             return;
         }
+
         if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
         {
             var vec = line.GetPosition(numShots);
