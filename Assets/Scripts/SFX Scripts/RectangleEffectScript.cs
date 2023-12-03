@@ -48,14 +48,9 @@ public class RectangleEffectScript : MonoBehaviour
         pixelRect = Camera.main.pixelRect;
         timesByParticle.Clear();
         SetUpParticleSystem(partSys);
-        partSys.Emit(GetParticleCount());
         if (secondaryPartSys)
         {
             SetUpParticleSystem(secondaryPartSys);
-            var em = secondaryPartSys.emission;
-            var burst = em.GetBurst(0);
-            burst.count = GetParticleCount();
-            em.SetBurst(0, burst);
         }
 
         built = true;
@@ -81,6 +76,7 @@ public class RectangleEffectScript : MonoBehaviour
         partSys.transform.position = Camera.main.GetComponent<RectTransform>().anchoredPosition;
         pos = partSys.transform.position;
         partSys.transform.position = new Vector3(pos.x, pos.y, oldZ);
+        partSys.Emit(GetParticleCount());
     }
 
     Dictionary<int, float> timesByParticle = new Dictionary<int, float>();
@@ -163,6 +159,7 @@ public class RectangleEffectScript : MonoBehaviour
         partSys.SetParticles(particles, GetParticleCount());
     }
 
+    private int fixedCalls;
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -177,6 +174,14 @@ public class RectangleEffectScript : MonoBehaviour
             ParticleSystemUpdate(partSys);
             if (secondaryPartSys) 
             {
+                if (fixedCalls == 5)
+                {
+
+                    secondaryPartSys.Clear();
+                    secondaryPartSys.Emit(GetParticleCount());
+                    fixedCalls = 0;
+                }
+                else fixedCalls++;
                 var p1 = new ParticleSystem.Particle[GetParticleCount()];
                 var p2 = new ParticleSystem.Particle[GetParticleCount()];
                 partSys.GetParticles(p1);
