@@ -36,6 +36,11 @@ public class RectangleEffectScript : MonoBehaviour
 
     private Rect pixelRect;
 
+    private int GetParticleCount()
+    {
+        return (int)(50 * (CameraScript.GetMaxZoomLevel() / 10));
+    }
+
     // Use this for initialization
     private void Build()
     {
@@ -43,21 +48,28 @@ public class RectangleEffectScript : MonoBehaviour
         pixelRect = Camera.main.pixelRect;
         timesByParticle.Clear();
         SetUpParticleSystem(partSys);
-        partSys.Emit(25);
+        partSys.Emit(GetParticleCount());
         if (secondaryPartSys)
         {
             SetUpParticleSystem(secondaryPartSys);
+            var em = secondaryPartSys.emission;
+            var burst = em.GetBurst(0);
+            burst.count = GetParticleCount();
+            em.SetBurst(0, burst);
         }
+
         built = true;
     }
 
     private void SetUpParticleSystem(ParticleSystem partSys)
     {
         partSys.Clear();
+        var main = partSys.main;
+        main.maxParticles = GetParticleCount();
         var rd = partSys.GetComponentInChildren<ParticleSystemRenderer>().material =
             ResourceManager.GetAsset<Material>($"RectangleEffectScript_skin{(int)currentSkin}");
         var sh = partSys.shape; // grab the shape of the particle system
-
+        var oldZ = partSys.transform.position.z;
         Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth,
             Camera.main.pixelHeight, sh.position.z + CameraScript.GetMaxZoomLevel()));
         Vector3 pos = Camera.main.transform.position;
@@ -67,7 +79,8 @@ public class RectangleEffectScript : MonoBehaviour
         sh.scale = new Vector3(dimensions[1] * 2, dimensions[0] * 2, 0);
         // scales up the emitters so that particles are uniformly emitted across the screen, I suspect the scale is halved for some reason 
         partSys.transform.position = Camera.main.GetComponent<RectTransform>().anchoredPosition;
-        partSys.transform.position -= new Vector3(0, 0, transform.position.z);
+        pos = partSys.transform.position;
+        partSys.transform.position = new Vector3(pos.x, pos.y, oldZ);
     }
 
     Dictionary<int, float> timesByParticle = new Dictionary<int, float>();
@@ -138,10 +151,16 @@ public class RectangleEffectScript : MonoBehaviour
 
     private void ParticleSystemUpdate(ParticleSystem partSys)
     {
-        ParticleSystem.Particle[] particles = new ParticleSystem.Particle[25]; // constantly update particle array, room for optimization here
+        ParticleSystem.Particle[] particles = new ParticleSystem.Particle[GetParticleCount()]; // constantly update particle array, room for optimization here
         partSys.GetParticles(particles);
         ParticleUpdate(particles);
-        partSys.SetParticles(particles, 25);
+        for (int i = 0; i < particles.Length; i++)
+        {
+            var pos = particles[i].position;
+            pos.z = partSys.transform.position.z;
+            particles[i].position = pos;
+        }
+        partSys.SetParticles(particles, GetParticleCount());
     }
 
     // Update is called once per frame
@@ -158,8 +177,8 @@ public class RectangleEffectScript : MonoBehaviour
             ParticleSystemUpdate(partSys);
             if (secondaryPartSys) 
             {
-                var p1 = new ParticleSystem.Particle[25];
-                var p2 = new ParticleSystem.Particle[25];
+                var p1 = new ParticleSystem.Particle[GetParticleCount()];
+                var p2 = new ParticleSystem.Particle[GetParticleCount()];
                 partSys.GetParticles(p1);
                 secondaryPartSys.GetParticles(p2);
                 for (int i = 0; i < p1.Length; i++)
