@@ -233,7 +233,7 @@ public static class AbilityUtilities
                 return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
                        + $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
             case 38:
-                return $"Fires at least 1 projectile at different targets that each deal {Flak.bulletDamage * tier} damage.\nCan fire at as many drones as are in range, and disables them for 3 seconds each.";
+                return $"Fires at least 1 projectile at different targets that each deal {Flak.bulletDamage * tier} damage.\nCan fire at as many drones as are in range.";
             case 39:
                 return $"Slow projectile that deals {Rocket.bulletDamage * tier} to air stations.";
             case 40:
