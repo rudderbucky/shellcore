@@ -138,6 +138,7 @@ public class Beam : WeaponAbility
             if (!closestEntity)
             {
                 firing = false;
+                numShots = 0;
             }
             else
             {
@@ -148,7 +149,7 @@ public class Beam : WeaponAbility
         }
 
 
-        for (int i = 0; i < numShots; i++)
+        for (int i = 0; i < Mathf.Min(numShots, line.positionCount); i++)
         {
             RenderBeam(i);
         }
