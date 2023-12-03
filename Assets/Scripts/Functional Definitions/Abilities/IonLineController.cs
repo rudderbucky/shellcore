@@ -200,6 +200,7 @@ public class IonLineController : MonoBehaviour
 
                 ShellPart part = null;
                 var dEnt = damageable as Entity;
+                if (!dEnt) return;
                 var colliders = dEnt.GetColliders();
                 var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
                 if (dEnt)
