@@ -1130,6 +1130,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
         }
 
+        if (hat)
+        {
+            Destroy(hat);
+        }
+
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer && networkAdapter)
         {
             networkAdapter.serverReady.Value = false;
@@ -1280,7 +1285,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         
     }
 
-
+    private GameObject hat;
     virtual protected void Start()
     {
         BuildEntity(); // Generate shell parts around the entity
@@ -1299,6 +1304,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
         initialized = true;
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && networkAdapter) networkAdapter.serverReady.Value = true;
+        if (hat) Destroy(hat);
+        if (System.DateTime.Today.Month == 12 && System.DateTime.Today.Day == 25)
+        {
+            hat = Instantiate(ResourceManager.GetAsset<GameObject>("santa_hat"), transform);
+            hat.GetComponentInChildren<SpriteRenderer>().color = FactionManager.GetFactionColor(faction);
+        }
     }
 
     protected void ActivatePassives()
@@ -1318,6 +1329,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             AttemptCreateNetworkObject(this as PlayerCore);
         if (!initialized) return;
         TickState();
+        if (hat)
+        {
+            hat.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+        }
         if ((oldPos - (Vector2)transform.position).sqrMagnitude > CollisionManager.movementThreshold)
         {
             oldPos = transform.position;
