@@ -3,14 +3,14 @@
 /// </summary>
 public class ActiveRegen : ActiveAbility
 {
-    public static readonly float[] healAmounts = { 150, 100, 150 };
+    public static readonly float[] healAmounts = { 500, 100, 500 };
     public int index;
 
     public void Initialize()
     {
-        cooldownDuration = 20;
-        activeDuration = 10;
-        energyCost = 150;
+        cooldownDuration = 15;
+        activeDuration = 8;
+        energyCost = 100;
         chargeDuration = 3f;
 
         switch (index)
