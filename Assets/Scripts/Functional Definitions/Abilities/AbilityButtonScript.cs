@@ -308,7 +308,11 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     public void ReflectGasBoost()
     {
-        if (abilities.Count == 0) return;
+        if (abilities.Count == 0)
+        {
+            gasBoostedImage.enabled = false;
+            return;
+        }
         var ab = abilities[0];
         gasBoostedImage.enabled = ab.gasBoosted;
     }
@@ -369,6 +373,11 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             PollRangeCircle();
         }
+
+        if (!abilities.Exists(a => !a.IsDestroyed()) && gasBoostedImage.enabled) 
+        {
+            ReflectGasBoost();
+        }
     }
 
     void PollRangeCircle()
@@ -396,8 +405,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
                 circles[ability].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(ability.transform.position) * UIScalerScript.GetScale();
                 circles[ability].rectTransform.sizeDelta = new Vector2(range, range);
-                //Debug.Log(Camera.main.ScreenToWorldPoint((Vector3)rangeCircle.rectTransform.anchoredPosition +
-                //    new Vector3(0,range / 2,CameraScript.zLevel) ) - abilities[0].transform.position);
             }
         }
     }

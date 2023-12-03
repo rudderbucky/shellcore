@@ -130,6 +130,7 @@ public abstract class Ability : MonoBehaviour
                 Deactivate();
             }
 
+            gasBoosted = false;
             State = AbilityState.Destroyed;
         }
         else
