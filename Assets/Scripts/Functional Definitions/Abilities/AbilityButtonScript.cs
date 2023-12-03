@@ -308,6 +308,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     public void ReflectGasBoost()
     {
+        if (!gasBoostedImage) return;
         if (abilities.Count == 0)
         {
             gasBoostedImage.enabled = false;
@@ -374,7 +375,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             PollRangeCircle();
         }
 
-        if (!abilities.Exists(a => !a.IsDestroyed()) && gasBoostedImage.enabled) 
+        if (!abilities.Exists(a => !a.IsDestroyed()) && gasBoostedImage && gasBoostedImage.enabled) 
         {
             ReflectGasBoost();
         }
