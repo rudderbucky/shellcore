@@ -7,7 +7,7 @@ Text("Exterminator_Guardian3_d2", "And you just shoot things, got it, got it.")
 Text("Exterminator_Trader_d1", "Kappa Outskirts vending key I86A-5F. Exchange credits for parts.")
 Text("Exterminator_Trader_d2", "Uhh... SELECT * FROM Parts.")
 Text("Exterminator_Trader_d3", "On second thought, no thanks.")
-
+Text('Exterminator_Trader_json', '{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":38,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigSide6","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":26,"tier":2,"secondaryData":"","partID":"MediumCenter1","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":32,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":30,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":9,"tier":1,"secondaryData":"","partID":"SmallCenter5","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":8,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":1,"secondaryData":"","partID":"SmallCenter6","shiny":false,"playerGivenName":""}]}')
 
 Dialogue(
     dialogueID=Exterminator_Guardian1_d,
@@ -44,10 +44,27 @@ Dialogue(
     )
 )
 
+Dialogue(
+    dialogueID=Exterminator_Trader_d,
+    dialogueText=Exterminator_Trader_d1,
+    entityID=Exterminator_Trader,
+    responses=(
+        Response(
+            responseText=Exterminator_Trader_d2,
+            next=Trader(Exterminator_Trader_json)
+        ),
+        Response(
+            responseText=Exterminator_Trader_d3,
+            next=End()
+        )
+    )
+)
+
 StartTrigger(
     sequence=(
         SetInteraction(dialogueID=Exterminator_Guardian2_d, entityID=Exterminator_Guardian2),
         SetInteraction(dialogueID=Exterminator_Guardian1_d, entityID=Exterminator_Guardian1),
         SetInteraction(dialogueID=Exterminator_Guardian3_d, entityID=Exterminator_Guardian3),
+        SetInteraction(dialogueID=Exterminator_Trader_d, entityID=Exterminator_Trader)
     )
 )
