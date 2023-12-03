@@ -589,6 +589,7 @@ public class CoreScriptsManager : MonoBehaviour
         FileCoord coord = new FileCoord();
         var tok1 = "";
         var tok2 = "";
+        var delimiter = '"';
         var quotes = 0;
         var lastCharWasBackslash = false;
         while (coord.line < lines.Length)
@@ -596,6 +597,7 @@ public class CoreScriptsManager : MonoBehaviour
             string currentLine = lines[coord.line].Substring(coord.character);
             if (!stringMode && currentLine.StartsWith("Text("))
             {
+                delimiter = currentLine.Substring(currentLine.IndexOf("Text(")+5).Trim()[0];
                 stringMode = true;
                 quotes = 0;
                 tok1 = "";
@@ -609,7 +611,7 @@ public class CoreScriptsManager : MonoBehaviour
                 if (x == '\\')
                     lastCharWasBackslash = true;
                 
-                if (x == '"' && !lastCharWasBackslash) 
+                if (x == delimiter && !lastCharWasBackslash) 
                 {
                     quotes++;
                     coord = IncrementFileCoordWithComments(1, coord, lines, commentLines);

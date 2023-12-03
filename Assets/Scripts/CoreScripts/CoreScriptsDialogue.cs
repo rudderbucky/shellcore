@@ -274,6 +274,16 @@ public class CoreScriptsDialogue : MonoBehaviour
                 else if (val.StartsWith("Trader"))
                 {
                     node.action = Dialogue.DialogueAction.Shop;
+                    try
+                    {
+                        var parse = val.Replace("Trader(", "").Replace(")", "").Trim();
+                        var inventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(CoreScriptsManager.instance.GetLocalMapString(parse));
+                        dialogue.traderInventory = inventory.parts;
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 else if (val.StartsWith("Upgrader"))
                 {
