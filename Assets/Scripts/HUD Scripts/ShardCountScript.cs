@@ -41,9 +41,9 @@ public class ShardCountScript : MonoBehaviour
 
     private static void UpdateNumber(int shardCount, float gasCount, int feCount)
     {
-        instance.number.text = shardCount.ToString();
-        instance.gasNumber.text = Mathf.RoundToInt(gasCount).ToString();
-        instance.feNumber.text = feCount.ToString();
+        instance.number.text = QuantityDisplayScript.GetValueString(shardCount);
+        instance.gasNumber.text = QuantityDisplayScript.GetValueString(Mathf.RoundToInt(gasCount));
+        instance.feNumber.text = QuantityDisplayScript.GetValueString(feCount);
     }
     float sizeDeltaY;
 

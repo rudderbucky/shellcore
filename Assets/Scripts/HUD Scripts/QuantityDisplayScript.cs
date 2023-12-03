@@ -40,7 +40,7 @@ public class QuantityDisplayScript : MonoBehaviour
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower().ToString();
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
-            texts[5].text = GetCreditString(player.GetCredits()).ToString();
+            texts[5].text = GetValueString(player.GetCredits()).ToString();
             var rect = texts[5].rectTransform.rect;
             rect.center = texts[5].rectTransform.position;
             tooltipManager.AddBounds(rect, $"CREDITS: {player.GetCredits()}");
@@ -88,7 +88,7 @@ public class QuantityDisplayScript : MonoBehaviour
         }
     }
 
-    public static string GetCreditString(int credits)
+    public static string GetValueString(int credits)
     {
         if (credits < 100000)
         {
