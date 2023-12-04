@@ -84,7 +84,12 @@ Function(
                             val1=MissionStatus(Abandonment_missionName),
                             val2=complete,
                             comp=Eq,
-                            sequence=()
+                            sequence=(
+                                SetVariable(
+                                    name=$$$Makeshift_stage1,
+                                    value=1
+                                ),
+                            )
                         ),
                         Comparison(
                             val1=$$$Abandonment_Kappa_Outskirts_1SE_haven,
