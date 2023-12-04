@@ -165,7 +165,7 @@ public class FusionStationScript : GUIWindowScripts
         {
             string partName = inv.part.partID.ToLower();
             string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID, inv.part.secondaryData).ToLower() + (inv.part.tier > 0 ? " " + inv.part.tier : "");
-            if (partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "")
+            if (string.IsNullOrEmpty(searcherString) || partName.Contains(searcherString) || abilityName.Contains(searcherString))
             {
                 if (displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)])
                 {
