@@ -62,6 +62,7 @@ public class CoreScriptsSequence : MonoBehaviour
         StartMusicOverride,
         FinishMusicOverride,
         RandomFloat,
+        SetFactionRelations
     }
     public struct Instruction
     {
@@ -214,6 +215,11 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.SetFactionRelations:
+                    var factionID = GetArgument(inst.arguments, "musicID");
+                    var sum = GetArgument(inst.arguments, "sum");
+                    FactionManager.SetFactionRelations(int.Parse(factionID), int.Parse(sum));
+                    break;
                 case InstructionCommand.StartMusicOverride:
                     var musicID = GetArgument(inst.arguments, "musicID");
                     AudioManager.musicOverrideID = musicID;
