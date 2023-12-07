@@ -189,7 +189,7 @@ public class IonLineController : MonoBehaviour
             var dps = damage * Time.deltaTime;
 
             var damageable = CollisionManager.RaycastDamageable(transform.position, transform.position + GetVectorByBearing(originalBearing) * range, VerifyTarget, out var point);
-            if (damageable != null)
+            if (damageable != null && line.positionCount > 1)
             {
                 var hitTransform = damageable.GetTransform();
 
