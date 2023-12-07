@@ -216,7 +216,7 @@ public class CoreScriptsSequence : MonoBehaviour
             switch (inst.command)
             {
                 case InstructionCommand.SetFactionRelations:
-                    var factionID = GetArgument(inst.arguments, "musicID");
+                    var factionID = GetArgument(inst.arguments, "factionID");
                     var sum = GetArgument(inst.arguments, "sum");
                     FactionManager.SetFactionRelations(int.Parse(factionID), int.Parse(sum));
                     break;

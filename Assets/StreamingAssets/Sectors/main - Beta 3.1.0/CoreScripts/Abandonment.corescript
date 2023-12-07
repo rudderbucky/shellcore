@@ -44,22 +44,21 @@ Function(
 Function(
     name=Abandonment_start,
     sequence=(   
-// Remove old faction values
-        SetFactionRelations(
-            factionID=0,
-            sum=25
-        ),
-        SetFactionRelations(
-            factionID=1,
-            sum=26
-        ),
         ConditionBlock(
             Comparison(
                 val1=MissionStatus(Truthful_Revelation_missionName),
                 val2=complete,
                 comp=Eq,
                 sequence=(
-
+// Remove old faction values
+                    SetFactionRelations(
+                        factionID=0,
+                        sum=25
+                    ),
+                    SetFactionRelations(
+                        factionID=1,
+                        sum=26
+                    ),
 // if the loyalty variable isn't set, set it to 0
 
                     ConditionBlock(
