@@ -65,6 +65,10 @@ public class Beam : WeaponAbility
 
     protected void RenderBeam(int currentVertex)
     {
+        if (line.positionCount <= currentVertex+1)
+        {
+            return;
+        }
         if (firing && timer < 0.1F*(currentVertex+1)) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.startWidth = line.endWidth = 0.15F;
