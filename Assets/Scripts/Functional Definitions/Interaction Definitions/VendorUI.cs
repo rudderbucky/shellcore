@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static Entity;
 
 public interface IVendor
 {
     VendingBlueprint GetVendingBlueprint();
-    int GetFaction();
+    EntityFaction GetFaction();
     Vector3 GetPosition();
     Transform GetTransform();
     bool NeedsAlliedFaction();
@@ -228,10 +229,10 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
                 if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
                 {
-                    var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == core.faction);
+                    var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == core.faction.factionID);
                     if (stats == null)
                     {
-                        stats = new BattleZoneManager.Stats(core.faction);
+                        stats = new BattleZoneManager.Stats(core.faction.factionID);
                         SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Add(stats);
                     }
                     stats.turretSpawns++;
@@ -263,7 +264,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         }
         var ent = creation.GetComponent<Entity>();
         ent.spawnPoint = vendor.GetPosition();
-        ent.faction = core.faction;
+        ent.faction.factionID = core.faction.factionID;
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
             ent.ID = SectorManager.instance.GetFreeEntityID();

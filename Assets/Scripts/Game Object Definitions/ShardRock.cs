@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Entity;
 
 public interface ITargetable
 {
@@ -11,7 +12,7 @@ public interface ITargetable
     bool GetIsDead();
     string GetName();
     string GetID();
-    int GetFaction();
+    EntityFaction GetFaction();
     bool GetInvisible();
 }
 
@@ -98,7 +99,7 @@ public class ShardRock : MonoBehaviour, IDamageable
 
     public float TakeShellDamage(float damage, float shellPiercingFactor, Entity lastDamagedBy)
     {
-        if (lastDamagedBy.GetFaction() != PlayerCore.Instance.GetFaction()) return 0;
+        if (!FactionManager.IsAllied(lastDamagedBy.GetFaction(), PlayerCore.Instance.GetFaction())) return 0;
         currentHealths[0] -= damage;
         currentHealths[0] = Mathf.Max(0, currentHealths[0]);
         return 0;
@@ -114,9 +115,11 @@ public class ShardRock : MonoBehaviour, IDamageable
         return null;
     }
 
-    public int GetFaction()
+    EntityFaction fac = new();
+    public EntityFaction GetFaction()
     {
-        return 2;
+        fac.factionID = 2;
+        return fac;
     }
 
     public bool GetIsDead()

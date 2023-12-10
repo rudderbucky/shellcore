@@ -29,6 +29,7 @@ public class Sector : ScriptableObject
         public string name;
         public string ID;
         public int faction;
+        public int overrideFaction;
         public string assetID;
         public string blueprintJSON;
         public string dialogueID;

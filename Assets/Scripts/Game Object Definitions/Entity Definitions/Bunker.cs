@@ -49,12 +49,11 @@ public class Bunker : GroundConstruct, IVendor
     protected override void OnDeath()
     {
         targeter.SetTarget(null);
-        int otherFaction = faction;
 
         if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();
-            BZManager.AttemptAlertPlayers(otherFaction, "WARNING: Bunker lost!", "clip_stationlost");
+            BZManager.AttemptAlertPlayers(faction, "WARNING: Bunker lost!", "clip_stationlost");
         }
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
         {

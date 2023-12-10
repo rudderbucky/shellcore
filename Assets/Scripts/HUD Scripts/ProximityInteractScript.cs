@@ -80,7 +80,7 @@ public class ProximityInteractScript : MonoBehaviour
         foreach (var core in playerNames.Keys)
         {
             if (!core) continue;
-            playerNames[core].gameObject.SetActive(!core.GetIsDead() && (!PlayerCore.Instance || (core.StealthStacks == 0 || PlayerCore.Instance.faction == core.faction)));
+            playerNames[core].gameObject.SetActive(!core.GetIsDead() && (!PlayerCore.Instance || (core.StealthStacks == 0 || FactionManager.IsAllied(PlayerCore.Instance.faction, core.faction))));
             if (!playerNames[core].gameObject.activeSelf) continue;
             var worldToScreenPoint = Camera.main.WorldToScreenPoint(core.GetTransform().position);
             worldToScreenPoint.x *= UIScalerScript.GetScale();

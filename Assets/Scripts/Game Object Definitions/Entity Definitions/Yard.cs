@@ -54,7 +54,7 @@ public class Yard : AirConstruct, IShipBuilder
         base.Update();
         TargetManager.Enqueue(targeter);
 
-        if (PlayerCore.Instance && FactionManager.IsAllied(faction, PlayerCore.Instance.faction))
+        if (PlayerCore.Instance && FactionManager.IsAllied(faction.factionID, PlayerCore.Instance.faction.factionID))
         {
             RepairPlayerAndPartyMembers();
             GrabCollectiblesFromAllies();

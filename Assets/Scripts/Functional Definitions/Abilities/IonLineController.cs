@@ -43,7 +43,7 @@ public class IonLineController : MonoBehaviour
         line.material = material;
         line.startWidth = line.endWidth = 0;
         line.useWorldSpace = true;
-        var col = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+        var col = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction.factionID) : new Color(0.8F, 1F, 1F, 0.9F);
         Gradient gradient = new Gradient();
         gradient.mode = GradientMode.Fixed;
         gradient.SetKeys(
@@ -265,7 +265,7 @@ public class IonLineController : MonoBehaviour
 
     bool VerifyTarget(Entity entity)
     {
-        return entity.GetFaction() != Core.faction && !entity.GetIsDead() && !entity.IsInvisible && (entity.GetTerrain() == terrain || terrain == Entity.TerrainType.All);
+        return !FactionManager.IsAllied(entity.faction, Core.faction) && !entity.GetIsDead() && !entity.IsInvisible && (entity.GetTerrain() == terrain || terrain == Entity.TerrainType.All);
     }
 
     public float GetDuration()

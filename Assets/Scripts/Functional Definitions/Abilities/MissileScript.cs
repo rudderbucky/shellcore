@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static Entity;
 
 /// <summary>
 /// Script used for the missile projectile
@@ -10,7 +11,7 @@ public class MissileScript : MonoBehaviour, IProjectile
 
     public GameObject missileLinePrefab; // line rendering prefab for missiles
     private Transform target; // target of missile
-    public int faction; // faction of projectile
+    public EntityFaction faction; // faction of projectile
     public Entity owner; // owner of projectile
     private float damage; // damage missile projectile should deal
     private Entity.TerrainType terrain;
@@ -160,7 +161,7 @@ public class MissileScript : MonoBehaviour, IProjectile
         }
     }
 
-    public int GetFaction()
+    public EntityFaction GetFaction()
     {
         return faction;
     }

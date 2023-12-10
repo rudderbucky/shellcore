@@ -138,7 +138,7 @@ public class PassiveDialogueSystem : MonoBehaviour
                     text.text = dialogue.text;
                     if (dialogue.useEntityColor) 
                     {
-                        text.color = FactionManager.GetFactionColor(speaker.faction);
+                        text.color = FactionManager.GetFactionColor(speaker.faction.factionID);
                     }
                     else
                     {
@@ -148,7 +148,7 @@ public class PassiveDialogueSystem : MonoBehaviour
                     instance.transform.localScale -= new Vector3(0, 1);
                     StartCoroutine(SlidePassiveDialogueIn(instance.transform));
 
-                    instance.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
+                    instance.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction.factionID);
                 }
             }
         }

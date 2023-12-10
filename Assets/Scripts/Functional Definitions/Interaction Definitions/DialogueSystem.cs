@@ -326,7 +326,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             if (speaker && remastered)
             {
                 DialogueViewTransitionIn(speaker);
-                display.AssignDisplay(speaker.blueprint, null, speaker.faction);
+                display.AssignDisplay(speaker.blueprint, null, speaker.faction.factionID);
                 window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = speaker.blueprint.entityName;
             }
             else
@@ -595,7 +595,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void showCanvasDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor = true)
     {
         typingSpeedFactor = 1;
-        CreateWindow(dialogueBoxPrefab, text, useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : textColor, speaker);
+        CreateWindow(dialogueBoxPrefab, text, useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction.factionID) : textColor, speaker);
         DialogueViewTransitionIn(speaker);
 
         // create buttons
@@ -704,7 +704,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             endDialogue(0, false);
         }
 
-        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.dialogueColor, speaker);
+        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction.factionID) : node.dialogueColor, speaker);
         background.Find("TaskRewardInfo").gameObject.SetActive(true);
         background.Find("RadioVisual").GetComponent<CanvasGroup>().alpha = 0.1F;
         DialogueViewTransitionIn(speaker);
@@ -942,7 +942,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             var entName = ent.blueprint.entityName;
             if (current.concealName) entName = "Unknown Speaker";
             if (remastered)
-                window.transform.Find("Background/RadioVisual/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
+                window.transform.Find("Background/RadioVisual/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction.factionID);
             window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = remastered ? entName : "";
         }
 
@@ -962,7 +962,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters / current.typingSpeedFactor);
 
         textRenderer.color = current.textColor;
-        if (current.useSpeakerColor && speaker is Entity colorEnt) textRenderer.color = FactionManager.GetFactionColor(colorEnt.faction);
+        if (current.useSpeakerColor && speaker is Entity colorEnt) textRenderer.color = FactionManager.GetFactionColor(colorEnt.faction.factionID);
 
         background.Find("RadioVisual").GetComponent<CanvasGroup>().alpha = 1F;
         background.Find("TaskRewardInfo").gameObject.SetActive(false);

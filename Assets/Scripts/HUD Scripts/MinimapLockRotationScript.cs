@@ -19,7 +19,7 @@ public class MinimapLockRotationScript : MonoBehaviour
         var ent = GetComponentInParent<Entity>();
         if (ent != null)
         {
-            factionColor = FactionManager.GetFactionColor(ent.faction);
+            factionColor = FactionManager.GetFactionColor(ent.faction.factionID);
             if (GetComponentInParent<PlayerCore>())
             {
                 factionColor = Color.white;

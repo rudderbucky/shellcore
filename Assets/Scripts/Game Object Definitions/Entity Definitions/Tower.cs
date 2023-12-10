@@ -11,7 +11,7 @@ public class Tower : GroundConstruct
 
     protected override void Update()
     {
-        GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction);
+        GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction.factionID);
         GetComponent<SpriteRenderer>().material = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>().material;
 
         float rate = 45 * Time.deltaTime;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static Entity;
 
 public class BattleZoneManager : MonoBehaviour
 {
@@ -58,10 +59,10 @@ public class BattleZoneManager : MonoBehaviour
 
     void OnEntityDeath(Entity killed, Entity killer)
     {
-        Stats killedStats = stats.Find((x) => { return x.faction == killed.faction; });
+        Stats killedStats = stats.Find((x) => { return x.faction == killed.faction.factionID; });
         if (killedStats == null)
         {
-            killedStats = new Stats(killed.faction);
+            killedStats = new Stats(killed.faction.factionID);
             stats.Add(killedStats);
         }
 
@@ -72,10 +73,10 @@ public class BattleZoneManager : MonoBehaviour
 
         if (killer != null)
         {
-            Stats killerStats = stats.Find(x => x.faction == killer.faction);
+            Stats killerStats = stats.Find(x => x.faction == killer.faction.factionID);
             if (killerStats == null)
             {
-                killerStats = new Stats(killer.faction);
+                killerStats = new Stats(killer.faction.factionID);
                 stats.Add(killerStats);
             }
 
@@ -138,15 +139,15 @@ public class BattleZoneManager : MonoBehaviour
         return strings;
     }
 
-    public void AttemptAlertPlayers(int faction, string message, string sound)
+    public void AttemptAlertPlayers(EntityFaction faction, string message, string sound)
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
             if (MasterNetworkAdapter.lettingServerDecide) return;
-            MasterNetworkAdapter.instance.AlertPlayerClientRpc(faction, message, sound);
+            MasterNetworkAdapter.instance.AlertPlayerClientRpc(faction.factionID, message, sound);
         }
 
-        if (PlayerCore.Instance && PlayerCore.Instance.faction == faction) AlertPlayer(message, sound);
+        if (PlayerCore.Instance && FactionManager.IsAllied(faction, PlayerCore.Instance.faction)) AlertPlayer(message, sound);
     }
 
     public void AlertPlayer(string message, string sound)
@@ -168,15 +169,15 @@ public class BattleZoneManager : MonoBehaviour
     {
         foreach (var target in targets)
         {
-            if (!SectorManager.instance.carriers.ContainsKey(target.faction))
+            if (!SectorManager.instance.carriers.ContainsKey(target.faction.factionID))
             {
                 continue;
             }
 
-            var carrier = SectorManager.instance.carriers[target.faction];
+            var carrier = SectorManager.instance.carriers[target.faction.factionID];
             if (target is ShellCore shellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
             {
-                shellCore.SetCarrier(SectorManager.instance.carriers[target.faction]);
+                shellCore.SetCarrier(SectorManager.instance.carriers[target.faction.factionID]);
             }
         }
     }
@@ -188,9 +189,9 @@ public class BattleZoneManager : MonoBehaviour
         // Create dictionary entries for counts of existing target entities of each faction
         for (int i = 0; i < targets.Count; i++)
         {
-            if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction))
+            if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction.factionID))
             {
-                livingFactions.Add(targets[i].faction);
+                livingFactions.Add(targets[i].faction.factionID);
             }
         }
         return livingFactions;
@@ -228,7 +229,7 @@ public class BattleZoneManager : MonoBehaviour
         {
             foreach (Entity playerEntity in targets)
             {
-                if (playerEntity && !playerEntity.GetIsDead() && livingFactions.Contains(playerEntity.faction) &&
+                if (playerEntity && !playerEntity.GetIsDead() && livingFactions.Contains(playerEntity.faction.factionID) &&
                      playerEntity.networkAdapter && playerEntity.networkAdapter.isPlayer.Value)
                 {
                     HUDScript.AddScore(playerEntity.networkAdapter.playerName, 50);
@@ -240,7 +241,7 @@ public class BattleZoneManager : MonoBehaviour
         foreach (Entity playerEntity in targets)
         {
             if (!(playerEntity as PlayerCore)) continue;
-            if (livingFactions.Contains(playerEntity.faction))
+            if (livingFactions.Contains(playerEntity.faction.factionID))
             {
                 AudioManager.PlayClipByID("clip_victory");
                 if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin == null) continue;
@@ -261,7 +262,7 @@ public class BattleZoneManager : MonoBehaviour
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server && DialogueSystem.Instance)
         {
-            DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
+            DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction.factionID));
         }
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && DialogueSystem.Instance)
         {

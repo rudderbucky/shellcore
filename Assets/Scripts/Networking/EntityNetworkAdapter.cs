@@ -270,9 +270,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
             UpdateCoreState(huskEntity, wrapper);
         }
 
-        if (huskEntity && faction != huskEntity.faction)
+        if (huskEntity && faction != huskEntity.faction.factionID)
         {
-            huskEntity.faction = faction;
+            huskEntity.faction.factionID = faction;
             huskEntity.Rebuild();
         }
     }
@@ -615,7 +615,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     private void SetUpPlayerCore()
     {
         PlayerCore.Instance.enabled = true;
-        PlayerCore.Instance.faction = passedFaction;
+        PlayerCore.Instance.faction.factionID = passedFaction;
         PlayerCore.Instance.blueprint = Instantiate(blueprint);
         PlayerCore.Instance.SetPlayerSpawnPoint();
         if (!SystemLoader.AllLoaded && SystemLoader.InitializeCalled)
@@ -716,12 +716,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (update)
         {
             updateTimer = IsPriorityForUpdates() ? PRIORITY_UPDATE_RATE : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
-            UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
+            UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction.factionID : passedFaction);
             if (entityAlwaysUpdated || dirty)
-                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
+                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction.factionID : passedFaction);
             else 
             {
-                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction, 
+                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction.factionID : passedFaction, 
                 new ClientRpcParams() 
                 {
                     Send = new ClientRpcSendParams()

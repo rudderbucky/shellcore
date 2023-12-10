@@ -143,7 +143,7 @@ public class Tank : GroundCraft, IOwnable
             if (!targets[i] ||
                 targets[i].IsInvisible ||
                 targets[i] == this ||
-                FactionManager.IsAllied(faction, targets[i].faction) ||
+                FactionManager.IsAllied(faction.factionID, targets[i].faction.factionID) ||
                 !Weapons[0].CheckCategoryCompatibility(targets[i]))
             {
                 targets.RemoveAt(i);
@@ -153,7 +153,7 @@ public class Tank : GroundCraft, IOwnable
         
         List<Vector2> flags = new List<Vector2>();
         foreach(Flag flag in AIData.flags){
-            if(flag.name == $"tankpickup{faction}"){
+            if(flag.name == $"tankpickup{faction.factionID}"){
                 flags.Add(flag.transform.position);
             }
         }

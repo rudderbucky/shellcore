@@ -27,7 +27,7 @@ public class TargetingSystem : ITargetingSystem
         // initialize instance fields
         target = null;
         this.parent = parent;
-        faction = GetEntity().faction;
+        faction = GetEntity().faction.factionID;
 
         // sync up the reticle representations with the new targeting system
         if (GetEntity() as PlayerCore && ReticleScript.instance)

@@ -275,7 +275,7 @@ public class ShellPart : MonoBehaviour
         if (!craft)
             craft = transform.root.GetComponent<Entity>();
         if (craft)
-            faction = craft.faction;
+            faction = craft.faction.factionID;
         gameObject.layer = 0;
 
         if (GetComponent<Ability>())
@@ -515,7 +515,7 @@ public class ShellPart : MonoBehaviour
     // ignores parameter alpha, since stealthing changes it
     public void SetPartColor(Color color)
     {
-        color.a = (craft && craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
+        color.a = (craft && craft.IsInvisible ? (craft.faction.factionID == 0 ? 0.2f : 0f) : color.a);
         if (spriteRenderer) spriteRenderer.color = color;
         if (shooter && shooter.GetComponent<SpriteRenderer>())
         {

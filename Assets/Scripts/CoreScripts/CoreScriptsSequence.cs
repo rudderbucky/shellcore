@@ -62,7 +62,8 @@ public class CoreScriptsSequence : MonoBehaviour
         StartMusicOverride,
         FinishMusicOverride,
         RandomFloat,
-        SetFactionRelations
+        SetFactionRelations,
+        SetPlayerOverrideFaction
     }
     public struct Instruction
     {
@@ -215,6 +216,12 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.SetPlayerOverrideFaction:
+                    var overrideFstr = GetArgument(inst.arguments, "overrideFaction");
+                    var overrideFac = 0;
+                    if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
+                    PlayerCore.Instance.faction.overrideFaction = overrideFac;
+                    break;
                 case InstructionCommand.SetFactionRelations:
                     var factionID = GetArgument(inst.arguments, "factionID");
                     var sum = GetArgument(inst.arguments, "sum");
@@ -303,14 +310,18 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.SpawnEntity:
                     var fStr = GetArgument(inst.arguments, "faction");
+                    overrideFstr = GetArgument(inst.arguments, "overrideFaction");
                     var fac = 0;
+                    overrideFac = 0;
                     if (!string.IsNullOrEmpty(fStr)) fac = int.Parse(fStr);
+                    if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
                     SpawnEntity(
                         GetArgument(inst.arguments, "entityID"), 
                         GetArgument(inst.arguments, "forceCharacterTeleport") != "false",
                         GetArgument(inst.arguments, "flagName"),
                         GetArgument(inst.arguments, "blueprintJSON"),
                         fac,
+                        overrideFac,
                         GetArgument(inst.arguments, "name"),
                         GetArgument(inst.arguments, "assetID"));
                     break;
@@ -689,6 +700,7 @@ public class CoreScriptsSequence : MonoBehaviour
         var substr = line.Substring(index).Split("(")[0].Trim();
         var inst = new Instruction();
         Enum.TryParse<InstructionCommand>(substr, out inst.command);
+        Debug.LogWarning(inst.command);
         inst.arguments = "";
         bool skipToComma = true;
         List<string> stx = null;
@@ -767,7 +779,7 @@ public class CoreScriptsSequence : MonoBehaviour
         }
     }
 
-    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, string name, string assetID)
+    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID)
     {
         Vector2 coords = new Vector2();
         for (int i = 0; i < AIData.flags.Count; i++)
@@ -784,6 +796,7 @@ public class CoreScriptsSequence : MonoBehaviour
             Sector.LevelEntity entityData = new Sector.LevelEntity
             {
                 faction = faction,
+                overrideFaction = overrideFaction,
                 name = name,
                 position = coords,
                 ID = entityID,

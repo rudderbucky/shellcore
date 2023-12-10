@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Entity;
 
 public class TowerBase : MonoBehaviour, IInteractable, IVendor
 {
@@ -102,9 +103,12 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
         return transform;
     }
 
-    public int GetFaction()
+
+    EntityFaction fac = new();
+    public EntityFaction GetFaction()
     {
-        return 3;
+        fac.factionID = 3;
+        return fac;
     }
 
     public bool NeedsAlliedFaction()

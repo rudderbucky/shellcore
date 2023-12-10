@@ -58,7 +58,7 @@ public class Outpost : AirConstruct, IVendor
         // this won't trigger PostDeath() since that only gets called if the timer ticks to a value
         // the timer doesn't tick unless isDead is set to true
         targeter.SetTarget(null);
-        int otherFaction = faction;
+        EntityFaction otherFaction = faction;
         if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();

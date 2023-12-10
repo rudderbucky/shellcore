@@ -126,7 +126,7 @@ public class SiegeZoneManager : MonoBehaviour
                         Path path = ScriptableObject.CreateInstance<Path>();
                         path.waypoints = new List<Path.Node>();
                         Path.Node node = new Path.Node();
-                        var currentTargets = targets.FindAll(targ => targ && !FactionManager.IsAllied(sectorEntity.faction, targ.faction));
+                        var currentTargets = targets.FindAll(targ => targ && !FactionManager.IsAllied(sectorEntity.faction.factionID, targ.faction.factionID));
                         if (currentTargets.Count > 0)
                         {
                             node.position = currentTargets[Random.Range(0, currentTargets.Count)].transform.position;
@@ -143,7 +143,7 @@ public class SiegeZoneManager : MonoBehaviour
                     }
 
                     entitiesToRemove.Add(ent);
-                    if (!FactionManager.IsAllied(sectorEntity.faction, players[0].faction))
+                    if (!FactionManager.IsAllied(sectorEntity.faction.factionID, players[0].faction.factionID))
                     {
                         entitiesRemaining.Add(sectorEntity);
                     }

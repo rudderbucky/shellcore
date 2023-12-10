@@ -194,7 +194,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
         var BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
-        if (BZManager && PlayerCore.Instance && PlayerCore.Instance.faction == faction) BZManager.AlertPlayer(message, sound);
+        if (BZManager && PlayerCore.Instance && PlayerCore.Instance.faction.factionID == faction) BZManager.AlertPlayer(message, sound);
     }
 
     [ClientRpc]

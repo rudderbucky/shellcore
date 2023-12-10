@@ -93,7 +93,7 @@ public class BattleAI : AIModule
         {
             if (targetEntities[i] is ICarrier)
             {
-                if (targetEntities[i].faction == craft.faction)
+                if (targetEntities[i].faction.factionID == craft.faction.factionID)
                 {
                     carriers.Add(targetEntities[i]);
                 }
@@ -187,7 +187,7 @@ public class BattleAI : AIModule
                 if (carriers[i] && carriers[i].GetHealth()[0] < carriers[i].GetMaxHealth()[0] * 0.3f)
                 {
                     // if base under attack -> defend
-                    if (AirCraftAI.getEnemyCountInRange(carriers[i].transform.position, 45f, craft.faction) > 0)
+                    if (AirCraftAI.getEnemyCountInRange(carriers[i].transform.position, 45f, craft.faction.factionID) > 0)
                     {
                         if ((carriers[i].transform.position - craft.transform.position).sqrMagnitude > 1500f)
                         {
@@ -232,7 +232,7 @@ public class BattleAI : AIModule
                 bool enemyGround = false;
                 for (int j = 0; j < AIData.entities.Count; j++)
                 {
-                    if (AIData.entities[j].faction != craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
+                    if (AIData.entities[j].faction.factionID != craft.faction.factionID && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
                     {
                         enemyGround = true;
                         break;
@@ -295,7 +295,7 @@ public class BattleAI : AIModule
                 {
                     if (AIData.entities[i] != null && AIData.entities[i] &&
                         AIData.entities[i] is Turret &&
-                        AIData.entities[i].faction == craft.faction &&
+                        AIData.entities[i].faction.factionID == craft.faction.factionID &&
                         AIData.entities[i].GetComponentInChildren<WeaponAbility>() != null &&
                         AIData.entities[i].GetComponentInChildren<WeaponAbility>().GetID() != 16)
                     {
@@ -359,7 +359,7 @@ public class BattleAI : AIModule
 
             for (int i = 0; i < AIData.energyRocks.Count; i++)
             {
-                if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 10f, craft.faction) > 2)
+                if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 10f, craft.faction.factionID) > 2)
                 {
                     continue;
                 }
@@ -468,7 +468,7 @@ public class BattleAI : AIModule
                 if (AITargets[i] == null || !AITargets[i].transform) continue;
                 var ent = AITargets[i].transform.GetComponent<Entity>();
                 if (!ent) continue;
-                if (ent.faction == shellcore.faction)
+                if (ent.faction.factionID == shellcore.faction.factionID)
                 {
                     fortificationTarget = ent;
                     break;
@@ -555,7 +555,7 @@ public class BattleAI : AIModule
             }
             var bunker = AITargets[i].transform.GetComponent<Bunker>();
             if (((towerBase && !towerBase.TowerActive()) || 
-                (!foundTowerBase && bunker && bunker.faction == shellcore.faction)) && 
+                (!foundTowerBase && bunker && bunker.faction.factionID == shellcore.faction.factionID)) && 
                 Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.transform.position) < dist)
             {
                 dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.position);
@@ -758,7 +758,7 @@ public class BattleAI : AIModule
                 }
             }
 
-            if (vendor.NeedsAlliedFaction() && vendor.GetFaction() != craft.faction)
+            if (vendor.NeedsAlliedFaction() && !FactionManager.IsAllied(vendor.GetFaction(), craft.GetFaction()))
             {
                 continue;
             }
@@ -774,19 +774,19 @@ public class BattleAI : AIModule
             int enemyGroundStation = 0;
             for (int j = 0; j < AIData.entities.Count; j++)
             {
-                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
+                if (FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
                 {
                     ownGroundStation += 1;
                 }
-                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
+                if (!FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
                 {
                     enemyGroundStation += 1;
                 }
-                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
+                if (FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
                 {
                     ownTank += 1;
                 }
-                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
+                if (!FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
                 {
                     enemyTank += 1;
                 }
@@ -803,7 +803,7 @@ public class BattleAI : AIModule
                     bool ownGroundExists = false;
                     for (int j = 0; j < AIData.entities.Count; j++)
                     {
-                        if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
+                        if (AIData.entities[j].faction.factionID == craft.faction.factionID && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
                         {
                             ownGroundExists = true;
                             break;
@@ -977,7 +977,7 @@ public class BattleAI : AIModule
             {
                 foreach (var tank in AIData.tanks)
                 {
-                    if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
+                    if (!FactionManager.IsAllied(tank.faction.factionID, craft.faction.factionID)) continue;
                     if (Vector2.SqrMagnitude(tank.transform.position - pickupTargetFlag.transform.position) > 25) continue;
                     shellcore.SetTractorTarget(tank.GetComponentInChildren<Draggable>());
                     break;
@@ -1011,10 +1011,10 @@ public class BattleAI : AIModule
     {
         foreach (var flag in AIData.flags.OrderBy(x => Vector2.SqrMagnitude(x.transform.position - craft.transform.position)))
         {
-            if (flag.name != $"tankpickup{craft.faction}") continue;
+            if (flag.name != $"tankpickup{craft.faction.factionID}") continue;
             foreach (var tank in AIData.tanks)
             {
-                if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
+                if (!FactionManager.IsAllied(tank.faction.factionID, craft.faction.factionID)) continue;
                 if (Vector2.SqrMagnitude(tank.transform.position - flag.transform.position) > 25) continue;
                 return flag;
             }
@@ -1026,14 +1026,14 @@ public class BattleAI : AIModule
     {
         foreach (var flag in AIData.flags.OrderBy(x => Vector2.SqrMagnitude(x.transform.position - craft.transform.position)))
         {
-            if (flag.name != $"tankdropoff{craft.faction}") continue;
+            if (flag.name != $"tankdropoff{craft.faction.factionID}") continue;
             int alliedPresence = 0;
             int enemyPresence = 0;
             foreach(var entity in AIData.entities){
                 if(Vector2.SqrMagnitude(flag.transform.position - entity.transform.position) > 25) continue;
                 if(!(entity as GroundConstruct)) continue;
                 if(entity == shellcore || entity == shellcore.GetTractorTarget().GetComponent<Entity>()) continue;
-                if(entity.faction == craft.faction){alliedPresence++;}
+                if(entity.faction.factionID == craft.faction.factionID){alliedPresence++;}
                 else{enemyPresence++;}
             }
             if(alliedPresence <= enemyPresence) return flag;
@@ -1046,7 +1046,7 @@ public class BattleAI : AIModule
         Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
         for (int i = 0; i < targets.Length; i++)
         {
-            if (!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
+            if (!FactionManager.IsAllied(targets[i].faction.factionID, craft.faction.factionID) && targets[i].Terrain == Entity.TerrainType.Ground)
             {
                 return true;
             }

@@ -236,12 +236,16 @@ public abstract class WeaponAbility : ActiveAbility
     {
         if (State != AbilityState.Ready || Core.GetHealth()[2] < energyCost || Core.GetIsDead()) return;
         Transform target = targetingSystem.GetTarget();
+//        if (Core as Outpost && Core.faction.overrideFaction == 2) Debug.LogWarning("TEST1");
         if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
         {
+//            if (Core as Outpost && Core.faction.overrideFaction == 2) Debug.LogWarning("TEST2");
             TargetManager.Enqueue(targetingSystem, category);
         }
         else if (target && target.GetComponent<IDamageable>() != null)
         {
+//                    if (Core as Outpost && Core.faction.overrideFaction == 2) Debug.LogWarning("TEST3");
+
             // check if there is a target
             Core.SetIntoCombat(); // now in combat
             IDamageable tmp = target.GetComponent<IDamageable>();

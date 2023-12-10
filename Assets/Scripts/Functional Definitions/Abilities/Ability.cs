@@ -408,7 +408,7 @@ public abstract class Ability : MonoBehaviour
         else if (State == AbilityState.Active)
         {
             // Do not reveal stealth enemies by blinking their parts
-            if (ID == AbilityID.Stealth && (PlayerCore.Instance && PlayerCore.Instance.faction != core.faction))
+            if (ID == AbilityID.Stealth && (PlayerCore.Instance && PlayerCore.Instance.faction.factionID != core.faction.factionID))
             {
                 if (glow)
                 {
@@ -428,7 +428,7 @@ public abstract class Ability : MonoBehaviour
             if (Core.IsInvisible)
             {
                 // Invisible player
-                if (Core.faction == 0)
+                if (Core.faction.factionID == 0)
                 {
                     newColor.a = 0.1f;
                 }

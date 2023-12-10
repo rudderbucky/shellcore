@@ -45,7 +45,7 @@ public class AIAbilityController
             if (ai.movement.DistanceToTarget > 5f)
             {
                 bool allowSpeed = true;
-                if (craft.faction == 0 && PlayerCore.Instance != null && !PlayerCore.Instance.GetIsDead()
+                if (craft.faction.factionID == 0 && PlayerCore.Instance != null && !PlayerCore.Instance.GetIsDead()
                     && ai.movement.GetTarget() != null)
                 {
                     // Don't run away or get behind when escorting a player

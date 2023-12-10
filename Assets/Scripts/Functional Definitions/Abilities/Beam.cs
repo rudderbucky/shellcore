@@ -38,8 +38,8 @@ public class Beam : WeaponAbility
     protected void SetUpCosmetics()
     {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
-        line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
-        line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+        line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction.factionID) : new Color(0.8F, 1F, 1F, 0.9F);
+        line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction.factionID) : new Color(0.8F, 1F, 1F, 0.9F);
         if (!beamHitPrefab)
         {
             beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static Entity;
 
 public interface IProjectile
 {
-    public int GetFaction();
+    public EntityFaction GetFaction();
     public Entity GetOwner();
     public Vector4 GetPositions();
     public float GetDamage();
@@ -23,7 +24,7 @@ public class BulletScript : MonoBehaviour, IProjectile
     public GameObject hitPrefab;
     public GameObject missPrefab;
     private float damage; // damage of the spawned bullet
-    private int faction;
+    private EntityFaction faction;
     public Entity owner;
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
@@ -47,7 +48,7 @@ public class BulletScript : MonoBehaviour, IProjectile
         pierceFactor = pierce;
     }
 
-    public void SetShooterFaction(int faction)
+    public void SetShooterFaction(EntityFaction faction)
     {
         this.faction = faction;
     }
@@ -130,7 +131,7 @@ public class BulletScript : MonoBehaviour, IProjectile
             Destroy(gameObject);
     }
 
-    public int GetFaction()
+    public EntityFaction GetFaction()
     {
         return faction;
     }

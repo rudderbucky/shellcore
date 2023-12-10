@@ -43,7 +43,7 @@ public class AreaRestore : Ability
         for (int i = 0; i < AIData.entities.Count; i++)
         {
             if (AIData.entities[i] == Core) continue;
-            if (AIData.entities[i].faction == Core.GetFaction())
+            if (FactionManager.IsAllied(AIData.entities[i].faction, Core.GetFaction()))
             {
                 Entity ally = AIData.entities[i];
                 float d = (ally.transform.position - Core.transform.position).sqrMagnitude;

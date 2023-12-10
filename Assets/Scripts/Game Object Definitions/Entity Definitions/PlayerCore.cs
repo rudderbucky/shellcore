@@ -261,7 +261,7 @@ public class PlayerCore : ShellCore
                 if (targets[i] &&
                     !targets[i].GetIsDead() &&
                     targets[i] is ICarrier carrier &&
-                    targets[i].faction == faction)
+                    targets[i].faction.factionID == faction.factionID)
                 {
                     return carrier;
                 }
@@ -443,7 +443,7 @@ public class PlayerCore : ShellCore
         var residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
         if (lastDamagedBy)
         {
-            HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
+            HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction.factionID));
         }
 
         return residue;
@@ -451,7 +451,7 @@ public class PlayerCore : ShellCore
 
     public static Color GetPlayerFactionColor()
     {
-        return PlayerCore.Instance ? FactionManager.GetFactionColor(PlayerCore.Instance.GetFaction()) : FactionManager.GetFactionColor(0);
+        return PlayerCore.Instance ? FactionManager.GetFactionColor(PlayerCore.Instance.GetFaction().factionID) : FactionManager.GetFactionColor(0);
     }
 
     public int GetBuildValue()

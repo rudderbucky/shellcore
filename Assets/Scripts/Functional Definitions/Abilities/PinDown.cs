@@ -99,7 +99,7 @@ public class PinDown : ActiveAbility
         if (target != null)
         {
             target.AddPin();
-            InflictionCosmetic(target, Core.faction);
+            InflictionCosmetic(target, Core.faction.factionID);
             if (target.networkAdapter) target.networkAdapter.InflictionCosmeticClientRpc((int)AbilityID.PinDown);
         }
 

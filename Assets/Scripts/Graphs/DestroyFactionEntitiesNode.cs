@@ -55,7 +55,7 @@ namespace NodeEditorFramework.Standard
                     continue;
                 }
 
-                if (ent.GetFaction() == targetFaction)
+                if (ent.GetFaction().factionID == targetFaction)
                 {
                     Destroy(ent.gameObject);
                 }

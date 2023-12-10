@@ -94,6 +94,16 @@ public class TargetManager : MonoBehaviour
         Array.Fill(airCount, 0);
         Array.Fill(allCount, 0);
 
+        bool countSameFactionTargets = false;
+        foreach (var ent in AIData.entities)
+        {
+            if (ent.faction.overrideFaction != 0)
+            {
+                countSameFactionTargets = true;
+                break;
+            }
+        }
+
         for (int i = 0; i < AIData.entities.Count; i++)
         {
             Entity ent = AIData.entities[i];
@@ -102,11 +112,11 @@ public class TargetManager : MonoBehaviour
             {
                 continue;
             }
-            int faction = AIData.entities[i].faction;
+            int faction = AIData.entities[i].faction.factionID;
 
             for (int j = 0; j < FactionManager.FactionArrayLength; j++)
             {
-                if (FactionManager.IsAllied(j, faction))
+                if (FactionManager.IsAllied(j, faction) && !countSameFactionTargets)
                     continue;
                 if (!FactionManager.FactionExists(j))
                     continue;
@@ -175,7 +185,7 @@ public class TargetManager : MonoBehaviour
 
     private Entity[] getTargetList(ITargetingSystem ts, Entity.EntityCategory ec, out int count)
     {
-        int faction = ts.GetEntity().faction;
+        int faction = ts.GetEntity().faction.factionID;
 
         if (ts.GetAbility() == null)
         {
@@ -208,7 +218,7 @@ public class TargetManager : MonoBehaviour
         return new Entity[] { };
     }
 
-    private Transform getClosestFromList(Entity[] targets, ITargetingSystem ts, Entity.EntityCategory ec, int targetCount)
+    private Transform  getClosestFromList(Entity[] targets, ITargetingSystem ts, Entity.EntityCategory ec, int targetCount)
     {
         var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
         return getClosestFromList(targets, pos, ts, ts.GetAbility(), ec, targetCount);
@@ -238,6 +248,7 @@ public class TargetManager : MonoBehaviour
 
         for (int i = 0; i < targetCount; i++) // go through all entities and check them for several factors
         {
+            if (FactionManager.IsAllied(targets[i].faction, tsEntity.faction)) continue;
             // check if the target's category matches
             if (ec == Entity.EntityCategory.All || targets[i].Category == ec)
             {

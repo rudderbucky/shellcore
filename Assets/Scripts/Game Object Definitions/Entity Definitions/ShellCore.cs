@@ -129,9 +129,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             return null;
         }
 
-        if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(faction))
+        if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(faction.factionID))
         {
-            carrier = SectorManager.instance.carriers[faction];
+            carrier = SectorManager.instance.carriers[faction.factionID];
             if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
             {
                 carrier = null;
@@ -156,7 +156,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         totalPower = Mathf.Min(5000, totalPower + power);
         if (power > 0 && OnPowerCollected != null)
         {
-            OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
+            OnPowerCollected.Invoke(faction.factionID, Mathf.RoundToInt(power));
         }
     }
 
@@ -201,7 +201,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         if (!husk)
             InitAI();
 
-        if (FactionManager.DoesFactionGrowRandomParts(faction) && addRandomPartsCoroutine == null)
+        if (FactionManager.DoesFactionGrowRandomParts(faction.factionID) && addRandomPartsCoroutine == null)
         {
             addRandomPartsCoroutine = StartCoroutine(AddRandomParts());
         }
@@ -284,7 +284,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 if (!(entity as Yard))
                     continue;
                 
-                if (!FactionManager.IsAllied(entity.faction, faction))
+                if (!FactionManager.IsAllied(entity.faction.factionID, faction.factionID))
                     continue;
                 
                 if ((entity.transform.position - transform.position).sqrMagnitude > Yard.YardProximitySquared)

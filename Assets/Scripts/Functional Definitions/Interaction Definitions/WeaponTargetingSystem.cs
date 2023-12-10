@@ -26,6 +26,8 @@ public class WeaponTargetingSystem : ITargetingSystem
         if (!IsValidTarget(target))
         {
             TargetManager.Enqueue(this, ability.category);
+            if (ability.Core as Outpost && ability.Core.faction.overrideFaction == 2 && target)
+//            Debug.LogWarning("TESTTEST " + " " + target.GetComponent<Entity>());
             return null;
         }
 
@@ -45,6 +47,7 @@ public class WeaponTargetingSystem : ITargetingSystem
         return (damageable != null
                 && !damageable.GetIsDead()
                 && damageable.GetTransform() != ability.Core.GetTransform()
+                && ability.Core != damageable as Entity
                 && !FactionManager.IsAllied(damageable.GetFaction(), ability.Core.faction)
                 && ability.CheckCategoryCompatibility(damageable)
                 && (t.position - ability.transform.position).magnitude <= ability.GetRange()

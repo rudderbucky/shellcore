@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using static Sector;
+using static Entity;
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -41,7 +42,7 @@ public class SectorManager : MonoBehaviour
     [HideInInspector]
     public string resourcePath = "";
 
-    private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
+    private Dictionary<EntityFaction, int> stationsCount = new Dictionary<EntityFaction, int>();
     public Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
@@ -119,12 +120,12 @@ public class SectorManager : MonoBehaviour
         return null;
     }
 
-    public int GetExtraCommandUnits(int faction)
+    public int GetExtraCommandUnits(EntityFaction faction)
     {
         stationsCount.Clear();
         foreach (IVendor vendor in stations)
         {
-            int stationFaction = (vendor as Entity).faction;
+            var stationFaction = (vendor as Entity).faction;
             if (!stationsCount.ContainsKey(stationFaction))
             {
                 stationsCount.Add(stationFaction, 0);
@@ -341,7 +342,7 @@ public class SectorManager : MonoBehaviour
                 var validBgSpawns = new List<(EntityBlueprint, Sector.LevelEntity, int, float)>();
                 foreach (var spawn in bgSpawns)
                 {
-                    if (FactionManager.IsAllied(spawn.Item2.faction, player.faction))
+                    if (FactionManager.IsAllied(spawn.Item2.faction, player.faction.factionID))
                         continue;
                     validBgSpawns.Add(spawn);
                 }
@@ -907,7 +908,7 @@ public class SectorManager : MonoBehaviour
                             // add core arrow
                             if (MinimapArrowScript.instance && !(shellcore is PlayerCore))
                             {
-                                shellcore.faction = data.faction;
+                                shellcore.faction.factionID = data.faction;
                                 MinimapArrowScript.instance.AddCoreArrow(shellcore);
                             }
 
@@ -1019,7 +1020,7 @@ public class SectorManager : MonoBehaviour
                 {
                     carriers.Add(data.faction, carrier);
                     if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host 
-                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction)
+                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction.factionID)
                     {
                         PlayerCore.Instance.Warp(data.position);
                     }
@@ -1040,7 +1041,7 @@ public class SectorManager : MonoBehaviour
                 {
                     carriers.Add(data.faction, gcarrier);
                     if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host 
-                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction)
+                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction.factionID)
                     {
                         PlayerCore.Instance.Warp(data.position);
                     }
@@ -1136,7 +1137,8 @@ public class SectorManager : MonoBehaviour
         }
 
         entity.sectorMngr = this;
-        entity.faction = data.faction;
+        entity.faction.factionID = data.faction;
+        entity.faction.overrideFaction = data.overrideFaction;
         entity.spawnPoint = entity.transform.position = data.position;
         entity.blueprint = blueprint;
 
@@ -1265,9 +1267,9 @@ public class SectorManager : MonoBehaviour
         if (target is ShellCore shellcore)
         {
             // set the carrier of the shellcore to the associated faction's carrier
-            if (carriers.ContainsKey(shellcore.faction))
+            if (carriers.ContainsKey(shellcore.faction.factionID))
             {
-                shellcore.SetCarrier(carriers[shellcore.faction]);
+                shellcore.SetCarrier(carriers[shellcore.faction.factionID]);
             }
 
             // add minimap arrow
@@ -1314,9 +1316,9 @@ public class SectorManager : MonoBehaviour
                 {
                     var playerComp = player.GetComponent<PlayerCore>();
                     battleZone.AddTarget(playerComp);
-                    if (carriers.ContainsKey(playerComp.faction))
+                    if (carriers.ContainsKey(playerComp.faction.factionID))
                     {
-                        playerComp.SetCarrier(carriers[playerComp.faction]);
+                        playerComp.SetCarrier(carriers[playerComp.faction.factionID]);
                     }
 
                     foreach (var partyMember in PartyManager.instance.partyMembers)
@@ -1324,9 +1326,9 @@ public class SectorManager : MonoBehaviour
                         if (!partyMember || partyMember.GetIsDead()) continue;
                         partyMember.GetAI().setMode(AirCraftAI.AIMode.Battle);
                         battleZone.AddTarget(partyMember);
-                        if (carriers.ContainsKey(partyMember.faction))
+                        if (carriers.ContainsKey(partyMember.faction.factionID))
                         {
-                            partyMember.SetCarrier(carriers[partyMember.faction]);
+                            partyMember.SetCarrier(carriers[partyMember.faction.factionID]);
                         }
                     }
                 }
@@ -1651,7 +1653,7 @@ public class SectorManager : MonoBehaviour
                         if (obj.Value.GetComponentInChildren<Entity>().ID == ch.ID && (
                             lastSectorType == null ||
                             lastSectorType != Sector.SectorType.BattleZone ||
-                            obj.Value.GetComponentInChildren<Entity>().faction == player.faction))
+                            obj.Value.GetComponentInChildren<Entity>().faction.factionID == player.faction.factionID))
                         {
                             skipTag = true;
                             break;

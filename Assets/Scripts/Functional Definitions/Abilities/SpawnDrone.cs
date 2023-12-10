@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static Entity;
 
 public interface IOwner
 {
-    int GetFaction();
+    EntityFaction GetFaction();
     Transform GetTransform();
     List<IOwnable> GetUnitsCommanding();
     int GetIntrinsicCommandLimit();
@@ -48,7 +49,7 @@ public class SpawnDrone : ActiveAbility
         {
             foreach (AirCarrier aircarrier in GameObject.FindObjectsOfType<AirCarrier>())
             {
-                if (aircarrier.name == "Air Carrier" && aircarrier.faction == GetComponentInParent<Turret>().faction)
+                if (aircarrier.name == "Air Carrier" && aircarrier.faction.factionID == GetComponentInParent<Turret>().faction.factionID)
                 {
                     craft = aircarrier;
                 }
@@ -89,10 +90,10 @@ public class SpawnDrone : ActiveAbility
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
         if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
         {
-            var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == Core.faction);
+            var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == Core.faction.factionID);
             if (stats == null)
             {
-                stats = new BattleZoneManager.Stats(Core.faction);
+                stats = new BattleZoneManager.Stats(Core.faction.factionID);
                 SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Add(stats);
             }
             stats.droneSpawns++;

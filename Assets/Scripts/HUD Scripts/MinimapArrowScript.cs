@@ -170,8 +170,8 @@ public class MinimapArrowScript : MonoBehaviour
                 continue;
             }
 
-            UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
-            if (core.faction != player.faction && coreArrows[core].GetComponent<SpriteRenderer>().enabled)
+            UpdatePosition(coreArrows[core], core.transform.position, core.faction.factionID != PlayerCore.Instance.faction.factionID);
+            if (core.faction.factionID != player.faction.factionID && coreArrows[core].GetComponent<SpriteRenderer>().enabled)
             {
                 coreArrows[core].GetComponent<SpriteRenderer>().enabled = !core.IsInvisible;
             }
@@ -196,7 +196,7 @@ public class MinimapArrowScript : MonoBehaviour
         }
 
         coreArrows.Add(core, Instantiate(arrowPrefab, transform, false).transform);
-        coreArrows[core].GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(core.faction);
-        UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
+        coreArrows[core].GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(core.faction.factionID);
+        UpdatePosition(coreArrows[core], core.transform.position, core.faction.factionID != PlayerCore.Instance.faction.factionID);
     }
 }

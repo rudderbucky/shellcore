@@ -18,7 +18,7 @@ public class TowerAura : PassiveAbility
         circle.enabled = false;
         circle.dotted = true;
         circle.raycastTarget = false;
-        circle.color = FactionManager.GetFactionColor(Core.GetFaction());
+        circle.color = FactionManager.GetFactionColor(Core.GetFaction().factionID);
         if (!AIData.auras.Contains(this)) AIData.auras.Add(this);
     }
 

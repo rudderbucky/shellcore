@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static Entity;
 
 public class BombScript : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class BombScript : MonoBehaviour
     public Color bombColor;
     private Entity.EntityCategory category;
     private Entity.TerrainType terrain;
-    public int faction; // faction of projectile
+    public EntityFaction faction; // faction of projectile
     public static GameObject missPrefab;
     public static GameObject hitPrefab;
     public static readonly float explosionRadius = 3f;
@@ -108,7 +109,7 @@ public class BombScript : MonoBehaviour
             var craft = ent.GetComponent<Entity>(); // check if it has a craft component
             if (craft == null || craft.GetIsDead()) continue;
             if (craft as PlayerCore && DevConsoleScript.spectateEnabled) continue;
-            if (FactionManager.IsAllied(faction, craft.GetFaction())) continue;
+            if (FactionManager.IsAllied(faction, craft.faction)) continue;
             if (craft.GetInvisible()) continue;
             if (!CheckCategoryCompatibility(craft)) continue;
             if (owner && (craft.GetTransform() == owner.transform)) continue;

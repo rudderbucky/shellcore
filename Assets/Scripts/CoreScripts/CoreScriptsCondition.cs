@@ -145,9 +145,14 @@ public class CoreScriptsCondition : MonoBehaviour
                 var nameMode = CoreScriptsSequence.GetArgument(c.arguments, "nameMode") == "true";
                 var progressionFeedback = CoreScriptsSequence.GetArgument(c.arguments, "progressionFeedback") == "true";
                 var targetID = CoreScriptsSequence.GetArgument(c.arguments, "targetID");
-                var targetFaction = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetFaction"));
+                var targetFactionInt = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetFaction"));
+                var targetOverrideFaction = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetOverrideFaction"));
                 var targetCount = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetCount"));
                 int killCount = 0;
+                EntityFaction targetFaction = new();
+                targetFaction.factionID = targetFactionInt;
+                targetFaction.overrideFaction = targetOverrideFaction;
+
                 EntityDeathDelegate act = (e, _) => 
                 {
                     killCount = EntityCheck(e, c, cb, nameMode, progressionFeedback, targetID, targetFaction, targetCount, killCount);
@@ -192,17 +197,18 @@ public class CoreScriptsCondition : MonoBehaviour
     }
 
     private static int EntityCheck(Entity entity, Condition c, ConditionBlock cb,
-        bool nameMode, bool progressionFeedback, string targetID, int targetFaction, int targetCount, int killCount)
+        bool nameMode, bool progressionFeedback, string targetID, EntityFaction targetFaction, int targetCount, int killCount)
     {
 
         if (((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
-            && entity.faction == targetFaction)
+            && (entity.faction.factionID == targetFaction.factionID || 
+            (targetFaction.overrideFaction != 0 && entity.faction.overrideFaction == targetFaction.overrideFaction)))
         {
             killCount++;
 
             if (progressionFeedback)
             {
-                if (!FactionManager.IsAllied(0, targetFaction))
+                if (!FactionManager.IsAllied(entity.faction, targetFaction))
                 {
                     SectorManager.instance.player.alerter.showMessage($"ENEMIES DESTROYED: {killCount} / {targetCount}", "clip_victory");
                 }

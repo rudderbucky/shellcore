@@ -84,13 +84,13 @@ public class AirCarrier : AirConstruct, ICarrier
             base.Update();
             TargetManager.Enqueue(targeter);
 
-            if (!SectorManager.instance.carriers.ContainsKey(faction)
-                || (SectorManager.instance.carriers[faction] == null || SectorManager.instance.carriers[faction].Equals(null))
-                || SectorManager.instance.carriers[faction].GetIsDead())
+            if (!SectorManager.instance.carriers.ContainsKey(faction.factionID)
+                || (SectorManager.instance.carriers[faction.factionID] == null || SectorManager.instance.carriers[faction.factionID].Equals(null))
+                || SectorManager.instance.carriers[faction.factionID].GetIsDead())
             {
                 if (!GetIsDead())
                 {
-                    SectorManager.instance.carriers[faction] = this;
+                    SectorManager.instance.carriers[faction.factionID] = this;
                 }
             }
         }

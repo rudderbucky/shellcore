@@ -28,7 +28,7 @@ public class YardWarp : Ability
         TractorBeam tractor = Core.GetComponent<TractorBeam>();
         if (tractor.GetTractorTarget() != null && tractor.GetTractorTarget().GetComponent<ShellPart>())
         {
-            if (FactionManager.IsAllied(Core.faction, PlayerCore.Instance.faction))
+            if (FactionManager.IsAllied(Core.faction.factionID, PlayerCore.Instance.faction.factionID))
             {
                 Yard.TakePart(Core, tractor);
             }
