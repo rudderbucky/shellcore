@@ -115,6 +115,7 @@ public class Flag : MonoBehaviour, IInteractable
         {
             AIData.flags.Remove(this);
             AIData.interactables.Remove(this);
+            ProximityInteractScript.RemoveFlagText(this);
         }
     }
 

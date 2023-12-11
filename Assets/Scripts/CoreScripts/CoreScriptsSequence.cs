@@ -63,7 +63,8 @@ public class CoreScriptsSequence : MonoBehaviour
         FinishMusicOverride,
         RandomFloat,
         SetFactionRelations,
-        SetPlayerOverrideFaction
+        SetPlayerOverrideFaction,
+        AddTextToFlag
     }
     public struct Instruction
     {
@@ -216,6 +217,11 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.AddTextToFlag:
+                    var text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
+                    var flagName = GetArgument(inst.arguments, "flagName");
+                    ProximityInteractScript.AddTextToFlag(text, AIData.flags.Find(f => f.name == flagName));
+                    break;
                 case InstructionCommand.SetPlayerOverrideFaction:
                     var overrideFstr = GetArgument(inst.arguments, "overrideFaction");
                     var overrideFac = 0;
@@ -279,7 +285,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     var sectorName = GetArgument(inst.arguments, "sectorName");
                     var missionName = context.missionName;
                     var entityID = GetArgument(inst.arguments, "entityID");
-                    var flagName = GetArgument(inst.arguments, "flagName");
+                    flagName = GetArgument(inst.arguments, "flagName");
                     var ID = GetArgument(inst.arguments, "ID");
                     ObjectiveMarker.AddObjectiveMarker(entityID, sectorName, missionName, flagName, ID);
                     break;
@@ -373,7 +379,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.PassiveDialogue:
                     entityID = GetArgument(inst.arguments, "entityID");
-                    var text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
+                    text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
                     var soundType = GetArgument(inst.arguments, "soundType");
                     var onlyShowIfInParty = GetArgument(inst.arguments, "onlyShowIfInParty") == "true";
                     var useEntityColor = GetArgument(inst.arguments, "useEntityColor") != "false"; 

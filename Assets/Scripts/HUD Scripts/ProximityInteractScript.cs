@@ -19,12 +19,14 @@ public class ProximityInteractScript : MonoBehaviour
     public static ProximityInteractScript instance;
     public static Dictionary<ShellCore, RectTransform> playerNames;
     public GameObject playerNamePrefab;
+    public static Dictionary<Flag, RectTransform> overworldTexts = new Dictionary<Flag, RectTransform>();
 
     void Awake()
     {
         instance = this;
         if (playerNames == null)
             playerNames = new Dictionary<ShellCore, RectTransform>();
+        overworldTexts.Clear();
     }
 
     public static void ActivateInteraction(IInteractable interactable)
@@ -77,6 +79,16 @@ public class ProximityInteractScript : MonoBehaviour
 
     void focus()
     {
+            foreach (var flag in overworldTexts.Keys)
+            {
+                if (!flag) continue;
+                var rt = overworldTexts[flag];
+                var worldToScreenPoint = Camera.main.WorldToScreenPoint(flag.transform.position);
+                worldToScreenPoint.x *= UIScalerScript.GetScale();
+                worldToScreenPoint.y *= UIScalerScript.GetScale();
+                rt.anchoredPosition = worldToScreenPoint;
+            }
+
         foreach (var core in playerNames.Keys)
         {
             if (!core) continue;
@@ -131,5 +143,23 @@ public class ProximityInteractScript : MonoBehaviour
                 ActivateInteraction(closest); // key received; activate interaction
             }
         }
+    }
+
+    [SerializeField]
+    private GameObject textBox;
+    public static void AddTextToFlag(string text, Flag flag)
+    {
+        if (!instance) return;
+        var x = Instantiate(instance.textBox, instance.interactIndicator.transform.parent);
+        x.GetComponentInChildren<Text>().text = text;
+        if (overworldTexts.ContainsKey(flag)) RemoveFlagText(flag);
+        overworldTexts.Add(flag, x.GetComponent<RectTransform>());
+    }
+
+    public static void RemoveFlagText(Flag flag)
+    {
+        if (!overworldTexts.ContainsKey(flag)) return;
+        Destroy(overworldTexts[flag].gameObject);
+        overworldTexts.Remove(flag);
     }
 }
