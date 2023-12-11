@@ -706,7 +706,6 @@ public class CoreScriptsSequence : MonoBehaviour
         var substr = line.Substring(index).Split("(")[0].Trim();
         var inst = new Instruction();
         Enum.TryParse<InstructionCommand>(substr, out inst.command);
-        Debug.LogWarning(inst.command);
         inst.arguments = "";
         bool skipToComma = true;
         List<string> stx = null;
