@@ -8,6 +8,7 @@ Shader "Sprites/RemasteredPartColors"
 		_Color ("Tint", Color) = (1,1,1,1)
 		[PerRendererData] _PerRendColor ("Faction Color", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
+		[PerRendererData] _Min ("Min", Float) = 0
 	}
 
 	SubShader
@@ -51,6 +52,7 @@ Shader "Sprites/RemasteredPartColors"
 			fixed4 _PerRendColor;
 			fixed4 _Color;
 			float4 _MainTex_TexelSize;
+			float _Min;
 
 			v2f vert(appdata_t IN)
 			{
@@ -125,31 +127,36 @@ Shader "Sprites/RemasteredPartColors"
                 float x = (IN.texcoord.x * _MainTex_TexelSize.x) - _MainTex_TexelSize.x / 2;
                 float y = (IN.texcoord.y * _MainTex_TexelSize.y) - _MainTex_TexelSize.y / 2;
 
-
-
-				//float xv =  0* pi;
-				float xv = _Time.x * 16;
-				float eq1 = fmod(xv, 2 * pi);
-				float eq2 = fmod(xv + 0.5 * pi,  2 * pi);
-				float a = abs(y / sqrt(x * x + y * y));
-				float as = asin(a);
-
-				if (x < 0) as = pi - as;
-				if (x > 0 && y < 0) as = 2 * pi - as;
-				if (x < 0 && y < 0) as = 2 * pi - as;
-
-				if (eq1 > eq2)
+				float mag = x * x + y * y;
+				float texelMag = _MainTex_TexelSize.x * _MainTex_TexelSize.x + _MainTex_TexelSize.y * _MainTex_TexelSize.y;
+				if (mag > 0.07 * texelMag)
 				{
-					if (y > 0)
-						eq1 = 0;
-					if (y < 0) eq2 = 2 * pi;
+					//float xv =  0* pi;
+					float xv = _Time.x * 16;
+					float eq1 = fmod(xv, 2 * pi);
+					float eq2 = fmod(xv + 0.5 * pi,  2 * pi);
+					float a = abs(y / sqrt(mag));
+					float as = asin(a);
+
+					if (x < 0) as = pi - as;
+					if (x > 0 && y < 0) as = 2 * pi - as;
+					if (x < 0 && y < 0) as = 2 * pi - as;
+
+					if (eq1 > eq2)
+					{
+						if (y > 0)
+							eq1 = 0;
+						if (y < 0) eq2 = 2 * pi;
+					}
+					if (
+						(as < eq2 && as > eq1)
+					)
+					{
+						d = lerp(outlineD, d, ceil(u));
+					}
 				}
-                if (
-					(as < eq2 && as > eq1)
-				)
-                {
-                	d = lerp(outlineD, d, ceil(u));
-                }
+
+			
 
 				
 
