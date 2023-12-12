@@ -6,6 +6,7 @@ Shader "Sprites/RemasteredPartColors"
 	{
 		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
 		_Color ("Tint", Color) = (1,1,1,1)
+		[PerRendererData] _PerRendColor ("Faction Color", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
 	}
 
@@ -47,6 +48,7 @@ Shader "Sprites/RemasteredPartColors"
 				float2 texcoord  : TEXCOORD0;
 			};
 			
+			fixed4 _PerRendColor;
 			fixed4 _Color;
 			float4 _MainTex_TexelSize;
 
@@ -95,7 +97,7 @@ Shader "Sprites/RemasteredPartColors"
 				d *= IN.color;
 
 
-                half4 outlineD = _Color;
+                half4 outlineD = _PerRendColor;
                 outlineD.a *= ceil(c.a);
                 outlineD.rgb *= outlineD.a;
  				

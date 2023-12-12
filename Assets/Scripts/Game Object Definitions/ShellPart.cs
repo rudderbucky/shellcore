@@ -512,6 +512,7 @@ public class ShellPart : MonoBehaviour
         }
     }
 
+    private MaterialPropertyBlock block;
     // ignores parameter alpha, since stealthing changes it
     public void SetPartColor(Color color)
     {
@@ -528,5 +529,18 @@ public class ShellPart : MonoBehaviour
             partSysColorMod = partSys.colorOverLifetime;
             partSysColorMod.color = new ParticleSystem.MinMaxGradient(color);
         }
+
+
+        if (block == null && spriteRenderer && spriteRenderer.sprite)
+        {
+            block = new();
+            block.SetTexture("_MainTex", spriteRenderer.sprite.texture);
+            block.SetColor("_Color", Color.white);
+        }
+        if (block != null)
+        {
+            block.SetColor("_PerRendColor", color);
+        }
+        if (shaderMaterials != null && shaderMaterials.Count > 0 && block != null) spriteRenderer.SetPropertyBlock(block);
     }
 }
