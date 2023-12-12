@@ -72,7 +72,7 @@
                 outlineC.a *= ceil(c.a);
                 outlineC.rgb *= outlineC.a;
  				
-				fixed4 texelSize = _MainTex_TexelSize ;
+				fixed4 texelSize = _MainTex_TexelSize;
                 float u = 1.0f;
 
                 for (fixed l=-texelSize.x* 2.0f; l <= texelSize.x* 3.0f; l += texelSize.x)

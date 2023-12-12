@@ -129,7 +129,7 @@ Shader "Sprites/RemasteredPartColors"
 
 				float mag = x * x + y * y;
 				float texelMag = _MainTex_TexelSize.x * _MainTex_TexelSize.x + _MainTex_TexelSize.y * _MainTex_TexelSize.y;
-				if (mag > 0.07 * texelMag)
+				if (mag > _Min * texelMag)
 				{
 					//float xv =  0* pi;
 					float xv = _Time.x * 16;
@@ -155,15 +155,6 @@ Shader "Sprites/RemasteredPartColors"
 						d = lerp(outlineD, d, ceil(u));
 					}
 				}
-
-			
-
-				
-
-				//if (sin(_Time.x * 64) * y >= sqrt(y * y + x * x))
-                //{
-                //	d = lerp(outlineD, d, ceil(u));
-                //}
 
 
 				return lerp(c, d, sin (_Time.x * 64) * 0.5 + 0.5);

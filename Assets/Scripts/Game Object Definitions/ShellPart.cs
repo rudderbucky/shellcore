@@ -542,7 +542,7 @@ public class ShellPart : MonoBehaviour
             block.SetColor("_PerRendColor", color);
             if (craft.blueprint.coreShellSpriteID.Contains("station_sprite"))
             {
-                block.SetFloat("_Min", 0.125F);
+                block.SetFloat("_Min", 0.07F);
             }
         }
         if (shaderMaterials != null && shaderMaterials.Count > 0 && block != null) spriteRenderer.SetPropertyBlock(block);
