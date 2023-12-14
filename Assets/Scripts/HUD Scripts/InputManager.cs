@@ -38,6 +38,7 @@ public enum KeyName
 
 public class InputManager : MonoBehaviour
 {
+    [System.Serializable]
     public struct Key
     {
         //public KeyName name;
@@ -54,7 +55,6 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    // TODO: Move to a scriptable object?
     public static Dictionary<KeyName, Key> keys = new Dictionary<KeyName, Key>
     {
         {KeyName.Up, new Key(KeyCode.W, "Move up")},
@@ -107,9 +107,37 @@ public class InputManager : MonoBehaviour
         LoadControls();
     }
 
+    [System.Serializable]
+    public class KeyMapping
+    {
+        public KeyName keyName;
+        public Key key;
+        public KeyMapping(KeyName keyName, Key key)
+        {
+            this.keyName = keyName;
+            this.key = key;
+        }
+    }
+
+    [System.Serializable]
+    public class KeyMappingList
+    {
+        public List<KeyMapping> mappings;
+    }
+
+
+
     public static void SaveControls()
     {
-        PlayerPrefs.SetString("Controls", JsonUtility.ToJson(keys));
+        var keyList = new List<KeyMapping>();
+        foreach (var kvp in keys)
+        {
+            keyList.Add(new KeyMapping(kvp.Key, kvp.Value));
+        }
+
+        var list = new KeyMappingList();
+        list.mappings = keyList;
+        PlayerPrefs.SetString("Controls", JsonUtility.ToJson(list));
         PlayerPrefs.Save();
     }
 
@@ -117,10 +145,15 @@ public class InputManager : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("Controls"))
         {
-            var controls = JsonUtility.FromJson<Dictionary<KeyName, Key>>(PlayerPrefs.GetString("Controls"));
+            var c = JsonUtility.FromJson<KeyMappingList>(PlayerPrefs.GetString("Controls"));
+            var controls = c.mappings;
             if (controls.Count == keys.Count)
             {
-                keys = controls;
+                keys.Clear();
+                foreach (var km in controls)
+                {
+                    keys.Add(km.keyName, km.key);
+                }
             }
         }
     }
@@ -133,6 +166,7 @@ public class InputManager : MonoBehaviour
             key.overrideKey = key.defaultKey;
             keys[pair.Key] = key;
         }
+        SaveControls();
     }
 
     public static void ChangeControl(KeyName name, Text text)
@@ -168,7 +202,7 @@ public class InputManager : MonoBehaviour
 
                     Debug.Log($"Set binding for {inputToChange.Value} to {(KeyCode)key}");
                     inputToChange = null;
-
+                    SaveControls();
                     break;
                 }
             }
