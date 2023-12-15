@@ -110,6 +110,12 @@ public class SectorPropertyDisplay : MonoBehaviour
         WorldCreatorCursor.instance.SymmetryCopy(currentSector, xAxis);
     }
 
+    public void DeleteCurrentSector()
+    {
+        WorldCreatorCursor.instance.DeleteSector(currentSector);
+        Hide();
+    }
+
     public void DisplayProperties(Sector sector)
     {
         opening = true;

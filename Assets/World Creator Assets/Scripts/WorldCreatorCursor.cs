@@ -574,6 +574,37 @@ public class WorldCreatorCursor : MonoBehaviour
         handler.ClearInstantiation();
     }
 
+
+    public void DeleteSector(Sector sector)
+    {
+        foreach (var sect in sectors)
+        {
+            if (sect.sector == sector)
+            {
+                DeleteSector(sect);
+                break;
+            }
+        }
+    }
+    private void DeleteSector(SectorWCWrapper sector)
+    {
+        var inSect = new List<Item>();
+        foreach (var ent in WorldCreatorCursor.instance.placedItems)
+        {
+            if (sector.sector.bounds.contains(ent.pos))
+            {
+                inSect.Add(ent);
+            }
+        }
+
+        foreach (var ent in inSect)
+        {
+            Remove(ent);
+        }
+
+        RemoveSector(sector);
+    }
+
     void RemoveSector(SectorWCWrapper sector)
     {
         Destroy(sector.renderer.gameObject);
