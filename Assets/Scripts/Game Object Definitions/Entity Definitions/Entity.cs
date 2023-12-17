@@ -1438,7 +1438,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             var radius = gas.radius;
             if (Vector2.SqrMagnitude(transform.position - gas.transform.position) < 10F)
             {
-                TakeCoreDamage(500);
+                TakeCoreDamage(500 * Time.deltaTime);
             }
         }
         
