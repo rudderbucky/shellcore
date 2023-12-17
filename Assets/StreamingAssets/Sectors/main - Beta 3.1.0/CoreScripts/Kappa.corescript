@@ -1,22 +1,170 @@
-Text("Kappa_", "Talking to the \"infected\" isn't that difficult and didn't take us very long to figure out. Makes you wonder why we never did in the Standard Sectors...")
-Text("Kappa_", "I was always able to talk to the infected though.")
-Text("Kappa_", "Ah yes, we call people like you \"voice-hearers\". I'm sure you've also heard a mysterious blue voice like the rest.")
-Text("Kappa_", "So... I'm not infected myself?")
-Text("Kappa_", "Looks like some cores are born with the natural ability to communicate freely. But it's not just you.")
-Text("Kappa_", "...")
-Text("Kappa_", "Several gates throughout the Abandoned Sectors connect to this singular sector, and nobody knows why. It also appears exactly two entities made these gates.")
-Text("Kappa_", "Weird...")
-Text("Kappa_", "We decided to settle nearby just for ease of access to the world -- and because the defects don't know how to use the jump gates, of course.")
-Text("Kappa_", "Thank goodness the defects don't know how to use the jump gates, right?")
-Text("Kappa_", "Yep. Golly, if the defects figure out how to use the jump gates, we're toast!")
-Text("Kappa_", "What's toast?")
-Text("Kappa_", "What?")
-Text("Kappa_", "...")
-Text("Kappa_", "There are campaigns brewing to expand our territory... but unlike Kappa, it will be anybody's game.")
-Text("Kappa_", "Where do you think the two groups will expand first?")
-Text("Kappa_", "Rumor has it both the Exterminators and the Conservationists are looking to BattleZone Lambda. There's a lot of gas nearby and Lambda appears to be promising as a military outpost.")
-Text("Kappa_", "So... there's going to be a fight.")
-Text("Kappa_", "Sooner than you think.")
-Text("Kappa_", "...")
-Text("Kappa_", "")
-Text("Kappa_", "For eons, this situation has remained the same. We defend against the defects, they try to take this safe space of ours. But through scientific struggle, we have the power to trap them with tractor beams. Now is our chance to fight back and take this land from them. An outpost will help us develop relations and understand them, and hopefully allow us to finally live alongside them.")
+Text("Kappa_core1_d1", "Talking to the \"infected\" isn't that difficult and didn't take us very long to figure out. Makes you wonder why we never did in the Standard Sectors...")
+Text("Kappa_core1_d2", "I was always able to talk to the infected though.")
+Text("Kappa_core1_d3", "Ah yes, we call people like you \"voice-hearers\". I'm sure you've also heard a mysterious blue voice like the rest.")
+Text("Kappa_core1_d4", "So... I'm not infected myself?")
+Text("Kappa_core1_d5", "Oh... yeah I have. So I'm not alone?")
+Text("Kappa_core1_d6", "Looks like some cores are born with the natural ability to communicate freely. It's not just you.")
+Text("Kappa_core1_d7", "...")
+Dialogue(
+    dialogueID=Kappa_core1_d,
+    entityID=Kappa_core1,
+    dialogueText=Kappa_core1_d1,
+    responses=(
+        Response(
+            responseText=Kappa_core1_d2,
+            next=Dialogue(
+                dialogueText=Kappa_core1_d3,
+                responses=(
+                    Response(
+                        responseText=$$Kappa_core1_loyalty_d,
+                        next=Dialogue(
+                            dialogueText=Kappa_core1_d6,
+                            responses=(
+                                Response(
+                                    responseText=Kappa_core1_d7,
+                                    next=End()
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Kappa_core2_d1", "Several gates throughout the Abandoned Sectors connect to this singular sector, and nobody knows why. It also appears exactly two entities made these gates.")
+Text("Kappa_core2_d2", "Weird...")
+Text("Kappa_core2_d3", "We decided to settle nearby just for ease of access to the world -- and because the defects don't know how to use the jump gates, of course.")
+Text("Kappa_core2_d4", "Hahaha... defects using jump gates?")
+Text("Kappa_core2_d5", "Yep. Golly, if the defects figure out how to use the jump gates, we're toast!")
+Text("Kappa_core2_d6", "What's toast?")
+Text("Kappa_core2_d7", "What?")
+Text("Kappa_core2_d8", "...")
+Dialogue(
+    dialogueID=Kappa_core2_d,
+    entityID=Kappa_core2,
+    dialogueText=Kappa_core2_d1,
+    responses=(
+        Response(
+            responseText=Kappa_core2_d2,
+            next=Dialogue(
+                dialogueText=Kappa_core2_d3,
+                responses=(
+                    Response(
+                        responseText=Kappa_core2_d4,
+                        next=Dialogue(
+                            dialogueText=Kappa_core2_d5,
+                            responses=(
+                                Response(
+                                    responseText=Kappa_core2_d6,
+                                    next=Dialogue(
+                                        dialogueText=Kappa_core2_d7,
+                                        responses=(
+                                            Response(
+                                                responseText=Kappa_core2_d8,
+                                                next=End()
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Kappa_core3_d1", "There are campaigns brewing to expand our territory... but unlike Kappa, it will be anybody's game.")
+Text("Kappa_core3_d2", "Where do you think the two groups will expand first?")
+Text("Kappa_core3_d3", "Rumor has it both the Exterminators and the Conservationists are looking to BattleZone Lambda. There's a lot of gas nearby and Lambda appears to be promising as a military outpost.")
+Text("Kappa_core3_d4", "So... there's going to be a fight.")
+Text("Kappa_core3_d5", "Sooner than you think.")
+Text("Kappa_core3_d6", "What do you think about it?")
+Text("Kappa_core3_d7", "For eons, this situation has remained the same. But through scientific struggle, we have the power to trap them with tractor beams. An outpost will help us understand them, and hopefully allow us to live alongside them.")
+Text("Kappa_core3_d8", "OK Conservationist.")
+Dialogue(
+    dialogueID=Kappa_core3_d,
+    entityID=Kappa_core3,
+    dialogueText=Kappa_core3_d1,
+    responses=(
+        Response(
+            responseText=Kappa_core3_d2,
+            next=Dialogue(
+                dialogueText=Kappa_core3_d3,
+                responses=(
+                    Response(
+                        responseText=Kappa_core3_d4,
+                        next=Dialogue(
+                            dialogueText=Kappa_core3_d5,
+                            responses=(
+                                Response(
+                                    responseText=Kappa_core3_d6,
+                                    next=Dialogue(
+                                        dialogueText=Kappa_core3_d7,
+                                        responses=(
+                                            Response(
+                                                responseText=Kappa_core3_d8,
+                                                next=End()
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+SectorTrigger(
+    sectorName=Kappa,
+    sequence=(
+        SetFactionRelations(
+            factionID=0,
+            sum=27
+        ),
+        SetFactionRelations(
+            factionID=1,
+            sum=27
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Kappa,
+                invert=true,
+                sequence=(
+                    SetFactionRelations(
+                        factionID=0,
+                        sum=25
+                    ),
+                    SetFactionRelations(
+                        factionID=1,
+                        sum=26
+                    ),
+                )
+            )
+        ),
+        SetVariable(name=$$Kappa_core1_loyalty_d, value=Kappa_core1_d5),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$Kappa_core1_loyalty_d, value=Kappa_core1_d4)
+                )
+            )
+        ),
+        ClearInteraction(entityID=Kappa_core1),
+        ClearInteraction(entityID=Kappa_core2),
+        ClearInteraction(entityID=Kappa_core3),
+        SetInteraction(entityID=Kappa_core1, dialogueID=Kappa_core1_d),
+        SetInteraction(entityID=Kappa_core2, dialogueID=Kappa_core2_d),
+        SetInteraction(entityID=Kappa_core3, dialogueID=Kappa_core3_d),
+    )
+)

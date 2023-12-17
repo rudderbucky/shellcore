@@ -1,33 +1,267 @@
-Text("UCW_", "You there! Do not falter in your mission, we must head to the core sectors and stop the infection.")
-Text("UCW_", "I'm on it...")
-Text("UCW_", "You really still believe that stuff?")
-Text("UCW_", "Please stay with us... we can't lose any more of our forces...")
-Text("UCW_", "We're the infected ones.")
-Text("UCW_", "Ah so you're one of those traitors... regardless... we still share the goal of reaching the core.")
-Text("UCW_", "...")
-Text("UCW_", "Defending against these defects ourselves is admittedly very difficult. There's been a lot of deserters to the safer Kappa Outskirts.")
-Text("UCW_", "What if they defected because they stopped believing in the mission?")
-Text("UCW_", "It's so obviously a ploy by the reds... the illusion of peace is very addictive to those who have only known war.")
-Text("UCW_", "...")
+Text("UCH_core1_d1", "You there! Do not falter in your mission, we must head to the core sectors and stop the infection.")
+Text("UCH_core1_d2", "I'm on it...")
+Text("UCH_core1_d3", "You really still believe that stuff?")
+Text("UCH_core1_d4", "Please stay with us... we can't lose any more of our forces...")
+Text("UCH_core1_d5", "We're the infected ones.")
+Text("UCH_core1_d6", "Ah so you're one of those traitors... regardless... we still share the goal of reaching the core.")
+Text("UCH_core1_d7", "...")
 
-Text("UCE_", "Even here... this story never ends. I'm just... tired of fighting.")
-Text("UCE_", "We must fight to purge the infection.")
-Text("UCE_", "I get it...")
-Text("UCE_", "I've heard there have been talks about taking Lambda... unfortunately neither the red nor green loyalists have the forces to fight those in Kappa.")
-Text("UCE_", "Maybe fight together?")
-Text("UCE_", "Ever since they sent us here I've been confused... like what is even going on here?")
-Text("UCE_", "You and me both, pal.")
-Text("UCE_", "Sometimes I recognize a few of the reds and greens here from Standard Sector rumors and hearsay... but the older grey cores... they're all completely foreign.")
-Text("UCE_", "Huh.")
-Text("UCE_", "They also claim to come from the Standard Sectors. How is that even possible?")
-Text("UCE_", "...")
+Dialogue(
+    dialogueID=UCH_core1_d,
+    dialogueText=UCH_core1_d1,
+    entityID=UCH_core1,
+    responses=(
+        Response(
+            responseText=UCH_core1_d2,
+            next=End()
+        ),
+        Response(
+            responseText=$$UCH_core1_loyalty_d1,
+            next=Dialogue(
+                dialogueText=$$UCH_core1_loyalty_d2,
+                responses=(
+                    Response(
+                        responseText=UCH_core1_d7,
+                        next=End()
+                    )
+                )
+            )
+        )
+    )
+)
 
-Text("UCH_", "Traitor or not, if you believe we must finish the core war - if you believe in curing the infection, join us.")
-Text("UCH_", "Wait... I thought I was fighting against the real infection... why are we banding together with the greens?")
-Text("UCH_", "You’re the infection! Why are my allies with you?")
-Text("UCH_", "It started when those who didn't desert to Kappa were forced to defend themselves from the defects together. Then, we learned to communicate... and realized our goal is the same.")
-Text("UCH_", "What goal?")
-Text("UCH_", "To cure the infection. Whichever side has it.")
-Text("UCH_", "Why not join those in Kappa?")
-Text("UCH_", "They think that just because we can communicate that the leaders were lying to us. We still believe reds and greens were one and the same until... something here changed us.")
-Text("UCH_", "...")
+Text("UCH_core2_d1", "Even here... this story never ends. I'm just... tired of fighting.")
+Text("UCH_core2_d2", "We must fight to purge the infection.")
+Text("UCH_core2_d3", "I get it...")
+Dialogue(
+    dialogueID=UCH_core2_d,
+    dialogueText=UCH_core2_d1,
+    entityID=UCH_core2,
+    responses=(
+        Response(
+            responseText=UCH_core2_d2,
+            next=End()
+        ),
+        Response(
+            responseText=UCH_core2_d3,
+            next=End()
+        )
+    )
+)
+
+Text("UCH_core3_d1", "Defending against these defects ourselves is admittedly very difficult. There's been a lot of deserters to the safer Kappa Outskirts.")
+Text("UCH_core3_d2", "What if they defected because they stopped believing in the mission?")
+Text("UCH_core3_d3", "It's so obviously a ploy by the reds... the illusion of peace is very addictive to those who have only known war. Don't tell eleos I said that.")
+Text("UCH_core3_d4", "...")
+
+Dialogue(
+    dialogueID=UCH_core3_d,
+    dialogueText=UCH_core3_d1,
+    entityID=UCH_core3,
+    responses=(
+        Response(
+            responseText=UCH_core3_d2,
+            next=Dialogue(
+                dialogueText=UCH_core3_d3,
+                responses=(
+                    Response(
+                        responseText=UCH_core3_d4,
+                        next=End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("UCH_core4_d1", "Ever since they sent us here I've been confused... like what is even going on here?")
+Text("UCH_core4_d2", "You and me both, pal.")
+Dialogue(
+    dialogueID=UCH_core4_d,
+    dialogueText=UCH_core4_d1,
+    entityID=UCH_core4,
+    responses=(
+        Response(
+            responseText=UCH_core4_d2,
+            next=End()
+        )
+    )
+)
+
+
+Text("UCH_core5_d1", "Sometimes I recognize a few of the reds and greens here from Standard Sector rumors and hearsay... but the older grey cores... they're all completely foreign.")
+Text("UCH_core5_d2", "Huh.")
+Text("UCH_core5_d3", "They also claim to come from the Standard Sectors. How is that even possible?")
+Text("UCH_core5_d4", "...")
+Dialogue(
+    dialogueID=UCH_core5_d,
+    dialogueText=UCH_core5_d1,
+    entityID=UCH_core5,
+    responses=(
+        Response(
+            responseText=UCH_core5_d2,
+            next=Dialogue(
+                dialogueText=UCH_core5_d3,
+                responses=(
+                    Response(
+                        responseText=UCH_core5_d4,
+                        next=End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("UCH_core6_d1", "I've heard there have been talks about taking Lambda... unfortunately we don't have the forces to fight those in Kappa.")
+Text("UCH_core6_d2", "Maybe fight together?")
+Text("UCH_core6_d3", "And risk them destroying our remaining forces after they've been exhausted by the campaign? Bad idea.")
+Dialogue(
+    dialogueID=UCH_core6_d,
+    dialogueText=UCH_core6_d1,
+    entityID=UCH_core6,
+    responses=(
+        Response(
+            responseText=UCH_core6_d2,
+            next=Dialogue(
+                dialogueText=UCH_core6_d3,
+                responses=(
+                    Response(
+                        responseText=UCH_core5_d4,
+                        next=End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("UCH_eleos_d1", "Traitor or not, if you believe we must finish the core war - if you believe in curing the infection, join us.")
+Text("UCH_eleos_d2", "Wait... I thought I was fighting against the real infection... why are we banding together with the greens?")
+Text("UCH_eleos_d3", "You’re the infection! Why are my allies with you?")
+Text("UCH_eleos_d4", "It started when those who didn't desert to Kappa were forced to defend themselves from the defects together. Then, we learned to communicate... and realized our goal is the same.")
+Text("UCH_eleos_d5", "What goal?")
+Text("UCH_eleos_d6", "To cure the infection. Whichever side has it.")
+Text("UCH_eleos_d7", "Why not join those in Kappa?")
+Text("UCH_eleos_d8", "They think that just because we can communicate that the leaders were lying to us. We still believe reds and greens were one and the same until... something here changed us.")
+Text("UCH_eleos_d9", "Well, good luck with whatever you're doing.")
+Text("UCH_eleos_d10", "I want to help you take Lambda.")
+Text("UCH_eleos_d11", "This... isn't something we've been thinking about. Much less something we're equipped to do against those in Kappa.")
+Text("UCH_eleos_d12", "Why not?")
+Text("UCH_eleos_d13", "We can barely survive against the defects much less an organized force... if you wish to fight with them, we won't hold it against you.")
+Text("UCH_eleos_d14", "Okay...")
+Dialogue(
+    dialogueID=UCH_eleos_d,
+    dialogueText=UCH_eleos_d1,
+    entityID=eleos,
+    responses=(
+        Response(
+            responseText=$$UCH_eleos_loyalty_d,
+            next=Dialogue(
+                dialogueText=UCH_eleos_d4,
+                responses=(
+                    Response(
+                        responseText=UCH_eleos_d5,
+                        next=Dialogue(
+                            dialogueText=UCH_eleos_d6,
+                            responses=(
+                                Response(
+                                    responseText=UCH_eleos_d7,
+                                    next=Dialogue(
+                                        dialogueText=UCH_eleos_d8,
+                                        responses=(
+                                            Response(
+                                                responseText=UCH_eleos_d9,
+                                                next=End()
+                                            )
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=UCH_eleos_d10,
+                                    next=Dialogue(
+                                        dialogueText=UCH_eleos_d11,
+                                        responses=(
+                                            Response(
+                                                responseText=UCH_eleos_d12,
+                                                next=Dialogue(
+                                                    dialogueText=UCH_eleos_d13,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=UCH_eleos_d14,
+                                                            next=End()
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+SectorTrigger(
+    sectorName=Unconvinced Lair,
+    sequence=(
+        SetFactionRelations(
+            factionID=0,
+            sum=27
+        ),
+        SetFactionRelations(
+            factionID=1,
+            sum=27
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Unconvinced Lair,
+                invert=true,
+                sequence=(
+                    SetFactionRelations(
+                        factionID=0,
+                        sum=25
+                    ),
+                    SetFactionRelations(
+                        factionID=1,
+                        sum=26
+                    ),
+                )
+            )
+        ),
+        SetVariable(name=$$UCH_core1_loyalty_d1, value=UCH_core1_d3),
+        SetVariable(name=$$UCH_core1_loyalty_d2, value=UCH_core1_d4),
+        SetVariable(name=$$UCH_eleos_loyalty_d, value=UCH_core1_d3),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$UCH_core1_loyalty_d1, value=UCH_core1_d5),
+                    SetVariable(name=$$UCH_core1_loyalty_d2, value=UCH_core1_d6),
+                    SetVariable(name=$$UCH_eleos_loyalty_d, value=UCH_core1_d2),
+                )
+            )
+        ),
+        ClearInteraction(entityID=UCH_core1),
+        ClearInteraction(entityID=UCH_core2),
+        ClearInteraction(entityID=UCH_core3),
+        ClearInteraction(entityID=UCH_core4),
+        ClearInteraction(entityID=UCH_core5),
+        ClearInteraction(entityID=UCH_core6),
+        ClearInteraction(entityID=eleos),
+        SetInteraction(entityID=UCH_core1, dialogueID=UCH_core1_d),
+        SetInteraction(entityID=UCH_core2, dialogueID=UCH_core2_d),
+        SetInteraction(entityID=UCH_core3, dialogueID=UCH_core3_d),
+        SetInteraction(entityID=UCH_core4, dialogueID=UCH_core4_d),
+        SetInteraction(entityID=UCH_core5, dialogueID=UCH_core5_d),
+        SetInteraction(entityID=UCH_core6, dialogueID=UCH_core6_d),
+        SetInteraction(entityID=eleos, dialogueID=UCH_eleos_d),
+    )
+)
