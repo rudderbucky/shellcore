@@ -453,7 +453,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         foreach (var kvp in actionsByMission)
         {
             var node2 = new Dialogue.Node();
-            node2.buttonText = $"Talk about {kvp.Key}.";
+            var mission = TaskDisplayScript.GetMission(kvp.Key);
+            var str = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.name) :  mission.name;
+            node2.buttonText = $"Talk about {str}.";
             node2.ID = i;
             node2.text = "";
             node2.nextNodes = new List<int>();
