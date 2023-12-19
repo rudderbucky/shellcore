@@ -257,6 +257,7 @@ public class CoreScriptsManager : MonoBehaviour
         }
 
         SectorManager.OnSectorLoad += (s) => {
+            
             var context = sectorTriggers.Find(c => c.sectorName == s);
             if (context != null)
             {
@@ -298,7 +299,7 @@ public class CoreScriptsManager : MonoBehaviour
             var i = d.line;
             var c = d.character;
             if (lines[i].Substring(c).StartsWith("Task") 
-                && (c == 0 || lines[i][c] == ' '))
+                && (c == 0 || char.IsWhiteSpace(lines[i][c])))
             {
                 var task = CoreScriptsTask.ParseTask(i, c, lines, data, out d);
                 tasks.Add(task.taskID, task);
@@ -430,7 +431,7 @@ public class CoreScriptsManager : MonoBehaviour
         if (brackets == 0)
         {
             brackets = 1;
-            while (cnt < scope.Length && scope[cnt] == ' ') cnt++;
+            while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt])) cnt++;
             return cnt;
         }
 
@@ -450,7 +451,7 @@ public class CoreScriptsManager : MonoBehaviour
         if (skipToComma) 
         {
             cnt++;
-            while (cnt < scope.Length && scope[cnt] == ' ')
+            while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt]))
             {
                 cnt++;
             }
@@ -473,7 +474,7 @@ public class CoreScriptsManager : MonoBehaviour
                 brackets--;
             }
 
-            if (brackets > 1 || scope[cnt] == ' ')
+            if (brackets > 1 || char.IsWhiteSpace(scope[cnt]))
             {
                 cnt++;
                 continue;
