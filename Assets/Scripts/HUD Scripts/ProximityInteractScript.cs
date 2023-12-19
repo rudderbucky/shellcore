@@ -151,7 +151,10 @@ public class ProximityInteractScript : MonoBehaviour
     {
         if (!instance) return;
         var x = Instantiate(instance.textBox, instance.interactIndicator.transform.parent);
-        x.GetComponentInChildren<Text>().text = text;
+        var t = x.GetComponentInChildren<Text>();
+        t.text = text;
+        float textWidth = LayoutUtility.GetPreferredWidth(t.rectTransform);
+        if (textWidth <= t.rectTransform.sizeDelta.x) t.alignment = TextAnchor.MiddleCenter;
         if (overworldTexts.ContainsKey(flag)) RemoveFlagText(flag);
         overworldTexts.Add(flag, x.GetComponent<RectTransform>());
     }
