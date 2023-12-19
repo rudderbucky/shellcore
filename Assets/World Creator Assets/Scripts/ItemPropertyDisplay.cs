@@ -204,7 +204,7 @@ public class ItemPropertyDisplay : MonoBehaviour
 
     public void SetRotation(int rotation)
     {
-        currentItem.rotation = rotation;
+        currentItem.rotation = rotation / 90;
         currentItem.obj.transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 
