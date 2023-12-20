@@ -805,7 +805,8 @@ public class CoreScriptsSequence : MonoBehaviour
                 name = name,
                 position = coords,
                 ID = entityID,
-                assetID = assetID
+                assetID = assetID,
+                blueprintJSON = blueprintJSON,
             };
             
             SectorManager.instance.SpawnAsset(entityData);

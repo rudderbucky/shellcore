@@ -1050,6 +1050,15 @@ public class SectorManager : MonoBehaviour
                 gcarrier.sectorMngr = this;
                 break;
             case EntityBlueprint.IntendedType.Yard:
+                json = data.blueprintJSON;
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var d = blueprint.dialogue;
+                    blueprint = TryGettingEntityBlueprint(json);
+                    if (blueprint.dialogue == null) blueprint.dialogue = d;
+                }
+
+                blueprint.entityName = data.name;
                 Yard yard = gObj.AddComponent<Yard>();
                 yard.mode = BuilderMode.Yard;
                 break;

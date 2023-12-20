@@ -385,7 +385,7 @@ public class WCGeneratorHandler : MonoBehaviour
                              "siege_turret", "harvester_turret", "missile_turret", "torpedo_turret", "mini_drone_blueprint", "worker_drone_blueprint",
                              "strike_drone_blueprint", "light_drone_blueprint", "gun_drone_blueprint", "counter_drone_blueprint", 
                              "torpedo_drone_blueprint", "heavy_drone_blueprint", "speeder_tank", "bullet_tank", 
-                             "missile_tank", "beam_tank", "laser_tank", "rocket_tank"};
+                             "missile_tank", "beam_tank", "laser_tank", "rocket_tank", "yard_blueprint", "trader_blueprint"};
 
                     if (ent.assetID == "shellcore_blueprint" || charExists)
                     {
