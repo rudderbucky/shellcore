@@ -1,0 +1,367 @@
+SectorTrigger(
+    sectorName=Uninfected Hideout X,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$SiegeZoneIotaComplete,
+                val2=0,
+                comp=Neq,
+                sequence=(
+                	ConditionBlock(
+                        Comparison(
+                            val1=$$$SiegeZoneIotaComplete,
+                            val2=1,
+                            comp=Neq,
+                            sequence=(
+                                Call(UninfectedHideoutXRemoveDefenders),
+                                Call(UninfectedHideoutXRemoveDefender1)
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$SiegeZoneIotaComplete,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    Call(UninfectedHideoutXPicket),
+                    Call(UninfectedHideoutXUnsafeDialogue)
+                )
+            )
+        ),
+		ConditionBlock(
+            Comparison(
+                val1=$$$SiegeZoneIotaComplete,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                	ConditionBlock(
+                        Comparison(
+                            val1=$$$BattlezoneWonTheta,
+                            val2=1,
+                            comp=Neq,
+                            sequence=(
+                                Call(UninfectedHideoutXSafeDialogue),
+                                Call(UninfectedHideoutXDefense)
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$BattlezoneWonTheta,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    Call(UninfectedHideoutXGetYard),
+                    Call(UninfectedHideoutXSafeDialogue),
+                    Call(UninfectedHideoutXDefense)
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$BattlezoneWonTheta,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(UninfectedHideoutXGetYard),
+                    Call(UninfectedHideoutXRemoveDefenders),
+                    Call(UninfectedHideoutXComplete),
+                    Call(UninfectedHideoutXCompleteDialogue),
+                    Call(UninfectedHideoutXDefense)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXPicket,
+    sequence=(
+		SpawnEntity(
+            entityID=UninfectedHideoutXPicket1,
+            blueprintJSON=Basic Patrol,
+            flagName=UninfectedHideoutXPicket1Spawn,
+            faction=1
+        ),
+		SpawnEntity(
+            entityID=UninfectedHideoutXPicket2,
+            blueprintJSON=Basic Scout,
+            flagName=UninfectedHideoutXPicket2Spawn,
+            faction=1
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXPicket3,
+            blueprintJSON=Basic Scout,
+            flagName=UninfectedHideoutXPicket3Spawn,
+            faction=1
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXRemoveDefenders,
+    sequence=(
+        DeleteEntity(
+            entityID=UninfectedHideoutXDefender2
+        ),
+        DeleteEntity(
+            entityID=UninfectedHideoutXDefender3
+        ),
+        DeleteEntity(
+            entityID=UninfectedHideoutXDefender4
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXRemoveDefender1,
+    sequence=(
+        DeleteEntity(
+            entityID=UninfectedHideoutXDefender1
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXComplete,
+    sequence=(
+        SetSectorType(type=Haven),
+		SpawnEntity(
+            entityID=UninfectedHideoutX_MissionControl,
+            assetID=missioncontrol_blueprint,
+            flagName=UninfectedHideoutXMissionControlSpawn,
+            name=Mission Control
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutX_Trader,            
+            assetID=trader_blueprint,
+            flagName=UninfectedHideoutXTraderSpawn
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutX_GroundStation,        
+            assetID=groundcarrier_blueprint,
+            blueprintJSON=Ground Base NoSpawn,
+            flagName=UninfectedHideoutXGroundStationSpawn,
+            name=Ground Base
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXDefense,
+    sequence=(
+        SpawnEntity(
+            entityID=UninfectedHideoutXMS1,
+            assetID=missile_station,
+            flagName=UninfectedHideoutXMS1Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMS2,
+            assetID=missile_station,
+            flagName=UninfectedHideoutXMS2Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMS3,
+            assetID=missile_station,
+            flagName=UninfectedHideoutXMS3Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMS4,
+            assetID=missile_station,
+            flagName=UninfectedHideoutXMS4Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXBunker1,
+            assetID=bunker_blueprint,
+            flagName=UninfectedHideoutXBunker1Spawn,
+            name=Bunker
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXBunker2,
+            assetID=bunker_blueprint,
+            flagName=UninfectedHideoutXBunker2Spawn,
+            name=Bunker
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMTank1,
+            assetID=missile_tank,
+            flagName=UninfectedHideoutXMTank1Spawn,
+            name=Missile Tank
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMTank2,
+            assetID=missile_tank,
+            flagName=UninfectedHideoutXMTank2Spawn,
+            name=Missile Tank
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMTank2,
+            assetID=missile_tank,
+            flagName=UninfectedHideoutXMTank2Spawn,
+            name=Missile Tank
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXDT1,
+            assetID=defense_turret,
+            flagName=UninfectedHideoutXDT1Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXDT2,
+            assetID=defense_turret,
+            flagName=UninfectedHideoutXDT2Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXDT3,
+            assetID=defense_turret,
+            flagName=UninfectedHideoutXDT3Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXDT4,
+            assetID=defense_turret,
+            flagName=UninfectedHideoutXDT4Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMT1,
+            assetID=missile_turret,
+            flagName=UninfectedHideoutXMT1Spawn,
+            name=Missile Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMT2,
+            assetID=missile_turret,
+            flagName=UninfectedHideoutXMT2Spawn,
+            name=Missile Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMT3,
+            assetID=missile_turret,
+            flagName=UninfectedHideoutXMT3Spawn,
+            name=Missile Turret
+        ),
+        SpawnEntity(
+            entityID=UninfectedHideoutXMT4,
+            assetID=missile_turret,
+            flagName=UninfectedHideoutXMT4Spawn,
+            name=Missile Turret
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXGetYard,
+    sequence=(
+        SpawnEntity(
+            entityID=UninfectedHideoutX_Yard,
+            assetID=yard_blueprint,
+            name=Yard,
+            flagName=UninfectedHideoutXYardSpawn
+        )
+    )
+)
+
+Text("UninfectedHideoutX_Trader_d1", "The hideout is admittedly very difficult to access, but our logistics division is ready to support the honorable commander. All parts ready for immediate use.")
+Text("UninfectedHideoutX_Trader_d2", "Thanks for your work. I'd like to trade parts.")
+Text("UninfectedHideoutX_Trader_d3", "On second thought, no thanks.")
+Text('UninfectedHideoutX_Trader_json', '{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"SmallWing4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":34,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"MediumCenter5","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false,"playerGivenName":""}],"presetBlueprints":["","","","",""],"timePlayed":0.23063330352306367,"credits":0,"taskVariableNames":[],"taskVariableValues":[],"abilityCaps":[6,3,6,6],"shards":0,"gas":0.0,"fusionEnergy":0,"characters":[],"sectorsSeen":["Sector 0-0"],"partsSeen":[],"partsObtained":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"SmallWing4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":34,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"MediumCenter5","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false,"playerGivenName":""}]}')
+Text("UninfectedHideoutX_Defender1_d1", "The area is finally secure thanks to our commander. I will make sure this place will serve as a permanent base of operation.")
+Text("UninfectedHideoutX_Defender1_d2", "Keep up your good work.")
+Text("UninfectedHideoutX_Defender2_d1", "The area is finally secure thanks to our commander. I will make sure this place will serve as a permanent base of operation.")
+Text("UninfectedHideoutX_Defender2_d2", "Keep up your good work.")
+
+Dialogue(
+    dialogueID=UninfectedHideoutX_Trader_d,
+    dialogueText=UninfectedHideoutX_Trader_d1,
+    entityID=UninfectedHideoutX_Trader,
+    responses=(
+        Response(
+            responseText=UninfectedHideoutX_Trader_d2,
+            next=Trader(UninfectedHideoutX_Trader_json)
+        ),
+        Response(
+            responseText=UninfectedHideoutX_Trader_d3,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=UninfectedHideoutX_Defender1_d,
+    dialogueText=UninfectedHideoutX_Defender1_d1,
+    entityID=UninfectedHideoutXDefender1,
+    responses=(
+        Response(
+            responseText=UninfectedHideoutX_Defender1_d2,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXCompleteDialogue,
+    sequence=(
+        SetInteraction(dialogueID=UninfectedHideoutX_Defender1_d, entityID=UninfectedHideoutXDefender1),
+        SetInteraction(dialogueID=UninfectedHideoutX_Trader_d, entityID=UninfectedHideoutX_Trader)
+    )
+)
+
+Text("UninfectedHideoutXSafe_Defender1_d1", "Now that Iota is under control, we managed to build a more elaborate defense.")
+Text("UninfectedHideoutXSafe_Defender1_d2", "It is good to see the area freed of opposition.")
+
+Dialogue(
+    dialogueID=UninfectedHideoutXSafe_Defender1_d,
+    dialogueText=UninfectedHideoutXSafe_Defender1_d1,
+    entityID=UninfectedHideoutXDefender1,
+    responses=(
+        Response(
+            responseText=UninfectedHideoutXSafe_Defender1_d2,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXSafeDialogue,
+    sequence=(
+        SetInteraction(dialogueID=UninfectedHideoutXSafe_Defender1_d, entityID=UninfectedHideoutXDefender1)
+    )
+)
+
+Text("UninfectedHideoutXUnsafe_Defender1_d1", "Our forces at Iota is being pushed back, and enemies pickets are entering this sector. They need your help, commander!")
+Text("UninfectedHideoutXUnsafe_Defender1_d2", "I am on it.")
+
+Dialogue(
+    dialogueID=UninfectedHideoutXUnsafe_Defender1_d,
+    dialogueText=UninfectedHideoutXUnsafe_Defender1_d1,
+    entityID=UninfectedHideoutXDefender1,
+    responses=(
+        Response(
+            responseText=UninfectedHideoutXUnsafe_Defender1_d2,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=UninfectedHideoutXUnsafeDialogue,
+    sequence=(
+        SetInteraction(dialogueID=UninfectedHideoutXUnsafe_Defender1_d, entityID=UninfectedHideoutXDefender1)
+    )
+)
+
+
+
