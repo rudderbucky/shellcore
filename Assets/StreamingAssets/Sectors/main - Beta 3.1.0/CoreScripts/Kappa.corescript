@@ -166,5 +166,29 @@ SectorTrigger(
         SetInteraction(entityID=Kappa_core1, dialogueID=Kappa_core1_d),
         SetInteraction(entityID=Kappa_core2, dialogueID=Kappa_core2_d),
         SetInteraction(entityID=Kappa_core3, dialogueID=Kappa_core3_d),
+
+        Call(Kappa_setJumpGates)
     )
 )
+
+Text("Kappa_jump1", "JUMP TO: LAMBDA OUTSKIRTS")
+
+Function(
+    name=Kappa_setJumpGates,
+    sequence=(
+        AddTextToFlag(
+            text=Kappa_jump1,
+            flagName=kappa-jump-flag1
+        ),
+        SetFlagInteractibility(
+            flagName=kappa-jump-flag1,
+            sequence=(
+                WarpPlayer(flagName=lambda-outskirts-jump, sectorName=Lambda Outskirts 1E),
+            )
+        )
+    )
+)
+
+// lambda-outskirts-jump
+// kappa-jump-flag1
+// Lambda Outskirts 1E

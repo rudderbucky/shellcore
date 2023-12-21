@@ -7,7 +7,8 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
-        Call(Truth_start),
+//        Call(Truth_start),
+        Call(Truth_test)
     )
 )
 
@@ -20,14 +21,15 @@ Text("Truth_makeshift_architect_d6", "Go find Aristu, I've marked their location
 Text("Truth_makeshift_architect_d7", "That's so far away... wait, maybe there's an easier way to Aristu close by here.")
 Text("Truth_makeshift_architect_d8", "Head to Kappa to the north of here. I've heard it's a transportation hub.")
 Text("Truth_makeshift_architect_d9", "Okay.")
-
+Text("Truth_makeshift_architect_task_objectives", "- Head to the marked sectors on the map and find Aristu.")
 Task(
     taskID=Truth_makeshift_architect_task,
     partID=BigCenter2,
     tier=3,
     abilityID=38,
-    credits=3000,
-    reputation=100
+    creditReward=3000,
+    objectives=Truth_makeshift_architect_task_objectives,
+    reputationReward=100
 )
 
 Dialogue(
@@ -39,24 +41,24 @@ Dialogue(
             responseText=Truth_makeshift_architect_d2,
             next=Dialogue(
                 dialogueText=Truth_makeshift_architect_d3,
-                taskID=Truth_makeshift_architect_task,
                 responses=(
                     Response(
                         responseText=Truth_makeshift_architect_d4,
                         next=Dialogue(
                             dialogueText=Truth_makeshift_architect_d6,
+                            taskID=Truth_makeshift_architect_task,
                             responses=(
                                 Response(
-                                    repsonseText=Truth_makeshift_architect_d9,
+                                    responseText=Truth_makeshift_architect_d9,
+                                    next=Call(Truth_meetAristu)
+                                ),
+                                Response(
+                                    responseText=Truth_makeshift_architect_d5,
                                     next=End()
-                                )
+                                ),
                             )
                         )
-                    ),
-                    Response(
-                        responseText=Truth_makeshift_architect_d5,
-                        next=End()
-                    ),
+                    )
                 )
             )
         )
@@ -88,12 +90,90 @@ Function(
 Function(
     name=Truth_meetAristu,
     sequence=(
-
+        PassiveDialogue(entityID=player, text=Truth_makeshift_architect_d7),
+        PassiveDialogue(entityID=the-architect, text=Truth_makeshift_architect_d8),
+        AddObjectiveMarker(
+            ID=Truth_Lambda,
+            sectorName=Lambda Outskirts 3E
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Lambda Outskirts 3E,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Truth_Lambda),
+                    Call(Truth_cs1)
+                )
+            )
+        )
     )
 )
 
+Function(
+    name=Truth_cs1,
+    sequence=(
+        StartCutscene(),
+        SetVariable(
+            name=$$Truth_cslock,
+            value=0
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Truth-starprism-cs3,
+            sequence=(
+                AddIntValues(
+                    val1=$$Truth_cslock,
+                    val2=1,
+                    name=$$Truth_cslock
+                )
+            )
+        ),
+        SpawnEntity(
+            entityID=starprism,
+            name=Starprism,
+            blueprintJSON=sukrat,
+            flagName=Truth-starprism-cs1,
+            faction=3
+        ),
+        SetPath(
+            entityID=starprism,
+            flagName=Truth-starprism-cs2,
+            sequence=(
+                AddIntValues(
+                    val1=$$Truth_cslock,
+                    val2=1,
+                    name=$$Truth_cslock
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$Truth_cslock,
+                val2=2,
+                comp=Eq,
+                sequence=(
+                    StartCameraPan(
+                        flagName=Truth-starprism-cs2,
+                        velocityFactor=0.5,
+                        sequence=(
+                            Wait(time=0.5),
+                            ForceStartDialogue(
+                                dialogueID=Truth_starprism_d
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+// Lambda Outskirts 3E
+// Truth-starprism-cs1 (where starprism spawns)
+// Truth-starprism-cs2 (where starprism goes)
+// Truth-starprism-cs3 (player spawn)
+
 Text("Truth_starprism_d1", "You there! You are leaving the Kappa safe zone. Leave now unless you wish to be destroyed by defects.")
-Text("Truth_starprism_d2", "We are from the Standard Sectors.")
+Text("Truth_starprism_d2", "I hail from the Standard Sectors.")
 Text("Truth_starprism_d3", "Well that’s kind of obvious. You must have been sent here by Heracles.")
 Text("Truth_starprism_d4", "Yeah...")
 Text("Truth_starprism_d5", "I was sent here by a Core called \"Heracles\"...")
@@ -102,9 +182,9 @@ Text("Truth_starprism_d7", "So who are you?")
 Text("Truth_starprism_d8", "I am Starprism. I work for the same cause as Heracles - we are trying to find a way to live alongside the Defected.")
 Text("Truth_starprism_d9", "Why would you want to do that?")
 Text("Truth_starprism_d10", "Because this has been their home since we were sent here. They may not be able to communicate with us but they deserve existence as much as we do.")
-Text("Truth_starprism_d11", "Heracles said there were others out there…")
+Text("Truth_starprism_d11", "Heracles said there were others out there...")
 Text("Truth_starprism_d12", "Why not go back to the Standard Sectors?")
-Text("Truth_starprism_d13", "Well, in truth, as I’m sure Heracles has told you and as you have understood… we are abandoned by our leaders. Writing our own story, as Heracles would put it. This is to say — I don’t think they want us back.")
+Text("Truth_starprism_d13", "Well, in truth, as I’m sure Heracles has told you and as you have understood... we are abandoned by our leaders. Writing our own story, as Heracles would put it. This is to say — I don’t think they want us back.")
 Text("Truth_starprism_d14", "How can you be so sure about that?")
 Text("Truth_starprism_d15", "Well we can’t really. But we have discovered the Jump Gate was created by the Red Leader. The gate emits an energy signature that matches them.")
 Text("Truth_starprism_d16", "So?")
@@ -113,7 +193,7 @@ Text("Truth_starprism_d18", "This sounds entirely made-up.")
 Text("Truth_starprism_d19", "Perhaps... but as the eons pass, you’ll realize working with us is better than fighting against us because of whatever infection nonsense we were told.")
 Text("Truth_starprism_d20", "So who made these other gates?")
 Text("Truth_starprism_d21", "It’s bizarre... there are three distinct signatures, two of which are the Leaders themselves. And a third... nobody knows who’s behind the third.")
-Text("Truth_starprism_d22", "Yes, there are. There exist two other hostile factions. The Exterminators, and the Unconvinced.")
+Text("Truth_starprism_d22", "Yes, there are. There exist two other factions. The Exterminators, and the Unconvinced.")
 Text("Truth_starprism_d23", "Who are the Exterminators?")
 Text("Truth_starprism_d24", "Who are the Unconvinced?")
 Text("Truth_starprism_d25", "Those who are not convinced we were sent here to rot... I suspect you’re trying to make friends with them by coming so close to their base.")
@@ -132,6 +212,249 @@ Text("Truth_starprism_d37", "I’m not sure that’s right.")
 Text("Truth_starprism_d38", "Bringing up the idea of war means you’re not sure I’m right. I can’t make your own mind up for you. I shall leave now. I hope you see our ways soon.")
 Text("Truth_starprism_d39", "You really think that?")
 Text("Truth_starprism_d40", "I almost know this... perhaps it is a by-product of our consciousness. And perhaps we should be ready for other conscious beings to war against us — the defects... you don’t seem to appreciate this yet, but do know we still welcome those who have shunned us before.")
+Text("Truth_starprism_d41", "Led by Sisyphos, the Exterminators wish to eliminate all defects from the Abandoned Sectors and create space for us to continue to survive here.")
+Text("Truth_starprism_d42", "Sounds a bit heavy-handed.")
+
+Dialogue(
+    dialogueID=Truth_starprism_d,
+    entityID=starprism,
+    dialogueText=Truth_starprism_d1,
+    responses=(
+        Response(
+            responseText=Truth_starprism_d2,
+            next=Dialogue(
+                dialogueText=Truth_starprism_d3,
+                responses=(
+                    Response(
+                        responseText=Truth_starprism_d4,
+                        next=Dialogue(
+                            nodeID=1,
+                            dialogueText=Truth_starprism_d6,
+                            responses=(
+                                Response(
+                                    responseText=Truth_starprism_d7,
+                                    next=Dialogue(
+                                        dialogueText=Truth_starprism_d8,
+                                        responses=(
+                                            Response(
+                                                responseText=Truth_starprism_d9,
+                                                next=Dialogue(
+                                                    dialogueText=Truth_starprism_d10,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Truth_starprism_d11,
+                                                            next=Dialogue(
+                                                                dialogueText=Truth_starprism_d22,
+                                                                responses=(
+                                                                    Response(
+                                                                        responseText=Truth_starprism_d23,
+                                                                        next=Dialogue(
+                                                                            dialogueText=Truth_starprism_d41,
+                                                                            nodeID=2,
+                                                                            responses=(                                                    
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d42,
+                                                                                    next=Dialogue(
+                                                                                        dialogueText=Truth_starprism_d29,
+                                                                                        responses=(
+                                                                                            Response(
+                                                                                                responseText=Truth_starprism_d28,
+                                                                                                next=Call(Truth_starprism_cs_end)
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                ),
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d30,
+                                                                                    next=Dialogue(
+                                                                                        dialogueText=Truth_starprism_d31,
+                                                                                        responses=(
+                                                                                            Response(
+                                                                                                responseText=Truth_starprism_d28,
+                                                                                                next=Call(Truth_starprism_cs_end)
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                ),
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d24,
+                                                                                    next=SetID(3),
+                                                                                ),
+                                                                            )
+                                                                        )
+                                                                    ),
+                                                                    Response(
+                                                                        responseText=Truth_starprism_d24,
+                                                                        next=Dialogue(
+                                                                            dialogueText=Truth_starprism_d25,
+                                                                            nodeID=3,
+                                                                            responses=(                                                    
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d26,
+                                                                                    next=Dialogue(
+                                                                                        dialogueText=Truth_starprism_d27,
+                                                                                        responses=(
+                                                                                            Response(
+                                                                                                responseText=Truth_starprism_d28,
+                                                                                                next=Dialogue(
+                                                                                                    dialogueText=Truth_starprism_d29,
+                                                                                                    responses=(
+                                                                                                        responseText=Truth_starprism_d28,
+                                                                                                        next=Call(Truth_starprism_cs_end)
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                ),
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d30,
+                                                                                    next=Dialogue(
+                                                                                        dialogueText=Truth_starprism_d31,
+                                                                                        responses=(
+                                                                                            Response(
+                                                                                                responseText=Truth_starprism_d28,
+                                                                                                next=Call(Truth_starprism_cs_end)
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                ),
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d23,
+                                                                                    next=SetID(2),
+                                                                                ),
+                                                                            )
+                                                                        )
+                                                                    ),
+                                                                    Response(
+                                                                        responseText=Truth_starprism_d32,
+                                                                        next=Dialogue(
+                                                                            dialogueText=Truth_starprism_d33,
+                                                                            responses=(
+                                                                                Response(
+                                                                                    responseText=Truth_starprism_d28,
+                                                                                    next=Dialogue(
+                                                                                        dialogueText=Truth_starprism_d34,
+                                                                                        responses=(
+                                                                                            Response(
+                                                                                                responseText=Truth_starprism_d35,
+                                                                                                next=Dialogue(
+                                                                                                    dialogueText=Truth_starprism_d36,
+                                                                                                    responses=(
+                                                                                                        Response(
+                                                                                                            responseText=Truth_starprism_d37,
+                                                                                                            next=Dialogue(
+                                                                                                                dialogueText=Truth_starprism_d38,
+                                                                                                                responses=(
+                                                                                                                    Response(
+                                                                                                                        responseText=Truth_starprism_d28,
+                                                                                                                        next=Call(Truth_starprism_cs_end)
+                                                                                                                    )
+                                                                                                                )
+                                                                                                            )
+                                                                                                        ),
+                                                                                                        Response(
+                                                                                                            responseText=Truth_starprism_d39,
+                                                                                                            next=Dialogue(
+                                                                                                                dialogueText=Truth_starprism_d40,
+                                                                                                                responses=(
+                                                                                                                    Response(
+                                                                                                                        responseText=Truth_starprism_d28,
+                                                                                                                        next=Call(Truth_starprism_cs_end)
+                                                                                                                    )
+                                                                                                                )
+                                                                                                            )
+                                                                                                        )
+                                                                                                    )
+                                                                                                )
+                                                                                            ),
+                                                                                        )
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        ),
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=Truth_starprism_d5,
+            next=SetID(1)
+        ),
+    )
+)
+
+Function(
+    name=Truth_starprism_cs_end,
+    sequence=(
+        SetPath(
+            entityID=starprism,
+            flagName=Truth-starprism-cs1,
+            sequence=(
+                DeleteEntity(entityID=starprism),
+                FinishCameraPan(),
+                Wait(time=1),
+                FinishCutscene(),
+                Call(Truth_pre_aristu_cs1)
+            )
+        ),
+    )
+)
+
+Function(
+    name=Truth_pre_aristu_cs1,
+    sequence=(
+        AddObjectiveMarker(
+            ID=Truth_aristu_cs1_objective,
+            sectorName=Unconvinced Lair
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Unconvinced Lair,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Truth_aristu_cs1_objective),
+                    Call(Truth_aristu_cs1)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Truth_aristu_cs1,
+    sequence=(
+        StartCutscene(),
+        ChangeCharacterBlueprint(
+            charID=aristu,
+            blueprintJSON=aristu_4
+        ),
+        SpawnEntity(
+            entityID=aristu,
+            flagName=Truth-aristu-cs1-flag1
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Truth-aristu-cs1-flag2,
+            sequence=(
+                ForceStartDialogue(dialogueID=Truth_aristu_cs1_d)
+            )
+        ),
+    )
+)
+
+// Truth-aristu-cs1-flag1
 
 Text("Truth_aristu_d1", "So, you’ve made it.")
 Text("Truth_aristu_d2", "Aristu, we are infected.")
@@ -141,25 +464,334 @@ Text("Truth_aristu_d5", "It appears these colors are not the result of infection
 Text("Truth_aristu_d6", "If you believe them, why are you with the Unconvinced?")
 Text("Truth_aristu_d7", "I’m here because I don’t really have a judgement at all yet. This seems like the place for those like that. I’ve been thinking instead of what led us here in the first place. Our promise. Unfortunately, I have found no answers here... only more questions.")
 Text("Truth_aristu_d8", "How do we get out of here?")
-Text("Truth_aristu_d9", "Considering we may be unwelcome outside, we should be concentrating on dealing with that first. But there’s just too much squabbling going on here about the defects. Some are adamant they’ve heard them speak, others want them wiped out… still others think they’re fabrications made to overturn the core war status quo.")
+Text("Truth_aristu_d9", "Considering we may be unwelcome outside, we should be concentrating on dealing with that first. But there’s just too much squabbling going on here about the defects. Some are adamant they’ve heard them speak, others want them wiped out... still others think they’re fabrications made to overturn the core war status quo.")
 Text("Truth_aristu_d10", "How do we unite the factions?")
 Text("Truth_aristu_d11", "Beats me...")
 Text("Truth_aristu_d12", "What questions?")
 Text("Truth_aristu_d13", "I’ve been thinking for a long while since I was sent here. This world seems cursed. Knowledge from birth on how to fight and use our weapons. The idea of one faction being superior to another — or even the tolerance or intolerance of defects. It’s like we were tailor-made to war against each other over petty things.")
-Text("Truth_aristu_d14", "I don’t think there’s any one good answer to any of these things… it might seem like a reach but I feel like something’s above us pulling the strings. And I really don’t like that. It might even go beyond the leaders. I’ve been dedicating my time to finding what that something is and fighting against it.")
+Text("Truth_aristu_d14", "I don’t think there’s any one good answer to any of these things... it might seem like a reach but I feel like something’s above us pulling the strings. And I really don’t like that. It might even go beyond the leaders. I’ve been dedicating my time to finding what that something is and fighting against it.")
 Text("Truth_aristu_d15", "Hmm... what does that mean?")
 Text("Truth_aristu_d16", "I want to free this world... of leaders altogether. To free it involves allowing ourselves to be our own agents — to make of existence what we want to instead of being forced to slave away in these skirmishes... that’s what I’ve come to believe is best after warping here.")
 Text("Truth_aristu_d17", "Aristu, we’re all united once again!")
-Text("Truth_aristu_d18", "So, you’ve made it.")
-Text("Truth_aristu_d19", "Aristu, we need to stop the infection. Did you find anything here?")
+Text("Truth_aristu_d19", "Aristu, we need to stop the infection.")
 Text("Truth_aristu_d20", "It’s been... a while since we were last fighting together.")
+Text("Truth_aristu_d21", "Well, I’m going to be sticking here but please call on me for any skirmishes you may want to fight. You have a knack for getting us closer to the right places, and working together will help realize our promise. We should help one of the factions take Lambda.")
+Text("Truth_aristu_d22", "Aristu!")
+Text("Truth_aristu_d23", "Now that you mention it... not really.")
+Text("Truth_aristu_d24", "...")
+Text("Truth_aristu_d25", "Sounds good.")
 
 
-Text("Truth_aristu_d21", "Well, I’m going to be sticking here but please call on me for any skirmishes you may want to fight. You have a knack for getting us closer to the right places, and working together will help realize our promise.")
+Dialogue(
+    dialogueID=Truth_aristu_cs1_d,
+    dialogueText=Truth_aristu_d1,
+    entityID=aristu,
+    responses=(
+        Response(
+            responseText=Truth_aristu_d22,
+            next=Dialogue(
+                dialogueText=Truth_aristu_d17,
+                entityID=sukrat,
+                responses=(
+                    Response(
+                        responseText=Truth_aristu_d19,
+                        next=Call(Truth_run_aristu_cs1_d_common)
+                    )
+                )
+            )
+        )
+    )
+)
 
 
-Text("Truth_sisyphos_d", "So... you've come to us to fight in Lambda. Prove your loyalty to the Exterminators.")
-Text("Truth_heracles_d", "You're here to help us take Lambda from the Exterminators and protect life from wanton destruction. We will help you.")
+Dialogue(
+    dialogueID=Truth_aristu_cs1_d_traitor,
+    dialogueText=Truth_aristu_d1,
+    entityID=aristu,
+    responses=(
+        Repsonse(
+            responseText=Truth_aristu_d2,
+            next=Call(Truth_run_aristu_cs1_d_common)
+        )
+    )
+)
+
+
+Dialogue(
+    dialogueID=Truth_aristu_cs1_d_common,
+    dialogueText=Truth_aristu_d3,
+    entityID=aristu,
+    responses=(
+        Response(
+            responseText=Truth_aristu_d4,
+            next=Dialogue(
+                nodeID=1,
+                dialogueText=Truth_aristu_d5,
+                responses=(
+                    Response(
+                        responseText=Truth_aristu_d6,
+                        next=Dialogue(
+                            dialogueText=Truth_aristu_d7,
+                            responses=(
+                                Response(
+                                    responseText=Truth_aristu_d8,
+                                    next=Dialogue(
+                                        dialogueText=Truth_aristu_d9,
+                                        responses=(
+                                            Response(
+                                                responseText=Truth_aristu_d10,
+                                                next=Dialogue(
+                                                    dialogueText=Truth_aristu_d11,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Truth_aristu_d24,
+                                                            next=Dialogue(
+                                                                dialogueText=Truth_aristu_d21,
+                                                                nodeID=2,
+                                                                responses=(
+                                                                    Response(
+                                                                        responseText=Truth_aristu_d25,
+                                                                        next=Call(Truth_post_aristu_cs1)
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                                Response(
+                                    responseText=Truth_aristu_d12,
+                                    next=Dialogue(
+                                        dialogueText=Truth_aristu_d13,
+                                        responses=(
+                                            Response(
+                                                responseText=Truth_aristu_d24,
+                                                next=Dialogue(
+                                                    dialogueText=Truth_aristu_d14,
+                                                    responses=(
+                                                        Response(
+                                                            responseText=Truth_aristu_d15,
+                                                            next=Dialogue(
+                                                                dialogueText=Truth_aristu_d16,
+                                                                responses=(
+                                                                    Response(
+                                                                        responseText=Truth_aristu_d24,
+                                                                        next=SetID(2)
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=Truth_aristu_d23,
+            next=SetID(1)
+        )
+    )
+)
+
+Function(
+    name=Truth_run_aristu_cs1_d_common,
+    sequence=(
+        ForceStartDialogue(dialogueID=Truth_aristu_cs1_d_common),
+    )
+)
+
+Function(
+    name=Truth_post_aristu_cs1,
+    sequence=(
+        FinishCutscene()
+    )
+)
+
+Text("Truth_sisyphos_d1", "So... you've come to us to fight in Lambda. Prove your loyalty to the Exterminators.")
+Text("Truth_sisyphos_d2", "The defects and those who oppose us will know pain.")
+Text("Truth_sisyphos_d3", "On second thought, no thanks.")
+
+Text("Truth_heracles_d1", "You're here to help us take Lambda from the Exterminators and protect life from wanton destruction. We will help you.")
+Text("Truth_heracles_d2", "We're going to save everyone.")
+Text("Truth_heracles_d3", "On second thought, no thanks.")
 
 Text("Truth_starprism_fight_d", "So it has come to battle... Please know we do not hold grudges fellow ShellCore.")
 Text("Truth_heavensgate_fight_d", "By clearing this zone for the Exterminators I am building a future for all conscious existence.")
+
+Text("Truth_post_lambda_heracles_d1", "Congratulations...")
+Text("Truth_post_lambda_heracles_d2", "Is something wrong?")
+Text("Truth_post_lambda_heracles_d3", "Well... the recent aggression has unfortunately started rearing its ugly head. BattleZone Mu & Nu has been under siege by the Exterminators.")
+Text("Truth_post_lambda_heracles_d4", "We need to stop them!")
+Text("Truth_post_lambda_heracles_d5", "This really doesn't bode well... I don't want this to continue, especially so close to Kappa... We decided to take Lambda precisely because it was so far away...")
+Text("Truth_post_lambda_heracles_d6", "Heracles, if we don't stop them now, they'll keep going.")
+Text("Truth_post_lambda_heracles_d7", "You're right, we shouldn't engage in fights here...")
+Text("Truth_post_lambda_heracles_d8", "...")
+Text("Truth_post_lambda_heracles_d9", "You need to make a decision.")
+Text("Truth_post_lambda_heracles_d10", "Right. I've weighed all my thoughts and... we're fighting. Talk again.")
+Text("Truth_post_lambda_heracles_d11", "Okay.")
+D(
+    Truth_post_lambda_heracles_d1,
+    heracles,
+    Truth_post_lambda_heracles_d,
+    R(
+        Truth_post_lambda_heracles_d2,
+        D(
+            Truth_post_lambda_heracles_d3,
+            R(
+                Truth_post_lambda_heracles_d4,
+                D(
+                    Truth_post_lambda_heracles_d5,
+                    R(
+                        Truth_post_lambda_heracles_d6,
+                        SetID(1)
+                    ),
+                    R(
+                        Truth_post_lambda_heracles_d7,
+                        D(
+                            Truth_post_lambda_heracles_d8,
+                            ,
+                            ,
+                            1,
+                            R(
+                                Truth_post_lambda_heracles_d9,
+                                D(
+                                    Truth_post_lambda_heracles_d10,
+                                    R(
+                                        Truth_post_lambda_heracles_d11,
+                                        End()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Truth_post_lambda_heracles_d12", "We have intel that you decided to help Sisyphos with this insane offensive. I didn't realize you could be this... vile.")
+Text("Truth_post_lambda_heracles_d13", "Well I am.")
+
+Text("Truth_post_lambda_heracles_d14", "Go help our forces out at Mu & Nu. We need to end the violence now before things go south.")
+Text("Truth_post_lambda_heracles_d15", "I'll go take it over.")
+Text("Truth_post_lambda_heracles_d16", "On second thought, no thanks.")
+
+Text("Truth_post_lambda_heracles_enemy_d1", "You have taken Lambda over for Sisyphos's dastardly cause, yet your kind insists on causing even more mayhem in Mu & Nu. Is the violence part of your being, or something you grew into?")
+Text("Truth_post_lambda_heracles_enemy_d2", "Watch me do it again.")
+
+Text("Truth_post_lambda_heracles_enemy_d3", "Your faction started the fight in Mu & Nu.")
+Text("Truth_post_lambda_heracles_enemy_d4", "I'm sorry for what I did.")
+Text("Truth_post_lambda_heracles_enemy_d5", "Sure. Now tell me, why are you even here?")
+Text("Truth_post_lambda_heracles_enemy_d6", "I wanted to rub it in.")
+Text("Truth_post_lambda_heracles_enemy_d7", "I regret my decision.")
+Text("Truth_post_lambda_heracles_enemy_d8", "When I saved you from that defect I knew you were going to be important. I didn't realize that could be a very bad thing. I cannot change the past though... we're stuck with you now.")
+Text("Truth_post_lambda_heracles_enemy_d9", "...")
+Text("Truth_post_lambda_heracles_enemy_d10", "Really. And how could you possibly make amends with us now.")
+Text("Truth_post_lambda_heracles_enemy_d11", "I could help you in Mu & Nu.")
+Text("Truth_post_lambda_heracles_enemy_d12", "I know you have a propensity for violence... but please. We need to stop Sisyphos's skirmish so close to Kappa. Go help us if you're being honest.")
+Text("Truth_post_lambda_heracles_enemy_d13", "I'll go take it over.")
+Text("Truth_post_lambda_heracles_enemy_d14", "On second thought, no thanks.")
+
+Text("Truth_post_lambda_sisyphos_d", "Good job out there. Unfortunately Heracles has decided to bring the offensive to our immediate surroundings in his infinite stupidity.")
+Text("Truth_post_lambda_sisyphos_d", "What do we do about this?")
+Text("Truth_post_lambda_sisyphos_d", "We need to stop the Conservationist menace in Mu & Nu. Talk with me again for further instructions.")
+Text("Truth_post_lambda_sisyphos_d", "Okay.")
+
+Text("Truth_post_lambda_sisyphos_d", "Looks like you're quite the clown! Go fly to Mu & Nu and get yourself squished.")
+Text("Truth_post_lambda_sisyphos_d", "...")
+
+Text("Truth_post_lambda_sisyphos_d", "Stop Heracles in Mu & Nu.")
+Text("Truth_post_lambda_sisyphos_d", "I'll go take it over.")
+Text("Truth_post_lambda_sisyphos_d", "On second thought, no thanks.")
+
+Text("Truth_post_lambda_sisyphos_enemy_d", "Why are you here? Go die off in Mu & Nu.")
+Text("Truth_post_lambda_sisyphos_enemy_d", "Probably going to win over there, but sure.")
+
+Text("Truth_post_lambda_sisyphos_enemy_d", "I regret my decision.")
+Text("Truth_post_lambda_sisyphos_enemy_d", "I wanted to rub it in.")
+Text("Truth_post_lambda_sisyphos_enemy_d", "Oh no, this is so awful, you're so powerful and we're so pathetically weak! Now go away.")
+Text("Truth_post_lambda_sisyphos_enemy_d", "...")
+Text("Truth_post_lambda_sisyphos_enemy_d", "It'd be stupid for us to just trust you... but our forces are all occupied with your mistake right now, so maybe you could help undo it.")
+Text("Truth_post_lambda_sisyphos_enemy_d", "I will.")
+Text("Truth_post_lambda_sisyphos_enemy_d", "On second thought, no thanks.")
+
+// Mu & Nu
+
+Text("", "Interlopers detected. Must destroy false creation.")
+Text("", "Huh?")
+Text("", "Must destroy false creation.")
+Text("", "Oh dear, they're talking.")
+
+Text("", "Greetings Makeshifters...")
+Text("", "Hello?")
+Text("", "If you haven't noticed already, the defects have become rather angry. They've destroyed our lairs and this one is certainly next.")
+Text("", "Oh no!")
+Text("", "Well this isn't the first time my work has been for naught. I suppose you have a plan for where we're going?")
+Text("", "I heard the defects talk.")
+Text("", "They've been talking, yeah. Seems to be pre-programmed nonsense.")
+Text("", "Heavensgate, they're speaking. That should be enough proof that you've been massacring conscious beings.")
+Text("", "Okay... let's leave these arguments to our leaders. We need you all to get to Kappa now. We've been fighting off creeping skirmishes there; it's still safe.")
+Text("", "Why are you so interested in saving us?")
+Text("", "Believe it or not, neither of us want the destruction of those still alive. Plus you all have proven yourselves to have quite the firepower... I hope you'll help in the defense.")
+Text("", "Okay... I'll come to Kappa.")
+
+Text("", "Citizens of Kappa. Our leaders have disappeared again to find new shelter for us. They assigned us to help organize our remaining forces.")
+Text("", "Great leaders we have! All this work and war just for it to all fall apart.")
+Text("", "Yeah! Methinks they can stay wherever they're off to! Actually maybe they should come back and take Heavensgate and Starprism with them too!")
+Text("", "Please... listen for one moment.")
+Text("", "\"Listen for one moment\"... Do you think all we're good for is listening?")
+Text("", "Okay. We're... sorry. The decision to break the unsteady peace and fight in Lambda... wasn't right.")
+Text("", "Why don't you tell Heracles and Sisyphos that you cowards! Get out of here!")
+Text("", "Yeah! Bugger off!")
+Text("", "You all... please.")
+Text("", "Wait... what was that.")
+
+Text("", "Interlopers detected. Must destroy interlopers.")
+Text("", "False usurper creations detected.")
+Text("", "This... this can't be...")
+Text("", "Wow. Well you all, looks like it's time to kick some core posteriors.")
+Text("", "Hahaha, let's do this!")
+Text("", "Sukrat, Aristu...")
+
+Text("", "STOP THE DEFECTS! THIS IS A MATTER OF LIFE AND DEATH!")
+
+Text("", "I... don't even know what to say...")
+Text("", "We need to do something now that the defects can warp.")
+Text("", "That was a massive invasion... it's probably going to be calmer for some time.")
+Text("", "Okay but we still need to do something.")
+Text("", "Oh would you please just shut up! Instructions, instructions. It's like you're a slave!")
+Text("", "...")
+Text("", "...go visit the Unconvinced. Hopefully they're still in one piece.")
+
+Text("", "The intel just came back to me... Kappa was besieged? This is impossible.")
+Text("", "Eleos, what do we do?")
+Text("", "Well... now that everyone's had their fun... we can stick to the plan again and find a cure to the infection.")
+Text("", "The core sectors?")
+Text("", "Yes. Problem is, none of us want to attempt the journey to the core. Many have tried and failed to make it back. And we’re talking about those that have lived here for a long time too.")
+Text("", "There’s another reason nobody has done it in a while... they’re scared of what they’ll bring back to our fragile communities. We’re the abandoned ones in this story — waiting for our salvation to tell us what lies ahead — but too scared to go find it ourselves.")
+Text("", "That is, except for one core...")
+Text("", "Don't tell me.")
+Text("", "Daayo's been steadfast in trying to find clues on how to get there... maybe they're worth talking to.")
+Text("", "Oh dear.")
+
+// Mission complete, next mission: Legend
+
+
+
+Function(
+    name=Truth_test,
+    sequence=(
+        SetInteraction(entityID=heracles, dialogueID=Truth_post_lambda_heracles_d)
+    )
+)
