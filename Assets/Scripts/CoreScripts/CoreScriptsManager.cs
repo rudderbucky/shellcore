@@ -321,6 +321,10 @@ public class CoreScriptsManager : MonoBehaviour
             {
                 CoreScriptsDialogue.ParseDialogue(i, c, lines, data, out d);
             }
+            else if (lines[i].Substring(c).StartsWith("D("))
+            {
+                CoreScriptsDialogue.ParseDialogueShortened(i, c, lines, data, out d);
+            }
             else if (lines[i].Substring(c).StartsWith("Function"))
             {
                 var func = CoreScriptsFunction.ParseFunction(i, c, lines, data, out d);
@@ -435,6 +439,7 @@ public class CoreScriptsManager : MonoBehaviour
             return cnt;
         }
 
+        if (skipToComma && cnt <= scope.Length && cnt-1 >= 0 && scope[cnt-1] == ',') cnt--;
         while (skipToComma && cnt < scope.Length && (brackets > 1 || scope[cnt] != ',')) 
         {
             if (scope[cnt] == opBracket)

@@ -64,7 +64,8 @@ public class CoreScriptsSequence : MonoBehaviour
         RandomFloat,
         SetFactionRelations,
         SetPlayerOverrideFaction,
-        AddTextToFlag
+        AddTextToFlag,
+        ChangeCharacterBlueprint
     }
     public struct Instruction
     {
@@ -557,6 +558,13 @@ public class CoreScriptsSequence : MonoBehaviour
                     }
                     
                     break;
+                case InstructionCommand.ChangeCharacterBlueprint:
+                    ChangeCharacterBlueprint(
+                        GetArgument(inst.arguments, "charID"),
+                        GetArgument(inst.arguments, "blueprintJSON"),
+                        GetArgument(inst.arguments, "forceReconstruct") != "false"
+                    );
+                    break;
             }
         }
         yield return null;
@@ -781,6 +789,38 @@ public class CoreScriptsSequence : MonoBehaviour
         if (specialChars.Exists(e => v.Contains(e)))
         {
             throw new System.Exception($"Attribute names or values cannot have semicolons or commas in them: {v}");
+        }
+    }
+
+    private static void ChangeCharacterBlueprint(string entityID, string blueprintJSON, bool forceReconstruct)
+    {
+        var charList = new List<WorldData.CharacterData>(SectorManager.instance.characters);
+        if (charList.Exists(c => c.ID == entityID))
+        {
+            Debug.Log("<Change Character Blueprint Node> Character found, changing blueprint");
+            var character = charList.Find(c => c.ID == entityID);
+            character.blueprintJSON = blueprintJSON;
+
+            if (forceReconstruct)
+            {
+                if (AIData.entities.Exists(c => c.ID == entityID))
+                {
+                    Debug.Log("<Change Character Blueprint Node> Forcing reconstruct");
+                    var ent = AIData.entities.Find(c => c.ID == entityID);
+                    var oldName = ent.entityName;
+                    ent.blueprint = SectorManager.TryGettingEntityBlueprint(blueprintJSON);
+                    ent.entityName = oldName;
+                    ent.Rebuild();
+                }
+                else
+                {
+                    Debug.LogWarning("<Change Character Blueprint Node> Cannot force reconstruct since entity does not exist, traversing");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("<Change Character Blueprint Node> Character not found, traversing");
         }
     }
 

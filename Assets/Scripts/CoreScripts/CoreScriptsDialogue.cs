@@ -4,6 +4,7 @@ using System.Globalization;
 using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
+using static CoreScriptsSequence;
 
 public class CoreScriptsDialogue : MonoBehaviour
 {
@@ -17,22 +18,49 @@ public class CoreScriptsDialogue : MonoBehaviour
         return node;
     }
 
+    private static (string, Dialogue, DialogueRecursionMetadata, DialoguePropertyMetadata) ParseDialogueCore(int lineIndex, int charIndex,
+         string[] lines, ScopeParseData data, out FileCoord coord)
+         {
+            var dialogue = ScriptableObject.CreateInstance<Dialogue>();
+            dialogue.nodes = new List<Dialogue.Node>();
+            nextID = 0;
+            var metadata = new DialogueRecursionMetadata();
+            var scope = CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord);
+            var propertyMetadata = new DialoguePropertyMetadata();
+            propertyMetadata.defaultColor = Color.white;
+            propertyMetadata.useSpeakerColor = true;
+            propertyMetadata.typingSpeedFactor = 1;
+            return (scope, dialogue, metadata, propertyMetadata);
+         }
 
     public static void ParseDialogue(int lineIndex, int charIndex,
          string[] lines, ScopeParseData data, out FileCoord coord)
     {
-        var dialogue = ScriptableObject.CreateInstance<Dialogue>();
-        dialogue.nodes = new List<Dialogue.Node>();
-        nextID = 0;
-        var metadata = new DialogueRecursionMetadata();
-        var scope = CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord);
-        var propertyMetadata = new DialoguePropertyMetadata();
-        propertyMetadata.defaultColor = Color.white;
-        propertyMetadata.useSpeakerColor = true;
-        propertyMetadata.typingSpeedFactor = 1;
+        var tup = ParseDialogueCore(lineIndex, charIndex, lines, data, out coord);
+        var scope = tup.Item1;
+        var dialogue = tup.Item2;
+        var metadata = tup.Item3;
+        var propertyMetadata = tup.Item4;
         ParseDialogueHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, propertyMetadata);
         data.dialogues[metadata.dialogueID] = dialogue;
     }
+
+    public static void ParseDialogueShortened(int lineIndex, int charIndex,
+         string[] lines, ScopeParseData data, out FileCoord coord)
+    {
+        var tup = ParseDialogueCore(lineIndex, charIndex, lines, data, out coord);
+        var scope = tup.Item1;
+        var dialogue = tup.Item2;
+        var metadata = tup.Item3;
+        var propertyMetadata = tup.Item4;
+        var allNodes = new List<Dialogue.Node>();
+        ParseDialogueShortenedHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, propertyMetadata, allNodes);
+        data.dialogues[metadata.dialogueID] = dialogue;
+        PlayerCore.Instance.dialogue = dialogue;
+    }
+
+
+
 
     private struct DialogueRecursionMetadata
     {
@@ -100,7 +128,7 @@ public class CoreScriptsDialogue : MonoBehaviour
         if (nextID == 0)
         {
             // force the top-level node to have ID 0
-            node = SetNodeID(dialogue, node, nextID);
+            node = SetNodeID(dialogue.nodes, node, nextID);
             skipSettingID = true;
         }
 
@@ -180,8 +208,8 @@ public class CoreScriptsDialogue : MonoBehaviour
         
         metadata.index = index;
         if (skipSettingID) return;
-        if (!forcedID) dialogue.nodes[last] = SetNodeID(dialogue, node, nextID);
-        else dialogue.nodes[last] = SetNodeID(dialogue, node, node.ID, true);
+        if (!forcedID) dialogue.nodes[last] = SetNodeID(dialogue.nodes, node, nextID);
+        else dialogue.nodes[last] = SetNodeID(dialogue.nodes, node, node.ID, true);
     }
 
     private static void ParseResponses (int index, string line, Dialogue dialogue, 
@@ -302,7 +330,7 @@ public class CoreScriptsDialogue : MonoBehaviour
 
         if (insertNode)
         {
-            if (!forcedID) node = SetNodeID(dialogue, node, nextID);
+            if (!forcedID) node = SetNodeID(dialogue.nodes, node, nextID);
             nextNodes.Add(node.ID);
             dialogue.nodes.Add(node);
             node.textColor = Color.white;
@@ -313,29 +341,257 @@ public class CoreScriptsDialogue : MonoBehaviour
 
     private static int nextID = 0;
 
-    private static Dialogue.Node SetNodeID(Dialogue dialogue, Dialogue.Node node, int ID, bool forceReplacement = false)
+    private static Dialogue.Node SetNodeID(List<Dialogue.Node> allNodes, Dialogue.Node node, int ID, bool forceReplacement = false)
     {
-        if (dialogue.nodes.Exists(n => n.ID == ID) && !forceReplacement)
+        if (allNodes.Exists(n => n.ID == ID) && !forceReplacement)
         {
             if (ID == nextID) nextID++;
             ID = nextID;
         }
         node.ID = ID;
         if (nextID == ID) nextID++;
-        if (dialogue.nodes.Exists(n => n.ID == ID) && forceReplacement)
+        if (allNodes.Exists(n => n.ID == ID) && forceReplacement)
         {
-            var index = dialogue.nodes.FindIndex(n => n.ID == ID);
-            dialogue.nodes[index] = SetNodeID(dialogue, dialogue.nodes[index], nextID);
+            var index = allNodes.FindIndex(n => n.ID == ID);
+            allNodes[index] = SetNodeID(allNodes, allNodes[index], nextID);
 
-            for (int i = 0; i < dialogue.nodes.Count; i++)
+            for (int i = 0; i < allNodes.Count; i++)
             {
-                if (dialogue.nodes[i].action == Dialogue.DialogueAction.ForceToNextID) continue;
-                if (dialogue.nodes[i].nextNodes.Contains(ID))
+                if (allNodes[i].action == Dialogue.DialogueAction.ForceToNextID) continue;
+                if (allNodes[i].nextNodes.Contains(ID))
                 {
-                    dialogue.nodes[i].nextNodes[dialogue.nodes[i].nextNodes.FindIndex(x => x == ID)] = dialogue.nodes[index].ID;
+                    allNodes[i].nextNodes[allNodes[i].nextNodes.FindIndex(x => x == ID)] = allNodes[index].ID;
                 }
             }
         }
         return node;
+    }
+
+    
+private static void ParseDialogueShortenedHelper(int index, string line, Dialogue dialogue, 
+        Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, Dictionary<string, Task> tasks, 
+        DialoguePropertyMetadata data, List<Dialogue.Node> allNodes, string responseText = null)
+    {
+        
+        metadata = new DialogueRecursionMetadata();
+
+        if (dialogue == null)
+        {
+            Debug.LogError("Null dialogue passed while parsing.");
+            return;
+        }
+        
+        var node = GetDefaultNode();
+        allNodes.Add(node);
+        node.typingSpeedFactor = data.typingSpeedFactor;
+        bool forcedID = false;
+        node.buttonText = responseText;
+
+        bool skipToComma = false;
+        int brax = 0;
+        List<string> stx = null;
+
+        /*
+            "dialogueID=",
+            "entityID=",
+            "dialogueText=",
+            "nodeID=",
+            "color=",
+            "useSpeakerColor=",
+            "responses=",
+            "taskID=",
+            "finishTask=",
+            "typingSpeedFactor=",
+            "concealName="
+        */
+
+        var skipSettingID = false;
+        if (nextID == 0)
+        {
+            // force the top-level node to have ID 0
+            node = SetNodeID(allNodes, node, nextID, true);
+            skipSettingID = true;
+        }
+
+
+        line = GetValueScopeWithinLine(line, index);
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
+        var argIndex = 0;
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            skipToComma = true;
+            var lineSubstr = line.Substring(i).Trim();
+            
+            if (lineSubstr.StartsWith("R("))
+            {
+                ParseResponseShortened(i, line, dialogue, localMap, node.nextNodes, tasks, data, allNodes);
+                continue;
+            }
+            var val = lineSubstr.Split(')')[0];
+            val = val.Split(',')[0].Trim();
+            if (!string.IsNullOrEmpty(val))
+            {
+                switch (argIndex)
+                {
+                    case 0:
+                        node.text = val;
+                        break;
+                    case 1:
+                        node.speakerID = val;
+                        node.forceSpeakerChange = true;
+                        break;
+                    case 2:
+                        metadata.dialogueID = val;
+                        break;
+                    case 3:  
+                        node.ID = int.Parse(val);
+                        forcedID = true;
+                        break;
+                    
+                }
+            }  
+            argIndex++;
+        }
+        
+        node.concealName = data.concealName;
+        node.useSpeakerColor = data.useSpeakerColor;
+        node.textColor = Color.white;
+        
+        if (!data.useSpeakerColor) 
+        {
+            node.textColor = data.defaultColor;
+        }
+        dialogue.nodes.Add(node);
+        var last = dialogue.nodes.Count - 1;
+        
+        metadata.index = index;
+        if (skipSettingID) return;
+        if (!forcedID) dialogue.nodes[last] = SetNodeID(allNodes, node, nextID);
+        else dialogue.nodes[last] = SetNodeID(allNodes, node, node.ID, true);
+    }
+
+    private static int ParseResponseShortened (int index, string line, 
+        Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes,
+        Dictionary<string, Task> tasks, DialoguePropertyMetadata data, List<Dialogue.Node> allNodes)
+    {
+        
+        var node = GetDefaultNode();
+        allNodes.Add(node);
+        var responseText = "";
+        bool insertNode = true;
+        bool forcedID = false;
+
+        
+        bool skipToComma = false;
+        int brax = 0;
+        List<string> stx = null;
+        int argIndex = 0;
+
+        var queueDialogue = false;
+
+        line = GetValueScopeWithinLine(line, index);
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            skipToComma = true;
+            var lineSubstr = line.Substring(i);
+            //Debug.LogWarning(lineSubstr);
+
+            if (lineSubstr.StartsWith("D("))
+            {
+                if (argIndex > 0 && lineSubstr.StartsWith("D("))
+                {
+                    insertNode = false;
+                    DialogueRecursionMetadata metadata;
+                    ParseDialogueShortenedHelper(index, line, dialogue, localMap, out metadata, tasks, data, allNodes, responseText);
+                    index = metadata.index;
+                    nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
+                    queueDialogue = false;
+                    continue;
+                }
+                else queueDialogue = true;
+                continue;
+            }
+
+            var val = lineSubstr.Split(')')[0];
+            val = val.Split(',')[0].Trim();            
+            switch (argIndex)
+            {
+                case 0:    
+                    node.buttonText = val;
+                    responseText = node.buttonText;
+                    break;
+                case 1:
+                    if (val.StartsWith("End"))
+                    {
+                        node.action = Dialogue.DialogueAction.Exit;
+                    }
+                    else if (val.StartsWith("Call"))
+                    {
+                        node.action = Dialogue.DialogueAction.Call;
+                        node.functionID = val.Replace("Call(", "").Replace(")", "").Trim();
+                    }
+                    else if (val.StartsWith("SetID"))
+                    {
+                        node.nextNodes = new List<int>();
+                        node.action = Dialogue.DialogueAction.ForceToNextID;
+                        
+                        var parse = val.Replace("SetID(", "").Replace(")", "").Trim();
+                        node.nextNodes.Add(int.Parse(parse));
+                    }
+                    else if (val.StartsWith("Yard"))
+                    {
+                        node.action = Dialogue.DialogueAction.Yard;
+                    }
+                    else if (val.StartsWith("Trader"))
+                    {
+                        node.action = Dialogue.DialogueAction.Shop;
+                        try
+                        {
+                            var parse = val.Replace("Trader(", "").Replace(")", "").Trim();
+                            var inventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(CoreScriptsManager.instance.GetLocalMapString(parse));
+                            dialogue.traderInventory = inventory.parts;
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    else if (val.StartsWith("Upgrader"))
+                    {
+                        node.action = Dialogue.DialogueAction.Upgrader;
+                    }
+                    else if (val.StartsWith("Workshop"))
+                    {
+                        node.action = Dialogue.DialogueAction.Workshop;
+                    }
+                    else if (val.StartsWith("Fusion"))
+                    {
+                        node.action = Dialogue.DialogueAction.Fusion;
+                    }
+                    break;
+
+            }
+            argIndex++;
+        }
+        
+        if (queueDialogue)
+        {
+            insertNode = false;
+            DialogueRecursionMetadata metadata;
+            ParseDialogueShortenedHelper(index, line, dialogue, localMap, out metadata, tasks, data, allNodes, responseText);
+            index = metadata.index;
+            nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
+        }
+
+        if (insertNode)
+        {
+            if (!forcedID) node = SetNodeID(allNodes, node, nextID);
+            nextNodes.Add(node.ID);
+            dialogue.nodes.Add(node);
+            node.textColor = Color.white;
+        }
+
+        return index;
     }
 }
