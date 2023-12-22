@@ -157,9 +157,6 @@ public class CollisionManager : MonoBehaviour
             }
         }
         
-
-
-
         return false;
     }
 

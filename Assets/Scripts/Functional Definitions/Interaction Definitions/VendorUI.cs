@@ -264,7 +264,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         }
         var ent = creation.GetComponent<Entity>();
         ent.spawnPoint = vendor.GetPosition();
-        ent.faction.factionID = core.faction.factionID;
+        ent.faction = core.faction;
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
             ent.ID = SectorManager.instance.GetFreeEntityID();

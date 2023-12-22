@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static Entity;
 
 public class AirCraftAI : MonoBehaviour
 {
@@ -300,7 +301,7 @@ public class AirCraftAI : MonoBehaviour
             }
 
             // shouldn't tick if dead or in cutscene, give control to the cutscene
-            if (aggroTarget && !FactionManager.IsAllied(aggroTarget.faction.factionID, craft.faction.factionID) && !DialogueSystem.isInCutscene)
+            if (aggroTarget && !FactionManager.IsAllied(aggroTarget.faction, craft.faction) && !DialogueSystem.isInCutscene)
             {
                 if (aggroTarget.GetIsDead() || aggroTarget.IsInvisible)
                 {
@@ -487,7 +488,7 @@ public class AirCraftAI : MonoBehaviour
 
     public static T getNearestEntity<T>(Entity craft, bool enemy = true) where T : Entity
     {
-        int faction = craft.faction.factionID;
+        EntityFaction faction = craft.faction;
         Entity.TerrainType terrainType = craft.Terrain;
         if (craft is Drone drone)
         {
@@ -524,7 +525,7 @@ public class AirCraftAI : MonoBehaviour
 
             if (AIData.entities[i] is T)
             {
-                if ((FactionManager.IsAllied(AIData.entities[i].faction.factionID, faction) ^ !enemy) && faction != -1)
+                if ((FactionManager.IsAllied(AIData.entities[i].faction, faction) ^ !enemy) && faction.factionID != -1)
                 {
                     continue;
                 }

@@ -26,8 +26,6 @@ public class WeaponTargetingSystem : ITargetingSystem
         if (!IsValidTarget(target))
         {
             TargetManager.Enqueue(this, ability.category);
-            if (ability.Core as Outpost && ability.Core.faction.overrideFaction == 2 && target)
-//            Debug.LogWarning("TESTTEST " + " " + target.GetComponent<Entity>());
             return null;
         }
 

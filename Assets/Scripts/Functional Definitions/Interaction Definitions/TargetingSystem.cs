@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static Entity;
 
 public interface ITargetingSystem
 {
@@ -16,7 +17,6 @@ public class TargetingSystem : ITargetingSystem
 {
     private Transform target; // the transform of the target
     public Transform parent; // parent object
-    int faction;
     Entity ent;
 
     /// <summary>
@@ -27,7 +27,6 @@ public class TargetingSystem : ITargetingSystem
         // initialize instance fields
         target = null;
         this.parent = parent;
-        faction = GetEntity().faction.factionID;
 
         // sync up the reticle representations with the new targeting system
         if (GetEntity() as PlayerCore && ReticleScript.instance)

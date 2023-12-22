@@ -11,6 +11,7 @@ public class BattleZoneManager : MonoBehaviour
 
     float startTime = 0f;
     public int CreditsCollected = 0;
+    public bool overrideMode;
 
     public class Stats
     {
@@ -39,6 +40,7 @@ public class BattleZoneManager : MonoBehaviour
         ShellCore.OnPowerCollected += OnPowerCollected;
         CreditsCollected = 0;
         startTime = Time.time;
+        overrideMode = false;
     }
 
     private void OnDisable()
@@ -56,13 +58,17 @@ public class BattleZoneManager : MonoBehaviour
         stats.Clear();
     }
 
+    public int GetStatsFaction(Entity ent)
+    {
+        return overrideMode ? ent.faction.overrideFaction : ent.faction.factionID;
+    }
 
     void OnEntityDeath(Entity killed, Entity killer)
     {
-        Stats killedStats = stats.Find((x) => { return x.faction == killed.faction.factionID; });
+        Stats killedStats = stats.Find((x) => x.faction == GetStatsFaction(killed) );
         if (killedStats == null)
         {
-            killedStats = new Stats(killed.faction.factionID);
+            killedStats = new Stats(GetStatsFaction(killed));
             stats.Add(killedStats);
         }
 
@@ -73,10 +79,10 @@ public class BattleZoneManager : MonoBehaviour
 
         if (killer != null)
         {
-            Stats killerStats = stats.Find(x => x.faction == killer.faction.factionID);
+            Stats killerStats = stats.Find(x =>  x.faction == GetStatsFaction(killed) );
             if (killerStats == null)
             {
-                killerStats = new Stats(killer.faction.factionID);
+                killerStats = new Stats(GetStatsFaction(killed));
                 stats.Add(killerStats);
             }
 
@@ -95,8 +101,9 @@ public class BattleZoneManager : MonoBehaviour
         }
     }
 
-    void OnPowerCollected(int faction, int amount)
+    void OnPowerCollected(Entity ent, int amount)
     {
+        int faction = GetStatsFaction(ent);
         Stats block = stats.Find((x) => { return x.faction == faction; });
         if (block == null)
         {
@@ -105,6 +112,12 @@ public class BattleZoneManager : MonoBehaviour
         }
 
         block.power += amount;
+    }
+
+    private string GetFactionHighlight(Stats statBlock)
+    {
+        if (overrideMode) return $"{(statBlock.faction == PlayerCore.Instance.faction.overrideFaction ? "PLAYER" : "ENEMY" )}";
+        return $"<color={FactionManager.GetFactionColorName(statBlock.faction)}>{(statBlock.faction == 0 ? "PLAYER" : "ENEMY")}</color>";
     }
 
     public string[] GetStats()
@@ -118,7 +131,7 @@ public class BattleZoneManager : MonoBehaviour
         foreach (var statBlock in stats)
         {
             string str =
-                $"<color={FactionManager.GetFactionColorName(statBlock.faction)}>{(statBlock.faction == 0 ? "PLAYER" : "ENEMY")}</color>\n\n"
+                $"{GetFactionHighlight(statBlock)}\n\n"
                 + statBlock.kills + "\n"
                 + statBlock.deaths + "\n"
                 + (statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-") + "\n\n"
@@ -169,15 +182,15 @@ public class BattleZoneManager : MonoBehaviour
     {
         foreach (var target in targets)
         {
-            if (!SectorManager.instance.carriers.ContainsKey(target.faction.factionID))
+            if (!SectorManager.instance.carriers.ContainsKey(GetStatsFaction(target)))
             {
                 continue;
             }
 
-            var carrier = SectorManager.instance.carriers[target.faction.factionID];
+            var carrier = SectorManager.instance.carriers[GetStatsFaction(target)];
             if (target is ShellCore shellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
             {
-                shellCore.SetCarrier(SectorManager.instance.carriers[target.faction.factionID]);
+                shellCore.SetCarrier(SectorManager.instance.carriers[GetStatsFaction(target)]);
             }
         }
     }
@@ -189,9 +202,9 @@ public class BattleZoneManager : MonoBehaviour
         // Create dictionary entries for counts of existing target entities of each faction
         for (int i = 0; i < targets.Count; i++)
         {
-            if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction.factionID))
+            if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(GetStatsFaction(targets[i])))
             {
-                livingFactions.Add(targets[i].faction.factionID);
+                livingFactions.Add(GetStatsFaction(targets[i]));
             }
         }
         return livingFactions;
@@ -229,7 +242,7 @@ public class BattleZoneManager : MonoBehaviour
         {
             foreach (Entity playerEntity in targets)
             {
-                if (playerEntity && !playerEntity.GetIsDead() && livingFactions.Contains(playerEntity.faction.factionID) &&
+                if (playerEntity && !playerEntity.GetIsDead() && livingFactions.Contains(GetStatsFaction(playerEntity)) &&
                      playerEntity.networkAdapter && playerEntity.networkAdapter.isPlayer.Value)
                 {
                     HUDScript.AddScore(playerEntity.networkAdapter.playerName, 50);
@@ -241,7 +254,7 @@ public class BattleZoneManager : MonoBehaviour
         foreach (Entity playerEntity in targets)
         {
             if (!(playerEntity as PlayerCore)) continue;
-            if (livingFactions.Contains(playerEntity.faction.factionID))
+            if (livingFactions.Contains(GetStatsFaction(playerEntity)))
             {
                 AudioManager.PlayClipByID("clip_victory");
                 if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin == null) continue;
@@ -262,7 +275,7 @@ public class BattleZoneManager : MonoBehaviour
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server && DialogueSystem.Instance)
         {
-            DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction.factionID));
+            DialogueSystem.ShowBattleResults(livingFactions.Contains(GetStatsFaction(PlayerCore.Instance)));
         }
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && DialogueSystem.Instance)
         {
@@ -307,6 +320,11 @@ public class BattleZoneManager : MonoBehaviour
         if (!playing)
         {
             targets.Clear();
+        }
+
+        if (target.faction.overrideFaction != 0)
+        {
+            overrideMode = true;
         }
 
         if (target)

@@ -774,19 +774,19 @@ public class BattleAI : AIModule
             int enemyGroundStation = 0;
             for (int j = 0; j < AIData.entities.Count; j++)
             {
-                if (FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
+                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
                 {
                     ownGroundStation += 1;
                 }
-                if (!FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
+                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
                 {
                     enemyGroundStation += 1;
                 }
-                if (FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
+                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
                 {
                     ownTank += 1;
                 }
-                if (!FactionManager.IsAllied(AIData.entities[j].faction.factionID, craft.faction.factionID) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
+                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
                 {
                     enemyTank += 1;
                 }
@@ -803,7 +803,7 @@ public class BattleAI : AIModule
                     bool ownGroundExists = false;
                     for (int j = 0; j < AIData.entities.Count; j++)
                     {
-                        if (AIData.entities[j].faction.factionID == craft.faction.factionID && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
+                        if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
                         {
                             ownGroundExists = true;
                             break;
@@ -977,7 +977,7 @@ public class BattleAI : AIModule
             {
                 foreach (var tank in AIData.tanks)
                 {
-                    if (!FactionManager.IsAllied(tank.faction.factionID, craft.faction.factionID)) continue;
+                    if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
                     if (Vector2.SqrMagnitude(tank.transform.position - pickupTargetFlag.transform.position) > 25) continue;
                     shellcore.SetTractorTarget(tank.GetComponentInChildren<Draggable>());
                     break;
@@ -1046,7 +1046,7 @@ public class BattleAI : AIModule
         Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
         for (int i = 0; i < targets.Length; i++)
         {
-            if (!FactionManager.IsAllied(targets[i].faction.factionID, craft.faction.factionID) && targets[i].Terrain == Entity.TerrainType.Ground)
+            if (!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
             {
                 return true;
             }

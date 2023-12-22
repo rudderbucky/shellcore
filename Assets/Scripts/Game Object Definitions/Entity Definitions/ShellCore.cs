@@ -9,7 +9,7 @@ using static MasterNetworkAdapter;
 /// </summary>
 public class ShellCore : AirCraft, IHarvester, IOwner
 {
-    public delegate void PowerCollectDelegate(int faction, int amount);
+    public delegate void PowerCollectDelegate(Entity ent, int amount);
 
     public static PowerCollectDelegate OnPowerCollected;
 
@@ -156,7 +156,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         totalPower = Mathf.Min(5000, totalPower + power);
         if (power > 0 && OnPowerCollected != null)
         {
-            OnPowerCollected.Invoke(faction.factionID, Mathf.RoundToInt(power));
+            OnPowerCollected.Invoke(this, Mathf.RoundToInt(power));
         }
     }
 

@@ -42,7 +42,7 @@ public class SectorManager : MonoBehaviour
     [HideInInspector]
     public string resourcePath = "";
 
-    private Dictionary<EntityFaction, int> stationsCount = new Dictionary<EntityFaction, int>();
+    private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
     public Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
@@ -125,7 +125,11 @@ public class SectorManager : MonoBehaviour
         stationsCount.Clear();
         foreach (IVendor vendor in stations)
         {
-            var stationFaction = (vendor as Entity).faction;
+            var entFaction = faction.overrideFaction == 0 ? faction.factionID : faction.overrideFaction;
+
+            var sf = (vendor as Entity).faction;
+        
+            var stationFaction = sf.overrideFaction == 0 ? sf.factionID : sf.overrideFaction;
             if (!stationsCount.ContainsKey(stationFaction))
             {
                 stationsCount.Add(stationFaction, 0);
@@ -136,9 +140,15 @@ public class SectorManager : MonoBehaviour
 
         var cnt = 0;
 
+        if (faction.overrideFaction != 0)
+        {
+            return stationsCount[faction.overrideFaction] * 3;
+        }
+
         foreach (var f in FactionManager.GetAllAlliedFactions(faction))
         {
-            if (stationsCount.ContainsKey(f)) cnt += stationsCount[f] * 3;
+            var id = f.overrideFaction == 0 ? f.factionID : f.overrideFaction;
+            if (stationsCount.ContainsKey(id)) cnt += stationsCount[id] * 3;
         }
 
         return cnt;

@@ -63,7 +63,7 @@ public class CoreScriptsSequence : MonoBehaviour
         FinishMusicOverride,
         RandomFloat,
         SetFactionRelations,
-        SetPlayerOverrideFaction,
+        SetOverrideFaction,
         AddTextToFlag,
         ChangeCharacterBlueprint
     }
@@ -223,11 +223,12 @@ public class CoreScriptsSequence : MonoBehaviour
                     var flagName = GetArgument(inst.arguments, "flagName");
                     ProximityInteractScript.AddTextToFlag(text, AIData.flags.Find(f => f.name == flagName));
                     break;
-                case InstructionCommand.SetPlayerOverrideFaction:
+                case InstructionCommand.SetOverrideFaction:
                     var overrideFstr = GetArgument(inst.arguments, "overrideFaction");
+                    var entityID = GetArgument(inst.arguments, "entityID");
                     var overrideFac = 0;
                     if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
-                    PlayerCore.Instance.faction.overrideFaction = overrideFac;
+                    AIData.entities.Find(e => e.ID == entityID).faction.overrideFaction = overrideFac;
                     break;
                 case InstructionCommand.SetFactionRelations:
                     var factionID = GetArgument(inst.arguments, "factionID");
@@ -285,7 +286,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.AddObjectiveMarker: 
                     var sectorName = GetArgument(inst.arguments, "sectorName");
                     var missionName = context.missionName;
-                    var entityID = GetArgument(inst.arguments, "entityID");
+                    entityID = GetArgument(inst.arguments, "entityID");
                     flagName = GetArgument(inst.arguments, "flagName");
                     var ID = GetArgument(inst.arguments, "ID");
                     ObjectiveMarker.AddObjectiveMarker(entityID, sectorName, missionName, flagName, ID);
