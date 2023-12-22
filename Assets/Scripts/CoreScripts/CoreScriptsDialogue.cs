@@ -447,6 +447,9 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
                         node.ID = int.Parse(val);
                         forcedID = true;
                         break;
+                    case 4:                    
+                        node.task = tasks[val];
+                        break;
                     
                 }
             }  

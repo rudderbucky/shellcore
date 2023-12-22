@@ -172,21 +172,26 @@ public class AirCraftAI : MonoBehaviour
 
     public void setPath(NodeEditorFramework.Standard.PathData data, UnityAction OnPathEnd = null, bool patrolling = false)
     {
-        craft.isPathing = true;
+
+        if (data == null || data.waypoints == null || data.waypoints.Count == 0)
+        {
+            craft.isPathing = false;
+            return;
+        }
+
+
         Path path = ScriptableObject.CreateInstance<Path>();
         path.waypoints = new List<Path.Node>();
 
-        if (data != null && data.waypoints != null)
+        craft.isPathing = true;
+        for (int i = 0; i < data.waypoints.Count; i++)
         {
-            for (int i = 0; i < data.waypoints.Count; i++)
+            path.waypoints.Add(new Path.Node()
             {
-                path.waypoints.Add(new Path.Node()
-                {
-                    ID = data.waypoints[i].ID,
-                    position = data.waypoints[i].position,
-                    children = data.waypoints[i].children
-                });
-            }
+                ID = data.waypoints[i].ID,
+                position = data.waypoints[i].position,
+                children = data.waypoints[i].children
+            });
         }
 
         setMode(AIMode.Path);

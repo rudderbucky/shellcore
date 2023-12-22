@@ -14,11 +14,11 @@ MissionTrigger(
 
 Text("Truth_makeshift_architect_d1", "I've been scanning nearby sector data for Aristu's signature, and oh dear, they've been everywhere.")
 Text("Truth_makeshift_architect_d2", "They're still around!")
-Text("Truth_makeshift_architect_d3", "Quite relieving. We still need to find them though. I’ve added a marker to your map close to where they seem to be spending most of their time. Go pay them a visit, will you?")
+Text("Truth_makeshift_architect_d3", "Quite relieving. We still need to find them physically though. I’ve added a marker to your map close to where they seem to be spending most of their time. Go pay them a visit, will you?")
 Text("Truth_makeshift_architect_d4", "Sure.")
 Text("Truth_makeshift_architect_d5", "Hold on, I’ve got something else I need to do.")
 Text("Truth_makeshift_architect_d6", "Go find Aristu, I've marked their location on your map.")
-Text("Truth_makeshift_architect_d7", "That's so far away... wait, maybe there's an easier way to Aristu close by here.")
+Text("Truth_makeshift_architect_d7", "That's so far away... wait, maybe there's an easier way to Aristu close by.")
 Text("Truth_makeshift_architect_d8", "Head to Kappa to the north of here. I've heard it's a transportation hub.")
 Text("Truth_makeshift_architect_d9", "Okay.")
 Text("Truth_makeshift_architect_task_objectives", "- Head to the marked sectors on the map and find Aristu.")
@@ -69,6 +69,12 @@ Function(
     name=Truth_start,
     sequence=(
         ConditionBlock(
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=2,
+                comp=Eq,
+                sequence=()
+            ),
             Comparison(
                 val1=$$$Truth_checkpoint,
                 val2=1,
@@ -613,20 +619,156 @@ Function(
 Function(
     name=Truth_post_aristu_cs1,
     sequence=(
-        FinishCutscene()
+        FinishCutscene(),
+        FinishTask(),
+        SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_d),
+        SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_d),
     )
 )
 
-Text("Truth_sisyphos_d1", "So... you've come to us to fight in Lambda. Prove your loyalty to the Exterminators.")
-Text("Truth_sisyphos_d2", "The defects and those who oppose us will know pain.")
-Text("Truth_sisyphos_d3", "On second thought, no thanks.")
+Text("Truth_lambda_task_obj1", "- Head to BattleZone Lambda and destroy the Conservationist forces.
+- Return to Sisyphos for your reward.")
+Text("Truth_lambda_task_obj2", "- Head to BattleZone Lambda and destroy the Exterminator forces.
+- Return to Heracles for your reward.")
 
-Text("Truth_heracles_d1", "You're here to help us take Lambda from the Exterminators and protect life from wanton destruction. We will help you.")
-Text("Truth_heracles_d2", "We're going to save everyone.")
-Text("Truth_heracles_d3", "On second thought, no thanks.")
+Task(
+    taskID=Truth_lambda_task_heracles,
+    objectives=Truth_lambda_task_obj2
+)
 
-Text("Truth_starprism_fight_d", "So it has come to battle... Please know we do not hold grudges fellow ShellCore.")
-Text("Truth_heavensgate_fight_d", "By clearing this zone for the Exterminators I am building a future for all conscious existence.")
+Task(
+    taskID=Truth_lambda_task_sisyphos,
+    objectives=Truth_lambda_task_obj1
+)
+
+Text("Truth_lambda_task_sisyphos_d1", "So... you've come to us to fight in Lambda. Prove your loyalty to the Exterminators.")
+Text("Truth_lambda_task_sisyphos_d2", "The defects and those who oppose us will know pain.")
+Text("Truth_lambda_task_sisyphos_d3", "On second thought, no thanks.")
+D(
+    Truth_lambda_task_sisyphos_d1,
+    sisyphos,
+    Truth_lambda_task_sisyphos_d,
+    ,
+    Truth_lambda_task_sisyphos,
+    R(
+        Truth_lambda_task_sisyphos_d2,
+        Call(Truth_lambda_task_sisyphos_accept)
+    ),
+    R(
+        Truth_lambda_task_sisyphos_d3,
+        End()
+    )
+)
+
+Text("Truth_lambda_task_accept_d1", "Go take Lambda for us.")
+Text("Truth_lambda_task_accept_d2", "Okay.")
+
+D(
+    Truth_lambda_task_accept_d1,
+    sisyphos,
+    Truth_lambda_task_sisyphos_accept_d,
+    R(
+        Truth_lambda_task_accept_d2,
+        End()
+    )
+)
+
+D(
+    Truth_lambda_task_accept_d1,
+    heracles,
+    Truth_lambda_task_heracles_accept_d,
+    R(
+        Truth_lambda_task_accept_d2,
+        End()
+    )
+)
+
+Text("Truth_lambda_task_sisyphos_reject_d1", "You think you can fight the Exterminators away from Lambda? Not a chance.")
+Text("Truth_lambda_task_sisyphos_reject_d2", "Watch me.")
+D(
+    Truth_lambda_task_sisyphos_reject_d1,
+    sisyphos,
+    Truth_lambda_task_sisyphos_reject_d,
+    R(
+        Truth_lambda_task_sisyphos_reject_d2,
+        End()
+    )
+)
+
+
+Text("Truth_lambda_task_heracles_d1", "You're here to help us take Lambda from the Exterminators and protect life from wanton destruction. We will help you.")
+Text("Truth_lambda_task_heracles_d2", "We're going to save everyone.")
+Text("Truth_lambda_task_heracles_d3", "On second thought, no thanks.")
+D(
+    Truth_lambda_task_heracles_d1,
+    heracles,
+    Truth_lambda_task_heracles_d,
+    ,
+    Truth_lambda_task_heracles,
+    R(
+        Truth_lambda_task_heracles_d2,
+        Call(Truth_lambda_task_heracles_accept)
+    ),
+    R(
+        Truth_lambda_task_heracles_d3,
+        End()
+    )
+)
+
+
+
+
+Function(
+    name=Truth_lambda_task_sisyphos_accept,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_reject_d),
+        SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_accept_d)
+    )
+)
+
+Function(
+    name=Truth_lambda_task_heracles_accept,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_reject_d),
+        SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_accept_d)
+    )
+)
+
+Function(
+    name=Truth_lambda_task_common,
+    sequence=(
+        AddObjectiveMarker(
+            ID=Truth_lambdaMarker,
+            sectorName=BattleZone Lambda
+        ),
+        EnterSector(
+            name=BattleZone Lambda,
+            sequence=(
+                RemoveObjectiveMarker(ID=Truth_lambdaMarker)
+            )
+        )
+    )
+)
+
+Text("Truth_lambda_task_heracles_reject_d1", "I see you're helping Sisyphos in Lambda. I hope you aren't turned into dust by our forces.")
+Text("Truth_lambda_task_heracles_reject_d2", "Right back at you buddy.")
+D(
+    Truth_lambda_task_heracles_reject_d1,
+    heracles,
+    Truth_lambda_task_heracles_reject_d,
+    R(
+        Truth_lambda_task_heracles_reject_d2,
+        End()
+    )
+)
+
+
+Text("Truth_lambda_task_starprism_fight_d", "So it has come to battle... Please know we do not hold grudges fellow ShellCore.")
+Text("Truth_lambda_task_heavensgate_fight_d", "By clearing this zone for the Exterminators I am building a future for all conscious existence.")
 
 Text("Truth_post_lambda_heracles_d1", "Congratulations...")
 Text("Truth_post_lambda_heracles_d2", "Is something wrong?")
@@ -634,7 +776,7 @@ Text("Truth_post_lambda_heracles_d3", "Well... the recent aggression has unfortu
 Text("Truth_post_lambda_heracles_d4", "We need to stop them!")
 Text("Truth_post_lambda_heracles_d5", "This really doesn't bode well... I don't want this to continue, especially so close to Kappa... We decided to take Lambda precisely because it was so far away...")
 Text("Truth_post_lambda_heracles_d6", "Heracles, if we don't stop them now, they'll keep going.")
-Text("Truth_post_lambda_heracles_d7", "You're right, we shouldn't engage in fights here...")
+Text("Truth_post_lambda_heracles_d7", "You're right, we shouldn't engage in more fighting...")
 Text("Truth_post_lambda_heracles_d8", "...")
 Text("Truth_post_lambda_heracles_d9", "You need to make a decision.")
 Text("Truth_post_lambda_heracles_d10", "Right. I've weighed all my thoughts and... we're fighting. Talk again.")
