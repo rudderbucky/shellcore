@@ -143,7 +143,7 @@ public class Tank : GroundCraft, IOwnable
             if (!targets[i] ||
                 targets[i].IsInvisible ||
                 targets[i] == this ||
-                FactionManager.IsAllied(faction.factionID, targets[i].faction.factionID) ||
+                FactionManager.IsAllied(faction, targets[i].faction) ||
                 !Weapons[0].CheckCategoryCompatibility(targets[i]))
             {
                 targets.RemoveAt(i);

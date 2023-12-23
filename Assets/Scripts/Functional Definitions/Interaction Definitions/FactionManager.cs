@@ -103,6 +103,11 @@ public class FactionManager : MonoBehaviour
         return fac;
     }
 
+    public static int GetDistinguishingInteger(EntityFaction faction)
+    {
+        if (faction.overrideFaction != 0) return faction.overrideFaction;
+        return faction.factionID;
+    }
     public static bool FactionExists(int faction)
     {
         if (faction < 0 || faction >= 32 || instance.factions.Length <= faction)

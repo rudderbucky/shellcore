@@ -90,10 +90,11 @@ public class SpawnDrone : ActiveAbility
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
         if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
         {
-            var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == Core.faction.factionID);
+            var facID = Core.faction.overrideFaction == 0 ? Core.faction.factionID : Core.faction.overrideFaction;
+            var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == facID);
             if (stats == null)
             {
-                stats = new BattleZoneManager.Stats(Core.faction.factionID);
+                stats = new BattleZoneManager.Stats(facID);
                 SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Add(stats);
             }
             stats.droneSpawns++;

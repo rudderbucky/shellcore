@@ -129,9 +129,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             return null;
         }
 
-        if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(faction.factionID))
+        var facID = FactionManager.GetDistinguishingInteger(faction);
+        if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(facID))
         {
-            carrier = SectorManager.instance.carriers[faction.factionID];
+            carrier = SectorManager.instance.carriers[facID];
             if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
             {
                 carrier = null;
@@ -272,7 +273,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void Update()
     {
         base.Update();
-
         if (!SystemLoader.AllLoaded) return;
         // If got away from Yard while isYardRepairing, FinalizeRepair immediately.
         if (isYardRepairing)

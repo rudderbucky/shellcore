@@ -140,6 +140,24 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public delegate void EntityRangeCheckDelegate(float range);
     public EntityRangeCheckDelegate RangeCheckDelegate;
     private bool rpcCalled = false;
+
+    public IEnumerator pinDownCosmetic;
+
+    public void StopPinDownCosmetic()
+    {
+        if (pinDownCosmetic != null)
+        {
+            StopCoroutine(pinDownCosmetic);
+            pinDownCosmetic = null;
+        }
+
+        foreach (var part in GetComponentsInChildren<ShellPart>())
+        {
+            var x = part.GetComponentInChildren<MissileAnimationScript>();
+            if (x) Destroy(x.gameObject);
+        }
+    }
+
     public void AttemptCreateNetworkObject(bool isPlayer)
     {
         if (!networkAdapter && !rpcCalled) // should only happen to players, drones, towers, tanks, or turrets
@@ -1114,6 +1132,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected virtual void OnDeath()
     {
+        StopPinDownCosmetic();
         // set death, interactibility and immobility
         if (this is PlayerCore core) 
         {
@@ -1254,6 +1273,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void OnDestroy()
     {
+
         if (AIData.entities.Contains(this))
         {
             AIData.entities.Remove(this);
@@ -1391,7 +1411,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         foreach (var aura in AIData.auras)
         {
-            if (aura.Core.faction.factionID != faction.factionID) continue;
+            if (!FactionManager.IsAllied(aura.Core.faction, faction)) continue;
             if (Vector2.Distance(aura.transform.position, transform.position) > aura.GetRange()) continue;
             switch (aura.type)
             {

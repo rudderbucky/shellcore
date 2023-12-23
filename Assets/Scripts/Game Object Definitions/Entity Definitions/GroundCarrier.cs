@@ -62,13 +62,15 @@ public class GroundCarrier : GroundConstruct, ICarrier
             base.Update();
             TargetManager.Enqueue(targeter);
 
-            if (!SectorManager.instance.carriers.ContainsKey(faction.factionID)
-                || (SectorManager.instance.carriers[faction.factionID] == null || SectorManager.instance.carriers[faction.factionID].Equals(null))
-                || SectorManager.instance.carriers[faction.factionID].GetIsDead())
+            var facID = FactionManager.GetDistinguishingInteger(faction);
+
+            if (!SectorManager.instance.carriers.ContainsKey(facID)
+                || (SectorManager.instance.carriers[facID] == null || SectorManager.instance.carriers[facID].Equals(null))
+                || SectorManager.instance.carriers[facID].GetIsDead())
             {
                 if (!GetIsDead())
                 {
-                    SectorManager.instance.carriers[faction.factionID] = this;
+                    SectorManager.instance.carriers[facID] = this;
                 }
             }
         }

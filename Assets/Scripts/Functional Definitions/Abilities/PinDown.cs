@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 /// <summary>
 /// Immobilizes the nearest enemy
@@ -48,20 +49,45 @@ public class PinDown : ActiveAbility
         {
             missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
             LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
+            lineRenderer.useWorldSpace = false;
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
             MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
         }
 
         var missileColor = new Color(0.8F, 1F, 1F, 0.9F);
 
-        foreach (var part in entity.GetComponentsInChildren<ShellPart>())
+        if (entity.pinDownCosmetic != null)
         {
-            var x = Instantiate(missileLinePrefab, part.transform); // instantiate
-            x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
-            x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
-            if (destroy) Destroy(x, PINDOWN_ACTIVE_DURATION);
+            entity.StopPinDownCosmetic();
+        }
+        entity.pinDownCosmetic = PindownCoroutine(missileColor, destroy, entity);
+        entity.StartCoroutine(entity.pinDownCosmetic);
+        return;
+    }
+
+    static IEnumerator PindownCoroutine(Color missileColor, bool destroy, Entity entity)
+    {
+        float time = 0;
+        while (time < PINDOWN_ACTIVE_DURATION || !destroy)
+        {
+            foreach (var part in entity.GetComponentsInChildren<ShellPart>())
+            {
+                var localPosition = new Vector2();
+                var extents = part.GetComponent<SpriteRenderer>().sprite.bounds.extents;
+                localPosition.x = Random.Range(-extents.x, extents.x);
+                localPosition.y = Random.Range(-extents.y, extents.y);
+                var x = Instantiate(missileLinePrefab, part.transform); // instantiate
+                x.transform.localPosition = localPosition;
+                x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
+                x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
+                Destroy(x, 0.3F);
+            }
+            time += 0.25F;
+            yield return new WaitForSeconds(0.25F);
         }
     }
+
+
     /// <summary>
     /// Immobilizes a nearby enemy
     /// </summary>

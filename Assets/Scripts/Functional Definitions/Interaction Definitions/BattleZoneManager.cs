@@ -79,10 +79,10 @@ public class BattleZoneManager : MonoBehaviour
 
         if (killer != null)
         {
-            Stats killerStats = stats.Find(x =>  x.faction == GetStatsFaction(killed) );
+            Stats killerStats = stats.Find(x =>  x.faction == GetStatsFaction(killer) );
             if (killerStats == null)
             {
-                killerStats = new Stats(GetStatsFaction(killed));
+                killerStats = new Stats(GetStatsFaction(killer));
                 stats.Add(killerStats);
             }
 
@@ -124,7 +124,15 @@ public class BattleZoneManager : MonoBehaviour
     {
         string[] strings = new string[stats.Count];
 
-        stats.Sort((a, b) => { return a.faction < b.faction ? -1 : 1; });
+        stats.Sort((a, b) => {
+            if (overrideMode && a.faction == PlayerCore.Instance.faction.overrideFaction)
+                return -1;
+            if (overrideMode && b.faction == PlayerCore.Instance.faction.overrideFaction)
+                return 1;
+                    
+            return a.faction < b.faction ? -1 : 1; 
+        });
+
 
         int index = 0;
 
@@ -207,6 +215,7 @@ public class BattleZoneManager : MonoBehaviour
                 livingFactions.Add(GetStatsFaction(targets[i]));
             }
         }
+        Debug.LogWarning(livingFactions.Count);
         return livingFactions;
     }
 
@@ -217,8 +226,10 @@ public class BattleZoneManager : MonoBehaviour
         {
             for (int j = 0; j < livingFactions.Count; j++)
             {
-                if (!FactionManager.IsAllied(livingFactions[i], livingFactions[j]) ||
-                    !FactionManager.IsAllied(livingFactions[j], livingFactions[i]))
+                var regularEnemies = !FactionManager.IsAllied(livingFactions[i], livingFactions[j]) ||
+                    !FactionManager.IsAllied(livingFactions[j], livingFactions[i]);
+                
+                if (regularEnemies || overrideMode)
                 {
                     allAllied = false;
                     break;
@@ -295,9 +306,7 @@ public class BattleZoneManager : MonoBehaviour
 
             if (SectorManager.instance == null || SectorManager.instance.carriers == null) return;
             if (targets == null) return;
-
             ResetCarriers();
-
             var livingFactions = GetLivingFactions();
 
             bool allAllied = GetAllFactionsAllied(livingFactions);
@@ -317,11 +326,6 @@ public class BattleZoneManager : MonoBehaviour
             targets = new List<Entity>();
         }
 
-        if (!playing)
-        {
-            targets.Clear();
-        }
-
         if (target.faction.overrideFaction != 0)
         {
             overrideMode = true;
@@ -330,7 +334,9 @@ public class BattleZoneManager : MonoBehaviour
         if (target)
         {
             if (!opposingFactionAdded && targets.Exists(e => !FactionManager.IsAllied(e.GetFaction(), target.GetFaction())))
+            {
                 opposingFactionAdded = true;
+            }
             playing = true;
         }
 

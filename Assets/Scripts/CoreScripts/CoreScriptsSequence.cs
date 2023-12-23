@@ -549,10 +549,10 @@ public class CoreScriptsSequence : MonoBehaviour
                         switch (type)
                         {
                             case "PinDown":
-                                foreach (var part in data.GetComponentsInChildren<ShellPart>())
+
+                                if (data.pinDownCosmetic != null)
                                 {
-                                    var x = part.GetComponentInChildren<MissileAnimationScript>();
-                                    if (x) Destroy(x.gameObject);
+                                    data.StopPinDownCosmetic();
                                 }
                                 break;
                         }
@@ -879,6 +879,7 @@ public class CoreScriptsSequence : MonoBehaviour
             Sector.LevelEntity entityData = new Sector.LevelEntity
             {
                 faction = data.faction,
+                overrideFaction = overrideFaction,
                 name = data.name,
                 position = coords,
                 ID = data.ID
@@ -896,6 +897,7 @@ public class CoreScriptsSequence : MonoBehaviour
             Sector.LevelEntity entityData = new Sector.LevelEntity
             {
                 faction = faction,
+                overrideFaction = overrideFaction,
                 name = name,
                 position = coords,
                 ID = entityID

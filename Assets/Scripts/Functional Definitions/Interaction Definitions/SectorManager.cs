@@ -140,7 +140,7 @@ public class SectorManager : MonoBehaviour
 
         var cnt = 0;
 
-        if (faction.overrideFaction != 0)
+        if (faction.overrideFaction != 0 && stationsCount.ContainsKey(faction.overrideFaction))
         {
             return stationsCount[faction.overrideFaction] * 3;
         }
@@ -891,6 +891,7 @@ public class SectorManager : MonoBehaviour
     {
         GameObject gObj = new GameObject(data.name);
         string json = null;
+        var trueFaction = data.overrideFaction != 0 ? data.overrideFaction : data.faction;
         switch (blueprint.intendedType)
         {
             case EntityBlueprint.IntendedType.ShellCore:
@@ -919,13 +920,15 @@ public class SectorManager : MonoBehaviour
                             if (MinimapArrowScript.instance && !(shellcore is PlayerCore))
                             {
                                 shellcore.faction.factionID = data.faction;
+                                shellcore.faction.overrideFaction = data.overrideFaction;
+                                if (shellcore.faction.overrideFaction != 0) shellcore.ID = data.ID;
                                 MinimapArrowScript.instance.AddCoreArrow(shellcore);
                             }
 
                             // set the carrier of the shellcore to the associated faction's carrier
-                            if (carriers.ContainsKey(data.faction))
+                            if (carriers.ContainsKey(trueFaction))
                             {
-                                shellcore.SetCarrier(carriers[data.faction]);
+                                shellcore.SetCarrier(carriers[trueFaction]);
                             }
 
                             battleZone.AddTarget(shellcore);
@@ -1026,17 +1029,23 @@ public class SectorManager : MonoBehaviour
 
                 blueprint.entityName = data.name;
                 AirCarrier carrier = gObj.AddComponent<AirCarrier>();
-                if (!carriers.ContainsKey(data.faction))
+                if (!carriers.ContainsKey(trueFaction))
                 {
-                    carriers.Add(data.faction, carrier);
+                    carriers.Add(trueFaction, carrier);
                     if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host 
-                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction.factionID)
+                        && PlayerCore.Instance && trueFaction == PlayerCore.Instance.faction.factionID)
                     {
                         PlayerCore.Instance.Warp(data.position);
                     }
                 }
-
                 carrier.sectorMngr = this;
+
+                if (SectorManager.instance.current.type == SectorType.BattleZone)
+                {
+                    carrier.faction.factionID = data.faction;
+                    carrier.faction.overrideFaction = data.overrideFaction;
+                    AddTarget(carrier);
+                }
                 break;
             case EntityBlueprint.IntendedType.GroundCarrier:
                 json = data.blueprintJSON;
@@ -1047,17 +1056,25 @@ public class SectorManager : MonoBehaviour
 
                 blueprint.entityName = data.name;
                 GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
-                if (!carriers.ContainsKey(data.faction))
+                trueFaction = data.overrideFaction == 0 ? data.faction : data.overrideFaction;
+                if (!carriers.ContainsKey(trueFaction))
                 {
-                    carriers.Add(data.faction, gcarrier);
+                    carriers.Add(trueFaction, gcarrier);
                     if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host 
-                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction.factionID)
+                        && PlayerCore.Instance && trueFaction == PlayerCore.Instance.faction.factionID)
                     {
                         PlayerCore.Instance.Warp(data.position);
                     }
                 }
 
                 gcarrier.sectorMngr = this;
+
+                if (SectorManager.instance.current.type == SectorType.BattleZone)
+                {
+                    gcarrier.faction.factionID = data.faction;
+                    gcarrier.faction.overrideFaction = data.overrideFaction;
+                    AddTarget(gcarrier);
+                }
                 break;
             case EntityBlueprint.IntendedType.Yard:
                 json = data.blueprintJSON;
@@ -1286,9 +1303,9 @@ public class SectorManager : MonoBehaviour
         if (target is ShellCore shellcore)
         {
             // set the carrier of the shellcore to the associated faction's carrier
-            if (carriers.ContainsKey(shellcore.faction.factionID))
+            if (carriers.ContainsKey(FactionManager.GetDistinguishingInteger(shellcore.faction)))
             {
-                shellcore.SetCarrier(carriers[shellcore.faction.factionID]);
+                shellcore.SetCarrier(carriers[FactionManager.GetDistinguishingInteger(shellcore.faction)]);
             }
 
             // add minimap arrow
@@ -1335,9 +1352,9 @@ public class SectorManager : MonoBehaviour
                 {
                     var playerComp = player.GetComponent<PlayerCore>();
                     battleZone.AddTarget(playerComp);
-                    if (carriers.ContainsKey(playerComp.faction.factionID))
+                    if (carriers.ContainsKey(FactionManager.GetDistinguishingInteger(playerComp.faction)))
                     {
-                        playerComp.SetCarrier(carriers[playerComp.faction.factionID]);
+                        playerComp.SetCarrier(carriers[FactionManager.GetDistinguishingInteger(playerComp.faction)]);
                     }
 
                     foreach (var partyMember in PartyManager.instance.partyMembers)
@@ -1345,9 +1362,9 @@ public class SectorManager : MonoBehaviour
                         if (!partyMember || partyMember.GetIsDead()) continue;
                         partyMember.GetAI().setMode(AirCraftAI.AIMode.Battle);
                         battleZone.AddTarget(partyMember);
-                        if (carriers.ContainsKey(partyMember.faction.factionID))
+                        if (carriers.ContainsKey(FactionManager.GetDistinguishingInteger(partyMember.faction)))
                         {
-                            partyMember.SetCarrier(carriers[partyMember.faction.factionID]);
+                            partyMember.SetCarrier(carriers[FactionManager.GetDistinguishingInteger(partyMember.faction)]);
                         }
                     }
                 }
