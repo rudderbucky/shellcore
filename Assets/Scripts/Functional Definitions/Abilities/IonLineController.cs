@@ -245,7 +245,7 @@ public class IonLineController : MonoBehaviour
         {
             if (!targetingSystem.GetTarget() && duration > 0)
             {
-                duration = 0;
+                duration -= Time.deltaTime;
             }
 
             if (line.startWidth > startWidth)
