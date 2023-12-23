@@ -8,6 +8,7 @@ using static CoreScriptsManager;
 using static Entity;
 using static SectorManager;
 using System.Globalization;
+using NodeEditorFramework.Standard;
 
 public class CoreScriptsCondition : MonoBehaviour
 {
@@ -181,6 +182,24 @@ public class CoreScriptsCondition : MonoBehaviour
                 data.block = cb;
                 CoreScriptsManager.instance.fusionConditions.Add(ID, data);
                 break;
+            case ConditionType.WinBattleZone:
+                BattlezoneWonDelegate del = (s) => BattleEnd(s, cb, c);
+                CoreScriptsManager.OnBattleWin += del;
+                CoreScriptsManager.instance.battleWinConditions.Add(ID, del);
+                break;
+            case ConditionType.WinSiegeZone:
+                SiegeZoneWonDelegate sdel = (s) => BattleEnd(s, cb, c);
+                CoreScriptsManager.OnSiegeWin += sdel;
+                CoreScriptsManager.instance.siegeWinConditions.Add(ID, sdel);
+                break;
+        }
+    }
+    private static void BattleEnd(string sector, ConditionBlock cb, Condition c)
+    {
+        var sectorName = CoreScriptsSequence.GetArgument(c.arguments, "sectorName");
+        if (sector == sectorName)
+        {
+            SatisfyCondition(c, cb);
         }
     }
 
@@ -262,8 +281,14 @@ public class CoreScriptsCondition : MonoBehaviour
                 CoreScriptsManager.instance.entityDeathDelegates.Remove(ID);
                 break;
             case ConditionType.WinBattleZone:
+                if (!CoreScriptsManager.instance.battleWinConditions.ContainsKey(ID)) break;
+                CoreScriptsManager.OnBattleWin -= CoreScriptsManager.instance.battleWinConditions[ID];
+                CoreScriptsManager.instance.battleWinConditions.Remove(ID);
                 break;
             case ConditionType.WinSiegeZone:
+                if (!CoreScriptsManager.instance.siegeWinConditions.ContainsKey(ID)) break;
+                CoreScriptsManager.OnSiegeWin -= CoreScriptsManager.instance.siegeWinConditions[ID];
+                CoreScriptsManager.instance.siegeWinConditions.Remove(ID);
                 break;
             case ConditionType.EnterSector:
                 if (!CoreScriptsManager.instance.sectorLoadDelegates.ContainsKey(ID)) break;

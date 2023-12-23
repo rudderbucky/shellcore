@@ -25,13 +25,19 @@ public class CoreScriptsManager : MonoBehaviour
     public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
     public Dictionary<string, ProximityData> distanceConditions = new Dictionary<string, ProximityData>();
     public Dictionary<string, FusionData> fusionConditions = new Dictionary<string, FusionData>();
-
+    public Dictionary<string, BattlezoneWonDelegate> battleWinConditions = new Dictionary<string, BattlezoneWonDelegate>();
+    public Dictionary<string, SiegeZoneWonDelegate> siegeWinConditions = new Dictionary<string, SiegeZoneWonDelegate>();
     private List<Context> missionTriggers = new List<Context>();
     private List<Context> startTriggers = new List<Context>();
     private List<Context> sectorTriggers = new List<Context>();     
     public static string[] paths;
     public delegate void VariableChangedDelegate(string variable);
     public static VariableChangedDelegate OnVariableUpdate;
+    public delegate void BattlezoneWonDelegate(string sectorName);
+    public static BattlezoneWonDelegate OnBattleWin;
+    public static BattlezoneWonDelegate OnBattleLose;
+    public delegate void SiegeZoneWonDelegate(string sectorName);
+    public static SiegeZoneWonDelegate OnSiegeWin;
     public static CoreScriptsManager instance;
     public void ClearAllData()
     {
@@ -41,6 +47,8 @@ public class CoreScriptsManager : MonoBehaviour
         tasks.Clear();
         conditionBlocks.Clear();
         entityDeathDelegates.Clear();
+        battleWinConditions.Clear();
+        siegeWinConditions.Clear();
         sectorLoadDelegates.Clear();
         variableChangedDelegates.Clear();
         timerCoroutines.Clear();

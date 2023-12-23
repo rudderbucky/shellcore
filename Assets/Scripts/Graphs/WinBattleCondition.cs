@@ -1,5 +1,6 @@
 ﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
+using static CoreScriptsManager;
 
 namespace NodeEditorFramework.Standard
 {
@@ -25,11 +26,6 @@ namespace NodeEditorFramework.Standard
             get { return state; }
             set { state = value; }
         }
-
-        public delegate void BattlezoneWonDelegate(string sectorName);
-
-        public static BattlezoneWonDelegate OnBattleWin;
-        public static BattlezoneWonDelegate OnBattleLose;
 
         public override bool AutoLayout
         {

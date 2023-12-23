@@ -136,9 +136,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         MissionCondition.OnMissionStatusChange = null;
         SetPartDropRateNode.del = null;
         VariableConditionNode.OnVariableUpdate = null;
-        WinBattleCondition.OnBattleLose = null;
-        WinBattleCondition.OnBattleWin = null;
-        WinSiegeCondition.OnSiegeWin = null;
+        CoreScriptsManager.OnBattleLose = null;
+        CoreScriptsManager.OnBattleWin = null;
+        CoreScriptsManager.OnSiegeWin = null;
         YardCollectCondition.OnYardCollect = null;
         UpgradeCoreCondition.OnCoreUpgrade = new UnityEvent();
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
@@ -341,8 +341,8 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         SectorLimiterNode.LimitedSector = "";
         Entity.OnEntityDeath = null;
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
-        WinBattleCondition.OnBattleWin = null;
-        WinBattleCondition.OnBattleLose = null;
+        CoreScriptsManager.OnBattleWin = null;
+        CoreScriptsManager.OnBattleLose = null;
         SectorManager.SectorGraphLoad += startSectorGraph;
 
         initialized = true;

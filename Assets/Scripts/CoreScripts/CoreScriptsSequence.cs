@@ -65,7 +65,8 @@ public class CoreScriptsSequence : MonoBehaviour
         SetFactionRelations,
         SetOverrideFaction,
         AddTextToFlag,
-        ChangeCharacterBlueprint
+        ChangeCharacterBlueprint,
+        ClearFactionOverrides
     }
     public struct Instruction
     {
@@ -218,6 +219,12 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.ClearFactionOverrides:
+                    foreach (var ent in AIData.entities)
+                    {
+                        ent.faction.overrideFaction = 0;
+                    }
+                    break;
                 case InstructionCommand.AddTextToFlag:
                     var text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
                     var flagName = GetArgument(inst.arguments, "flagName");

@@ -215,7 +215,6 @@ public class BattleZoneManager : MonoBehaviour
                 livingFactions.Add(GetStatsFaction(targets[i]));
             }
         }
-        Debug.LogWarning(livingFactions.Count);
         return livingFactions;
     }
 
@@ -268,14 +267,14 @@ public class BattleZoneManager : MonoBehaviour
             if (livingFactions.Contains(GetStatsFaction(playerEntity)))
             {
                 AudioManager.PlayClipByID("clip_victory");
-                if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin == null) continue;
-                NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
+                if (CoreScriptsManager.OnBattleWin == null) continue;
+                CoreScriptsManager.OnBattleWin.Invoke(sectorName);
             }
             else
             {
                 AudioManager.PlayClipByID("clip_fail");
-                if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose == null) continue;
-                NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose.Invoke(sectorName);
+                if (CoreScriptsManager.OnBattleLose == null) continue;
+                CoreScriptsManager.OnBattleLose.Invoke(sectorName);
             }
         }
 

@@ -742,6 +742,9 @@ Function(
     )
 )
 
+Text("Truth_postLambda_passive_ex_d", "I should talk to Sisyphos for further instructions.")
+Text("Truth_postLambda_passive_co_d", "I should return to Heracles for further instructions.")
+
 Function(
     name=Truth_lambda_task_common,
     sequence=(
@@ -749,8 +752,6 @@ Function(
             ID=Truth_lambdaMarker,
             sectorName=BattleZone Lambda
         ),
-        DevConsole(command=poor),
-        WarpPlayer(sectorName=BattleZone Lambda, flagName=Truth_exterminator_carrier_flag1),
         ConditionBlock(
             EnterSector(
                 sectorName=BattleZone Lambda,
@@ -758,6 +759,70 @@ Function(
                     RemoveObjectiveMarker(ID=Truth_lambdaMarker),
                     SetVariable(name=$$Truth_lambdaAlignment, value=2),
                     SetOverrideFaction(entityID=player, overrideFaction=$$Truth_lambdaAlignment),
+                    Call(Truth_lambda_spawn_forces),
+                    SpawnEntity(
+                        entityID=heavensgate,
+                        blueprintJSON=heavensgate,
+                        faction=4,
+                        name=Heavensgate,
+                        flagName=Truth_exterminator_carrier_flag1,
+                        overrideFaction=1,
+                    ),
+                    ConditionBlock(
+                        WinBattleZone(
+                            sectorName=BattleZone Lambda,
+                            sequence=(
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=$$Truth_lambdaAlignment,
+                                        val2=1,
+                                        comp=Eq,
+                                        sequence=(
+                                            PassiveDialogue(entityID=player, text=Truth_postLambda_passive_co_d)
+                                        )
+                                    ),
+                                    Comparison(
+                                        val1=$$Truth_lambdaAlignment,
+                                        val2=2,
+                                        comp=Eq,
+                                        sequence=(
+                                            PassiveDialogue(entityID=player, text=Truth_postLambda_passive_ex_d)
+                                        )
+                                    ),
+                                ),
+                                ConditionBlock(
+                                    EnterSector(
+                                        sectorName=BattleZone Lambda,
+                                        invert=true,
+                                        sequence=(
+                                            ClearFactionOverrides()
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=BattleZone Lambda,
+                            invert=true,
+                            sequence=(
+                                ClearFactionOverrides()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+
+
+
+
+Function(
+    name=Truth_lambda_spawn_forces,
+    sequence=(
                     SpawnEntity(
                         entityID=Truth_exterminator_carrier_air,
                         flagName=Truth_exterminator_carrier_flag1,
@@ -866,20 +931,10 @@ Function(
                         assetID=outpost_blueprint,
                         faction=4,
                         overrideFaction=2,
-                    ),
-                    SpawnEntity(
-                        entityID=heavensgate,
-                        blueprintJSON=heavensgate,
-                        faction=4,
-                        name=Heavensgate,
-                        flagName=Truth_exterminator_carrier_flag1,
-                        overrideFaction=1,
-                    ),
-                )
-            )
-        )
+                    )
     )
 )
+
 
 Text("Truth_lambda_task_heracles_reject_d1", "I see you're helping Sisyphos in Lambda. I hope you aren't turned into dust by our forces.")
 Text("Truth_lambda_task_heracles_reject_d2", "Right back at you buddy.")

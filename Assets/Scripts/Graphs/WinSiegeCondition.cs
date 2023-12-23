@@ -1,5 +1,6 @@
 ﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
+using static CoreScriptsManager;
 
 namespace NodeEditorFramework.Standard
 {
@@ -25,10 +26,6 @@ namespace NodeEditorFramework.Standard
             get { return state; }
             set { state = value; }
         }
-
-        public delegate void SiegeZoneWonDelegate(string sectorName);
-
-        public static SiegeZoneWonDelegate OnSiegeWin;
 
         public string sectorName;
 

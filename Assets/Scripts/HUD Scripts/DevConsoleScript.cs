@@ -454,15 +454,15 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("Win siege", StringComparison.CurrentCultureIgnoreCase))
             {
                 if (SectorManager.instance) SectorManager.instance.WinSiege();
-                if (NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
-                    NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
+                if (CoreScriptsManager.OnSiegeWin != null)
+                    CoreScriptsManager.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
                 textBox.text += "\n<color=lime>Should have tested it...</color>";
             }
             else if (command.Equals("Win bz", StringComparison.CurrentCultureIgnoreCase))
             {
                 if (SectorManager.instance) SectorManager.instance.WinBZ();
-                if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
-                    NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(SectorManager.instance.current.sectorName);
+                if (CoreScriptsManager.OnBattleWin != null)
+                    CoreScriptsManager.OnBattleWin.Invoke(SectorManager.instance.current.sectorName);
                 textBox.text += "\n<color=lime>The war is over.</color>";
             }
             else if (command.Equals("No limits", StringComparison.CurrentCultureIgnoreCase))

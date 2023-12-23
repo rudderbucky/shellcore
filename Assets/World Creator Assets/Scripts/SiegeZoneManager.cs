@@ -68,9 +68,9 @@ public class SiegeZoneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             playing = false;
-            if (NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+            if (CoreScriptsManager.OnSiegeWin != null)
             {
-                NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
+                CoreScriptsManager.OnSiegeWin.Invoke(sectorName);
             }
 
             Debug.Log("Victory!");
@@ -97,9 +97,9 @@ public class SiegeZoneManager : MonoBehaviour
                 else if ((current.entities.Count == 0 && entitiesRemaining.Count == 0))
                 {
                     playing = false;
-                    if (NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+                    if (CoreScriptsManager.OnSiegeWin != null)
                     {
-                        NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
+                        CoreScriptsManager.OnSiegeWin.Invoke(sectorName);
                     }
 
                     Debug.Log("Victory!");
