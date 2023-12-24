@@ -4,6 +4,7 @@ Text("Conservationist_Guardian2_d1", "If we can establish communication with the
 Text("Conservationist_Guardian2_d2", "Hmm...")
 Text("Conservationist_Guardian3_d1", "Please grab whatever wares you need from the nearby trader. Our leader's off protecting the jump gates right now, though you've met them before I'm sure.")
 Text("Conservationist_Guardian3_d2", "...")
+Text("Conservationist_Guardian3_d3", "Our leader's back with new plans for a freer world... will you be fighting alongside us or will you become our enemy?")
 Text("Conservationist_Trader_d1", "Kappa Outskirts vending key I86A-5E. Exchange credits for parts.")
 Text("Conservationist_Trader_d2", "Interested...")
 Text("Conservationist_Trader_d3", "On second thought, no thanks.")
@@ -33,7 +34,7 @@ Dialogue(
     )
 )
 Dialogue(
-    dialogueID=Conservationist_Guardian3_d,
+    dialogueID=Conservationist_Guardian3_pretruth_d,
     dialogueText=Conservationist_Guardian3_d1,
     entityID=Conservationist_Guardian3,
     responses=(
@@ -41,6 +42,16 @@ Dialogue(
             responseText=Conservationist_Guardian3_d2,
             next=End()
         )
+    )
+)
+
+D(
+    Conservationist_Guardian3_d3,
+    Conservationist_Guardian3,
+    Conservationist_Guardian3_posttruth_d,
+    R(
+        Conservationist_Guardian3_d2,
+        End()
     )
 )
 
@@ -60,7 +71,8 @@ Dialogue(
     )
 )
 
-StartTrigger(
+SectorTrigger(
+    sectorName=Conservationist Lair,
     sequence=(
         ClearInteraction(entityID=Conservationist_Guardian2),
         ClearInteraction(entityID=Conservationist_Guardian1),
@@ -68,7 +80,33 @@ StartTrigger(
         ClearInteraction(entityID=Conservationist_Trader),
         SetInteraction(dialogueID=Conservationist_Guardian2_d, entityID=Conservationist_Guardian2),
         SetInteraction(dialogueID=Conservationist_Guardian1_d, entityID=Conservationist_Guardian1),
-        SetInteraction(dialogueID=Conservationist_Guardian3_d, entityID=Conservationist_Guardian3),
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=inactive,
+                comp=Eq,
+                sequence=(
+                    SetInteraction(dialogueID=Conservationist_Guardian3_pretruth_d, entityID=Conservationist_Guardian3),
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=1,
+                comp=Gt,
+                sequence=(
+                    SetInteraction(dialogueID=Conservationist_Guardian3_posttruth_d, entityID=Conservationist_Guardian3),
+                    SpawnEntity(entityID=heracles, blueprintJSON=heracles, name=Heracles, flagName=clair-heracles-spawn-flag, faction=3)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=2,
+                comp=Lt,
+                sequence=(
+                    SetInteraction(dialogueID=Conservationist_Guardian3_pretruth_d, entityID=Conservationist_Guardian3),
+                )
+            ),
+        ),
         SetInteraction(dialogueID=Conservationist_Trader_d, entityID=Conservationist_Trader)
     )
 )
