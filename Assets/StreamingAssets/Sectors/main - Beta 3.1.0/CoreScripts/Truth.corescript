@@ -1,3 +1,5 @@
+// TODO: Add Daayo to unconvinced lair
+
 Text("Truth_missionName", "Truth")
 Text("Truth_entryPoint", "Talk to The Architect or Sukrat in The Makeshift.")
 
@@ -334,8 +336,10 @@ Dialogue(
                                                                                                 next=Dialogue(
                                                                                                     dialogueText=Truth_starprism_d29,
                                                                                                     responses=(
-                                                                                                        responseText=Truth_starprism_d28,
-                                                                                                        next=Call(Truth_starprism_cs_end)
+                                                                                                        Response(
+                                                                                                            responseText=Truth_starprism_d28,
+                                                                                                            next=Call(Truth_starprism_cs_end)
+                                                                                                        )
                                                                                                     )
                                                                                                 )
                                                                                             )
@@ -436,7 +440,7 @@ Function(
     sequence=(
         SetPath(
             entityID=starprism,
-            flagName=Truth-starprism-cs1,
+            flagName=Truth-starprism-cs4,
             sequence=(
                 DeleteEntity(entityID=starprism),
                 FinishCameraPan(),
@@ -479,11 +483,42 @@ Function(
             entityID=aristu,
             flagName=Truth-aristu-cs1-flag1
         ),
+        ConditionBlock(
+            Comparison(
+                val1=SqrDistance(sukrat, Truth-aristu-cs1-flag4),
+                val2=100,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=SqrDistance(sukrat, Truth-aristu-cs1-flag4),
+                val2=100,
+                comp=Gt,
+                sequence=(
+                    SpawnEntity(
+                        entityID=sukrat,
+                        flagName=Truth-aristu-cs1-flag4
+                    ),
+                )
+            ),
+        ),
+        SetPath(
+            entityID=sukrat,
+            flagName=Truth-aristu-cs1-flag3,
+        ),
         SetPath(
             entityID=player,
             flagName=Truth-aristu-cs1-flag2,
             sequence=(
-                ForceStartDialogue(dialogueID=Truth_aristu_cs1_d)
+                Wait(time=0.5),
+                StartCameraPan(
+                    flagName=Truth-aristu-cs1-flag1,
+                    velocityFactor=0.5,
+                    sequence=(
+                        Wait(time=0.5),
+                        ForceStartDialogue(dialogueID=Truth_aristu_cs1_d)
+                    )
+                ),
             )
         ),
     )
@@ -517,7 +552,6 @@ Text("Truth_aristu_d24", "...")
 Text("Truth_aristu_d25", "Sounds good.")
 
 Text("Truth_fight_lambda_objectives", "- Go to either the Exterminator or Conservationist Lairs and talk to the leader to fight in Lambda.")
-
 
 Task(
     taskID=Truth_fight_lambda,
@@ -657,6 +691,8 @@ Function(
 Function(
     name=Truth_post_aristu_cs1,
     sequence=(
+        FinishCameraPan(),
+        Wait(time=1),
         FinishCutscene(),
         AddObjectiveMarker(
             ID=Truth_elair,
@@ -674,6 +710,7 @@ Function(
     name=Truth_post_aristu_cs1_set_interactions,
     sequence=(
         SetVariable(name=$$$Truth_checkpoint, value=2),
+        SetInteraction(entityID=aristu, dialogueID=Truth_aristu_post_cs1_d),
         SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_d),
         SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_d),
     )
@@ -686,12 +723,22 @@ Text("Truth_lambda_task_obj2", "- Head to BattleZone Lambda and destroy the Exte
 
 Task(
     taskID=Truth_lambda_task_heracles,
-    objectives=Truth_lambda_task_obj2
+    objectives=Truth_lambda_task_obj2,
+    creditReward=10000,
+    reputationReward=1000,
+    partID=BigSide2,
+    tier=3,
+    abilityID=36,
 )
 
 Task(
     taskID=Truth_lambda_task_sisyphos,
-    objectives=Truth_lambda_task_obj1
+    objectives=Truth_lambda_task_obj1,
+    creditReward=10000,
+    reputationReward=1000,
+    partID=BigSide2,
+    tier=3,
+    abilityID=36,
 )
 
 Text("Truth_lambda_task_sisyphos_d1", "So... you've come to us to fight in Lambda. Prove your loyalty to the Exterminators.")
@@ -782,6 +829,7 @@ Function(
         SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_reject_d),
         SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_accept_d),
         SetVariable(name=$$Truth_lambdaAlignment, value=1),
+        Call(aristu_dialogue),
         Call(Truth_lambda_task_common)
     )
 )
@@ -797,6 +845,7 @@ Function(
         SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_reject_d),
         SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_accept_d),
         SetVariable(name=$$Truth_lambdaAlignment, value=2),
+        Call(aristu_dialogue),
         Call(Truth_lambda_task_common)
     )
 )
@@ -806,6 +855,18 @@ Text("Truth_postLambda_passive_co_d", "I should return to Heracles for further i
 
 Text("Truth_lambda_task_starprism_fight_d", "So it has come to battle... Please know we do not hold grudges fellow ShellCore.")
 Text("Truth_lambda_task_heavensgate_fight_d", "By clearing this zone for the Exterminators I am building a future for all conscious existence.")
+
+Text("Truth_aristu_d26", "Spending time here, I've realized this story won't move a page until either the Exterminators or the Conservationists take Lambda. We should visit one of the lairs to indicate allegiance and fight.")
+Text("Truth_aristu_d27", "Let's do it.")
+D(
+    Truth_aristu_d26,
+    aristu,
+    Truth_aristu_post_cs1_d,
+    R(
+        Truth_aristu_d27,
+        End()
+    )
+)
 
 Function(
     name=Truth_lambda_task_common,
@@ -819,13 +880,12 @@ Function(
                 sectorName=BattleZone Lambda,
                 sequence=(
                     RemoveObjectiveMarker(ID=Truth_lambdaMarker),
-                    SetVariable(name=$$Truth_lambdaAlignment, value=2),
                     SetOverrideFaction(entityID=player, overrideFaction=$$Truth_lambdaAlignment),
                     Call(Truth_lambda_spawn_forces),
                     ConditionBlock(
                         Comparison(
                             val1=$$Truth_lambdaAlignment,
-                            val2=1,
+                            val2=2,
                             comp=Eq,
                             sequence=(                            
                                 SpawnEntity(
@@ -836,6 +896,7 @@ Function(
                                     flagName=Truth_exterminator_carrier_flag1,
                                     overrideFaction=1,
                                 ),
+                                PassiveDialogue(entityID=heavensgate, text=Truth_lambda_task_heavensgate_fight_d),
                                 SpawnEntity(
                                     entityID=lambda-1,
                                     blueprintJSON=Electroshock,
@@ -856,17 +917,18 @@ Function(
                         ),
                         Comparison(
                             val1=$$Truth_lambdaAlignment,
-                            val2=2,
+                            val2=1,
                             comp=Eq,
                             sequence=(
                                 SpawnEntity(
                                     entityID=starprism,
                                     blueprintJSON=starprism,
-                                    faction=4,
+                                    faction=3,
                                     name=Starprism,
                                     flagName=Truth_conservationist_carrier_flag1,
                                     overrideFaction=2,
                                 ),
+                                PassiveDialogue(entityID=starprism, text=Truth_lambda_task_starprism_fight_d),
                                 SpawnEntity(
                                     entityID=lambda-1,
                                     blueprintJSON=Electroshock,
@@ -893,7 +955,7 @@ Function(
                                 ConditionBlock(
                                     Comparison(
                                         val1=$$Truth_lambdaAlignment,
-                                        val2=1,
+                                        val2=2,
                                         comp=Eq,
                                         sequence=(
                                             PassiveDialogue(entityID=player, text=Truth_postLambda_passive_co_d)
@@ -901,7 +963,7 @@ Function(
                                     ),
                                     Comparison(
                                         val1=$$Truth_lambdaAlignment,
-                                        val2=2,
+                                        val2=1,
                                         comp=Eq,
                                         sequence=(
                                             PassiveDialogue(entityID=player, text=Truth_postLambda_passive_ex_d)
@@ -936,126 +998,120 @@ Function(
     )
 )
 
-
-
-
-
-
 Function(
     name=Truth_lambda_spawn_forces,
     sequence=(
-                    SpawnEntity(
-                        entityID=Truth_exterminator_carrier_air,
-                        flagName=Truth_exterminator_carrier_flag1,
-                        blueprintJSON=CarrierMediumRefit,
-                        assetID=carrier_blueprint,
-                        name=Air Carrier,
-                        faction=3,
-                        overrideFaction=1,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_exterminator_carrier_ground,
-                        flagName=Truth_exterminator_carrier_flag2,
-                        blueprintJSON=Ground Base Medium,
-                        assetID=groundcarrier_blueprint,
-                        name=Ground Carrier,
-                        faction=4,
-                        overrideFaction=1,
-                        
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_exterminator_outpost1,
-                        flagName=Truth_exterminator_outpost_flag1,
-                        blueprintJSON=OutpostHeavy,
-                        name=Outpost,
-                        assetID=outpost_blueprint,
-                        faction=4,
-                        overrideFaction=1,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_exterminator_outpost2,
-                        flagName=Truth_exterminator_outpost_flag2,
-                        blueprintJSON=OutpostHeavy,
-                        name=Outpost,
-                        assetID=outpost_blueprint,
-                        faction=4,
-                        overrideFaction=1,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_exterminator_outpost3,
-                        flagName=Truth_exterminator_outpost_flag3,
-                        blueprintJSON=OutpostHeavy,
-                        name=Outpost,
-                        assetID=outpost_blueprint,
-                        faction=3,
-                        overrideFaction=1,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_exterminator_bunker1,
-                        flagName=Truth_exterminator_bunker_flag1,
-                        blueprintJSON=BunkerHeavy,
-                        name=Bunker,
-                        assetID=bunker_blueprint,
-                        faction=3,
-                        overrideFaction=1,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_conservationist_carrier_air1,
-                        flagName=Truth_conservationist_carrier_flag1,
-                        blueprintJSON=CarrierMediumRefit,
-                        name=Air Carrier,
-                        assetID=carrier_blueprint,
-                        faction=4,
-                        overrideFaction=2,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_conservationist_carrier_air2,
-                        flagName=Truth_conservationist_carrier_flag2,
-                        blueprintJSON=CarrierMediumRefit,
-                        name=Air Carrier,
-                        assetID=carrier_blueprint,
-                        faction=3,
-                        overrideFaction=2,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_conservationist_bunker1,
-                        flagName=Truth_conservationist_bunker_flag1,
-                        blueprintJSON=BunkerHeavy,
-                        name=Bunker,
-                        assetID=bunker_blueprint,
-                        faction=3,
-                        overrideFaction=2,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_conservationist_bunker2,
-                        flagName=Truth_conservationist_bunker_flag2,
-                        blueprintJSON=BunkerHeavy,
-                        name=Bunker,
-                        assetID=bunker_blueprint,
-                        faction=3,
-                        overrideFaction=2,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_conservationist_bunker3,
-                        flagName=Truth_conservationist_bunker_flag3,
-                        blueprintJSON=BunkerHeavy,
-                        name=Bunker,
-                        assetID=bunker_blueprint,
-                        faction=4,
-                        overrideFaction=2,
-                    ),
-                    SpawnEntity(
-                        entityID=Truth_conservationist_outpost1,
-                        flagName=Truth_conservationist_outpost_flag1,
-                        blueprintJSON=OutpostHeavy,
-                        name=Outpost,
-                        assetID=outpost_blueprint,
-                        faction=4,
-                        overrideFaction=2,
-                    )
+        SpawnEntity(
+            entityID=Truth_exterminator_carrier_air,
+            flagName=Truth_exterminator_carrier_flag1,
+            blueprintJSON=CarrierMediumRefit,
+            assetID=carrier_blueprint,
+            name=Air Carrier,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_carrier_ground,
+            flagName=Truth_exterminator_carrier_flag2,
+            blueprintJSON=Ground Base Medium,
+            assetID=groundcarrier_blueprint,
+            name=Ground Carrier,
+            faction=4,
+            overrideFaction=1,
+            
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_outpost1,
+            flagName=Truth_exterminator_outpost_flag1,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=4,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_outpost2,
+            flagName=Truth_exterminator_outpost_flag2,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=4,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_outpost3,
+            flagName=Truth_exterminator_outpost_flag3,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_bunker1,
+            flagName=Truth_exterminator_bunker_flag1,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_carrier_air1,
+            flagName=Truth_conservationist_carrier_flag1,
+            blueprintJSON=CarrierMediumRefit,
+            name=Air Carrier,
+            assetID=carrier_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_carrier_air2,
+            flagName=Truth_conservationist_carrier_flag2,
+            blueprintJSON=CarrierMediumRefit,
+            name=Air Carrier,
+            assetID=carrier_blueprint,
+            faction=3,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker1,
+            flagName=Truth_conservationist_bunker_flag1,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=3,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker2,
+            flagName=Truth_conservationist_bunker_flag2,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=3,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker3,
+            flagName=Truth_conservationist_bunker_flag3,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_outpost1,
+            flagName=Truth_conservationist_outpost_flag1,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=4,
+            overrideFaction=2,
+        )
     )
 )
-
 
 Text("Truth_lambda_task_heracles_reject_d1", "I see you're helping Sisyphos in Lambda. I hope you aren't turned into dust by our forces.")
 Text("Truth_lambda_task_heracles_reject_d2", "Right back at you buddy.")
