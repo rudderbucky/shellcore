@@ -188,7 +188,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     private void UpdateRenderer(Renderer renderer)
     {
-        var finalAlpha = IsInvisible ? FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction.factionID : 0, faction.factionID) ? 0.2f : 0f : FactionManager.GetFactionColor(faction.factionID).a;
+        EntityFaction fac = new EntityFaction();
+        if (PlayerCore.Instance) fac = PlayerCore.Instance.faction;
+        var finalAlpha = IsInvisible ? FactionManager.IsAllied(fac, faction) ? 0.2f : 0f : FactionManager.GetFactionColor(faction.factionID).a;
         if (renderer is SpriteRenderer spriteRenderer)
         {
             var c = spriteRenderer.color;
@@ -223,7 +225,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (glowParticleSystem)
         {
             var main = glowParticleSystem.main;
-            var finalAlpha = IsInvisible ? FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction.factionID : 0, faction.factionID) ? 0.2f : 0f : FactionManager.GetFactionColor(faction.factionID).a;
+            EntityFaction fac = new EntityFaction();
+            if (PlayerCore.Instance) fac = PlayerCore.Instance.faction;
+            var finalAlpha = IsInvisible ? FactionManager.IsAllied(fac, faction) ? 0.2f : 0f : FactionManager.GetFactionColor(faction.factionID).a;
             var startColor = main.startColor;
             var color = main.startColor.colorMax;
             color.a = finalAlpha;
