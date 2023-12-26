@@ -1169,6 +1169,32 @@ Function(
                 sectorName=Kappa,
                 sequence=(
                     Call(Truth_cs4_spawn_entities),
+                    SpawnEntity(
+                        entityID=heavensgate,           
+                        blueprintJSON=heavensgate,
+                        faction=4,
+                        name=Heavensgate,
+                        flagName=Truth-cs4-flag2
+                    ),
+                    SpawnEntity(
+                        entityID=starprism,           
+                        blueprintJSON=starprism,
+                        faction=3,
+                        name=Starprism,
+                        flagName=Truth-cs4-flag1
+                    ),
+                    SpawnEntity(
+                        entityID=the-architect,           
+                        flagName=Truth-cs4-flag9
+                    ),
+                    SpawnEntity(
+                        entityID=sukrat,           
+                        flagName=Truth-cs4-flag10
+                    ),
+                    SpawnEntity(
+                        entityID=aristu,           
+                        flagName=Truth-cs4-flag11
+                    ),
                     SetInteraction(
                         entityID=heavensgate,
                         sequence=(
@@ -1195,35 +1221,35 @@ Function(
             blueprintJSON=Electroshock,
             faction=3,
             name=ShellCore,
-            flagName=Truth-cs4-flag1
+            flagName=Truth-cs4-flag3
         ),
         SpawnEntity(
             entityID=Truth_cs4_core2,           
             blueprintJSON=Electroshock,
             faction=4,
             name=ShellCore,
-            flagName=Truth-cs4-flag2
+            flagName=Truth-cs4-flag4
         ),
         SpawnEntity(
             entityID=Truth_cs4_core3,           
             blueprintJSON=Electroshock,
             faction=3,
             name=ShellCore,
-            flagName=Truth-cs4-flag3
+            flagName=Truth-cs4-flag5
         ),
         SpawnEntity(
             entityID=Truth_cs4_core4,           
             blueprintJSON=Electroshock,
             faction=4,
             name=ShellCore,
-            flagName=Truth-cs4-flag1
+            flagName=Truth-cs4-flag6
         ),
         SpawnEntity(
             entityID=Truth_cs4_core4,           
             blueprintJSON=Electroshock,
             faction=3,
             name=ShellCore,
-            flagName=Truth-cs4-flag4
+            flagName=Truth-cs4-flag7
         ),
     )
 )
@@ -1274,7 +1300,7 @@ Function(
     name=Truth_cs4_p2,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag1,
+            flagName=Truth-cs4-flag3,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p2_d)
@@ -1296,7 +1322,7 @@ Function(
     name=Truth_cs4_p3,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag2,
+            flagName=Truth-cs4-flag4,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core2, dialogueID=Truth_cs4_p3_d)
@@ -1339,7 +1365,7 @@ Function(
     name=Truth_cs4_p5,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag3,
+            flagName=Truth-cs4-flag5,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core3, dialogueID=Truth_cs4_p5_d)
@@ -1383,7 +1409,7 @@ Function(
     name=Truth_cs4_p7,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag4,
+            flagName=Truth-cs4-flag6,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p7_d)
@@ -1405,7 +1431,7 @@ Function(
     name=Truth_cs4_p8,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag5,
+            flagName=Truth-cs4-flag7,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p8_d)
@@ -1468,7 +1494,7 @@ Function(
     sequence=(
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p11_d),
         StartCameraPan(
-            flagName=Truth-cs4-flag6,
+            flagName=kappa-jump-flag4,
             instant=true
         ),
         SpawnEntity(
@@ -1476,14 +1502,14 @@ Function(
             blueprintJSON=Defected Large Patrol,
             faction=2,
             name=ShellCore,
-            flagName=Truth-cs4-flag6
+            flagName=kappa-jump-flag4
         ),
         SpawnEntity(
             entityID=Truth_cs4_core7,           
             blueprintJSON=Defected Large Patrol,
             faction=2,
             name=ShellCore,
-            flagName=Truth-cs4-flag7
+            flagName=kappa-jump-flag5
         ),
     )
 )
@@ -1502,7 +1528,7 @@ Function(
     name=Truth_cs4_p12,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag7,
+            flagName=kappa-jump-flag5,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p12_d)
@@ -1543,7 +1569,6 @@ D(
 Function(
     name=Truth_cs4_p14,
     sequence=(
-
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p14_d)
     )
 )
@@ -1569,7 +1594,7 @@ Function(
     name=Truth_cs4_p15,
     sequence=(
         StartCameraPan(
-            flagName=Truth-cs4-flag7,
+            flagName=kappa-jump-flag5,
             instant=true
         ),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p15_d)
@@ -1597,7 +1622,16 @@ Function(
     name=Truth_cs4_p16,
     sequence=(
         SetSectorType(type=SiegeZone),
-        FinishCutscene()
+        FinishCutscene(),
+        PassiveDialogue(entityID=starprism, dialogueID=Truth_cs4_d20),
+        ConditionBlock(
+            WinSiegeZone(
+                sectorName=Kappa,
+                sequence=(
+
+                )
+            )
+        )
     )
 )
 
@@ -1608,6 +1642,61 @@ Text("Truth_cs5_d4", "Okay but we still need to do something.")
 Text("Truth_cs5_d5", "Oh would you please just shut up! Instructions, instructions. It's like you're a slave!")
 Text("Truth_cs5_d6", "...")
 Text("Truth_cs5_d7", "...go visit the Unconvinced. Hopefully they're still in one piece.")
+D(
+    Truth_cs5_d1,
+    heavensgate,
+    Truth_cs5_d,
+    R(
+        Truth_cs5_d2,
+        D(
+            Truth_cs5_d3,
+            R(
+                Truth_cs5_d4,
+                D(
+                    Truth_cs5_d5,
+                    R(
+                        Truth_cs5_d6,
+                        D(
+                            Truth_cs5_d7,
+                            R(
+                                Truth_cs5_d6,
+                                Call(Truth_eleos)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Truth_eleos,
+    sequence=(
+        AddObjectiveMarker(ID=Truth_unl, sectorName=Unconvinced Lair),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Unconvinced Lair,
+                sequence=(
+                    RemoveObjectiveMarker(
+                        ID=Truth_unl
+                    ),
+                    ClearInteraction(entityID=eleos),
+                    SetInteraction(entityID=eleos, dialogueID=Truth_eleos_d),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Unconvinced Lair,
+                            invert=true,
+                            sequence=(
+                                Call(Truth_eleos)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
 
 Text("Truth_eleos_d1", "The intel just came back to me... Kappa was besieged? This is impossible.")
 Text("Truth_eleos_d2", "Eleos, what do we do?")
@@ -1619,6 +1708,64 @@ Text("Truth_eleos_d7", "That is, except for one core...")
 Text("Truth_eleos_d8", "Don't tell me.")
 Text("Truth_eleos_d9", "Daayo's been steadfast in trying to find clues on how to get there... maybe they're worth talking to.")
 Text("Truth_eleos_d10", "Oh dear.")
+D(
+    Truth_eleos_d1,
+    eleos,
+    Truth_eleos_d,
+    R(
+        Truth_eleos_d2,
+        D(
+            Truth_eleos_d3,
+            R(
+                Truth_eleos_d4,
+                D(
+                    Truth_eleos_d5,
+                    R(
+                        Truth_eleos_d6,
+                        D(
+                            Truth_eleos_d7,
+                            R(
+                                Truth_eleos_d8,
+                                Call(Truth_eleos_daayo_pan)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Truth_eleos_daayo_pan,
+    sequence=(
+        StartCutscene(),
+        ForceStartDialogue
+    )
+)
+
+D(
+    Truth_eleos_d9,
+    eleos,
+    Truth_eleos_pan_d,
+    R(
+        Truth_eleos_d10,
+        Call(Truth_end)
+    )
+)
+
+Function(
+    name=Truth_end,
+    sequence=(
+        FinishCutscene(),
+        ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
+        FinishMission(soundID=clip_missioncompleteep3),
+        ShowPopup(text=Truth_endOfStory)
+    )
+)
+
+Text("Truth_endOfStory", "End of story as of Beta 4.0.0.
+Thank you for playing ShellCore Command Remastered!")
 
 // Mission complete, next mission: Legend
 
