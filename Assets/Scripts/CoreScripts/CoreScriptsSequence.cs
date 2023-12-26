@@ -407,7 +407,22 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.StartCameraPan:
                     flagName = GetArgument(inst.arguments, "flagName");
                     var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"), CultureInfo.InvariantCulture);
+                    var instant = GetArgument(inst.arguments, "instant") == "true";
                     Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
+
+                    if (instant)
+                    {
+                        var flagPos = Vector3.zero;
+                        foreach (var flag in AIData.flags)
+                        {
+                            if (flag.name == flagName)
+                            {
+                                flagPos = flag.transform.position;
+                                break;
+                            }
+                        }
+                        CameraScript.instance.Focus(flagPos);
+                    }
                     break;
                 case InstructionCommand.FinishCameraPan:
                     Cutscene.EndCameraPan();
