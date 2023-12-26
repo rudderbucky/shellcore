@@ -767,14 +767,6 @@ Function(
         Wait(time=1),
         FinishCutscene(),
         EnablePartyMember(entityID=aristu),
-        AddObjectiveMarker(
-            ID=Truth_elair,
-            sectorName=Exterminator Lair
-        ),
-        AddObjectiveMarker(
-            ID=Truth_clair,
-            sectorName=Conservationist Lair
-        ),
         Call(Truth_post_aristu_cs1_set_interactions)
     )
 )
@@ -783,6 +775,14 @@ Function(
     name=Truth_post_aristu_cs1_set_interactions,
     sequence=(
         SetVariable(name=$$$Truth_checkpoint, value=2),
+        AddObjectiveMarker(
+            ID=Truth_elair,
+            sectorName=Exterminator Lair
+        ),
+        AddObjectiveMarker(
+            ID=Truth_clair,
+            sectorName=Conservationist Lair
+        ),
         SetInteraction(entityID=aristu, dialogueID=Truth_aristu_post_cs1_d),
         SetInteraction(entityID=heracles, dialogueID=Truth_lambda_task_heracles_d),
         SetInteraction(entityID=sisyphos, dialogueID=Truth_lambda_task_sisyphos_d),
