@@ -1,10 +1,55 @@
+// TODO: add some life to Lambda and Mu and Nu before the fights
+// TODO: dialogue in Mu and Nu about how the sectors merged
+
 Function(
     name=Truth_postLambda,
-    sequence=()
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=6,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$Truth_lambdaAlignment, value=2)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=5,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$Truth_lambdaAlignment, value=1)
+                )
+            ),
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$Truth_lambdaAlignment,
+                val2=2,
+                comp=Eq,
+                sequence=(
+                    ClearInteraction(entityID=heracles),
+                    ClearInteraction(entityID=sisyphos),
+                    SetInteraction(dialogueID=Truth_post_lambda_sisyphos_not_received_reward_d, entityID=sisyphos),
+                    SetInteraction(dialogueID=Truth_post_lambda_heracles_task_finish_d, entityID=heracles)
+                )
+            ),
+            Comparison(
+                val1=$$Truth_lambdaAlignment,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    ClearInteraction(entityID=heracles),
+                    ClearInteraction(entityID=sisyphos),
+                    SetInteraction(dialogueID=Truth_post_lambda_heracles_not_received_reward_d, entityID=heracles),
+                    SetInteraction(dialogueID=Truth_post_lambda_sisyphos_task_finish_d, entityID=sisyphos)
+                )
+            ),
+        )
+    )
 )
 
-
-Text("Truth_post_lambda_heracles_d1", "Congratulations...")
+Text("Truth_post_lambda_heracles_d1", "Congratulations... talk to me again for further instructions.")
 Text("Truth_post_lambda_heracles_d2", "Is something wrong?")
 Text("Truth_post_lambda_heracles_d3", "Well... the recent aggression has unfortunately started rearing its ugly head. BattleZone Mu & Nu has been under siege by the Exterminators.")
 Text("Truth_post_lambda_heracles_d4", "We need to stop them!")
@@ -13,40 +58,413 @@ Text("Truth_post_lambda_heracles_d6", "Heracles, if we don't stop them now, they
 Text("Truth_post_lambda_heracles_d7", "You're right, we shouldn't engage in more fighting...")
 Text("Truth_post_lambda_heracles_d8", "...")
 Text("Truth_post_lambda_heracles_d9", "You need to make a decision.")
-Text("Truth_post_lambda_heracles_d10", "Right. I've weighed all my thoughts and... we're fighting. Talk again.")
-Text("Truth_post_lambda_heracles_d11", "Okay.")
+Text("Truth_post_lambda_heracles_d10", "Right. I've weighed all my thoughts and... we're fighting. Go help our forces out at Mu & Nu.")
+
+Text("Truth_post_lambda_heracles_d13", "I'll go take it over.")
+Text("Truth_post_lambda_heracles_d14", "On second thought, no thanks.")
 D(
     Truth_post_lambda_heracles_d1,
     heracles,
-    Truth_post_lambda_heracles_d,
+    Truth_post_lambda_heracles_task_finish_d,
+    ,
+    ,
+    true,
     R(
         Truth_post_lambda_heracles_d2,
+        Call(Truth_post_lambda_munu_heracles_task_assign)
+    )
+)
+
+Text("Truth_post_lambda_munu_heracles_task_objectives", "- Defeat the Exterminators in Mu and Nu.")
+Task(
+    taskID=Truth_post_lambda_munu_heracles_task,
+    objectives=Truth_post_lambda_munu_heracles_task_objectives
+)
+
+Function(
+    name=Truth_post_lambda_munu_heracles_task_assign,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetVariable(name=$$$Truth_checkpoint, value=8),
+        SetInteraction(dialogueID=Truth_post_lambda_sisyphos_backstab_d, entityID=sisyphos),
+        SetInteraction(dialogueID=Truth_post_lambda_heracles_munu_task_d, entityID=heracles)
+    )
+)
+
+D(
+    Truth_post_lambda_heracles_d3,
+    heracles,
+    Truth_post_lambda_heracles_munu_task_d,
+    R(
+        Truth_post_lambda_heracles_d4,
         D(
-            Truth_post_lambda_heracles_d3,
+            Truth_post_lambda_heracles_d5,
             R(
-                Truth_post_lambda_heracles_d4,
+                Truth_post_lambda_heracles_d6,
                 D(
-                    Truth_post_lambda_heracles_d5,
+                    Truth_post_lambda_heracles_d8,
                     R(
-                        Truth_post_lambda_heracles_d6,
-                        SetID(1)
-                    ),
-                    R(
-                        Truth_post_lambda_heracles_d7,
+                        Truth_post_lambda_heracles_d9,
                         D(
-                            Truth_post_lambda_heracles_d8,
+                            Truth_post_lambda_heracles_d10,
                             ,
                             ,
                             1,
+                            Truth_post_lambda_munu_heracles_task,
                             R(
-                                Truth_post_lambda_heracles_d9,
-                                D(
-                                    Truth_post_lambda_heracles_d10,
-                                    R(
-                                        Truth_post_lambda_heracles_d11,
-                                        End()
-                                    )
-                                )
+                                Truth_post_lambda_heracles_d13,
+                                Call(Truth_post_lambda_munu_heracles_task_accepted)
+                            ),
+                            R(
+                                Truth_post_lambda_heracles_d14,
+                                End()
+                            )
+                        )
+                    )
+                )
+            ),
+            R(
+                Truth_post_lambda_heracles_d7,
+                SetID(1)
+            ),
+        )
+    )
+)
+
+
+Function(
+    name=Truth_post_lambda_munu_heracles_task_accepted,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetVariable(name=$$$Truth_checkpoint, value=10),
+        SetVariable(name=$$Truth_munuAlignment, value=2),
+        SetVariable(name=$$$Truth_backstab, value=0),
+        SetInteraction(dialogueID=Truth_post_lambda_heracles_munu_confirm_d, entityID=heracles),
+        SetInteraction(dialogueID=Truth_post_lambda_sisyphos_munu_already_accepted_d, entityID=sisyphos),
+        Call(Truth_munu_common),
+    )
+)
+
+
+
+
+Text("Truth_post_lambda_sisyphos_enemy_d1", "Why are you here? Go die off in Mu & Nu.")
+Text("Truth_post_lambda_sisyphos_enemy_d2", "Probably going to win over there, but sure.")
+D(
+    Truth_post_lambda_sisyphos_enemy_d1,
+    sisyphos,
+    Truth_post_lambda_sisyphos_munu_already_accepted_d,
+    R(
+        Truth_post_lambda_sisyphos_enemy_d2,
+        End()
+    )
+)
+
+Text("Truth_post_lambda_sisyphos_enemy_d3", "Congratulations, by taking Mu and Nu for the Conservationists you just set back our salvation for another long while.")
+Text("Truth_post_lambda_sisyphos_enemy_d4", "Shut up.")
+D(
+    Truth_post_lambda_sisyphos_enemy_d3,
+    sisyphos,
+    Truth_post_lambda_sisyphos_not_received_reward_d,
+    R(
+        Truth_post_lambda_sisyphos_enemy_d4,
+        End()
+    )
+)
+
+Text("Truth_post_lambda_munu_sisyphos_task_objectives", "- Defeat the Conservationists in Mu and Nu.")
+Task(
+    taskID=Truth_post_lambda_munu_sisyphos_task,
+    objectives=Truth_post_lambda_munu_sisyphos_task_objectives
+)
+
+
+Text("Truth_post_lambda_sisyphos_enemy_d5", "I regret my decision.")
+Text("Truth_post_lambda_sisyphos_enemy_d6", "I wanted to rub it in.")
+Text("Truth_post_lambda_sisyphos_enemy_d7", "Oh no, this is so awful, you're so powerful and we're so pathetically weak! Now go away.")
+Text("Truth_post_lambda_sisyphos_enemy_d8", "...")
+Text("Truth_post_lambda_sisyphos_enemy_d9", "It'd be stupid for us to just trust you... but our forces are all occupied with your mistake right now, so maybe you could help undo it.")
+Text("Truth_post_lambda_sisyphos_enemy_d10", "I will.")
+Text("Truth_post_lambda_sisyphos_enemy_d11", "On second thought, no thanks.")
+D(
+    Truth_post_lambda_sisyphos_enemy_d3,
+    sisyphos,
+    Truth_post_lambda_sisyphos_backstab_d,
+    R(
+        Truth_post_lambda_sisyphos_enemy_d6,
+        D(
+            Truth_post_lambda_sisyphos_enemy_d7,
+            R(
+                Truth_post_lambda_sisyphos_enemy_d8,
+                End()
+            )
+        )
+    ),
+    R(
+        Truth_post_lambda_sisyphos_enemy_d5,
+        D(
+            Truth_post_lambda_sisyphos_enemy_d9,
+            ,
+            ,
+            ,
+            Truth_post_lambda_munu_sisyphos_task,
+            R(
+                Truth_post_lambda_sisyphos_enemy_d10,
+                Call(Truth_post_lambda_sisyphos_backstab)
+            ),
+            R(
+                Truth_post_lambda_sisyphos_enemy_d11,
+                End()
+            )
+        )
+    )
+)
+
+Function(
+    name=Truth_post_lambda_sisyphos_backstab,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetVariable(name=$$$Truth_checkpoint, value=9),
+        SetVariable(name=$$$Truth_backstab, value=1),
+        SetVariable(name=$$Truth_munuAlignment, value=1),
+        SetInteraction(entityID=sisyphos, dialogueID=Truth_post_lambda_sisyphos_munu_confirm_d),
+        SetInteraction(entityID=heracles, dialogueID=Truth_post_lambda_heracles_backstabbed_d),
+        Call(Truth_munu_common),
+    )
+)
+
+Text("Truth_post_lambda_heracles_munu_confirm_d1", "Restore peace by stopping the Exterminator forces in Mu and Nu.")
+Text("Truth_post_lambda_heracles_munu_confirm_d2", "I'm on it.")
+D(
+    Truth_post_lambda_heracles_munu_confirm_d1,
+    heracles,
+    Truth_post_lambda_heracles_munu_confirm_d,
+    R(
+        Truth_post_lambda_heracles_munu_confirm_d2,
+        End()
+    )
+)
+
+Text("Truth_post_lambda_sisyphos_munu_confirm_d1", "Stop Heracles in Mu & Nu.")
+Text("Truth_post_lambda_sisyphos_munu_confirm_d2", "Will do.")
+D(
+    Truth_post_lambda_sisyphos_munu_confirm_d1,
+    sisyphos,
+    Truth_post_lambda_sisyphos_munu_confirm_d,
+    R(
+        Truth_post_lambda_sisyphos_munu_confirm_d2,
+        End()
+    )
+)
+
+
+Text("Truth_post_lambda_heracles_backstabbed_d1", "We have intel that you decided to desert us to help Sisyphos with their insane offensive. I didn't realize you could be this... vile.")
+Text("Truth_post_lambda_heracles_backstabbed_d2", "Well I am.")
+D(
+    Truth_post_lambda_heracles_backstabbed_d1,
+    heracles,
+    Truth_post_lambda_heracles_backstabbed_d,
+    R(
+        Truth_post_lambda_heracles_backstabbed_d2,
+        End()
+    )
+)
+
+Text("Truth_post_lambda_sisyphos_d1", "Good job out there. Unfortunately Heracles has decided to bring the offensive to our immediate surroundings in his infinite stupidity. Talk again.")
+Text("Truth_post_lambda_sisyphos_d2", "...")
+D(
+    Truth_post_lambda_sisyphos_d1,
+    sisyphos,
+    Truth_post_lambda_sisyphos_task_finish_d,
+    ,
+    ,
+    true,
+    R(
+        Truth_post_lambda_sisyphos_d2,
+        Call(Truth_post_lambda_munu_sisyphos_task_assign)
+    )
+)
+
+Function(
+    name=Truth_post_lambda_munu_sisyphos_task_assign,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetVariable(name=$$$Truth_checkpoint, value=7),
+        SetInteraction(dialogueID=Truth_post_lambda_heracles_backstab_d, entityID=heracles),
+        SetInteraction(dialogueID=Truth_post_lambda_sisyphos_munu_task_d, entityID=sisyphos)
+    )
+)
+
+Text("Truth_post_lambda_sisyphos_d7", "Stop Heracles in Mu & Nu.")
+Text("Truth_post_lambda_sisyphos_d8", "I'll go take it over.")
+Text("Truth_post_lambda_sisyphos_d9", "On second thought, no thanks.")
+D(
+    Truth_post_lambda_sisyphos_d7,
+    sisyphos,
+    Truth_post_lambda_sisyphos_munu_task_d,
+    ,
+    Truth_post_lambda_munu_sisyphos_task,
+    R(
+        Truth_post_lambda_sisyphos_d8,
+        Call(Truth_post_lambda_munu_sisyphos_task_accepted)
+    ),
+    R(
+        Truth_post_lambda_sisyphos_d9,
+        End()
+    )
+)
+
+Function(
+    name=Truth_post_lambda_munu_sisyphos_task_accepted,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetVariable(name=$$$Truth_checkpoint, value=9),
+        SetVariable(name=$$Truth_munuAlignment, value=1),
+        SetVariable(name=$$$Truth_backstab, value=0),
+        SetInteraction(dialogueID=Truth_post_lambda_sisyphos_munu_confirm_d, entityID=sisyphos),
+        SetInteraction(dialogueID=Truth_post_lambda_heracles_munu_already_accepted_d, entityID=heracles),
+        Call(Truth_munu_common),
+    )
+)
+
+
+Text("Truth_post_lambda_heracles_enemy_d1", "You have taken Lambda over for Sisyphos's dastardly cause, yet your kind insists on causing even more mayhem in Mu & Nu. Is the violence part of your being, or something you grew into?")
+Text("Truth_post_lambda_heracles_enemy_d2", "Watch me do it again.")
+D(
+    Truth_post_lambda_heracles_enemy_d1,
+    heracles,
+    Truth_post_lambda_heracles_not_received_reward_d,
+    R(
+        Truth_post_lambda_heracles_enemy_d2,
+        End()
+    )
+)
+
+Text("Truth_post_lambda_heracles_enemy_d3", "Your faction started the fight in Mu & Nu.")
+Text("Truth_post_lambda_heracles_enemy_d4", "I'm sorry for what I did.")
+Text("Truth_post_lambda_heracles_enemy_d5", "Sure we did. Now tell me, why are you even here?")
+Text("Truth_post_lambda_heracles_enemy_d6", "I wanted to rub it in.")
+Text("Truth_post_lambda_heracles_enemy_d7", "I regret my decision.")
+Text("Truth_post_lambda_heracles_enemy_d8", "When I saved you from that defect I knew you were going to be important. I didn't realize that could be a very bad thing. I cannot change the past, though... we're just stuck with you now.")
+Text("Truth_post_lambda_heracles_enemy_d9", "...")
+Text("Truth_post_lambda_heracles_enemy_d10", "Really. And how could you possibly make amends with us now.")
+Text("Truth_post_lambda_heracles_enemy_d11", "I could help you in Mu & Nu.")
+Text("Truth_post_lambda_heracles_enemy_d12", "I know you have a propensity for violence... but please. We need to stop Sisyphos's skirmish so close to Kappa. Go help us if you're being honest.")
+Text("Truth_post_lambda_heracles_enemy_d13", "I'll go take it over.")
+Text("Truth_post_lambda_heracles_enemy_d14", "On second thought, no thanks.")
+D(
+    Truth_post_lambda_heracles_enemy_d1,
+    heracles,
+    Truth_post_lambda_heracles_backstab_d,
+    R(
+        Truth_post_lambda_heracles_enemy_d3,
+        D(
+            Truth_post_lambda_heracles_enemy_d5,
+            R(
+                Truth_post_lambda_heracles_enemy_d6,
+                D(
+                    Truth_post_lambda_heracles_enemy_d8,
+                    R(
+                        Truth_post_lambda_heracles_enemy_d9,
+                        End()
+                    )
+                )
+            ),
+            R(
+                Truth_post_lambda_heracles_enemy_d7,
+                D(
+                    Truth_post_lambda_heracles_enemy_d10,
+                    R(
+                        Truth_post_lambda_heracles_enemy_d11,
+                        D(
+                            Truth_post_lambda_heracles_enemy_d12,
+                            ,
+                            ,
+                            ,
+                            Truth_post_lambda_munu_heracles_task,
+                            R(
+                                Truth_post_lambda_heracles_enemy_d13,
+                                Call(Truth_post_lambda_heracles_backstab)
+                            ),
+                            R(
+                                Truth_post_lambda_heracles_enemy_d14,
+                                End()
+                            )
+                        )
+                    )
+                )
+            ),
+        )
+    )
+)
+
+
+Function(
+    name=Truth_post_lambda_heracles_backstab,
+    sequence=(
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        SetVariable(name=$$$Truth_checkpoint, value=10),
+        SetVariable(name=$$Truth_munuAlignment, value=2),
+        SetVariable(name=$$$Truth_backstab, value=1),
+        SetInteraction(entityID=heracles, dialogueID=Truth_post_lambda_heracles_munu_confirm_d),
+        SetInteraction(entityID=sisyphos, dialogueID=Truth_post_lambda_sisyphos_backstabbed_d),
+        Call(Truth_munu_common)
+    )
+)
+
+Text("Truth_post_lambda_heracles_munu_already_accepted_d1", "I've no interest in talking to you. Go perish in Mu and Nu.")
+Text("Truth_post_lambda_heracles_munu_already_accepted_d2", "Okay.")
+
+D(
+    Truth_post_lambda_heracles_munu_already_accepted_d1,
+    heracles,
+    Truth_post_lambda_heracles_munu_already_accepted_d,
+    R(
+        Truth_post_lambda_heracles_munu_already_accepted_d2,
+        End()
+    )
+)
+
+
+
+Text("Truth_post_lambda_sisyphos_backstabbed_d1", "Looks like you're quite the clown! Go fly to Mu & Nu and get yourself squished.")
+Text("Truth_post_lambda_sisyphos_backstabbed_d2", "...")
+D(
+    Truth_post_lambda_sisyphos_backstabbed_d1,
+    sisyphos,
+    Truth_post_lambda_sisyphos_backstabbed_d,
+    R(
+        Truth_post_lambda_sisyphos_backstabbed_d2,
+        End()
+    )
+)
+
+Function(
+    name=Truth_munu_common,
+    sequence=(
+        AddObjectiveMarker(ID=Truth_munu, sectorName=Mu and Nu),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Mu and Nu,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Truth_munu),
+                    Call(Truth_munu_spawn_forces),
+                    Call(Truth_munu_spawn_commanders),
+                    Call(Truth_munu_pd),
+                    SetOverrideFaction(entityID=player, overrideFaction=$$Truth_munuAlignment),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Mu and Nu,
+                            invert=true,
+                            sequence=(
+                                ClearFactionOverrides(),
+                                Call(Truth_munu_common)
                             )
                         )
                     )
@@ -56,51 +474,274 @@ D(
     )
 )
 
-Text("Truth_post_lambda_heracles_d12", "We have intel that you decided to help Sisyphos with this insane offensive. I didn't realize you could be this... vile.")
-Text("Truth_post_lambda_heracles_d13", "Well I am.")
+Text("Truth_munu_heavensgate_d", "We meet again... With history on my side I swear to win.")
+Text("Truth_munu_heavensgate_backstab_d", "To defect from our cause like this...")
+Text("Truth_munu_starprism_d", "This is madness... stop this disrespect of our peace this instant.")
+Text("Truth_munu_starprism_backstab_d", "Your decision to abandon us will be sorely regretted.")
 
-Text("Truth_post_lambda_heracles_d14", "Go help our forces out at Mu & Nu. We need to end the violence now before things go south.")
-Text("Truth_post_lambda_heracles_d15", "I'll go take it over.")
-Text("Truth_post_lambda_heracles_d16", "On second thought, no thanks.")
+Function(
+    name=Truth_munu_pd,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Truth_munuAlignment,
+                val2=2,
+                comp=Eq,
+                sequence=(
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                PassiveDialogue(entityID=heavensgate, text=Truth_munu_heavensgate_backstab_d)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                PassiveDialogue(entityID=heavensgate, text=Truth_munu_heavensgate_d)
+                            )
+                        ),
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$Truth_munuAlignment,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                PassiveDialogue(entityID=starprism, text=Truth_munu_starprism_backstab_d)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                PassiveDialogue(entityID=starprism, text=Truth_munu_starprism_d)
+                            )
+                        ),
+                    )
+                )
+            ),
+        )
+    )
+)
 
-Text("Truth_post_lambda_heracles_enemy_d1", "You have taken Lambda over for Sisyphos's dastardly cause, yet your kind insists on causing even more mayhem in Mu & Nu. Is the violence part of your being, or something you grew into?")
-Text("Truth_post_lambda_heracles_enemy_d2", "Watch me do it again.")
+// Truth-munu-base1-flag
+// Truth-munu-outpost1-flag
+// Truth-munu-bunker1-flag
+// 4 outposts 6 bunkers 
+Function(
+    name=Truth_munu_spawn_forces,
+    sequence=(
+        SpawnEntity(
+            entityID=Truth_exterminator_carrier_air,
+            flagName=Truth-munu-base1-flag,
+            blueprintJSON=CarrierMediumRefit,
+            assetID=carrier_blueprint,
+            name=Air Carrier,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_carrier_air1,
+            flagName=Truth-munu-base2-flag,
+            blueprintJSON=CarrierMediumRefit,
+            name=Air Carrier,
+            assetID=carrier_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_carrier_air,
+            flagName=Truth-munu-base3-flag,
+            blueprintJSON=CarrierMediumRefit,
+            assetID=carrier_blueprint,
+            name=Air Carrier,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_carrier_air2,
+            flagName=Truth-munu-base4-flag,
+            blueprintJSON=CarrierMediumRefit,
+            name=Air Carrier,
+            assetID=carrier_blueprint,
+            faction=3,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_outpost1,
+            flagName=Truth-munu-outpost1-flag,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_outpost1,
+            flagName=Truth-munu-outpost2-flag,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=4,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_outpost2,
+            flagName=Truth-munu-outpost3-flag,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_outpost1,
+            flagName=Truth-munu-outpost4-flag,
+            blueprintJSON=OutpostHeavy,
+            name=Outpost,
+            assetID=outpost_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_exterminator_bunker1,
+            flagName=Truth-munu-bunker1-flag,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker2,
+            flagName=Truth-munu-bunker2-flag,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=3,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker3,
+            flagName=Truth-munu-bunker3-flag,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=3,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker4,
+            flagName=Truth-munu-bunker4-flag,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker5,
+            flagName=Truth-munu-bunker5-flag,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=4,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=Truth_conservationist_bunker6,
+            flagName=Truth-munu-bunker6-flag,
+            blueprintJSON=BunkerHeavy,
+            name=Bunker,
+            assetID=bunker_blueprint,
+            faction=4,
+            overrideFaction=2,
+        ),
+    )
+)
 
-Text("Truth_post_lambda_heracles_enemy_d3", "Your faction started the fight in Mu & Nu.")
-Text("Truth_post_lambda_heracles_enemy_d4", "I'm sorry for what I did.")
-Text("Truth_post_lambda_heracles_enemy_d5", "Sure. Now tell me, why are you even here?")
-Text("Truth_post_lambda_heracles_enemy_d6", "I wanted to rub it in.")
-Text("Truth_post_lambda_heracles_enemy_d7", "I regret my decision.")
-Text("Truth_post_lambda_heracles_enemy_d8", "When I saved you from that defect I knew you were going to be important. I didn't realize that could be a very bad thing. I cannot change the past though... we're stuck with you now.")
-Text("Truth_post_lambda_heracles_enemy_d9", "...")
-Text("Truth_post_lambda_heracles_enemy_d10", "Really. And how could you possibly make amends with us now.")
-Text("Truth_post_lambda_heracles_enemy_d11", "I could help you in Mu & Nu.")
-Text("Truth_post_lambda_heracles_enemy_d12", "I know you have a propensity for violence... but please. We need to stop Sisyphos's skirmish so close to Kappa. Go help us if you're being honest.")
-Text("Truth_post_lambda_heracles_enemy_d13", "I'll go take it over.")
-Text("Truth_post_lambda_heracles_enemy_d14", "On second thought, no thanks.")
-
-Text("Truth_post_lambda_sisyphos_d1", "Good job out there. Unfortunately Heracles has decided to bring the offensive to our immediate surroundings in his infinite stupidity.")
-Text("Truth_post_lambda_sisyphos_d2", "What do we do about this?")
-Text("Truth_post_lambda_sisyphos_d3", "We need to stop the Conservationist menace in Mu & Nu. Talk with me again for further instructions.")
-Text("Truth_post_lambda_sisyphos_d4", "Okay.")
-
-Text("Truth_post_lambda_sisyphos_d5", "Looks like you're quite the clown! Go fly to Mu & Nu and get yourself squished.")
-Text("Truth_post_lambda_sisyphos_d6", "...")
-
-Text("Truth_post_lambda_sisyphos_d7", "Stop Heracles in Mu & Nu.")
-Text("Truth_post_lambda_sisyphos_d8", "I'll go take it over.")
-Text("Truth_post_lambda_sisyphos_d9", "On second thought, no thanks.")
-
-Text("Truth_post_lambda_sisyphos_enemy_d1", "Why are you here? Go die off in Mu & Nu.")
-Text("Truth_post_lambda_sisyphos_enemy_d2", "Probably going to win over there, but sure.")
-
-Text("Truth_post_lambda_sisyphos_enemy_d3", "I regret my decision.")
-Text("Truth_post_lambda_sisyphos_enemy_d4", "I wanted to rub it in.")
-Text("Truth_post_lambda_sisyphos_enemy_d5", "Oh no, this is so awful, you're so powerful and we're so pathetically weak! Now go away.")
-Text("Truth_post_lambda_sisyphos_enemy_d6", "...")
-Text("Truth_post_lambda_sisyphos_enemy_d7", "It'd be stupid for us to just trust you... but our forces are all occupied with your mistake right now, so maybe you could help undo it.")
-Text("Truth_post_lambda_sisyphos_enemy_d8", "I will.")
-Text("Truth_post_lambda_sisyphos_enemy_d9", "On second thought, no thanks.")
+Function(
+    name=Truth_munu_spawn_commanders,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Truth_munuAlignment,
+                val2=2,
+                comp=Eq,
+                sequence=(                            
+                    SpawnEntity(
+                        entityID=heavensgate,
+                        blueprintJSON=heavensgate,
+                        faction=4,
+                        name=Heavensgate,
+                        flagName=Truth-munu-base1-flag,
+                        overrideFaction=1,
+                    ),
+                    SpawnEntity(
+                        entityID=munu-1,
+                        blueprintJSON=Electroshock,
+                        faction=4,
+                        name=ShellCore,
+                        flagName=Truth-munu-base1-flag,
+                        overrideFaction=1,
+                    ),
+                    SpawnEntity(
+                        entityID=munu-2,
+                        blueprintJSON=Electroshock,
+                        faction=3,
+                        name=ShellCore,
+                        flagName=Truth-munu-base1-flag,
+                        overrideFaction=1,
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$Truth_munuAlignment,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=starprism,
+                        blueprintJSON=starprism,
+                        faction=3,
+                        name=Starprism,
+                        flagName=Truth-munu-base3-flag,
+                        overrideFaction=2,
+                    ),
+                    SpawnEntity(
+                        entityID=munu-1,
+                        blueprintJSON=Electroshock,
+                        faction=4,
+                        name=ShellCore,
+                        flagName=Truth-munu-base3-flag,
+                        overrideFaction=2,
+                    ),
+                    SpawnEntity(
+                        entityID=munu-2,
+                        blueprintJSON=Electroshock,
+                        faction=3,
+                        name=ShellCore,
+                        flagName=Truth-munu-base3-flag,
+                        overrideFaction=2,
+                    ),
+                )
+            ),
+        ),
+    )
+)
 
 // Mu & Nu
 
@@ -123,7 +764,7 @@ Text("Truth_8", "Oh no!")
 //Text("", "Okay... I'll come to Kappa.")
 
 //Text("", "Citizens of Kappa. Our leaders have disappeared again to find new shelter for us. They assigned us to help organize our remaining forces.")
-//Text("", "Great leaders we have! All this work and war just for it to all fall apart.")
+//Text("", "What amazing leaders we have! All this work and war just for it to all fall apart.")
 //Text("", "Yeah! Methinks they can stay wherever they're off to! Actually maybe they should come back and take Heavensgate and Starprism with them too!")
 //Text("", "Please... listen for one moment.")
 //Text("", "\"Listen for one moment\"... Do you think all we're good for is listening?")

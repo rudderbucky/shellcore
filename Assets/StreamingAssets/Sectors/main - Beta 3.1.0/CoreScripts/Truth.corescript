@@ -9,6 +9,7 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
+        EnablePartyMember(entityID=sukrat),
         Call(Truth_start),
     )
 )
@@ -72,6 +73,76 @@ Function(
         ConditionBlock(
             Comparison(
                 val1=$$$Truth_checkpoint,
+                val2=10,
+                comp=Eq,
+                sequence=(
+                    Comparison(
+                        val1=$$$Truth_backstab,
+                        val2=1,
+                        comp=Eq,
+                        sequence=(
+                            Call(Truth_post_lambda_heracles_backstab)
+                        )
+                    ),
+                    Comparison(
+                        val1=$$$Truth_backstab,
+                        val2=0,
+                        comp=Eq,
+                        sequence=(
+                            Call(Truth_post_lambda_munu_heracles_task_accepted)
+                        )
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=9,
+                comp=Eq,
+                sequence=(
+                    Comparison(
+                        val1=$$$Truth_backstab,
+                        val2=1,
+                        comp=Eq,
+                        sequence=(
+                            Call(Truth_post_lambda_sisyphos_backstab)
+                        )
+                    ),
+                    Comparison(
+                        val1=$$$Truth_backstab,
+                        val2=0,
+                        comp=Eq,
+                        sequence=(
+                            Call(Truth_post_lambda_munu_sisyphos_task_accepted)
+                        )
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=8,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_post_lambda_munu_heracles_task_assign)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=7,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_post_lambda_munu_sisyphos_task_assign)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=6,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_postLambda)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
                 val2=5,
                 comp=Eq,
                 sequence=(
@@ -126,6 +197,7 @@ Function(
 Function(
     name=Truth_meetAristu,
     sequence=(
+        ClearInteraction(entityID=the-architect),
         SetVariable(name=$$$Truth_checkpoint, value=1),
         PassiveDialogue(entityID=player, text=Truth_makeshift_architect_d7),
         PassiveDialogue(entityID=the-architect, text=Truth_makeshift_architect_d8),
@@ -694,6 +766,7 @@ Function(
         FinishCameraPan(),
         Wait(time=1),
         FinishCutscene(),
+        EnablePartyMember(entityID=aristu),
         AddObjectiveMarker(
             ID=Truth_elair,
             sectorName=Exterminator Lair
@@ -873,11 +946,11 @@ Function(
     sequence=(
         AddObjectiveMarker(
             ID=Truth_lambdaMarker,
-            sectorName=BattleZone Lambda
+            sectorName=Lambda
         ),
         ConditionBlock(
             EnterSector(
-                sectorName=BattleZone Lambda,
+                sectorName=Lambda,
                 sequence=(
                     RemoveObjectiveMarker(ID=Truth_lambdaMarker),
                     SetOverrideFaction(entityID=player, overrideFaction=$$Truth_lambdaAlignment),
@@ -950,7 +1023,7 @@ Function(
                     ),
                     ConditionBlock(
                         WinBattleZone(
-                            sectorName=BattleZone Lambda,
+                            sectorName=Lambda,
                             sequence=(
                                 ConditionBlock(
                                     Comparison(
@@ -958,7 +1031,8 @@ Function(
                                         val2=2,
                                         comp=Eq,
                                         sequence=(
-                                            PassiveDialogue(entityID=player, text=Truth_postLambda_passive_co_d)
+                                            PassiveDialogue(entityID=player, text=Truth_postLambda_passive_co_d),
+                                            SetVariable(name=$$$Truth_checkpoint, value=6),
                                         )
                                     ),
                                     Comparison(
@@ -966,15 +1040,16 @@ Function(
                                         val2=1,
                                         comp=Eq,
                                         sequence=(
-                                            PassiveDialogue(entityID=player, text=Truth_postLambda_passive_ex_d)
+                                            PassiveDialogue(entityID=player, text=Truth_postLambda_passive_ex_d),
+                                            SetVariable(name=$$$Truth_checkpoint, value=5),
                                         )
                                     ),
-                                    SetVariable(name=$$$Truth_checkpoint, value=5),
-                                    Call(Truth_postLambda)
                                 ),
+                                SetVariable(name=$$$Truth_backstab, value=0),
+                                Call(Truth_postLambda),
                                 ConditionBlock(
                                     EnterSector(
-                                        sectorName=BattleZone Lambda,
+                                        sectorName=Lambda,
                                         invert=true,
                                         sequence=(
                                             ClearFactionOverrides()
@@ -984,7 +1059,7 @@ Function(
                             )
                         ),
                         EnterSector(
-                            sectorName=BattleZone Lambda,
+                            sectorName=Lambda,
                             invert=true,
                             sequence=(
                                 ClearFactionOverrides(),

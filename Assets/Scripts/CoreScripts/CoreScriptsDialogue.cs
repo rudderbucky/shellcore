@@ -450,7 +450,9 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
                     case 4:                    
                         node.task = tasks[val];
                         break;
-                    
+                    case 5:
+                        if (val == "true") node.action = Dialogue.DialogueAction.FinishTask;
+                        break;
                 }
             }  
             argIndex++;
