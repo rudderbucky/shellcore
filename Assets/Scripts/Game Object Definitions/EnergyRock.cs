@@ -38,6 +38,8 @@ public class EnergyRock : MonoBehaviour
         {
             targetTime = Time.fixedTime + maxTime;
 
+            if (DialogueSystem.isInCutscene) return;
+            
             var x = Instantiate(energySpherePrefab, null, false);
             x.transform.position = transform.position;
 
