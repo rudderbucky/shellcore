@@ -49,7 +49,8 @@ public class Interaction : MonoBehaviour
                             break;
                     }
                     
-                    DialogueSystem.StartDialogue(CoreScriptsManager.instance.dialogues[dialogueID], null, context);
+                    if (dialogueID != null && CoreScriptsManager.instance.dialogues.ContainsKey(dialogueID))
+                        DialogueSystem.StartDialogue(CoreScriptsManager.instance.dialogues[dialogueID], null, context);
                 });
 
             switch (context.type)

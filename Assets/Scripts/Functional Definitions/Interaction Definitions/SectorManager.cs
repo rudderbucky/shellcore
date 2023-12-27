@@ -1386,10 +1386,9 @@ public class SectorManager : MonoBehaviour
 
                 for (int i = 0; i < current.targets.Length; i++)
                 {
+                    if (!objects.ContainsKey(current.targets[i])) continue;
                     siegeZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
                 }
-
-                siegeZone.players.Add(PlayerCore.Instance);
                 break;
             default:
                 break;
