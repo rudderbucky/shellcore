@@ -269,12 +269,14 @@ public class BattleZoneManager : MonoBehaviour
                 AudioManager.PlayClipByID("clip_victory");
                 if (CoreScriptsManager.OnBattleWin == null) continue;
                 CoreScriptsManager.OnBattleWin.Invoke(sectorName);
+                break;
             }
             else
             {
                 AudioManager.PlayClipByID("clip_fail");
                 if (CoreScriptsManager.OnBattleLose == null) continue;
                 CoreScriptsManager.OnBattleLose.Invoke(sectorName);
+                break;
             }
         }
 

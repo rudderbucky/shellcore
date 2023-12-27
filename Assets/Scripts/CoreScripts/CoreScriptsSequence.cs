@@ -381,6 +381,8 @@ public class CoreScriptsSequence : MonoBehaviour
                     Mobility.Rotate(entityID, targetID, angle, inst.sequence, context);
                     break;
                 case InstructionCommand.StartCutscene:
+                    var closeWindow = GetArgument(inst.arguments, "closeWindow") == "true";
+                    if(closeWindow) DialogueSystem.Instance.CloseWindow();
                     Cutscene.StartCutscene();
                     break;
                 case InstructionCommand.FinishCutscene:

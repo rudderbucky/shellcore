@@ -29,6 +29,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public GameObject rewardBoxPrefab;
     public GameObject battleResultsBoxPrefab;
     public Font shellcorefont;
+    [SerializeField]
     GUIWindowScripts window;
     RectTransform background;
     Text textRenderer;
@@ -466,6 +467,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showBattleResults(bool victory)
     {
+        if (closeNext)
+        {
+            closeNext = false;
+            return;
+        }
+        
         if (window)
         {
             endDialogue(0);
@@ -755,6 +762,17 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }, 24 + 24 * i);
         }
     }
+
+    public void CloseWindow()
+    {
+        if (window)
+        {
+            window.CloseUI();
+        }
+        else closeNext = true;
+    }
+
+    private bool closeNext;
 
     private void startDialogue(Dialogue dialogue, IInteractable speaker, Context context = null)
     {

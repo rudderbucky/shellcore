@@ -459,6 +459,12 @@ Function(
                     Call(Truth_munu_pd),
                     SetOverrideFaction(entityID=player, overrideFaction=$$Truth_munuAlignment),
                     ConditionBlock(
+                        WinBattleZone(
+                            sectorName=Mu and Nu,
+                            sequence=(
+                                Call(Truth_cs2)
+                            )
+                        ),
                         EnterSector(
                             sectorName=Mu and Nu,
                             invert=true,
@@ -761,7 +767,7 @@ D(
     R(
         Truth_cs2_d4,
         D(
-            Truth_cs2_5,
+            Truth_cs2_d5,
             R(
                 Truth_cs2_d6,
                 Call(Truth_post_cs2)
@@ -781,7 +787,8 @@ D(
 Function(
     name=Truth_cs2,
     sequence=(
-        StartCutscene(),
+        SetSectorType(type=Neutral),
+        StartCutscene(closeWindow=true),
         ConditionBlock(
             Comparison(
                 val1=$$Truth_munuAlignment,
@@ -808,18 +815,21 @@ Function(
                     entityID=Truth_cs2_defected_1,
                     flagName=Truth-cs2-flag5,
                     blueprintJSON=Defected Lasertron,
+                    faction=2,
                     name=ShellCore
                 ),
                 SpawnEntity(
                     entityID=Truth_cs2_defected_2,
                     flagName=Truth-cs2-flag6,
                     blueprintJSON=Defected Large Patrol,
+                    faction=2,
                     name=ShellCore
                 ),
                 SpawnEntity(
                     entityID=Truth_cs2_defected_3,
                     flagName=Truth-cs2-flag7,
                     blueprintJSON=Defected Large Patrol,
+                    faction=2,
                     name=ShellCore
                 ),
                 SetPath(
@@ -870,9 +880,27 @@ D(
 Function(
     name=Truth_post_cs2,
     sequence=(
+        FinishCutscene(),
         SetVariable(name=$$$Truth_checkpoint, value=11),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Mu and Nu,
+                invert=true,
+                sequence=(
+                    ClearFactionOverrides(),
+                )
+            )
+        ),
         AddObjectiveMarker(ID=Truth_exl, sectorName=Exterminator Lair),
         AddObjectiveMarker(ID=Truth_col, sectorName=Conservationist Lair),
+        Call(Truth_set_lair_cond_calls),
+        Call(Truth_makeshift_stuff_overarch)
+    )
+)
+
+Function(
+    name=Truth_set_lair_cond_calls,
+    sequence=(
         ClearInteraction(entityID=Conservationist_Guardian1),
         ClearInteraction(entityID=Exterminator_Guardian1),
         SetInteraction(entityID=Conservationist_Guardian1, dialogueID=Truth_co_hideout_makeshift_d),
@@ -905,25 +933,24 @@ Function(
                 sequence=(
                     DeleteEntity(entityID=sisyphos),
                     DeleteEntity(entityID=heracles),
-                    DeleteEntity(entityID=Exterminator_Guardian1),
                     DeleteEntity(entityID=Exterminator_Guardian2),
                     DeleteEntity(entityID=Exterminator_Guardian3),
-                    DeleteEntity(entityID=Conservationist_Guardian1),
                     DeleteEntity(entityID=Conservationist_Guardian2),
                     DeleteEntity(entityID=Conservationist_Guardian3),
+                    DeleteEntity(entityID=heavensgate),
                     ConditionBlock(
                         EnterSector(
                             sectorName=Conservationist Lair,
                             invert=true,
                             sequence=(
-                                Call(Truth_post_cs2)
+                                Call(Truth_set_lair_cond_calls)
                             )
                         ),
                         EnterSector(
                             sectorName=Exterminator Lair,
                             invert=true,
                             sequence=(
-                                Call(Truth_post_cs2)
+                                Call(Truth_set_lair_cond_calls)
                             )
                         ),
                         Comparison(
@@ -948,30 +975,60 @@ Function(
 Function(
     name=Truth_go_to_makeshift,
     sequence=(
-        SetVariable(name=$$$Truth_checkpoint, value=12),
         RemoveObjectiveMarker(ID=Truth_exl),
         RemoveObjectiveMarker(ID=Truth_col),
-        ClearInteraction(entityID=Conservationist_Guardian1),
-        ClearInteraction(entityID=Exterminator_Guardian1),
         RemoveObjectiveMarker(ID=Truth_makeshift),
         AddObjectiveMarker(ID=Truth_makeshift, sectorName=The Makeshift),
+    )
+)
+
+Function(
+    name=Truth_makeshift_stuff_overarch,
+    sequence=(
         SetVariable(name=$$Truth_fun_dialogue_float, value=0),
+        Call(Truth_makeshift_stuff)
+    )
+)
+
+Function(
+    name=Truth_makeshift_stuff,
+    sequence=(
         ConditionBlock(
             EnterSector(
                 sectorName=The Makeshift,
                 sequence=(
+                    RemoveObjectiveMarker(ID=Truth_exl),
+                    RemoveObjectiveMarker(ID=Truth_col),
+                    RemoveObjectiveMarker(ID=Truth_makeshift),
                     SpawnEntity(
                         entityID=heavensgate,
+                        blueprintJSON=heavensgate,
                         flagName=Truth_cs3_flag1,
+                        name=Heavensgate,
                         faction=4
                     ),
                     SpawnEntity(
                         entityID=starprism,
+                        blueprintJSON=starprism,
                         flagName=Truth_cs3_flag2,
+                        name=Starprism,
                         faction=3
                     ),
-                    SetInteraction(entityID=heavensgate, dialogueID=Truth_cs3_d),
-                    SetInteraction(entityID=starprism, dialogueID=Truth_cs3_d),
+                    SetInteraction(
+                        entityID=heavensgate, 
+                        dialogueID=Truth_cs3_d,
+                        sequence=(
+                            SetVariable(name=$$$Truth_funStop, value=1),
+                        )
+                        
+                    ),
+                    SetInteraction(
+                        entityID=starprism, 
+                        dialogueID=Truth_cs3_d,
+                        sequence=(
+                            SetVariable(name=$$$Truth_funStop, value=1),
+                        )
+                    ),
                     ConditionBlock(
                         Comparison(
                             val1=$$Truth_fun_dialogue_float,
@@ -987,7 +1044,9 @@ Function(
                             sectorName=The Makeshift,
                             invert=true,
                             sequence=(
-                                Call(Truth_go_to_makeshift)
+                                RemoveObjectiveMarker(ID=Truth_makeshift),
+                                AddObjectiveMarker(ID=Truth_makeshift, sectorName=The Makeshift),
+                                Call(Truth_makeshift_stuff)
                             )
                         ),
                         Comparison(
@@ -1014,75 +1073,90 @@ Text("Truth_cs3_pd5", "How long is it going to take that core to show up?")
 Text("Truth_cs3_pd6", "They've got issues... apparently they hear voices in their mind all the time.")
 Text("Truth_cs3_pd7", "Voice-hearers... quite common here.")
 Text("Truth_cs3_pd8", "If that core doesn't show up soon we're leaving without them.")
-Text("Truth_cs3_pd9", "They're really good at showing up at comedic moments. Keep saying stuff like that and they're sure to show up.")
+Text("Truth_cs3_pd9", "Speak of the core and the core shall arrive.")
 Function(
     name=Truth_fun_dialogue,
     sequence=(
+        RandomFloat(name=$$Truth_fun_dialogue_float),
         Wait(time=15),
         ConditionBlock(
             Comparison(
+                val1=$$Truth_funStop,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
                 val1=$$$Truth_checkpoint,
-                val2=12,
+                val2=11,
                 comp=Eq,
                 sequence=(
-                    EnterSector(
-                        name=The Makeshift,
-                        sequence=(
-                            RandomFloat(name=$$Truth_fun_dialogue_float),
-                            ConditionBlock(
-                                Comparison(
-                                    val1=$$Truth_fun_dialogue_float,
-                                    val2=0.33,
-                                    comp=Lt,
-                                    sequence=(
-                                        PassiveDialogue(entityID=starprism, text=Truth_cs3_pd1),
-                                        PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd2),
-                                        PassiveDialogue(entityID=starprism, text=Truth_cs3_pd3),
-                                        PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd4),
-                                    )
+                    ConditionBlock(        
+                        Comparison(
+                            val1=$$Truth_funStop,
+                            val2=1,
+                            comp=Eq,
+                            sequence=()
+                        ),                                
+                        EnterSector(
+                            sectorName=The Makeshift,
+                            sequence=(
+                                RandomFloat(name=$$Truth_fun_dialogue_float),
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=$$Truth_fun_dialogue_float,
+                                        val2=0.33,
+                                        comp=Lt,
+                                        sequence=(
+                                            PassiveDialogue(entityID=starprism, text=Truth_cs3_pd1),
+                                            PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd2),
+                                            PassiveDialogue(entityID=starprism, text=Truth_cs3_pd3),
+                                            PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd4),
+                                        )
+                                    ),
+                                    Comparison(
+                                        val1=$$Truth_fun_dialogue_float,
+                                        val2=0.66,
+                                        comp=Lt,
+                                        sequence=(
+                                            PassiveDialogue(entityID=heavensgate, text=Truth_cs3_pd5),
+                                            PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd6),
+                                            PassiveDialogue(entityID=heavensgate, text=Truth_cs3_pd7),
+                                        )
+                                    ),
+                                    Comparison(
+                                        val1=$$Truth_fun_dialogue_float,
+                                        val2=1,
+                                        comp=Lt,
+                                        sequence=(
+                                            PassiveDialogue(entityID=heavensgate, text=Truth_cs3_pd8),
+                                            PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd9)
+                                        )
+                                    ),
                                 ),
-                                Comparison(
-                                    val1=$$Truth_fun_dialogue_float,
-                                    val2=0.66,
-                                    comp=Lt,
-                                    sequence=(
-                                        PassiveDialogue(entityID=heavensgate, text=Truth_cs3_pd5),
-                                        PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd6),
-                                        PassiveDialogue(entityID=heavensgate, text=Truth_cs3_pd7),
-                                    )
-                                ),
-                                Comparison(
-                                    val1=$$Truth_fun_dialogue_float,
-                                    val2=1,
-                                    comp=Lt,
-                                    sequence=(
-                                        PassiveDialogue(entityID=heavensgate, text=Truth_cs3_pd8),
-                                        PassiveDialogue(entityID=the-architect, text=Truth_cs3_pd9)
-                                    )
-                                ),
-                            ),
-                            Call(Truth_fun_dialogue)
+                                Call(Truth_fun_dialogue)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_checkpoint,
+                            val2=11,
+                            comp=Eq,
+                            sequence=(
+                                Call(Truth_fun_dialogue)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_checkpoint,
+                            val2=11,
+                            comp=Neq,
+                            sequence=()
                         )
-                    ),
-                    Comparison(
-                        val1=$$$Truth_checkpoint,
-                        val2=12,
-                        comp=Eq,
-                        sequence=(
-                            Call(Truth_fun_dialogue)
-                        )
-                    ),
-                    Comparison(
-                        val1=$$$Truth_checkpoint,
-                        val2=12,
-                        comp=Neq,
-                        sequence=()
                     )
                 )
             ),
             Comparison(
                 val1=$$$Truth_checkpoint,
-                val2=12,
+                val2=11,
                 comp=Neq,
                 sequence=()
             )
@@ -1162,7 +1236,8 @@ Function(
     sequence=(
         ClearInteraction(entityID=heavensgate),
         ClearInteraction(entityID=starprism),
-        SetVariable(name=$$$Truth_checkpoint, value=13),
+        SetVariable(name=$$$Truth_checkpoint, value=12),
+        SetVariable(name=$$Truth_funStop, value=1),
         AddObjectiveMarker(ID=Truth_kappa, secotrName=Kappa),
         ConditionBlock(
             EnterSector(

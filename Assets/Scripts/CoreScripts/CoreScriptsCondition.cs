@@ -212,6 +212,7 @@ public class CoreScriptsCondition : MonoBehaviour
     private static void SectorCheck(string sector, string selectedSectorName, Condition c, ConditionBlock cb, bool invertMode)
     {
         var activate = (sector == selectedSectorName) == !invertMode;
+        Debug.Log($"Running EnterSector condition with invertMode {invertMode} between {sector} and {selectedSectorName} with return value: {activate}");
         if (activate) SatisfyCondition(c, cb);
     }
 
@@ -249,6 +250,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
     public static void SatisfyCondition(Condition cond, ConditionBlock cb)
     {
+        if (cb.complete) return;
         DeinitializeAllConditions(cb);
 
         if (cond.sequence.instructions != null)

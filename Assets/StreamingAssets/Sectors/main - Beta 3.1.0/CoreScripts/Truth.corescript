@@ -9,7 +9,6 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
-        EnablePartyMember(entityID=sukrat),
         Call(Truth_start),
     )
 )
@@ -76,22 +75,24 @@ Function(
                 val2=10,
                 comp=Eq,
                 sequence=(
-                    Comparison(
-                        val1=$$$Truth_backstab,
-                        val2=1,
-                        comp=Eq,
-                        sequence=(
-                            Call(Truth_post_lambda_heracles_backstab)
-                        )
-                    ),
-                    Comparison(
-                        val1=$$$Truth_backstab,
-                        val2=0,
-                        comp=Eq,
-                        sequence=(
-                            Call(Truth_post_lambda_munu_heracles_task_accepted)
-                        )
-                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                Call(Truth_post_lambda_heracles_backstab)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                Call(Truth_post_lambda_munu_heracles_task_accepted)
+                            )
+                        ),
+                    )
                 )
             ),
             Comparison(
@@ -99,22 +100,24 @@ Function(
                 val2=9,
                 comp=Eq,
                 sequence=(
-                    Comparison(
-                        val1=$$$Truth_backstab,
-                        val2=1,
-                        comp=Eq,
-                        sequence=(
-                            Call(Truth_post_lambda_sisyphos_backstab)
-                        )
-                    ),
-                    Comparison(
-                        val1=$$$Truth_backstab,
-                        val2=0,
-                        comp=Eq,
-                        sequence=(
-                            Call(Truth_post_lambda_munu_sisyphos_task_accepted)
-                        )
-                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                Call(Truth_post_lambda_sisyphos_backstab)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_backstab,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                Call(Truth_post_lambda_munu_sisyphos_task_accepted)
+                            )
+                        ),
+                    )
                 )
             ),
             Comparison(
@@ -187,7 +190,8 @@ Function(
                 comp=Eq,
                 sequence=(
                     SetVariable(name=$$$Truth_checkpoint, value=0),
-                    SetInteraction(entityID=the-architect, dialogueID=Truth_makeshift_architect_d)
+                    SetInteraction(entityID=the-architect, dialogueID=Truth_makeshift_architect_d),
+                    EnablePartyMember(entityID=sukrat),
                 )
             ),
         )

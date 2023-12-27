@@ -106,6 +106,7 @@ public class FactionManager : MonoBehaviour
     public static int GetDistinguishingInteger(EntityFaction faction)
     {
         if (faction.overrideFaction != 0) return faction.overrideFaction;
+        if (PlayerCore.Instance && PlayerCore.Instance.faction.overrideFaction != 0) return faction.overrideFaction;
         return faction.factionID;
     }
     public static bool FactionExists(int faction)

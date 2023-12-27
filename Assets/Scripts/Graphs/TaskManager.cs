@@ -78,7 +78,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         }
         else
         {
-            Debug.LogWarning(entityID + " missing from interaction override dictionary!");
+            Debug.Log(entityID + " missing from interaction override dictionary!");
         }
     }
 
