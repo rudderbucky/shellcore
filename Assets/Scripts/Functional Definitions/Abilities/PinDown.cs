@@ -61,7 +61,7 @@ public class PinDown : ActiveAbility
             entity.StopPinDownCosmetic();
         }
         entity.pinDownCosmetic = PindownCoroutine(missileColor, destroy, entity);
-        entity.StartCoroutine(entity.pinDownCosmetic);
+        if (entity && entity.pinDownCosmetic != null) entity.StartCoroutine(entity.pinDownCosmetic);
         return;
     }
 
@@ -72,8 +72,11 @@ public class PinDown : ActiveAbility
         {
             foreach (var part in entity.GetComponentsInChildren<ShellPart>())
             {
+                if (!part || !part.GetComponent<SpriteRenderer>() ) continue;
+                var rend = part.GetComponent<SpriteRenderer>();
+                if (!rend.sprite) continue;
                 var localPosition = new Vector2();
-                var extents = part.GetComponent<SpriteRenderer>().sprite.bounds.extents;
+                var extents = rend.sprite.bounds.extents;
                 localPosition.x = Random.Range(-extents.x, extents.x);
                 localPosition.y = Random.Range(-extents.y, extents.y);
                 var x = Instantiate(missileLinePrefab, part.transform); // instantiate
