@@ -66,7 +66,8 @@ public class CoreScriptsSequence : MonoBehaviour
         SetOverrideFaction,
         AddTextToFlag,
         ChangeCharacterBlueprint,
-        ClearFactionOverrides
+        ClearFactionOverrides,
+        SetSectorColor
     }
     public struct Instruction
     {
@@ -338,7 +339,8 @@ public class CoreScriptsSequence : MonoBehaviour
                         fac,
                         overrideFac,
                         GetArgument(inst.arguments, "name"),
-                        GetArgument(inst.arguments, "assetID"));
+                        GetArgument(inst.arguments, "assetID"),
+                        GetArgument(inst.arguments, "stopIfIDExists") == "true");
                     break;
                 case InstructionCommand.Log:
                     Debug.LogWarning(GetArgument(inst.arguments, "message"));
@@ -410,7 +412,6 @@ public class CoreScriptsSequence : MonoBehaviour
                     flagName = GetArgument(inst.arguments, "flagName");
                     var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"), CultureInfo.InvariantCulture);
                     var instant = GetArgument(inst.arguments, "instant") == "true";
-                    Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
 
                     if (instant)
                     {
@@ -425,6 +426,7 @@ public class CoreScriptsSequence : MonoBehaviour
                         }
                         CameraScript.instance.Focus(flagPos);
                     }
+                    else Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
                     break;
                 case InstructionCommand.FinishCameraPan:
                     Cutscene.EndCameraPan();
@@ -515,9 +517,16 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.DevConsole:
                     DevConsoleScript.Instance.EnterCommand(GetArgument(inst.arguments, "command"), true);
                     break;
-                case InstructionCommand.FadeIntoBlack:
+                case InstructionCommand.SetSectorColor:
                     var cStr = GetArgument(inst.arguments, "color");
                     var color = string.IsNullOrEmpty(cStr) ? Color.black : CoreScriptsDialogue.ParseColor(cStr);
+                    BackgroundScript.instance.setColor(color);
+                    LandPlatformGenerator.Instance.SetColor(color + new Color(0.5F, 0.5F, 0.5F));
+                    SectorManager.instance.overrideProperties.backgroundColor = color;
+                    break;
+                case InstructionCommand.FadeIntoBlack:
+                    cStr = GetArgument(inst.arguments, "color");
+                    color = string.IsNullOrEmpty(cStr) ? Color.black : CoreScriptsDialogue.ParseColor(cStr);
                     var speedFactor = GetArgument(inst.arguments, "speedFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "speedFactor"), CultureInfo.InvariantCulture);
                     Cutscene.FadeIntoBlack(color, speedFactor);
                     break;
@@ -849,8 +858,20 @@ public class CoreScriptsSequence : MonoBehaviour
         }
     }
 
-    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID)
+    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID, bool stopIfIDExists)
     {
+        if (stopIfIDExists)
+        {
+            foreach (var ent in AIData.entities)
+            {
+                if (ent && ent.ID == entityID)
+                {
+                    Debug.Log("<Spawn Entity> ID exists, returning.");
+                    return;
+                }
+            }
+        }
+
         Vector2 coords = new Vector2();
         for (int i = 0; i < AIData.flags.Count; i++)
         {
