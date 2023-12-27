@@ -9,6 +9,7 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
+        SetVariable(name=$$$Truth_checkpoint, value=12),
         Call(Truth_start),
     )
 )
@@ -70,6 +71,52 @@ Function(
     name=Truth_start,
     sequence=(
         ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=14,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_eleos),
+                )
+            ), 
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=13,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_postKappa),
+                )
+            ),   
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=12,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_post_cs3),
+                )
+            ),            
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=11,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_makeshift_stuff_overarch),
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=11,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_makeshift_stuff_overarch),
+                )
+            ),
             Comparison(
                 val1=$$$Truth_checkpoint,
                 val2=10,

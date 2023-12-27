@@ -1015,18 +1015,19 @@ Function(
                         faction=3
                     ),
                     SetInteraction(
-                        entityID=heavensgate, 
-                        dialogueID=Truth_cs3_d,
+                        entityID=heavensgate,
                         sequence=(
-                            SetVariable(name=$$$Truth_funStop, value=1),
+                            SetVariable(name=$$Truth_funStop, value=1),
+                            StartCutscene(),
+                            ForceStartDialogue(entityID=starprism, dialogueID=Truth_cs3_d)
                         )
-                        
                     ),
                     SetInteraction(
                         entityID=starprism, 
-                        dialogueID=Truth_cs3_d,
                         sequence=(
-                            SetVariable(name=$$$Truth_funStop, value=1),
+                            SetVariable(name=$$Truth_funStop, value=1),
+                            StartCutscene(),
+                            ForceStartDialogue(entityID=starprism, dialogueID=Truth_cs3_d)
                         )
                     ),
                     ConditionBlock(
@@ -1238,11 +1239,27 @@ Function(
         ClearInteraction(entityID=starprism),
         SetVariable(name=$$$Truth_checkpoint, value=12),
         SetVariable(name=$$Truth_funStop, value=1),
-        AddObjectiveMarker(ID=Truth_kappa, secotrName=Kappa),
+        AddObjectiveMarker(ID=Truth_kappa, sectorName=Kappa),
+        FinishCutscene(),
         ConditionBlock(
             EnterSector(
                 sectorName=Kappa,
                 sequence=(
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Kappa,
+                            invert=true,
+                            sequence=(
+                                Call(Truth_post_cs3),
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_checkpoint,
+                            val2=13,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    ),
                     Call(Truth_cs4_spawn_entities),
                     SpawnEntity(
                         entityID=heavensgate,           
@@ -1264,11 +1281,13 @@ Function(
                     ),
                     SpawnEntity(
                         entityID=sukrat,           
-                        flagName=Truth-cs4-flag10
+                        flagName=Truth-cs4-flag10,
+                        forceCharacterTeleport=true,
                     ),
                     SpawnEntity(
                         entityID=aristu,           
-                        flagName=Truth-cs4-flag11
+                        flagName=Truth-cs4-flag11,
+                        forceCharacterTeleport=true,
                     ),
                     SetInteraction(
                         entityID=heavensgate,
@@ -1282,6 +1301,17 @@ Function(
                             Call(Truth_cs4)
                         )
                     ),
+                    DeleteEntity(entityID=Kappa_core1),
+                    DeleteEntity(entityID=Kappa_core2),
+                    DeleteEntity(entityID=Kappa_core3),
+                    DeleteEntity(entityID=Kappa_core4),
+                    DeleteEntity(entityID=Kappa_core5),
+                    DeleteEntity(entityID=Kappa_core6),
+                    DeleteEntity(entityID=Kappa_core7),
+                    DeleteEntity(entityID=Kappa_core8),
+                    DeleteEntity(entityID=Kappa_core9),
+                    DeleteEntity(entityID=Kappa_core10),
+
                 )
             )
         )
@@ -1320,7 +1350,7 @@ Function(
             flagName=Truth-cs4-flag6
         ),
         SpawnEntity(
-            entityID=Truth_cs4_core4,           
+            entityID=Truth_cs4_core5,           
             blueprintJSON=Electroshock,
             faction=3,
             name=ShellCore,
@@ -1374,6 +1404,7 @@ D(
 Function(
     name=Truth_cs4_p2,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag3,
             instant=true
@@ -1396,6 +1427,7 @@ D(
 Function(
     name=Truth_cs4_p3,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag4,
             instant=true
@@ -1417,6 +1449,7 @@ D(
 Function(
     name=Truth_cs4_p4,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag1,
             instant=true
@@ -1439,6 +1472,7 @@ D(
 Function(
     name=Truth_cs4_p5,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag5,
             instant=true
@@ -1461,6 +1495,7 @@ D(
 Function(
     name=Truth_cs4_p6,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag2,
             instant=true
@@ -1483,6 +1518,7 @@ D(
 Function(
     name=Truth_cs4_p7,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag6,
             instant=true
@@ -1505,6 +1541,7 @@ D(
 Function(
     name=Truth_cs4_p8,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag7,
             instant=true
@@ -1527,11 +1564,12 @@ D(
 Function(
     name=Truth_cs4_p9,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=Truth-cs4-flag2,
             instant=true
         ),
-        ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p89_d)
+        ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p9_d)
     )
 )
 
@@ -1549,6 +1587,10 @@ D(
 Function(
     name=Truth_cs4_p10,
     sequence=(
+        SetSectorColor(
+            color=(103,77,0)
+        ),
+        Wait(time=1),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p10_d)
     )
 )
@@ -1567,25 +1609,21 @@ D(
 Function(
     name=Truth_cs4_p11,
     sequence=(
-        ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p11_d),
         StartCameraPan(
             flagName=kappa-jump-flag4,
-            instant=true
+            sequence=(
+                Wait(time=1),
+                SpawnEntity(
+                    entityID=Truth_cs4_core6,           
+                    blueprintJSON=Defected Lasertron,
+                    faction=2,
+                    name=ShellCore,
+                    flagName=kappa-jump-flag4
+                ),
+                ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p11_d),
+            )
         ),
-        SpawnEntity(
-            entityID=Truth_cs4_core6,           
-            blueprintJSON=Defected Large Patrol,
-            faction=2,
-            name=ShellCore,
-            flagName=kappa-jump-flag4
-        ),
-        SpawnEntity(
-            entityID=Truth_cs4_core7,           
-            blueprintJSON=Defected Large Patrol,
-            faction=2,
-            name=ShellCore,
-            flagName=kappa-jump-flag5
-        ),
+        
     )
 )
 
@@ -1604,9 +1642,18 @@ Function(
     sequence=(
         StartCameraPan(
             flagName=kappa-jump-flag5,
-            instant=true
+            sequence=(
+                Wait(time=1),   
+                SpawnEntity(
+                    entityID=Truth_cs4_core7,           
+                    blueprintJSON=Defected Usurper,
+                    faction=2,
+                    name=ShellCore,
+                    flagName=kappa-jump-flag5
+                ),
+                ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p12_d)
+            )
         ),
-        ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p12_d)
     )
 )
 
@@ -1623,6 +1670,8 @@ D(
 Function(
     name=Truth_cs4_p13,
     sequence=(
+        Wait(time=1),
+        FinishCameraPan(),
         StartCameraPan(
             flagName=Truth-cs4-flag1,
             instant=true
@@ -1644,6 +1693,11 @@ D(
 Function(
     name=Truth_cs4_p14,
     sequence=(
+        Wait(time=1),
+        StartCameraPan(
+            flagName=Truth-cs4-flag11,
+            instant=true
+        ),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p14_d)
     )
 )
@@ -1668,13 +1722,26 @@ D(
 Function(
     name=Truth_cs4_p15,
     sequence=(
+        Wait(time=1),
         StartCameraPan(
             flagName=kappa-jump-flag5,
             instant=true
         ),
-        ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p15_d)
+        StartCameraPan(
+            flagName=Truth-cs4-flag12,
+            velocityFactor=0.2
+        ),
+        SetPath(
+            entityID=Truth_cs4_core7,
+            flagName=Truth-cs4-flag12,
+            sequence=(
+                ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p15_d)
+            )
+        )
     )
 )
+
+
 
 D(
     Truth_cs4_d17,
@@ -1698,17 +1765,76 @@ Function(
     sequence=(
         SetSectorType(type=SiegeZone),
         FinishCutscene(),
+        FinishCameraPan(),
         PassiveDialogue(entityID=starprism, dialogueID=Truth_cs4_d20),
         ConditionBlock(
             WinSiegeZone(
                 sectorName=Kappa,
                 sequence=(
-
+                    SetVariable(name=$$$Truth_checkpoint, value=13),
+                    Call(Truth_postKappa)
                 )
             )
         )
     )
 )
+
+Function(
+    name=Truth_postKappa,
+    sequence=(
+        AddObjectiveMarker(ID=Truth_kappa13, sectorName=Kappa),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Kappa,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Truth_kappa13),
+                    StartCutscene(),
+                    StartCameraPan(
+                        flagName=kappa-jump-flag3,
+                        instant=true
+                    ),
+                    SetSectorColor(
+                        color=(38,38,38)
+                    ),
+                    SpawnEntity(
+                        entityID=heavensgate,
+                        name=Heavensgate,
+                        faction=4,
+                        blueprintJSON=heavensgate,
+                        stopIfIDExists=true
+                    ),
+                    SetPath(
+                        entityID=heavensgate,
+                        flagName=kappa-jump-flag3,
+                        sequence=(
+                            Wait(time=1),
+                            FinishCameraPan(),
+                            FinishCutscene(),
+                            ClearInteraction(entityID=heavensgate),
+                            SetInteraction(entityID=heavensgate, dialogueID=Truth_cs5_d)
+                        )
+                    ),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Kappa,
+                            invert=true,
+                            sequence=(
+                                Call(Truth_postKappa)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Truth_checkpoint,
+                            val2=14,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
 
 Text("Truth_cs5_d1", "I... don't even know what to say...")
 Text("Truth_cs5_d2", "We need to do something now that the defects can warp.")
@@ -1748,7 +1874,9 @@ D(
 Function(
     name=Truth_eleos,
     sequence=(
+        SetVariable(name=$$$Truth_checkpoint, value=14),
         AddObjectiveMarker(ID=Truth_unl, sectorName=Unconvinced Lair),
+        ClearInteraction(entityID=heavensgate),
         ConditionBlock(
             EnterSector(
                 sectorName=Unconvinced Lair,
@@ -1815,7 +1943,12 @@ Function(
     name=Truth_eleos_daayo_pan,
     sequence=(
         StartCutscene(),
-        ForceStartDialogue
+        StartCameraPan(
+            flagName=UCH-daayo-flag,
+            instant=true
+        ),
+        Wait(time=1),
+        ForceStartDialogue(entityID=eleos, dialogueID=Truth_eleos_pan_d)
     )
 )
 
@@ -1832,7 +1965,9 @@ D(
 Function(
     name=Truth_end,
     sequence=(
+        FinishCameraPan(),
         FinishCutscene(),
+        ClearInteraction(entityID=eleos),
         ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
         FinishMission(soundID=clip_missioncompleteep3),
         ShowPopup(text=Truth_endOfStory)
