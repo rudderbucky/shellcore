@@ -31,7 +31,6 @@ public class SiegeZoneManager : MonoBehaviour
     private List<Entity> entitiesRemainingToRemove;
     private List<Entity> entitiesRemaining;
     private int waveCount = 0;
-    public List<PlayerCore> players;
     public bool playing = false;
     public string sectorName;
 
@@ -40,7 +39,6 @@ public class SiegeZoneManager : MonoBehaviour
         timer = 0;
         waveCount = 0;
         waves = new Queue<SiegeWave>();
-        players = new List<PlayerCore>();
         entitiesToRemove = new List<SiegeEntity>();
         entitiesRemaining = new List<Entity>();
         entitiesRemainingToRemove = new List<Entity>();
@@ -56,9 +54,9 @@ public class SiegeZoneManager : MonoBehaviour
 
     public void AlertPlayers(string message)
     {
-        foreach (PlayerCore player in players)
+        if (PlayerCore.Instance)
         {
-            player.alerter.showMessage(message, null);
+            PlayerCore.Instance.alerter.showMessage(message, null);
         }
     }
 
@@ -131,9 +129,9 @@ public class SiegeZoneManager : MonoBehaviour
                         {
                             node.position = currentTargets[Random.Range(0, currentTargets.Count)].transform.position;
                         }
-                        else if (players.Count > 0)
+                        else if (PlayerCore.Instance)
                         {
-                            node.position = players[Random.Range(0, players.Count)].transform.position;
+                            node.position = PlayerCore.Instance.transform.position;
                         }
 
                         node.children = new List<int>();
@@ -143,7 +141,7 @@ public class SiegeZoneManager : MonoBehaviour
                     }
 
                     entitiesToRemove.Add(ent);
-                    if (!FactionManager.IsAllied(sectorEntity.faction.factionID, players[0].faction.factionID))
+                    if (!FactionManager.IsAllied(sectorEntity.faction, PlayerCore.Instance.faction))
                     {
                         entitiesRemaining.Add(sectorEntity);
                     }
