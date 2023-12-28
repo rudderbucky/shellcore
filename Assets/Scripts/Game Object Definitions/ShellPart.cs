@@ -531,11 +531,11 @@ public class ShellPart : MonoBehaviour
         }
 
 
-        if (block == null && spriteRenderer && spriteRenderer.sprite)
+        if (block == null)
         {
             block = new();
-            block.SetTexture("_MainTex", spriteRenderer.sprite.texture);
-            block.SetColor("_Color", Color.white);
+            if (spriteRenderer && spriteRenderer.sprite)
+                block.SetTexture("_MainTex", spriteRenderer.sprite.texture);
         }
         if (block != null)
         {
