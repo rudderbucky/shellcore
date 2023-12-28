@@ -161,23 +161,10 @@ public class CoreScriptsSequence : MonoBehaviour
                 retVal = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
             }
         }
-        else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null && 
-            SaveHandler.instance.GetSave().taskVariableNames.Contains(val.Substring(3).Trim()))
+        else if (val.StartsWith("$$$") && TaskManager.Instance.taskVariables != null && 
+            TaskManager.Instance.taskVariables.ContainsKey(val.Substring(3).Trim()))
         {
-            var index = -1;
-            var names = SaveHandler.instance.GetSave().taskVariableNames;
-            var key = val.Substring(3).Trim();
-            for (int j = 0; j < names.Length; j++)
-            {
-                if (names[j] != val.Substring(3).Trim()) continue;
-                index = j;
-                break;
-            }
-            
-            if (index >= 0)
-            {
-                retVal = SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
-            }
+            retVal = TaskManager.Instance.taskVariables[val.Substring(3).Trim()].ToString();
         }
         else if (val.StartsWith("$$") && !val.StartsWith("$$$") && CoreScriptsManager.instance.globalVariables != null)
         {
