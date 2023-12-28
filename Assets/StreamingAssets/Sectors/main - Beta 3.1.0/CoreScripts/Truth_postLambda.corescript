@@ -784,6 +784,12 @@ D(
     )
 )
 
+Text("Truth_findLeaders_objectives", "- Return to Heracles or Sisyphos for further instructions.")
+Task(
+    taskID=Truth_findLeaders,
+    objectives=Truth_findLeaders_objectives
+)
+
 Function(
     name=Truth_cs2,
     sequence=(
@@ -882,6 +888,7 @@ Function(
     sequence=(
         FinishCutscene(),
         SetVariable(name=$$$Truth_checkpoint, value=11),
+        AddTask(taskID=Truth_findLeaders),
         ConditionBlock(
             EnterSector(
                 sectorName=Mu and Nu,
@@ -972,9 +979,16 @@ Function(
     )
 )
 
+Text("Truth_go_to_makeshift_task_objectives", "- Return to The Makeshift and speak to Heavensgate or Starprism.")
+Task(
+    taskID=Truth_go_to_makeshift_task,
+    objectives=Truth_go_to_makeshift_task_objectives
+)
+
 Function(
     name=Truth_go_to_makeshift,
     sequence=(
+        AddTask(Truth_go_to_makeshift_task),
         RemoveObjectiveMarker(ID=Truth_exl),
         RemoveObjectiveMarker(ID=Truth_col),
         RemoveObjectiveMarker(ID=Truth_makeshift),
@@ -1165,6 +1179,11 @@ Function(
     )
 )
 
+Text("Truth_go_to_kappa_task_objectives", "- Head to Kappa and speak to Starprism or Heavensgate.")
+Task(
+    taskID=Truth_go_to_kappa_task,
+    objectives=Truth_go_to_kappa_task_objectives
+)
 
 Text("Truth_cs3_d1", "Greetings Makeshifters...")
 Text("Truth_cs3_d2", "Hello?")
@@ -1214,6 +1233,9 @@ D(
                                                 D(
                                                     Truth_cs3_d11,
                                                     starprism,
+                                                    ,
+                                                    ,
+                                                    Truth_go_to_kappa_task,
                                                     R(
                                                         Truth_cs3_d12,
                                                         Call(Truth_post_cs3)
@@ -1835,6 +1857,11 @@ Function(
     )
 )
 
+Text("Truth_eleos_task_objectives", "- Head to the Unconvinced Lair and speak to Eleos for further instructions.")
+Task(
+    taskID=Truth_eleos_task,
+    objectives=Truth_eleos_task_objectives
+)
 
 Text("Truth_cs5_d1", "I... don't even know what to say...")
 Text("Truth_cs5_d2", "We need to do something now that the defects can warp.")
@@ -1859,6 +1886,10 @@ D(
                         Truth_cs5_d6,
                         D(
                             Truth_cs5_d7,
+                            ,
+                            ,
+                            ,
+                            Truth_eleos_task,
                             R(
                                 Truth_cs5_d6,
                                 Call(Truth_eleos)

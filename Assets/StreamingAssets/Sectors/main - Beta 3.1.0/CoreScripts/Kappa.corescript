@@ -167,11 +167,23 @@ SectorTrigger(
         SetInteraction(entityID=Kappa_core2, dialogueID=Kappa_core2_d),
         SetInteraction(entityID=Kappa_core3, dialogueID=Kappa_core3_d),
 
-        Call(Kappa_setJumpGates)
+        ConditionBlock(
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=12,
+                comp=Neq,
+                sequence=(
+                    Call(Kappa_setJumpGates)
+                )
+            )
+        )
     )
 )
 
 Text("Kappa_jump1", "JUMP TO: LAMBDA OUTSKIRTS")
+Text("WO_jump", "JUMP TO: WESTERN OUTSKIRTS")
+Text("EO_jump", "JUMP TO: EASTERN OUTSKIRTS")
+
 
 Function(
     name=Kappa_setJumpGates,
@@ -185,10 +197,85 @@ Function(
             sequence=(
                 WarpPlayer(flagName=lambda-outskirts-jump, sectorName=Lambda Outskirts 1E),
             )
+        ),
+
+        AddTextToFlag(
+            text=WO_jump,
+            flagName=kappa-jump-flag2
+        ),
+        SetFlagInteractibility(
+            flagName=kappa-jump-flag2,
+            sequence=(
+                WarpPlayer(flagName=kappa-western-outskirts-jump, sectorName=Sector 260-5460),
+            )
+        ),
+
+        AddTextToFlag(
+            text=EO_jump,
+            flagName=kappa-jump-flag4
+        ),
+        SetFlagInteractibility(
+            flagName=kappa-jump-flag4,
+            sequence=(
+                WarpPlayer(flagName=kappa-eastern-outskirts-jump, sectorName=Sector 2410-5750),
+            )
+        ),
+    )
+)
+
+SectorTrigger(
+    sectorName=Lambda Outskirts 1E,
+    sequence=(
+        SetVariable(name=$$Kappa_jumpFlag, value=kappa-jump-flag1),
+        SetVariable(name=$$Kappa_returnFlag, value=lambda-outskirts-jump),
+        Call(LO_setJumpGates)
+    )
+)
+
+SectorTrigger(
+    sectorName=Sector 260-5460,
+    sequence=(
+        SetVariable(name=$$Kappa_jumpFlag, value=kappa-jump-flag2),
+        SetVariable(name=$$Kappa_returnFlag, value=kappa-western-outskirts-jump),
+        Call(LO_setJumpGates)
+    )
+)
+
+SectorTrigger(
+    sectorName=Sector 2410-5750,
+    sequence=(
+        SetVariable(name=$$Kappa_jumpFlag, value=kappa-jump-flag4),
+        SetVariable(name=$$Kappa_returnFlag, value=kappa-eastern-outskirts-jump),
+        Call(LO_setJumpGates)
+    )
+)
+
+Text("LO_jump", "JUMP TO: KAPPA")
+
+Function(
+    name=LO_setJumpGates,
+    sequence=(
+        AddTextToFlag(
+            text=LO_jump,
+            flagName=$$Kappa_returnFlag
+        ),
+        SetFlagInteractibility(
+            flagName=$$Kappa_returnFlag,
+            sequence=(
+                WarpPlayer(flagName=$$Kappa_jumpFlag, sectorName=Kappa),
+            )
         )
     )
 )
 
+
+
 // lambda-outskirts-jump
 // kappa-jump-flag1
 // Lambda Outskirts 1E
+
+// kappa-western-outskirts-jump
+// Sector 260-5460
+
+// kappa-eastern-outskirts-jump
+// Sector 2410-5750
