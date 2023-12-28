@@ -1385,6 +1385,7 @@ Function(
     name=Truth_cs4,
     sequence=(
         StartCutscene(),
+        StopMusic(),
         ForceStartDialogue(
             entityID=heavensgate,
             dialogueID=Truth_cs4_p1_d
@@ -1431,6 +1432,7 @@ Function(
             flagName=Truth-cs4-flag3,
             instant=true
         ),
+        StartMusicOverride(musicID=music_overworld_4),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p2_d)
     )
 )
@@ -1613,6 +1615,8 @@ Function(
             color=(103,77,0)
         ),
         Wait(time=1),
+        FinishMusicOverride(),
+        StopMusic(),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p10_d)
     )
 )
@@ -1720,6 +1724,7 @@ Function(
             flagName=Truth-cs4-flag11,
             instant=true
         ),
+        StartMusicOverride(musicID=music_siege_3),
         ForceStartDialogue(entityID=Truth_cs4_core1, dialogueID=Truth_cs4_p14_d)
     )
 )
@@ -1788,7 +1793,7 @@ Function(
         SetSectorType(type=SiegeZone),
         FinishCutscene(),
         FinishCameraPan(),
-        PassiveDialogue(entityID=starprism, dialogueID=Truth_cs4_d20),
+        PassiveDialogue(entityID=starprism, text=Truth_cs4_d20),
         ConditionBlock(
             WinSiegeZone(
                 sectorName=Kappa,
@@ -1809,20 +1814,24 @@ Function(
             EnterSector(
                 sectorName=Kappa,
                 sequence=(
+                    FinishMusicOverride(),
+                    StopMusic(),
                     RemoveObjectiveMarker(ID=Truth_kappa13),
                     StartCutscene(),
+                    SetSectorColor(
+                        color=(38,38,38)
+                    ),
+                    Wait(time=0.1),
                     StartCameraPan(
                         flagName=kappa-jump-flag3,
                         instant=true
-                    ),
-                    SetSectorColor(
-                        color=(38,38,38)
                     ),
                     SpawnEntity(
                         entityID=heavensgate,
                         name=Heavensgate,
                         faction=4,
                         blueprintJSON=heavensgate,
+                        flagName=Truth-cs4-flag12,
                         stopIfIDExists=true
                     ),
                     SetPath(
@@ -1832,6 +1841,7 @@ Function(
                             Wait(time=1),
                             FinishCameraPan(),
                             FinishCutscene(),
+                            FinishMusicOverride(),
                             ClearInteraction(entityID=heavensgate),
                             SetInteraction(entityID=heavensgate, dialogueID=Truth_cs5_d)
                         )

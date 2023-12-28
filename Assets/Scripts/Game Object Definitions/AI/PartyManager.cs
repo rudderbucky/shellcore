@@ -225,6 +225,13 @@ public class PartyManager : MonoBehaviour
         UpdatePortraits();
     }
 
+    public void SetOverrideFaction(int overrideFac)
+    {
+        foreach (var core in partyMembers)
+        {
+            core.faction.overrideFaction = overrideFac;
+        }
+    }
 
     public void UnassignBackend(string charID, ShellCore member)
     {

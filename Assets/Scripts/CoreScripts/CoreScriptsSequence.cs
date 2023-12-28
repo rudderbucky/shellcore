@@ -67,7 +67,8 @@ public class CoreScriptsSequence : MonoBehaviour
         AddTextToFlag,
         ChangeCharacterBlueprint,
         ClearFactionOverrides,
-        SetSectorColor
+        SetSectorColor,
+        StopMusic
     }
     public struct Instruction
     {
@@ -237,6 +238,10 @@ public class CoreScriptsSequence : MonoBehaviour
                     var overrideFac = 0;
                     if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
                     AIData.entities.Find(e => e.ID == entityID).faction.overrideFaction = overrideFac;
+                    if (entityID == "player")
+                    {
+                        PartyManager.instance.SetOverrideFaction(overrideFac);
+                    }
                     break;
                 case InstructionCommand.SetFactionRelations:
                     var factionID = GetArgument(inst.arguments, "factionID");
@@ -247,6 +252,9 @@ public class CoreScriptsSequence : MonoBehaviour
                     var musicID = GetArgument(inst.arguments, "musicID");
                     AudioManager.musicOverrideID = musicID;
                     AudioManager.PlayMusic(musicID);
+                    break;
+                case InstructionCommand.StopMusic:
+                    AudioManager.StopMusic();
                     break;
                 case InstructionCommand.FinishMusicOverride:
                     AudioManager.musicOverrideID = null;
