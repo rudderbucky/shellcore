@@ -68,3 +68,26 @@ StartTrigger(
         SetInteraction(dialogueID=Exterminator_Trader_d, entityID=Exterminator_Trader)
     )
 )
+
+SectorTrigger(
+    sectorName=Exterminator Lair,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Truth_deleteEntities,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_set_lair_cond_calls)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_deleteEntities,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                )
+            ),
+        )
+    )
+)

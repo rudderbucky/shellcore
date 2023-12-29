@@ -888,6 +888,7 @@ Function(
     sequence=(
         FinishCutscene(),
         SetVariable(name=$$$Truth_checkpoint, value=11),
+        SetVariable(name=$$$Truth_deleteEntities, value=1),
         AddTask(taskID=Truth_findLeaders),
         ConditionBlock(
             EnterSector(
@@ -900,7 +901,6 @@ Function(
         ),
         AddObjectiveMarker(ID=Truth_exl, sectorName=Exterminator Lair),
         AddObjectiveMarker(ID=Truth_col, sectorName=Conservationist Lair),
-        Call(Truth_set_lair_cond_calls),
         Call(Truth_makeshift_stuff_overarch)
     )
 )
@@ -1257,6 +1257,7 @@ D(
 Function(
     name=Truth_post_cs3,
     sequence=(
+        FinishMusicOverride(),
         ClearInteraction(entityID=heavensgate),
         ClearInteraction(entityID=starprism),
         SetVariable(name=$$$Truth_checkpoint, value=12),
@@ -1322,21 +1323,27 @@ Function(
                         sequence=(
                             Call(Truth_cs4)
                         )
-                    ),
-                    DeleteEntity(entityID=Kappa_core1),
-                    DeleteEntity(entityID=Kappa_core2),
-                    DeleteEntity(entityID=Kappa_core3),
-                    DeleteEntity(entityID=Kappa_core4),
-                    DeleteEntity(entityID=Kappa_core5),
-                    DeleteEntity(entityID=Kappa_core6),
-                    DeleteEntity(entityID=Kappa_core7),
-                    DeleteEntity(entityID=Kappa_core8),
-                    DeleteEntity(entityID=Kappa_core9),
-                    DeleteEntity(entityID=Kappa_core10),
-
+                    ), 
+                    Call(Kappa_deleteEntities)
                 )
             )
         )
+    )
+)
+
+Function(
+    name=Kappa_deleteEntities,
+    sequence=(
+        DeleteEntity(entityID=Kappa_core1),
+        DeleteEntity(entityID=Kappa_core2),
+        DeleteEntity(entityID=Kappa_core3),
+        DeleteEntity(entityID=Kappa_core4),
+        DeleteEntity(entityID=Kappa_core5),
+        DeleteEntity(entityID=Kappa_core6),
+        DeleteEntity(entityID=Kappa_core7),
+        DeleteEntity(entityID=Kappa_core8),
+        DeleteEntity(entityID=Kappa_core9),
+        DeleteEntity(entityID=Kappa_core10),
     )
 )
 
@@ -1801,6 +1808,11 @@ Function(
                     SetVariable(name=$$$Truth_checkpoint, value=13),
                     Call(Truth_postKappa)
                 )
+            ),
+            EnterSector(
+                sectorName=Kappa,
+                invert=true,
+                sequence=()
             )
         )
     )
@@ -1810,6 +1822,7 @@ Function(
     name=Truth_postKappa,
     sequence=(
         AddObjectiveMarker(ID=Truth_kappa13, sectorName=Kappa),
+        ClearInteraction(entityID=starprism),
         ConditionBlock(
             EnterSector(
                 sectorName=Kappa,
