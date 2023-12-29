@@ -235,6 +235,10 @@ Function(
                 val2=complete,
                 comp=Eq,
                 sequence=(
+                    ChangeCharacterBlueprint(
+                        charID=daayo,
+                        blueprintJSON=daayo_4
+                    ),
                     SetVariable(name=$$$Truth_checkpoint, value=0),
                     SetInteraction(entityID=the-architect, dialogueID=Truth_makeshift_architect_d),
                     EnablePartyMember(entityID=sukrat),

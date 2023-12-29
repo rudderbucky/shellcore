@@ -211,7 +211,7 @@ Text("UCH_daayo_d1", "Go away.")
 Text("UCH_daayo_d2", "Okay...")
 D(
     UCH_daayo_d1,
-    daayo,
+    fake-daayo,
     UCH_daayo_d,
     R(
         UCH_daayo_d2,
@@ -222,16 +222,15 @@ D(
 SectorTrigger(
     sectorName=Unconvinced Lair,
     sequence=(
-        ChangeCharacterBlueprint(
-            charID=daayo,
-            blueprintJSON=daayo_4
-        ),
         SpawnEntity(
-            entityID=daayo,
-            flagName=UCH-daayo-flag
+            entityID=fake-daayo,
+            flagName=UCH-daayo-flag,
+            faction=1,
+            blueprintJSON=daayo_4,
+            name=Daayo
         ),
-        ClearInteraction(entityID=daayo),
-        SetInteraction(entityID=daayo, dialogueID=UCH_daayo_d),
+        ClearInteraction(entityID=fake-daayo),
+        SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
         SetFactionRelations(
             factionID=0,
             sum=27
