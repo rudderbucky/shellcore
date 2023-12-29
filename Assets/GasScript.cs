@@ -46,7 +46,7 @@ public class GasScript : MonoBehaviour
         emission.rateOverTime = 0 * emissionPerSecond * Mathf.Sqrt(multiplier);
         partSys.Stop();
         partSys.Clear();
-        partSys.Simulate(partSys.main.duration);
+        //partSys.Simulate(partSys.main.duration);
         partSys.Play();
         
         auxillaryPartSys.Stop();
