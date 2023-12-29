@@ -1,7 +1,7 @@
 // TODO: Add Daayo to unconvinced lair
 
 Text("Truth_missionName", "Truth")
-Text("Truth_entryPoint", "Talk to The Architect or Sukrat in The Makeshift.")
+Text("Truth_entryPoint", "Talk to The Architect in The Makeshift.")
 
 MissionTrigger(
     name=Truth_missionName,
@@ -9,7 +9,6 @@ MissionTrigger(
     prerequisites=(Abandonment_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Truth_checkpoint, value=14),
         Call(Truth_start),
     )
 )
