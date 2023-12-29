@@ -57,7 +57,7 @@ public class Laser : Bullet
     {
         time -= Time.deltaTime;
         var target = targetingSystem.GetTarget();
-        if (bulletsLeft > 0 && (time < 0) && target && !Core.IsInvisible && !Core.isAbsorbing)
+        if (bulletsLeft > 0 && (time < 0) && target && !Core.IsInvisible && !Core.isAbsorbing && !DialogueSystem.isInCutscene)
         {
             if (!isEnabled) 
             {
