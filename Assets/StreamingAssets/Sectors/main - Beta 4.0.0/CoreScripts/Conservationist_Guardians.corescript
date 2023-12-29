@@ -107,20 +107,14 @@ SectorTrigger(
                 )
             ),
         ),
-        SetInteraction(dialogueID=Conservationist_Trader_d, entityID=Conservationist_Trader)
-    )
-)
-
-SectorTrigger(
-    sectorName=Conservationist Lair,
-    sequence=(
+        SetInteraction(dialogueID=Conservationist_Trader_d, entityID=Conservationist_Trader),
         ConditionBlock(
             Comparison(
                 val1=$$$Truth_deleteEntities,
                 val2=1,
                 comp=Eq,
                 sequence=(
-                    Call(Truth_set_lair_cond_calls)
+                    Call(Truth_delete_lair_entities)
                 )
             ),
             Comparison(

@@ -285,6 +285,7 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.AddTask:
                     StartTaskNode.RegisterTask(CoreScriptsManager.instance.GetTask(GetArgument(inst.arguments, "taskID")), context.missionName);
+                    Debug.Log("Adding task: " + GetArgument(inst.arguments, "taskID") + " to " + context.missionName);
                     break;
                 case InstructionCommand.AddObjectiveMarker: 
                     var sectorName = GetArgument(inst.arguments, "sectorName");

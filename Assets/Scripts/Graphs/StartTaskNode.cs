@@ -307,6 +307,7 @@ namespace NodeEditorFramework.Standard
 
                 if (!mission.tasks.Exists((x) => x.dialogue == task.dialogue))
                 {
+                    Debug.Log("adding task: " + task.taskID);
                     mission.tasks.Add(task.GetCopy());
                 }
             }

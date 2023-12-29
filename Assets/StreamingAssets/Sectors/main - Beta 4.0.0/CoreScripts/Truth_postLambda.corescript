@@ -906,30 +906,6 @@ Function(
 )
 
 Function(
-    name=Truth_set_lair_cond_calls,
-    sequence=(
-        ClearInteraction(entityID=Conservationist_Guardian1),
-        ClearInteraction(entityID=Exterminator_Guardian1),
-        SetInteraction(entityID=Conservationist_Guardian1, dialogueID=Truth_co_hideout_makeshift_d),
-        SetInteraction(entityID=Exterminator_Guardian1, dialogueID=Truth_ex_hideout_makeshift_d),
-        ConditionBlock(
-            EnterSector(
-                sectorName=Exterminator Lair,
-                sequence=(
-                    Call(Truth_delete_lair_entities)
-                )
-            ),
-            EnterSector(
-                sectorName=Conservationist Lair,
-                sequence=(
-                    Call(Truth_delete_lair_entities)
-                )
-            ),
-        ),
-    )
-)
-
-Function(
     name=Truth_delete_lair_entities,
     sequence=(
         ConditionBlock(
@@ -938,35 +914,10 @@ Function(
                 val2=11,
                 comp=Eq,
                 sequence=(
-                    DeleteEntity(entityID=sisyphos),
-                    DeleteEntity(entityID=heracles),
-                    DeleteEntity(entityID=Exterminator_Guardian2),
-                    DeleteEntity(entityID=Exterminator_Guardian3),
-                    DeleteEntity(entityID=Conservationist_Guardian2),
-                    DeleteEntity(entityID=Conservationist_Guardian3),
-                    DeleteEntity(entityID=heavensgate),
-                    ConditionBlock(
-                        EnterSector(
-                            sectorName=Conservationist Lair,
-                            invert=true,
-                            sequence=(
-                                Call(Truth_set_lair_cond_calls)
-                            )
-                        ),
-                        EnterSector(
-                            sectorName=Exterminator Lair,
-                            invert=true,
-                            sequence=(
-                                Call(Truth_set_lair_cond_calls)
-                            )
-                        ),
-                        Comparison(
-                            val1=$$$Truth_checkpoint,
-                            val2=11,
-                            comp=Neq,
-                            sequence=()
-                        )
-                    )
+                    ClearInteraction(entityID=Conservationist_Guardian1),
+                    ClearInteraction(entityID=Exterminator_Guardian1),
+                    SetInteraction(entityID=Conservationist_Guardian1, dialogueID=Truth_co_hideout_makeshift_d),
+                    SetInteraction(entityID=Exterminator_Guardian1, dialogueID=Truth_ex_hideout_makeshift_d),
                 )
             ),
             Comparison(
@@ -975,7 +926,14 @@ Function(
                 comp=Neq,
                 sequence=()
             )
-        )
+        ),
+        DeleteEntity(entityID=sisyphos),
+        DeleteEntity(entityID=heracles),
+        DeleteEntity(entityID=Exterminator_Guardian2),
+        DeleteEntity(entityID=Exterminator_Guardian3),
+        DeleteEntity(entityID=Conservationist_Guardian2),
+        DeleteEntity(entityID=Conservationist_Guardian3),
+        DeleteEntity(entityID=heavensgate),
     )
 )
 
@@ -988,7 +946,6 @@ Task(
 Function(
     name=Truth_go_to_makeshift,
     sequence=(
-        AddTask(Truth_go_to_makeshift_task),
         RemoveObjectiveMarker(ID=Truth_exl),
         RemoveObjectiveMarker(ID=Truth_col),
         RemoveObjectiveMarker(ID=Truth_makeshift),
