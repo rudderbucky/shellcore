@@ -9,6 +9,7 @@ Shader "Sprites/RemasteredPartColors"
 		[PerRendererData] _PerRendColor ("Faction Color", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
 		[PerRendererData] _Min ("Min", Float) = 0
+		[PerRendererData] _Symmetry ("Symmetry", Float) = 0
 	}
 
 	SubShader
@@ -53,6 +54,7 @@ Shader "Sprites/RemasteredPartColors"
 			fixed4 _Color;
 			float4 _MainTex_TexelSize;
 			float _Min;
+			float _Symmetry;
 
 			v2f vert(appdata_t IN)
 			{
@@ -138,7 +140,7 @@ Shader "Sprites/RemasteredPartColors"
 					float a = abs(y / sqrt(mag));
 					float as = asin(a);
 
-					if (x < 0) as = pi - as;
+					if (_Symmetry > 0 && x < 0) as = pi - as;
 					if (x > 0 && y < 0) as = 2 * pi - as;
 					if (x < 0 && y < 0) as = 2 * pi - as;
 
