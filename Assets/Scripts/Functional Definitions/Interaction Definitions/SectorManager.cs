@@ -1506,10 +1506,8 @@ public class SectorManager : MonoBehaviour
             SetPlayerVariablesOnSectorLoad();
         }
 
-        // Load entities
         LoadLevelEntities();
 
-        //Load land platforms
         LoadSectorLandPlatforms();
 
         // Restart particle and background effects to new skin if necessary
@@ -1558,11 +1556,9 @@ public class SectorManager : MonoBehaviour
         battleZone.enabled = false;
         siegeZone.enabled = false;
 
-        // sector type things
         SetSectorTypeBehavior();
 
         if (current.backgroundSpawns != null)
-        // background spawns
         {
             for (int i = 0; i < current.backgroundSpawns.Length; i++)
             {
@@ -1616,7 +1612,6 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
         }
 
-        // Load sector graph
         if (SectorGraphLoad != null)
         {
             SectorGraphLoad.Invoke(current.sectorName);
