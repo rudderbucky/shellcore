@@ -224,7 +224,11 @@ public class CoreScriptsSequence : MonoBehaviour
                     var entityID = GetArgument(inst.arguments, "entityID");
                     var overrideFac = 0;
                     if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
-                    AIData.entities.Find(e => e.ID == entityID).faction.overrideFaction = overrideFac;
+                    var e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.SetOverrideFaction(overrideFac);
+                    }
                     if (entityID == "player")
                     {
                         PartyManager.instance.SetOverrideFaction(overrideFac);

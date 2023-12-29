@@ -142,6 +142,25 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         return carrier;
     }
 
+    public override void SetOverrideFaction(int overrideFac)
+    {
+        var tractorEntity = GetTractorTarget() ? GetTractorTarget().GetComponentInChildren<Entity>() : null;
+        if (tractorEntity
+            && FactionManager.IsAllied(faction, tractorEntity.faction))
+        {
+            tractorEntity.faction.overrideFaction = overrideFac;
+        }
+
+        faction.overrideFaction = overrideFac;
+        foreach (var u in GetUnitsCommanding())
+        {
+            if (u is Entity ent)
+            {
+                ent.faction.overrideFaction = overrideFac;
+            }
+        }
+    }
+
     public void ResetPower()
     {
         totalPower = 0;

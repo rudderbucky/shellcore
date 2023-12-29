@@ -605,6 +605,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    public virtual void SetOverrideFaction(int overrideFac)
+    {
+        faction.overrideFaction = overrideFac;
+    }
     protected void AttemptAddComponents()
     {
         if (!GetComponent<SortingGroup>())
