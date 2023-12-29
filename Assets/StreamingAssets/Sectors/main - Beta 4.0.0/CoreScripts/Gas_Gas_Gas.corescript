@@ -416,7 +416,7 @@ Function(
                 val2=3,
                 comp=Eq,
                 sequence=(
-                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d),
+                    SetInteraction(entityID=heavensgate, sequence=Call(GGG_forceFusionCutscene)),
                 )
             ),
             Comparison(
@@ -444,6 +444,14 @@ Function(
                 )
             ),
         )
+    )
+)
+
+Function(
+    name=GGG_forceFusionCutscene,
+    sequence=(
+        StartCutscene(),
+        ForceStartDialogue(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d),
     )
 )
 
@@ -552,7 +560,7 @@ Dialogue(
                                                                             responses=(
                                                                                 Response(
                                                                                     responseText=GGG_heavensgate_FS_d11,
-                                                                                    next=Call(GGG_fusionCondition)
+                                                                                    next=Call(GGG_fusionConditionWrapper)
                                                                                 )
                                                                             )
                                                                         )
@@ -586,6 +594,14 @@ Dialogue(
             responseText=GGG_architect_FS_d2,
             next=End()
         )
+    )
+)
+
+Function(
+    name=GGG_fusionConditionWrapper,
+    sequence=(
+        FinishCutscene(),
+        Call(GGG_fusionCondition),
     )
 )
 
