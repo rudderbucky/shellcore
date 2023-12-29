@@ -1,5 +1,5 @@
 Text("GGG_missionName", "Gas Gas Gas")
-Text("GGG_entryPoint", "Speak to Heavensgate at the Exterminator Lair.")
+Text("GGG_entryPoint", "Speak to Frostsword at the Exterminator Lair.")
 MissionTrigger(
     name=GGG_missionName,
     entryPoint=GGG_entryPoint,
@@ -9,6 +9,7 @@ MissionTrigger(
         Call(GGG_start)
     )
 )
+
 Function(
     name=GGG_start,
     sequence=(
@@ -88,86 +89,86 @@ Function(
         AddObjectiveMarker(
             ID=GGG_exterminatorLairMarker,
             sectorName=Exterminator Lair,
-            entityID=heavensgate
+            entityID=frostsword
         ),
         ConditionBlock(
             EnterSector(
                 sectorName=Exterminator Lair,
                 sequence=(
-                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_start_d)
+                    SetInteraction(entityID=frostsword, dialogueID=GGG_frostsword_start_d)
                 )
             )
         )
     )
 )
 
-Text("GGG_heavensgate_start_d1", "Hello newcomer. I know there's a lot to absorb around here, I can help you get started.")
-Text("GGG_heavensgate_start_d2", "Who are you?")
-Text("GGG_heavensgate_start_d3", "My name is Heavensgate. Ex-red at your service. With the exterminators, talk to those around here to learn more.")
-Text("GGG_heavensgate_start_d4", "What do you want to help me with?")
-Text("GGG_heavensgate_start_d5", "Well, there's a new resource around these areas. We're not sure how it got here or what it really is, but we have an affinity for it.")
-Text("GGG_heavensgate_start_d6", "Elaborate.")
-Text("GGG_heavensgate_start_d7", "We here have been calling it \"Ancient Gas\", or just \"Gas\" for short. It's been around since the first of us were abandoned.")
-Text("GGG_heavensgate_start_d8", "Where can I find it?")
-Text("GGG_heavensgate_start_d9", "It's found as swirling vortices. We've seen them scattered in sectors in no specific pattern. However, vortices are much larger in DeadZones for some reason.")
-Text("GGG_heavensgate_start_d10", "How do I extract it?")
-Text("GGG_heavensgate_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. Wading closer to the center gets you more.")
-Text("GGG_heavensgate_start_d12", "Do you know any sectors where I can find some?")
-Text("GGG_heavensgate_start_d13", "Yep, I can mark them on the map for you. In fact, let's give you a little mission to get some.")
-Text("GGG_heavensgate_start_d14", "Okay...")
-Text("GGG_heavensgate_start_d15", "Marked one sector on your map. Come back with 100 gas -- note that entering the center of a vortex will kill you, and death will always take 100 gas away from you!")
-Text("GGG_heavensgate_start_d16", "Gotta be careful then.")
+Text("GGG_frostsword_start_d1", "Hello newcomer. I know there's a lot to absorb around here, I can help you get started.")
+Text("GGG_frostsword_start_d2", "Who are you?")
+Text("GGG_frostsword_start_d3", "My name is Frostsword. Ex-red at your service. With the exterminators, talk to those around here to learn more.")
+Text("GGG_frostsword_start_d4", "What do you want to help me with?")
+Text("GGG_frostsword_start_d5", "Well, there's a new resource around these areas. We're not sure how it got here or what it really is, but we have an affinity for it.")
+Text("GGG_frostsword_start_d6", "Elaborate.")
+Text("GGG_frostsword_start_d7", "We here have been calling it \"Ancient Gas\", or just \"Gas\" for short. It's been around since the first of us were abandoned.")
+Text("GGG_frostsword_start_d8", "Where can I find it?")
+Text("GGG_frostsword_start_d9", "It's found as swirling vortices. We've seen them scattered in sectors in no specific pattern. However, vortices are much larger in DeadZones for some reason.")
+Text("GGG_frostsword_start_d10", "How do I extract it?")
+Text("GGG_frostsword_start_d11", "By literally wading into it. It appears we absorb the stuff out of vortices automatically! No idea why. Wading closer to the center gets you more.")
+Text("GGG_frostsword_start_d12", "Do you know any sectors where I can find some?")
+Text("GGG_frostsword_start_d13", "Yep, I can mark them on the map for you. In fact, let's give you a little mission to get some.")
+Text("GGG_frostsword_start_d14", "Okay...")
+Text("GGG_frostsword_start_d15", "Marked one sector on your map. Come back with 100 gas -- note that entering the center of a vortex will kill you, and death will always take 100 gas away from you!")
+Text("GGG_frostsword_start_d16", "Gotta be careful then.")
 Dialogue(
-    dialogueID=GGG_heavensgate_start_d,
-    dialogueText=GGG_heavensgate_start_d1,
-    entityID=heavensgate,
+    dialogueID=GGG_frostsword_start_d,
+    dialogueText=GGG_frostsword_start_d1,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_start_d2,
+            responseText=GGG_frostsword_start_d2,
             next=Dialogue(
-                dialogueText=GGG_heavensgate_start_d3,
+                dialogueText=GGG_frostsword_start_d3,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_start_d4,
+                        responseText=GGG_frostsword_start_d4,
                         next=SetID(1)
                     )
                 )
             )
         ),
         Response(
-            responseText=GGG_heavensgate_start_d4,
+            responseText=GGG_frostsword_start_d4,
             next=Dialogue(
                 nodeID=1,
-                dialogueText=GGG_heavensgate_start_d5,
+                dialogueText=GGG_frostsword_start_d5,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_start_d6,
+                        responseText=GGG_frostsword_start_d6,
                         next=Dialogue(
-                            dialogueText=GGG_heavensgate_start_d7,
+                            dialogueText=GGG_frostsword_start_d7,
                             responses=(
                                 Response(
-                                    responseText=GGG_heavensgate_start_d8,
+                                    responseText=GGG_frostsword_start_d8,
                                     next=Dialogue(
-                                        dialogueText=GGG_heavensgate_start_d9,
+                                        dialogueText=GGG_frostsword_start_d9,
                                         responses=(
                                             Response(
-                                                responseText=GGG_heavensgate_start_d10,
+                                                responseText=GGG_frostsword_start_d10,
                                                 next=Dialogue(
-                                                    dialogueText=GGG_heavensgate_start_d11,
+                                                    dialogueText=GGG_frostsword_start_d11,
                                                     responses=(
                                                         Response(
-                                                            responseText=GGG_heavensgate_start_d12,
+                                                            responseText=GGG_frostsword_start_d12,
                                                             next=Dialogue(
-                                                                dialogueText=GGG_heavensgate_start_d13,
+                                                                dialogueText=GGG_frostsword_start_d13,
                                                                 responses=(
                                                                     Response(
-                                                                        responseText=GGG_heavensgate_start_d14,
+                                                                        responseText=GGG_frostsword_start_d14,
                                                                         next=Dialogue(
-                                                                            dialogueText=GGG_heavensgate_start_d15,
+                                                                            dialogueText=GGG_frostsword_start_d15,
                                                                             taskID=GGG_gasCollectionTask,
                                                                             responses=(
                                                                                 Response(
-                                                                                    responseText=GGG_heavensgate_start_d16,
+                                                                                    responseText=GGG_frostsword_start_d16,
                                                                                     next=Call(GGG_preCollection)
                                                                                 )
                                                                             )
@@ -192,25 +193,25 @@ Dialogue(
 )
 
 // Danger Zone 1900-5410
-Text("GGG_heavensgate_gasCollectionTaskReminder_d1", "You should go collect 100 gas from one of the sectors I've marked and return to me.")
-Text("GGG_heavensgate_gasCollectionTaskReminder_d2", "Sounds good...")
+Text("GGG_frostsword_gasCollectionTaskReminder_d1", "You should go collect 100 gas from one of the sectors I've marked and return to me.")
+Text("GGG_frostsword_gasCollectionTaskReminder_d2", "Sounds good...")
 
 Dialogue(
-    dialogueID=GGG_heavensgate_gasCollectionTaskReminder_d,
-    dialogueText=GGG_heavensgate_gasCollectionTaskReminder_d1,
-    entityID=heavensgate,
+    dialogueID=GGG_frostsword_gasCollectionTaskReminder_d,
+    dialogueText=GGG_frostsword_gasCollectionTaskReminder_d1,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_gasCollectionTaskReminder_d2,
+            responseText=GGG_frostsword_gasCollectionTaskReminder_d2,
             next=End()
         )
     )
 )
 
-Text("GGG_gasCollectionTaskObjective", "- Head to one of the sectors marked by Heavensgate on your map.
+Text("GGG_gasCollectionTaskObjective", "- Head to one of the sectors marked by Frostsword on your map.
 - Find a gas vortex and fly into it to start absorbing gas.
 - Avoid flying into the center as that will kill you.
-- Return to Heavensgate with 100 gas to continue.")
+- Return to Frostsword with 100 gas to continue.")
 
 Task(
     taskID=GGG_fusionTask,
@@ -238,8 +239,8 @@ Function(
         ),
         RemoveObjectiveMarker(ID=GGG_exterminatorLairMarker),
         AddObjectiveMarker(ID=GGG_dangerZoneMarker, sectorName=Danger Zone 1900-5410),
-        ClearInteraction(entityID=heavensgate),
-        SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_gasCollectionTaskReminder_d),
+        ClearInteraction(entityID=frostsword),
+        SetInteraction(entityID=frostsword, dialogueID=GGG_frostsword_gasCollectionTaskReminder_d),
         ConditionBlock(
             Comparison(
                 val1=Gas(),
@@ -247,14 +248,14 @@ Function(
                 comp=Gt,
                 sequence=(
                     RemoveObjectiveMarker(ID=GGG_dangerZoneMarker),
-                    AddObjectiveMarker(ID=GGG_heavensgateObjective, sectorName=Exterminator Lair, entityID=heavensgate),
-                    ClearInteraction(entityID=heavensgate),
+                    AddObjectiveMarker(ID=GGG_frostswordObjective, sectorName=Exterminator Lair, entityID=frostsword),
+                    ClearInteraction(entityID=frostsword),
                     FinishTask(),
                     SetInteraction(
-                        entityID=heavensgate, 
-                        dialogueID=GGG_heavensgate_postCollection_d,
+                        entityID=frostsword, 
+                        dialogueID=GGG_frostsword_postCollection_d,
                         sequence=(
-                            RemoveObjectiveMarker(ID=GGG_heavensgateObjective),
+                            RemoveObjectiveMarker(ID=GGG_frostswordObjective),
                             SetVariable(
                                 name=$$$GGG_checkpoint,
                                 value=2
@@ -267,34 +268,34 @@ Function(
     )
 )
 
-Text("GGG_heavensgate_postCollection_d1", "Congrats! It's fun to wade into the vortices but some don't like the risk of being disassembled. I guess it's an acquired taste.")
-Text("GGG_heavensgate_postCollection_d2", "What do I do with this resource?")
-Text("GGG_heavensgate_postCollection_d3", "Well, we've discovered two uses. Abilities seem to be \"boostable\" with gas, with unique enhancements if you let them drain some over time.")
-Text("GGG_heavensgate_postCollection_d6", "What else can I do with gas?")
-Text("GGG_heavensgate_postCollection_d7", "There's also Part Fusion. I can help you with that too if you speak to me.")
-Text("GGG_heavensgate_postCollection_d8", "...")
+Text("GGG_frostsword_postCollection_d1", "Congrats! It's fun to wade into the vortices but some don't like the risk of being disassembled. I guess it's an acquired taste.")
+Text("GGG_frostsword_postCollection_d2", "What do I do with this resource?")
+Text("GGG_frostsword_postCollection_d3", "Well, we've discovered two uses. Abilities seem to be \"boostable\" with gas, with unique enhancements if you let them drain some over time.")
+Text("GGG_frostsword_postCollection_d6", "What else can I do with gas?")
+Text("GGG_frostsword_postCollection_d7", "There's also Part Fusion. I can help you with that too if you speak to me.")
+Text("GGG_frostsword_postCollection_d8", "...")
 
 
-Text("GGG_heavensgate_postCollection_d4", "To GAS BOOST your abilities, Ctrl-click them. GAS BOOSTED abilities slowly drain GAS over time.")
+Text("GGG_frostsword_postCollection_d4", "To GAS BOOST your abilities, Ctrl-click them. GAS BOOSTED abilities slowly drain GAS over time.")
 
 
 Dialogue(
-    dialogueID=GGG_heavensgate_postCollection_d,
-    dialogueText=GGG_heavensgate_postCollection_d1,
-    entityID=heavensgate,
+    dialogueID=GGG_frostsword_postCollection_d,
+    dialogueText=GGG_frostsword_postCollection_d1,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_postCollection_d2,
+            responseText=GGG_frostsword_postCollection_d2,
             next=Dialogue(
-                dialogueText=GGG_heavensgate_postCollection_d3,
+                dialogueText=GGG_frostsword_postCollection_d3,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_postCollection_d6,
+                        responseText=GGG_frostsword_postCollection_d6,
                         next=Dialogue(
-                            dialogueText=GGG_heavensgate_postCollection_d7,
+                            dialogueText=GGG_frostsword_postCollection_d7,
                             responses=(
                                 Response(
-                                    responseText=GGG_heavensgate_postCollection_d8,
+                                    responseText=GGG_frostsword_postCollection_d8,
                                     next=Call(GGG_checkpoint2func)
                                 )
                             )
@@ -306,36 +307,36 @@ Dialogue(
     )
 )
 
-Text("GGG_fusionTaskObjectives", "- Meet Heavensgate at The Makeshift.
-- There, listen to Heavensgate to understand part fusion.
+Text("GGG_fusionTaskObjectives", "- Meet Frostsword at The Makeshift.
+- There, listen to Frostsword to understand part fusion.
 - Fuse two parts.
-- Return to Heavensgate to continue.")
+- Return to Frostsword to continue.")
 
 
-Text("GGG_heavensgate_preFusion_d1", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
-Text("GGG_heavensgate_preFusion_d2", "Okay, I'll meet you there...")
-Text("GGG_heavensgate_preFusion_d3", "There's something else I need to do first.")
+Text("GGG_frostsword_preFusion_d1", "Why don't we go to your base? I can help you set up the Fusion Station needed for this.")
+Text("GGG_frostsword_preFusion_d2", "Okay, I'll meet you there...")
+Text("GGG_frostsword_preFusion_d3", "There's something else I need to do first.")
 Function(
     name=GGG_checkpoint2func,
     sequence=(
-        AddObjectiveMarker(ID=GGG_checkpoint1heavensgate, sectorName=Exterminator Lair, entityID=heavensgate),
-        ShowPopup(text=GGG_heavensgate_postCollection_d4),
-        SetInteraction(dialogueID=GGG_heavensgate_preFusion_d, entityID=heavensgate)
+        AddObjectiveMarker(ID=GGG_checkpoint1frostsword, sectorName=Exterminator Lair, entityID=frostsword),
+        ShowPopup(text=GGG_frostsword_postCollection_d4),
+        SetInteraction(dialogueID=GGG_frostsword_preFusion_d, entityID=frostsword)
     )
 )
 
 Dialogue(
-    dialogueID=GGG_heavensgate_preFusion_d,
-    dialogueText=GGG_heavensgate_preFusion_d1,
+    dialogueID=GGG_frostsword_preFusion_d,
+    dialogueText=GGG_frostsword_preFusion_d1,
     taskID=GGG_fusionTask,
-    entityID=heavensgate,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_preFusion_d2,
+            responseText=GGG_frostsword_preFusion_d2,
             next=Call(GGG_gasBoostPromptAndNext)
         ),
         Response(
-            responseText=GGG_heavensgate_preFusion_d3,
+            responseText=GGG_frostsword_preFusion_d3,
             next=End()
         ),
     )
@@ -349,7 +350,7 @@ Function(
             name=$$$GGG_checkpoint,
             value=3
         ),
-        RemoveObjectiveMarker(ID=GGG_checkpoint1heavensgate),
+        RemoveObjectiveMarker(ID=GGG_checkpoint1frostsword),
         Call(GGG_loopMakeshiftUntilTaskDone)
     )
 )
@@ -357,9 +358,9 @@ Function(
 Function(
     name=GGG_loopMakeshiftUntilTaskDone,
     sequence=(
-        RemoveObjectiveMarker(ID=GGG_heavensgateinmakeshift),
-        AddObjectiveMarker(ID=GGG_heavensgateinmakeshift, sectorName=The Makeshift),
-        ClearInteraction(entityID=heavensgate),       
+        RemoveObjectiveMarker(ID=GGG_frostswordinmakeshift),
+        AddObjectiveMarker(ID=GGG_frostswordinmakeshift, sectorName=The Makeshift),
+        ClearInteraction(entityID=frostsword),       
         ConditionBlock(
             EnterSector(
                 sectorName=The Makeshift,
@@ -400,14 +401,14 @@ Function(
             flagName=GGG_architectspawn
         ),
         SpawnEntity(
-            entityID=heavensgate,
-            blueprintJSON=heavensgate,
+            entityID=frostsword,
+            blueprintJSON=Electroshock,
             faction=4,
-            name=Heavensgate,
-            flagName=GGG_heavensgatespawn
+            name=Frostsword,
+            flagName=GGG_frostswordspawn
         ),
 
-        ClearInteraction(entityID=heavensgate),
+        ClearInteraction(entityID=frostsword),
         ClearInteraction(entityID=the-architect),
         SetInteraction(entityID=the-architect, dialogueID=GGG_architect_FS_d),
         ConditionBlock(
@@ -416,7 +417,7 @@ Function(
                 val2=3,
                 comp=Eq,
                 sequence=(
-                    SetInteraction(entityID=heavensgate, sequence=Call(GGG_forceFusionCutscene)),
+                    SetInteraction(entityID=frostsword, sequence=(Call(GGG_forceFusionCutscene))),
                 )
             ),
             Comparison(
@@ -424,7 +425,7 @@ Function(
                 val2=4,
                 comp=Eq,
                 sequence=(
-                    SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FSreexp_d),
+                    SetInteraction(entityID=frostsword, dialogueID=GGG_frostsword_FSreexp_d),
                 )
             ),
             Comparison(
@@ -440,7 +441,7 @@ Function(
                 val2=6,
                 comp=Eq,
                 sequence=(
-                    Call(GGG_heavensgateFinalInteraction)
+                    Call(GGG_frostswordFinalInteraction)
                 )
             ),
         )
@@ -451,55 +452,55 @@ Function(
     name=GGG_forceFusionCutscene,
     sequence=(
         StartCutscene(),
-        ForceStartDialogue(entityID=heavensgate, dialogueID=GGG_heavensgate_FS_d),
+        ForceStartDialogue(entityID=frostsword, dialogueID=GGG_frostsword_FS_d),
     )
 )
 
-Text("GGG_heavensgate_FS_d1", "...and when you unharness their core energy you should attach stabilizers beforehand, not after the fact. It's harder at first but the rest becomes easier and you get used to it.")
-Text("GGG_heavensgate_FS_d2", "...")
-Text("GGG_heavensgate_FS_d3", "Hmm... probably should've thought of that before...")
-Text("GGG_heavensgate_FS_d4", "I see you've acquainted yourselves with each other.")
-Text("GGG_heavensgate_FS_d5", "Ah, there you are! We've already set up the Fusion Station. Now for me to explain how to use it.")
-Text("GGG_heavensgate_FS_d6", "Go on...")
-Text("GGG_heavensgate_FS_d7", "You can combine the part type of one part and the ability of another into one at this station. Best part about it is that it marks the entry for that part on your index!")
-Text("GGG_heavensgate_FS_d8", "Fusing parts requires Fusion Energy, which can be made with gas and shards. Unlike gas, you don't lose Fusion Energy if you are killed!")
-Text("GGG_heavensgate_FS_d9", "You'll need more Fusion Energy to create parts with higher-tier abilities or when you fuse parts with different size categories.")
-Text("GGG_heavensgate_FS_d10", "Why don't you try fusing two parts together? I'll give you a cool new ability you can only find here if you do.")
-Text("GGG_heavensgate_FS_d11", "Okay...")
+Text("GGG_frostsword_FS_d1", "...and when you unharness their core energy you should attach stabilizers beforehand, not after the fact. It's harder at first but the rest becomes easier and you get used to it.")
+Text("GGG_frostsword_FS_d2", "...")
+Text("GGG_frostsword_FS_d3", "Hmm... probably should've thought of that before...")
+Text("GGG_frostsword_FS_d4", "I see you've acquainted yourselves with each other.")
+Text("GGG_frostsword_FS_d5", "Ah, there you are! We've already set up the Fusion Station. Now for me to explain how to use it.")
+Text("GGG_frostsword_FS_d6", "Go on...")
+Text("GGG_frostsword_FS_d7", "You can combine the part type of one part and the ability of another into one at this station. Best part about it is that it marks the entry for that part on your index!")
+Text("GGG_frostsword_FS_d8", "Fusing parts requires Fusion Energy, which can be made with gas and shards. Unlike gas, you don't lose Fusion Energy if you are killed!")
+Text("GGG_frostsword_FS_d9", "You'll need more Fusion Energy to create parts with higher-tier abilities or when you fuse parts with different size categories.")
+Text("GGG_frostsword_FS_d10", "Why don't you try fusing two parts together? I'll give you a cool new ability you can only find here if you do.")
+Text("GGG_frostsword_FS_d11", "Okay...")
 
-Text("GGG_heavensgate_FSreexp_d1", "Want me to re-explain fusion?")
-Text("GGG_heavensgate_FSreexp_d2", "Yes...")
-Text("GGG_heavensgate_FSreexp_d3", "No thanks.")
-Text("GGG_heavensgate_FSreexp_d4", "That's it! Go give it a shot now.")
-Text("GGG_heavensgate_FSreexp_d5", "Okay.")
+Text("GGG_frostsword_FSreexp_d1", "Want me to re-explain fusion?")
+Text("GGG_frostsword_FSreexp_d2", "Yes...")
+Text("GGG_frostsword_FSreexp_d3", "No thanks.")
+Text("GGG_frostsword_FSreexp_d4", "That's it! Go give it a shot now.")
+Text("GGG_frostsword_FSreexp_d5", "Okay.")
 
 Dialogue(
-    dialogueID=GGG_heavensgate_FSreexp_d,
-    dialogueText=GGG_heavensgate_FSreexp_d1,
-    entityID=heavensgate,
+    dialogueID=GGG_frostsword_FSreexp_d,
+    dialogueText=GGG_frostsword_FSreexp_d1,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_FSreexp_d2,
+            responseText=GGG_frostsword_FSreexp_d2,
             next=Dialogue(
-                dialogueText=GGG_heavensgate_FS_d7,
+                dialogueText=GGG_frostsword_FS_d7,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_FS_d2,
+                        responseText=GGG_frostsword_FS_d2,
                         next=Dialogue(
-                            dialogueText=GGG_heavensgate_FS_d8,
+                            dialogueText=GGG_frostsword_FS_d8,
                             responses=(
                                 Response(
-                                    responseText=GGG_heavensgate_FS_d2,
+                                    responseText=GGG_frostsword_FS_d2,
                                     next=Dialogue(
-                                        dialogueText=GGG_heavensgate_FS_d9,
+                                        dialogueText=GGG_frostsword_FS_d9,
                                         responses=(
                                             Response(
-                                                responseText=GGG_heavensgate_FS_d2,
+                                                responseText=GGG_frostsword_FS_d2,
                                                 next=Dialogue(
-                                                    dialogueText=GGG_heavensgate_FSreexp_d4,
+                                                    dialogueText=GGG_frostsword_FSreexp_d4,
                                                     responses=(
                                                         Response(
-                                                            responseText=GGG_heavensgate_FSreexp_d5,
+                                                            responseText=GGG_frostsword_FSreexp_d5,
                                                             next=End()
                                                         )
                                                     )
@@ -515,51 +516,51 @@ Dialogue(
             )
         ),
         Response(
-            responseText=GGG_heavensgate_FSreexp_d3,
+            responseText=GGG_frostsword_FSreexp_d3,
             next=End()
         ),
     )
 )
 
 Dialogue(
-    dialogueID=GGG_heavensgate_FS_d,
-    dialogueText=GGG_heavensgate_FS_d1,
-    entityID=heavensgate,
+    dialogueID=GGG_frostsword_FS_d,
+    dialogueText=GGG_frostsword_FS_d1,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_FS_d2,
+            responseText=GGG_frostsword_FS_d2,
             next=Dialogue(
                 entityID=the-architect,
-                dialogueText=GGG_heavensgate_FS_d3,
+                dialogueText=GGG_frostsword_FS_d3,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_FS_d4,
+                        responseText=GGG_frostsword_FS_d4,
                         next=Dialogue(
-                            dialogueText=GGG_heavensgate_FS_d5,
-                            entityID=heavensgate,
+                            dialogueText=GGG_frostsword_FS_d5,
+                            entityID=frostsword,
                             responses=(
                                 Response(
-                                    responseText=GGG_heavensgate_FS_d6,
+                                    responseText=GGG_frostsword_FS_d6,
                                     next=Dialogue(
-                                        dialogueText=GGG_heavensgate_FS_d7,
+                                        dialogueText=GGG_frostsword_FS_d7,
                                         responses=(
                                             Response(
-                                                responseText=GGG_heavensgate_FS_d2,
+                                                responseText=GGG_frostsword_FS_d2,
                                                 next=Dialogue(
-                                                    dialogueText=GGG_heavensgate_FS_d8,
+                                                    dialogueText=GGG_frostsword_FS_d8,
                                                     responses=(
                                                         Response(
-                                                            responseText=GGG_heavensgate_FS_d2,
+                                                            responseText=GGG_frostsword_FS_d2,
                                                             next=Dialogue(
-                                                                dialogueText=GGG_heavensgate_FS_d9,
+                                                                dialogueText=GGG_frostsword_FS_d9,
                                                                 responses=(
                                                                     Response(
-                                                                        responseText=GGG_heavensgate_FS_d2,
+                                                                        responseText=GGG_frostsword_FS_d2,
                                                                         next=Dialogue(
-                                                                            dialogueText=GGG_heavensgate_FS_d10,
+                                                                            dialogueText=GGG_frostsword_FS_d10,
                                                                             responses=(
                                                                                 Response(
-                                                                                    responseText=GGG_heavensgate_FS_d11,
+                                                                                    responseText=GGG_frostsword_FS_d11,
                                                                                     next=Call(GGG_fusionConditionWrapper)
                                                                                 )
                                                                             )
@@ -609,21 +610,21 @@ Function(
     name=GGG_fusionCondition,
     sequence=(
         SetVariable(name=$$$GGG_checkpoint, value=5),
-        RemoveObjectiveMarker(ID=GGG_heavensgateinmakeshift),
+        RemoveObjectiveMarker(ID=GGG_frostswordinmakeshift),
         AddObjectiveMarker(
             ID=GGG_fusionStationMarker, 
             entityID=Makeshift_fusionStation,
             sectorName=The Makeshift
         ),
-        ClearInteraction(entityID=heavensgate),
-        SetInteraction(entityID=heavensgate, dialogueID=GGG_heavensgate_FSreexp_d),
+        ClearInteraction(entityID=frostsword),
+        SetInteraction(entityID=frostsword, dialogueID=GGG_frostsword_FSreexp_d),
         ConditionBlock(
             FusePart(
                 sequence=(
                     RemoveObjectiveMarker(ID=GGG_fusionStationMarker),
-                    AddObjectiveMarker(ID=GGG_heavensgatefinal, entityID=heavensgate),
+                    AddObjectiveMarker(ID=GGG_frostswordfinal, entityID=frostsword),
                     FinishTask(),
-                    Call(GGG_heavensgateFinalInteraction),
+                    Call(GGG_frostswordFinalInteraction),
                 )
             ),
             EnterSector(
@@ -636,14 +637,14 @@ Function(
 )
 
 Function(
-    name=GGG_heavensgateFinalInteraction,
+    name=GGG_frostswordFinalInteraction,
     sequence=(
-        ClearInteraction(entityID=heavensgate),
+        ClearInteraction(entityID=frostsword),
         SetInteraction(
-            entityID=heavensgate, 
-            dialogueID=GGG_heavensgate_postFS_d,
+            entityID=frostsword, 
+            dialogueID=GGG_frostsword_postFS_d,
             sequence=(
-                RemoveObjectiveMarker(ID=GGG_heavensgatefinal),
+                RemoveObjectiveMarker(ID=GGG_frostswordfinal),
                 SetVariable(
                     name=$$$GGG_checkpoint,
                     value=6
@@ -654,29 +655,29 @@ Function(
 )
 
 
-Text("GGG_heavensgate_postFS_d1", "Nice going! Fusion can be really handy when trying to create powerful parts for tough combat situations.")
-Text("GGG_heavensgate_postFS_d2", "Why are you being so helpful to us?")
-Text("GGG_heavensgate_postFS_d3", "Want me to be honest? We need more recruits to join the exterminators! But I'd have no hard feelings if you choose not to join.")
-Text("GGG_heavensgate_postFS_d4", "Anyway, that's really all there is to gas! Congrats. Here's your new ability.")
-Text("GGG_heavensgate_postFS_d5", "Thanks!")
+Text("GGG_frostsword_postFS_d1", "Nice going! Fusion can be really handy when trying to create powerful parts for tough combat situations.")
+Text("GGG_frostsword_postFS_d2", "Why are you being so helpful to us?")
+Text("GGG_frostsword_postFS_d3", "Want me to be honest? We need more recruits to join the exterminators! But I'd have no hard feelings if you choose not to join.")
+Text("GGG_frostsword_postFS_d4", "Anyway, that's really all there is to gas! Congrats. Here's your new ability.")
+Text("GGG_frostsword_postFS_d5", "Thanks!")
 
 Dialogue(
-    dialogueID=GGG_heavensgate_postFS_d,
-    dialogueText=GGG_heavensgate_postFS_d1,
-    entityID=heavensgate,
+    dialogueID=GGG_frostsword_postFS_d,
+    dialogueText=GGG_frostsword_postFS_d1,
+    entityID=frostsword,
     responses=(
         Response(
-            responseText=GGG_heavensgate_postFS_d2,
+            responseText=GGG_frostsword_postFS_d2,
             next=Dialogue(
-                dialogueText=GGG_heavensgate_postFS_d3,
+                dialogueText=GGG_frostsword_postFS_d3,
                 responses=(
                     Response(
-                        responseText=GGG_heavensgate_FS_d2,
+                        responseText=GGG_frostsword_FS_d2,
                         next=Dialogue(
-                            dialogueText=GGG_heavensgate_postFS_d4,
+                            dialogueText=GGG_frostsword_postFS_d4,
                             responses=(
                                 Response(
-                                    responseText=GGG_heavensgate_postFS_d5,
+                                    responseText=GGG_frostsword_postFS_d5,
                                     next=Call(GGG_finishMission)
                                 )
                             )
@@ -691,7 +692,7 @@ Dialogue(
 Function(
     name=GGG_finishMission,
     sequence=(
-        ClearInteraction(entityID=heavensgate),
+        ClearInteraction(entityID=frostsword),
         ClearInteraction(entityID=the-architect),
         ShowAlert(text=Abandonment_missionComplete),
         FinishMission(soundID=clip_missioncompleteep3)

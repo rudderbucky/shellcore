@@ -915,9 +915,9 @@ Function(
                 comp=Eq,
                 sequence=(
                     ClearInteraction(entityID=Conservationist_Guardian1),
-                    ClearInteraction(entityID=Exterminator_Guardian1),
+                    ClearInteraction(entityID=frostsword),
                     SetInteraction(entityID=Conservationist_Guardian1, dialogueID=Truth_co_hideout_makeshift_d),
-                    SetInteraction(entityID=Exterminator_Guardian1, dialogueID=Truth_ex_hideout_makeshift_d),
+                    SetInteraction(entityID=frostsword, dialogueID=Truth_ex_hideout_makeshift_d),
                 )
             ),
             Comparison(
@@ -929,6 +929,7 @@ Function(
         ),
         DeleteEntity(entityID=sisyphos),
         DeleteEntity(entityID=heracles),
+        DeleteEntity(entityID=Exterminator_Guardian1),
         DeleteEntity(entityID=Exterminator_Guardian2),
         DeleteEntity(entityID=Exterminator_Guardian3),
         DeleteEntity(entityID=Conservationist_Guardian2),
@@ -957,6 +958,7 @@ Function(
     name=Truth_makeshift_stuff_overarch,
     sequence=(
         SetVariable(name=$$Truth_fun_dialogue_float, value=0),
+        SetVariable(name=$$$Truth_deleteEntities, value=1),
         Call(Truth_makeshift_stuff)
     )
 )
