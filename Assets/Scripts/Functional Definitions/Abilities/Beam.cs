@@ -65,49 +65,25 @@ public class Beam : WeaponAbility
 
     protected void RenderBeam(int currentVertex)
     {
-        if (line.positionCount <= currentVertex+1)
-        {
-            return;
-        }
         if (firing && timer < 0.1F*(currentVertex+1)) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, transform.position); // draw and increment timer
-            if (nextTargetPart && !MasterNetworkAdapter.lettingServerDecide)
+            if (currentVertex+1 < line.positionCount)
             {
-                line.SetPosition(currentVertex+1, partPos);
+                if (nextTargetPart && !MasterNetworkAdapter.lettingServerDecide)
+                {
+                    line.SetPosition(currentVertex + 1, partPos);
+                }
+                else if (targetArray.Count > currentVertex && targetArray[currentVertex])
+                {
+                    line.SetPosition(currentVertex + 1, targetArray[currentVertex].position);
+                }
+                else if (!MasterNetworkAdapter.lettingServerDecide)
+                {
+                    line.SetPosition(currentVertex + 1, line.transform.position); // TODO: Fix
+                }
             }
-            else if (targetArray.Count > currentVertex && targetArray[currentVertex])
-            {
-                line.SetPosition(currentVertex+1, targetArray[currentVertex].position);
-            }
-            else if (!MasterNetworkAdapter.lettingServerDecide)
-            {
-                line.SetPosition(currentVertex+1, line.transform.position); // TODO: Fix
-            }
-
-            if (currentVertex == line.positionCount - 2)
-                timer += Time.deltaTime * Time.timeScale;
-        }
-        else if (firing && timer >= 0.1F*(currentVertex+1) && currentVertex == line.positionCount - 2)
-        {
-            if (line.startWidth > 0)
-            {
-                line.startWidth -= 0.01F * Time.timeScale;
-                line.endWidth -= 0.01F * Time.timeScale;
-            }
-
-            if (line.startWidth < 0)
-            {
-                line.startWidth = line.endWidth = 0;
-                firing = false;
-                line.positionCount = 0;
-            }
-        }
-        else if (currentVertex == line.positionCount - 2)
-        {
-            line.positionCount = 0;
-            firing = false;
         }
     }
 
@@ -123,6 +99,10 @@ public class Beam : WeaponAbility
             else MAX_BOUNCES = 3;
             return;
         }
+
+
+        if (firing)
+            timer += Time.deltaTime;
 
         if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
         {
@@ -141,7 +121,6 @@ public class Beam : WeaponAbility
 
             if (!closestEntity)
             {
-                firing = false;
                 numShots = 0;
             }
             else
@@ -152,10 +131,25 @@ public class Beam : WeaponAbility
             }
         }
 
-
-        for (int i = 0; i < Mathf.Min(numShots, line.positionCount); i++)
+        for (int i = 0; i < line.positionCount; i++)
         {
             RenderBeam(i);
+        }
+
+        if (firing && timer >= 0.1F * line.positionCount)
+        {
+            if (line.startWidth > 0)
+            {
+                line.startWidth -= 0.01F * Time.timeScale;
+                line.endWidth -= 0.01F * Time.timeScale;
+            }
+
+            if (line.startWidth < 0)
+            {
+                line.startWidth = line.endWidth = 0;
+                firing = false;
+                line.positionCount = 0;
+            }
         }
     }
 
