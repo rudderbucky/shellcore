@@ -793,6 +793,7 @@ Task(
 Function(
     name=Truth_cs2,
     sequence=(
+        SetVariable(name=$$$Truth_checkpoint, value=11),
         SetSectorType(type=Neutral),
         StartCutscene(closeWindow=true),
         ConditionBlock(
@@ -957,6 +958,8 @@ Function(
 Function(
     name=Truth_makeshift_stuff_overarch,
     sequence=(
+        RemoveObjectiveMarker(ID=Truth_makeshift),
+        AddObjectiveMarker(ID=Truth_makeshift, sectorName=The Makeshift),
         SetVariable(name=$$Truth_fun_dialogue_float, value=0),
         SetVariable(name=$$$Truth_deleteEntities, value=1),
         Call(Truth_makeshift_stuff)
