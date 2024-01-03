@@ -25,15 +25,10 @@ public class CoreScriptsFunction : MonoBehaviour
         func.sequence = new Sequence();
         func.sequence.instructions = new List<Instruction>();
 
-
-        bool skipToComma = false;
-        int brax = 0;
-        List<string> stx = null;
-
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "Function(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("sequence="))
             {
                 func.sequence = CoreScriptsSequence.ParseSequence(i, line, blocks);

@@ -645,10 +645,6 @@ public class CoreScriptsSequence : MonoBehaviour
         var seq = new Sequence();
         seq.instructions = new List<Instruction>();
 
-        List<string> stx = null;
-        bool skipToComma = false;
-        int brax = 0;
-
         List<string> standardInstructions = new List<string>();
 
         foreach (string instType in Enum.GetNames(typeof(InstructionCommand)))
@@ -660,11 +656,10 @@ public class CoreScriptsSequence : MonoBehaviour
         }
 
         line = GetValueScopeWithinLine(line, index);
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             if (standardInstructions.Exists(s => lineSubstr.StartsWith(s)))
             {
                 seq.instructions.Add(ParseInstruction(i, line, blocks));
@@ -680,7 +675,7 @@ public class CoreScriptsSequence : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("ConditionBlock"))
             {
-                var b = CoreScriptsCondition.ParseConditionBlock(i, line, blocks);
+                var b = CoreScriptsCondition.ParseConditionBlock(0, lineSubstr, blocks);
                 blocks.Add(b.ID, b);
                 var inst = new Instruction();
                 inst.command = InstructionCommand.ConditionBlock;
@@ -745,17 +740,11 @@ public class CoreScriptsSequence : MonoBehaviour
         var inst = new Instruction();
         Enum.TryParse<InstructionCommand>(substr, out inst.command);
         inst.arguments = "";
-        bool skipToComma = true;
-        List<string> stx = null;
-        int brax = 0;
-
         line = GetValueScopeWithinLine(line, index);
-        
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
 
             var name = "";
             var val = "";
