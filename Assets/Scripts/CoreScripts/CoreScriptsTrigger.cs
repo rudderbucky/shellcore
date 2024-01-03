@@ -35,7 +35,7 @@ public class CoreScriptsTrigger : MonoBehaviour
         List<string> stx = null;
         var fakeArgString = "";
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;

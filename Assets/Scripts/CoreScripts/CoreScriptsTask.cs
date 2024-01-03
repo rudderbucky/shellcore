@@ -30,7 +30,7 @@ public class CoreScriptsTask : MonoBehaviour
         var task = new Task();
         task.useLocalMap = true;
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;

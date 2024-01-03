@@ -28,13 +28,9 @@ public class CoreScriptsFunction : MonoBehaviour
 
         bool skipToComma = false;
         int brax = 0;
-        var stx = new List<string>()
-        {
-            "name=",
-            "sequence="
-        };
+        List<string> stx = null;
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);

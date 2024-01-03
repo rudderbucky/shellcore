@@ -430,22 +430,45 @@ public class CoreScriptsManager : MonoBehaviour
         return stringScopes;
     }
 
+    private static int AttemptReturn(int cnt, int lastOccurrence, string scope)
+    {
+        if (lastOccurrence == cnt) throw new System.Exception(scope.Substring(cnt));
+        return cnt;
+    }
+
     // if strings is null it treats every character as valid for comma skipping purposes
     public static int GetNextOccurenceInScope(int lastOccurrence, string scope, List<string> strings, 
         ref int brackets, ref bool skipToComma, char opBracket, char clBracket)
     {
         // TODO: Optimize by turning string list into a dict, and then using max length strings as keys
         var cnt = lastOccurrence;
-
-        // find the first bracket
-        while (cnt < scope.Length && scope[cnt] != opBracket && brackets == 0) cnt++;
-        if (cnt < scope.Length) cnt++;
-        if (brackets == 0)
+        while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt])) cnt++;
+        if (cnt == scope.Length) return AttemptReturn(cnt, lastOccurrence, scope);
+        if (scope[cnt] == ',')
         {
-            brackets = 1;
-            while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt])) cnt++;
-            return cnt;
+            cnt++;
+            return AttemptReturn(cnt, lastOccurrence, scope);
         }
+        // find the first bracket
+        if (cnt == 0)
+        {
+            while (cnt < scope.Length && scope[cnt] != opBracket && brackets == 0) cnt++;
+            if (cnt < scope.Length) cnt++;
+            if (brackets == 0)
+            {
+                brackets = 1;
+                while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt])) cnt++;
+                return AttemptReturn(cnt, lastOccurrence, scope);
+            }
+        }
+        else
+        {
+            if (scope[cnt] == opBracket) brackets++;
+            if (scope[cnt] == clBracket) brackets--;
+            cnt++;
+            Debug.LogWarning(scope.Substring(cnt));
+        } 
+
 
         if (skipToComma && cnt <= scope.Length && cnt-1 >= 0 && scope[cnt-1] == ',') cnt--;
         while (skipToComma && cnt < scope.Length && (brackets > 1 || scope[cnt] != ',')) 
@@ -470,7 +493,7 @@ public class CoreScriptsManager : MonoBehaviour
             }
             if (cnt < scope.Length && scope[cnt] == ')') 
             {
-                return scope.Length;
+                return AttemptReturn(scope.Length, lastOccurrence, scope);
             }
         }
         skipToComma = false;
@@ -496,13 +519,13 @@ public class CoreScriptsManager : MonoBehaviour
             if (strings != null)
             {
                 var x = strings.Find(s => scope.Substring(cnt).StartsWith(s));
-                if (x != null) return cnt;
+                if (x != null) return AttemptReturn(cnt, lastOccurrence, scope);
             }
-            else return cnt;
+            else return AttemptReturn(cnt, lastOccurrence, scope);
             cnt++;
         }
 
-        return scope.Length;
+        return AttemptReturn(scope.Length, lastOccurrence, scope);
     }
 
     public struct ScopeParseData

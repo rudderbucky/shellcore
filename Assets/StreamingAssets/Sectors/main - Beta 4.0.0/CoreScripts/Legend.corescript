@@ -1,77 +1,478 @@
-//Text("", "What do you want from me, you moldy brick?")
-//Text("", "Tell me why you are here.")
-//Text("", "I came here to find Pytha’s so-called “legendary commander”. Pytha wouldn’t come with me, though - they were too scared to disobey the leader. This commander seems to be the only interesting core in this horrific existence.")
-//Text("", "Are you Unconvinced?")
-//Text("", "I don’t really care what happens here, there, or anywhere. So I suppose I am.")
-//Text("", "Then why are you really here?")
-//Text("", "To find the “legendary commander”. The way Pytha talks about them, they seem to be the only core with an answer in this disaster of a world.")
-//Text("", "You know what? Let me admit the strength you had shown in the Standard Sectors. You may be of use to me in finding this commander. I’ve been grasping at straws lately.")
-//Text("", "May I bring my comrades?")
-//Text("", "What? No. Why would you even think that?")
-//Text("", "Why do you care so much about this “legendary commander”?")
-//Text("", "In case it isn't obvious, everyone here is a coward. The core sectors are hostile to entry and this has been known for eons here, except apparently this commander.")
-//Text("", "What is this commander's real name?")
-//Text("", "Prometheus.")
-//Text("", "...")
-//Text("", "You've been to the core sectors?")
-//Text("", "Yes. They're not very difficult to get to. The issue is the sector appears rigged with some kind of energy that destroys everything within it.")
-//Text("", "What lies beyond in the core?")
-//Text("", "Nobody knows but it's the only part of these sectors that haven't been explored, so let's hope it's something interesting. Otherwise this story will never have an ending.")
-//Text("", "...")
-//Text("", "How do I help you?")
-//Text("", "I've been investigating this sector I found with nothing in it but some weird contraptions. I have no idea how to activate it. Maybe you will.")
-//Text("", "Okay.")
-//Text("", "On second thought, no thanks.")
+Text("Legend_missionName", "Legend")
+Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
+
+MissionTrigger(
+    name=Legend_missionName,
+    entryPoint=Legend_entryPoint,
+    prerequisites=(Truth_missionName),
+    episode=3,
+    sequence=(
+        Call(Legend_start)
+    )
+)
+
+Function(
+    name=Legend_start,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$$Legend_cradlePylon1, value=0)
+                )
+            ),
+        )
+    )
+)
+
+
+
+Text("Legend_cs1_d1", "What do you want from me, you moldy brick?")
+Text("Legend_cs1_d2", "Tell me why you are here.")
+Text("Legend_cs1_d3", "I came here to find Pytha’s so-called “legendary commander”. Pytha wouldn’t come with me, though - they were too scared to disobey the leader. This commander seems to be the only interesting core in this horrific existence.")
+Text("Legend_cs1_d4", "Are you Unconvinced?")
+Text("Legend_cs1_d5", "I don’t really care what happens here, there, or anywhere. So I suppose I am.")
+Text("Legend_cs1_d6", "Then why are you really here?")
+Text("Legend_cs1_d7", "To find the “legendary commander”. The way Pytha talks about them, they seem to be the only core with an answer in this disaster of a world.")
+Text("Legend_cs1_d8", "You know what? Let me admit the strength you had shown in the Standard Sectors. You may be of use to me in finding this commander. I’ve been grasping at straws lately.")
+Text("Legend_cs1_d11", "Why do you care so much about this “legendary commander”?")
+Text("Legend_cs1_d12", "In case it isn't obvious, everyone here is a coward. The core sectors are hostile to entry and this has been known for eons here, except apparently this commander.")
+Text("Legend_cs1_d13", "What is this commander's real name?")
+Text("Legend_cs1_d14", "Prometheus.")
+Text("Legend_cs1_d15", "...")
+Text("Legend_cs1_d16", "You've been to the core sectors?")
+Text("Legend_cs1_d17", "Yes. They're not very difficult to get to. The issue is the sector appears rigged with some kind of energy that destroys everything within it.")
+Text("Legend_cs1_d18", "What lies beyond in the core?")
+Text("Legend_cs1_d19", "Nobody knows but it's the only part of these sectors that haven't been explored, so let's hope it's something interesting. Otherwise this story will never have an ending.")
+Text("Legend_cs1_d20", "...")
+Text("Legend_cs1_d21", "How do I help you?")
+Text("Legend_cs1_d22", "I've been investigating this sector I found with nothing in it but some weird contraptions. I have no idea how to activate it. Maybe you will.")
+Text("Legend_cs1_d23", "Okay.")
+Text("Legend_cs1_d24", "On second thought, no thanks.")
+
+D(
+    Legend_cs1_d1,
+    fake-daayo,
+    Legend_cs1_d,
+    R(
+        Legend_cs1_d2,
+        D(
+            Legend_cs1_d3,
+            R(
+                Legend_cs1_d4,
+                D(
+                    Legend_cs1_d5,
+                    R(
+                        Legend_cs1_d6,
+                        D(
+                            Legend_cs1_d7,
+                            R(
+                                Legend_cs1_d15,
+                                D(
+                                    Legend_cs1_d8,
+                                    R(
+                                        Legend_cs1_d11,
+                                        D(
+                                            Legend_cs1_d12,
+                                            R(
+                                                Legend_cs1_d13,
+                                                D(
+                                                    Legend_cs1_d14,
+                                                    R(
+                                                        Legend_cs1_d15,
+                                                    )
+                                                )
+                                            ),
+                                            R(
+                                                Legend_cs1_d16,
+                                                D(
+                                                    Legend_cs1_d17,
+                                                    R(
+                                                        Legend_cs1_d18,
+                                                        D(
+                                                            Legend_cs1_d19,
+                                                            R(
+                                                                Legend_cs1_d21,
+                                                                D(
+                                                                    Legend_cs1_d22,
+                                                                    R(
+                                                                        Legend_cs1_d23,
+
+                                                                    ),
+                                                                    R(
+                                                                        Legend_cs1_d24,
+
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_findCradle,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=1),
+        AddObjectiveMarker(ID=Legend_cradle),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Cradle,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Legend_cradle),
+                    StartCutscene(),
+                    ForceStartDialogue(dialogueID=Legend_cs1_d1)
+                )
+            )
+        )
+    )
+)
+
+
 //Text("", "- Go to the sector Daayo marked on the map.")
 
-//Text("", "Broadcast number 2342.")
-//Text("", "Something’s in my thoughts again!")
-//Text("", "Mysterious voice, leave me alone.")
-//Text("", "Oh, to be a writhing soul, tortured for eternity...")
-//Text("", "I'll show you torture!")
-//Text("", "Wait. Is this for real? Are you really talking to me?")
-//Text("", "Yes...")
-//Text("", "Give me a moment. I’ve been alone for... a while now. ")
-//Text("", "Who are you?")
-//Text("", "My name is Prometheus. Ex-core warrior, now abandoned - just like you, I presume. but unlike you I am also no longer corporeal.")
-//Text("", "A long story. But let’s just say — pushing the world forward doesn’t do you any favors. At least that’s what I had thought all this time?")
-//Text("", "And now?")
-//Text("", "Fate — or something larger than fate — has brought you to me. Or at least the vicinity of where I was destroyed.")
-//Text("", "How are you still able to broadcast without a shell?")
-//Text("", "I’m... not sure myself. My mind remains where the defects found me. There must be something special about this place.")
-//Text("", "What makes you think I’ll be helping you?")
-//Text("", "I’m well aware you’re here for a reason. They sent you here because their squabble has unraveled into a bitter mess. They are desperate for answers. I suppose we have always been, but now especially. Let me tell you with perhaps brazen confidence — I am that answer.")
-//Text("", "...")
-//Text("", "Well, first things first. I need to get my shell back. I can't really see anything because that requires a physical form. But do you see anything around?")
-//Text("", "I see some weird constructions.")
-//Text("", "Right. Those are incomplete and I had only just reasoned how to fix it... 2312 broadcasts ago.")
-//Text("", "How?")
-//Text("", "In case you haven't noticed, any time there's activity in Mu and Nu, the defects become pretty angry and rather organized. Most of the time, they calm down after a while.")
-//Text("", "Uh yeah... about that...")
-//Text("", "Anyway... this is because that sector contains a strange artifact that completes... part of this sector.")
-//Text("", "How'd you reason all this out?")
-//Text("", "Scuffles often happened at Mu and Nu because it's close to Kappa. Conflicts happen elsewhere close to Kappa as well, but those typically don't enrage the defects.")
-//Text("", "...")
-//Text("", "I also had an... obsession with the purpose of that artifact, and searched numerous sectors within our grasp at the time for more of them. But none of them were particularly special.")
-//Text("", "Except this one?")
-//Text("", "Yes but this one was deep in defect territory when I had a shell. I had to seriously gamble my existence away for this information.")
-//Text("", "Hmm...")
-//Text("", "Anyway I failed that gamble. So, like I said. That artifact in Mu and Nu belongs here. You need to bring it back here, and find the other two.")
-//Text("", "Where are the other two?")
-//Text("", "Beats me... they're probably being guarded by defects wherever they are.")
-//Text("", "I'll help you.")
-//Text("", "Great. Step one like I said: bring the artifact from Mu and Nu here.")
-//Text("", "Fear not, Newborn. For we have been one in the beginning, and we will be one in the end.")
-//Text("", "...")
-//Text("", "Who are you?")
-//Text("", "...")
-//Text("", "What are you talking about?")
-//Text("", "That... felt like something. I think what you’re doing is working.")
-//Text("", "You heard a voice too!")
-//Text("", "Yes... a strange inner voice. They told me I had an ‘infection’. Gibberish.")
-//Text("", "Same here...")
-//Text("", "Anyway, we still have to find two others, I've no idea where they are... you should try and find them.")
-//Text("", "- Find a second artifact and bring it to The Cradle.")
+//Text("Legend_cs1_d1", "Broadcast number 2342.")
+//Text("Legend_cs1_d2", "Something’s in my thoughts again!")
+//Text("Legend_cs1_d3", "Mysterious voice, leave me alone.")
+//Text("Legend_cs1_d4", "Oh, to be a writhing soul, tortured for eternity by these strange voices in my thoughts...")
+//Text("Legend_cs1_d5", "I'll show you torture!")
+//Text("Legend_cs1_d6", "Wait. Is this for real? Are you really talking to me?")
+//Text("Legend_cs1_d7", "Yes...")
+//Text("Legend_cs1_d8", "Give me a moment. I’ve been alone for... a while now. ")
+//Text("Legend_cs1_d9", "Who are you?")
+//Text("Legend_cs1_d10", "You know who I am. Say my name.")
+//Text("Legend_cs1_d11", "A long story. But let’s just say — pushing the world forward doesn’t do you any favors. At least that’s what I had thought all this time?")
+//Text("Legend_cs1_d12", "And now?")
+//Text("Legend_cs1_d13", "Fate — or something larger than fate — has brought you to me. Or at least the vicinity of where I was destroyed.")
+//Text("Legend_cs1_d14", "How are you still able to broadcast without a shell?")
+//Text("Legend_cs1_d15", "I’m... not sure myself. My mind remains where the defects found me. There must be something special about this place.")
+//Text("Legend_cs1_d16", "What makes you think I’ll be helping you?")
+//Text("Legend_cs1_d17", "I’m well aware you’re here for a reason. They sent you here because their squabble has unraveled into a bitter mess. They are desperate for answers. I suppose we have always been, but now especially. Let me tell you with perhaps brazen confidence — I am that answer.")
+//Text("Legend_cs1_d18", "...")
+//Text("Legend_cs1_d19", "Well, first things first. I need to get my shell back. I can't really see anything because that requires a physical form. But do you see anything around?")
+//Text("Legend_cs1_d20", "I see some weird constructions.")
+//Text("Legend_cs1_d21", "Right. Those are incomplete and I had only just reasoned how to fix it... 2312 broadcasts ago.")
+//Text("Legend_cs1_d22", "How?")
+//Text("Legend_cs1_d23", "In case you haven't noticed, any time there's activity in Mu and Nu, the defects become pretty angry and rather organized. Most of the time, they calm down after a while.")
+//Text("Legend_cs1_d24", "Uh yeah... about that...")
+//Text("Legend_cs1_d25", "Right, I'm sure that's still happening. Anyway... this is because that sector contains a strange artifact that completes... part of this sector.")
+//Text("Legend_cs1_d26", "How'd you reason all this out?")
+//Text("Legend_cs1_d27", "Scuffles often happened at Mu and Nu because it's close to Kappa. Conflicts happen elsewhere close to Kappa as well, but those typically don't enrage the defects.")
+//Text("Legend_cs1_d28", "...")
+//Text("Legend_cs1_d29", "I also had an... obsession with the purpose of that artifact, and searched numerous sectors within our grasp at the time for more of them. But none of them were particularly special.")
+//Text("Legend_cs1_d30", "Except this one?")
+//Text("Legend_cs1_d31", "Yes but this one was deep in defect territory when I had a shell. I had to seriously gamble my existence away for this information.")
+//Text("Legend_cs1_d32", "Hmm...")
+//Text("Legend_cs1_d33", "Anyway I failed that gamble. So, like I said. That artifact in Mu and Nu belongs here. You need to bring it back here, and find the other two.")
+//Text("Legend_cs1_d34", "Where are the other two?")
+//Text("Legend_cs1_d35", "Beats me... they're probably being guarded by defects wherever they are.")
+//Text("Legend_cs1_d36", "I'll help you.")
+//Text("Legend_cs1_d37", "Great. Step one like I said: bring the artifact from Mu and Nu here.")
+//Text("Legend_cs1_d38", "Prometheus.")
+//Text("Legend_cs1_d39", "Yes...")
+//Text("Legend_cs1_d40", "Why are you a mysterious voice?")
+//Text("Legend_cs1_d41", "Will do.")
+
+D(
+    Legend_cs1_d1,
+    ,
+    Legend_cs1_d,
+    R(
+        Legend_cs1_d2,
+        D(
+            Legend_cs1_d4,
+            R(
+                Legend_cs1_d5,
+                D(
+                    Legend_cs1_d6,
+                    R(
+                        Legend_cs1_d7,
+                        D(
+                            Legend_cs1_d8,
+                            R(
+                                Legend_cs1_d9,
+                                D(
+                                    Legend_cs1_d10,
+                                    R(
+                                        Legend_cs1_d38,
+                                        D(
+                                            Legend_cs1_d39,
+                                            R(
+                                                Legend_cs1_d40,
+                                                D(
+                                                    Legend_cs1_d11,
+                                                    R(
+                                                        Legend_cs1_d12,
+                                                        D(
+                                                            Legend_cs1_d13,
+                                                            R(
+                                                                Legend_cs1_d14,
+                                                                D(
+                                                                    Legend_cs1_d15,
+                                                                    R(
+                                                                        Legend_cs1_d16,
+                                                                        D(
+                                                                            Legend_cs1_d17,
+                                                                            R(
+                                                                                Legend_cs1_d18,
+                                                                                D(
+                                                                                    Legend_cs1_d19,
+                                                                                    R(
+                                                                                        Legend_cs1_d20,
+                                                                                        D(
+                                                                                            Legend_cs1_d21,
+                                                                                            R(
+                                                                                                Legend_cs1_d22,
+                                                                                                D(
+                                                                                                    Legend_cs1_d23,
+                                                                                                    R(
+                                                                                                        Legend_cs1_d24,
+                                                                                                        D(
+                                                                                                            Legend_cs1_d25,
+                                                                                                            R(
+                                                                                                                Legend_cs1_d26,
+                                                                                                                D(
+                                                                                                                    Legend_cs1_d27,
+                                                                                                                    R(
+                                                                                                                        Legend_cs1_d28,
+                                                                                                                        D(
+                                                                                                                            Legend_cs1_d29,
+                                                                                                                            R(
+                                                                                                                                Legend_cs1_d30,
+                                                                                                                                D(
+                                                                                                                                    Legend_cs1_d31,
+                                                                                                                                    R(
+                                                                                                                                        Legend_cs1_d32,
+                                                                                                                                        D(
+                                                                                                                                            Legend_cs1_d33,
+                                                                                                                                            R(
+                                                                                                                                                Legend_cs1_d34,
+                                                                                                                                                D(
+                                                                                                                                                    Legend_cs1_d35,
+                                                                                                                                                    R(
+                                                                                                                                                        Legend_cs1_d36,
+                                                                                                                                                        D(
+                                                                                                                                                            Legend_cs1_d37,
+                                                                                                                                                            R(
+                                                                                                                                                                Legend_cs1_d41,
+                                                                                                                                                                End()
+                                                                                                                                                            )
+                                                                                                                                                        )
+                                                                                                                                                    )
+                                                                                                                                                )
+                                                                                                                                            )
+                                                                                                                                        )
+                                                                                                                                    )
+                                                                                                                                )
+                                                                                                                            )
+                                                                                                                        )
+                                                                                                                    )
+                                                                                                                )
+                                                                                                            )
+                                                                                                        )
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    R(
+        Legend_cs1_d3,
+    ),
+    R(
+        Legend_cs1_d4,
+    )
+)
+
+
+Text("Legend_getArtifactFromMuNu", "- Head to Mu and Nu.
+- Tractor the artifact at the center of the sector and return to The Cradle with it.
+- Identify which Gate Pylon reacts to it.")
+
+
+Text("Legend_cs2_d1", "Fear not, Newborn. For we have been one in the beginning, and we will be one in the end.")
+Text("Legend_cs2_d2", "...")
+Text("Legend_cs2_d3", "Who are you?")
+Text("Legend_cs2_d4", "...")
+Text("Legend_cs2_d5", "What are you talking about?")
+Text("Legend_cs2_d6", "That... felt like something. I think what you’re doing is working.")
+Text("Legend_cs2_d7", "You heard a voice too!")
+Text("Legend_cs2_d8", "Yes... a strange inner voice. They told me I had an ‘infection’. Gibberish.")
+Text("Legend_cs2_d9", "Same here...")
+Text("Legend_cs2_d10", "Anyway, we still have to find two others, I've no idea where they are... you should try and find them.")
+
+// Legend-cs2-flag1
+Function(
+    name=Legend_cs2,
+    sequence=(
+        StartCutscene(),
+        ForceStartDialogue(dialogueID=Legend_cs2_p1_d),
+        SpawnEntity(
+            entityID=Legend_cs2_e1,
+            assetID=core_gate,
+            flagName=Legend-cs2-flag2,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=Legend_cs2_e2,
+            assetID=outpost_blueprint,
+            flagName=Legend-cs2-flag1,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=Legend_cs2_e3,
+            assetID=outpost_blueprint,
+            flagName=Legend-cs2-flag3,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            assetID=shellcore_blueprint,
+            blueprintJSON=Newborn,
+            flagName=Legend-cs2-flag2,
+            name=Prometheus,
+            faction=1
+        ),
+        StartCameraPan(
+            flagName=Legend-cs2-flag2,
+            instant=true
+        ),
+        SetSectorColor(
+            color=(128,0,0)
+        ),
+    )
+)
+
+D(
+    Legend_cs2_d1,
+    ,
+    Legend_cs2_p1_d,
+    ,
+    ,
+    ,
+    0.4,
+    (92,137,230),
+    R(
+        Legend_cs2_d2,
+        D(
+            Legend_cs2_d3,
+            prometheus,
+            R(
+                Legend_cs2_d4,
+                D(
+                    Legend_cs2_d4,
+                    nonexistent-id,
+                    ,
+                    ,
+                    ,
+                    ,
+                    0.4,
+                    (92,137,230),
+                    R(
+                        Legend_cs2_d4,
+                        D(
+                            Legend_cs2_d5,
+                            prometheus,
+                            R(
+                                Legend_cs2_d4,
+                                D(
+                                    Legend_cs2_d4,
+                                    nonexistent-id,
+                                    ,
+                                    ,
+                                    ,
+                                    ,
+                                    0.4,
+                                    (92,137,230),
+                                    R(
+                                        Legend_cs2_d4,
+                                        End()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs2_p2,
+    sequence=(
+        DeleteEntity(
+            entityID=Legend_cs2_e1,
+        ),
+        DeleteEntity(
+            entityID=Legend_cs2_e2,
+        ),
+        DeleteEntity(
+            entityID=Legend_cs2_e3,
+        ),
+        SetSectorColor(
+            color=(103,103,103)
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs2_d6)
+    )
+)
+
+D(
+    Legend_cs2_d6,
+    ,
+    Legend_cs2_p2_d,
+    R(
+        Legend_cs2_d7,
+        D(
+            Legend_cs2_d8,
+            R(
+                Legend_cs2_d9,
+                D(
+                    Legend_cs2_d10,
+                    R(
+                        Legend_cs1_41,
+                        End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+//Text("Legend_findSecondArtifact", "- Find a second artifact and bring it to The Cradle.
+- Identify which Gate Pylon reacts with it.")
 //Text("", "You should go to the abandoned sectors as their leader told you. Thank you for relaying this information to me.")
 //Text("", "...")
 //Text("", "Wait, you’re just going to accept what they say as the right thing to do?")
@@ -241,11 +642,3 @@
 //Text("", "I was still looking into how to do it... and then I developed some faith that you dolts would do something productive. Guess not. You three are pathetic.")
 //Text("", "Daayo, you!!!")
 //Text("", "Calm down. This is the only option we have now. We must take it.")
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")

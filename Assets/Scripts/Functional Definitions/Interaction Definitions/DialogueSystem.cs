@@ -949,7 +949,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             var speakerID = current.speakerID;
             if (current.coreScriptsMode) speakerID = CoreScriptsSequence.VariableSensitizeValue(speakerID);
             speaker = AIData.entities.Find(x => x.ID == speakerID);
-            speakerPos = speaker.GetTransform().position;
+            if (speaker != null && !speaker.Equals(null)) speakerPos = speaker.GetTransform().position;
         }
 
         var remastered = GetDialogueStyle() == DialogueStyle.Remastered;

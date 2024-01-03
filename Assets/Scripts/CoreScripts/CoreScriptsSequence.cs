@@ -844,13 +844,13 @@ public class CoreScriptsSequence : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("<Change Character Blueprint Node> Cannot force reconstruct since entity does not exist, traversing");
+                    Debug.Log("<Change Character Blueprint Node> Cannot force reconstruct since entity does not exist, traversing");
                 }
             }
         }
         else
         {
-            Debug.LogWarning("<Change Character Blueprint Node> Character not found, traversing");
+            Debug.Log("<Change Character Blueprint Node> Character not found, traversing");
         }
     }
 

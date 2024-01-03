@@ -421,14 +421,25 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i).Trim();
-            
             if (lineSubstr.StartsWith("R("))
             {
                 ParseResponseShortened(i, line, dialogue, localMap, node.nextNodes, tasks, data, allNodes);
                 continue;
             }
-            var val = lineSubstr.Split(')')[0];
-            val = val.Split(',')[0].Trim();
+
+            int bx = 0;
+            var val = "";
+            for (int ii = 0; ii < lineSubstr.Length; ii++)
+            {
+                if (lineSubstr[ii] == '(') bx++;
+                if (lineSubstr[ii] == ')') bx--;
+                if (lineSubstr[ii] == ',' && bx == 0)
+                {
+                    val = lineSubstr.Substring(0, ii);
+                    break;
+                }
+            }
+
             if (!string.IsNullOrEmpty(val))
             {
                 switch (argIndex)
@@ -453,11 +464,21 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
                     case 5:
                         if (val == "true") node.action = Dialogue.DialogueAction.FinishTask;
                         break;
+                    case 6:
+                        node.typingSpeedFactor = float.Parse(val, CultureInfo.InvariantCulture);
+                        data.typingSpeedFactor = node.typingSpeedFactor;
+                        break;
+                    case 7:
+                        var color = ParseColor(val);
+                        data.defaultColor = color;
+                        data.useSpeakerColor = false;
+                        break;
                 }
             }  
             argIndex++;
         }
-        
+
+
         node.concealName = data.concealName;
         node.useSpeakerColor = data.useSpeakerColor;
         node.textColor = Color.white;

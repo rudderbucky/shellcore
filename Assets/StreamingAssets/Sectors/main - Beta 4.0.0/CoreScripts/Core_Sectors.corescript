@@ -1,0 +1,112 @@
+Text("The_Core_d1", "I have the feeling I am going to perish if I don't get out of here quick.")
+
+SectorTrigger(
+    sectorName=The Core,
+    sequence=(
+        PassiveDialogue(entityID=player, text=The_Core_d1),
+        ConditionBlock(
+            Time(
+                time=5,
+                sequence=(
+
+                )
+            ),
+            EnterSector(
+                sectorName=The Core,
+                invert=true,
+                sequence=(
+
+                )
+            )
+        )
+    )
+)
+
+// Legend-cradle-flag1
+SectorTrigger(
+    sectorName=The Cradle,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Legend_cradlePylon1,
+                val2=0,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Legend_pylonTarget1,
+                        assetID=air_weapon_station,
+                        blueprintJSON=GatePylon,
+                        flagName=Legend-cradle-flag1,
+                        faction=5,
+                        name=Gate Pylon
+                    ),
+                    SpawnEntity(
+                        entityID=Legend_pylon1,
+                        flagName=Legend-cradle-flag3,
+                        blueprintJSON=SimplePylon,
+                        faction=5,
+                        assetID=defense_turret,
+                        name=Pylon
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=SqrDistance(Legend_pylonTarget1, Legend_pylon1),
+                            val2=5,
+                            comp=Lt,
+                            sequence=(
+                                DeleteEntity(
+                                    entityID=Legend_pylonTarget1,
+                                ),
+                                DeleteEntity(
+                                    entityID=Legend_pylon1
+                                ),
+                                Call(Legend_cs2)
+                            )
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_cradlePylon1,
+                val2=1,
+                sequence=()
+            ),
+            EnterSector(
+                sectorName=The Cradle,
+                invert=true,
+                sequence=()
+            )
+        ),
+    )
+)
+
+// Legend-pylon-pickup-flag1
+SectorTrigger(
+    sectorName=Mu and Nu,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Legend_cradlePylon1,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Legend_pylon1,
+                        flagName=Legend-pylon-pickup-flag1,
+                        blueprintJSON=SimplePylon,
+                        faction=5,
+                        assetID=defense_turret,
+                        name=Gate Pylon,
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_cradlePylon1,
+                val2=0,
+                comp=Neq,
+                sequence=(
+
+                )
+            ),
+        )
+    )
+)
