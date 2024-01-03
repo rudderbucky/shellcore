@@ -419,6 +419,11 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
                         data.typingSpeedFactor = node.typingSpeedFactor;
                         break;
                     case 7:
+                        if (val == "false")
+                        {
+                            data.useSpeakerColor = true;
+                            break;
+                        }
                         var color = ParseColor(val);
                         data.defaultColor = color;
                         data.useSpeakerColor = false;

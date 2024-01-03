@@ -7,7 +7,8 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        Call(Legend_start)
+        Call(Legend_start),
+        WarpPlayer(sectorName=The Cradle, flagName=Legend-cs2-flag1),
     )
 )
 
@@ -23,7 +24,7 @@ Function(
                     SetVariable(name=$$$Legend_cradlePylon1, value=0)
                 )
             ),
-        )
+        ),
     )
 )
 
@@ -389,6 +390,12 @@ D(
         D(
             Legend_cs2_d3,
             prometheus,
+            ,
+            ,
+            ,
+            ,
+            1,
+            false,
             R(
                 Legend_cs2_d4,
                 D(
@@ -405,6 +412,12 @@ D(
                         D(
                             Legend_cs2_d5,
                             prometheus,
+                            ,
+                            ,
+                            ,
+                            ,
+                            1,
+                            false,
                             R(
                                 Legend_cs2_d4,
                                 D(
