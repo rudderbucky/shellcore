@@ -348,6 +348,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected Entity lastDamagedBy;
 
     public string entityName;
+    public bool isStandardTractorTarget;
 
     private float weaponGCD = 0.1F; // weapon global cooldown
     public float WeaponGCD {

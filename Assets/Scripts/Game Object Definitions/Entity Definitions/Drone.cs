@@ -137,6 +137,11 @@ public class Drone : AirCraft, IOwnable
     {
         return ai;
     }
+    protected override void Awake()
+    {
+        isStandardTractorTarget = true;
+        base.Awake();
+    }
 
     protected override void Start()
     {

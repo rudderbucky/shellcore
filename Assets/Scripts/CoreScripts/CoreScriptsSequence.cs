@@ -336,7 +336,8 @@ public class CoreScriptsSequence : MonoBehaviour
                         overrideFac,
                         GetArgument(inst.arguments, "name"),
                         GetArgument(inst.arguments, "assetID"),
-                        GetArgument(inst.arguments, "stopIfIDExists") == "true");
+                        GetArgument(inst.arguments, "stopIfIDExists") == "true",
+                        GetArgument(inst.arguments, "overrideTractorTarget") == "true");
                     break;
                 case InstructionCommand.Log:
                     Debug.LogWarning(GetArgument(inst.arguments, "message"));
@@ -843,7 +844,7 @@ public class CoreScriptsSequence : MonoBehaviour
         }
     }
 
-    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID, bool stopIfIDExists)
+    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID, bool stopIfIDExists, bool isStandardTractorTarget)
     {
         if (stopIfIDExists)
         {
@@ -878,6 +879,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 ID = entityID,
                 assetID = assetID,
                 blueprintJSON = blueprintJSON,
+                isStandardTractorTarget = isStandardTractorTarget
             };
             
             SectorManager.instance.SpawnAsset(entityData);

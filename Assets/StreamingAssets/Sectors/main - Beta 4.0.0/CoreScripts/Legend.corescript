@@ -1,6 +1,9 @@
 Text("Legend_missionName", "Legend")
 Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
 
+// TODO: Deal with potential race condition of bringing two pylons in
+// TODO: Deal with AI treating pylon as turret
+
 MissionTrigger(
     name=Legend_missionName,
     entryPoint=Legend_entryPoint,
@@ -339,7 +342,6 @@ Function(
     name=Legend_cs2,
     sequence=(
         StartCutscene(),
-        ForceStartDialogue(dialogueID=Legend_cs2_p1_d),
         SpawnEntity(
             entityID=Legend_cs2_e1,
             assetID=core_gate,
@@ -366,12 +368,14 @@ Function(
             name=Prometheus,
             faction=1
         ),
+        SetSectorColor(
+            color=(128,0,0)
+        ),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs2_p1_d),
         StartCameraPan(
             flagName=Legend-cs2-flag2,
             instant=true
-        ),
-        SetSectorColor(
-            color=(128,0,0)
         ),
     )
 )
@@ -431,7 +435,7 @@ D(
                                     (92,137,230),
                                     R(
                                         Legend_cs2_d4,
-                                        End()
+                                        Call(Legend_cs2_p2)
                                     )
                                 )
                             )
@@ -455,10 +459,14 @@ Function(
         DeleteEntity(
             entityID=Legend_cs2_e3,
         ),
+        DeleteEntity(
+            entityID=prometheus
+        ),
+        FinishCameraPan(),
         SetSectorColor(
             color=(103,103,103)
         ),
-        ForceStartDialogue(dialogueID=Legend_cs2_d6)
+        ForceStartDialogue(dialogueID=Legend_cs2_p2_d)
     )
 )
 
@@ -466,6 +474,11 @@ D(
     Legend_cs2_d6,
     ,
     Legend_cs2_p2_d,
+    ,
+    ,
+    ,
+    ,
+    (218,166,32),
     R(
         Legend_cs2_d7,
         D(
@@ -476,6 +489,9 @@ D(
                     Legend_cs2_d10,
                     R(
                         Legend_cs1_41,
+                        ,
+                        ,
+                        Legend_findSecondArtifact,
                         End()
                     )
                 )
@@ -484,21 +500,91 @@ D(
     )
 )
 
-//Text("Legend_findSecondArtifact", "- Find a second artifact and bring it to The Cradle.
-- Identify which Gate Pylon reacts with it.")
-//Text("", "You should go to the abandoned sectors as their leader told you. Thank you for relaying this information to me.")
-//Text("", "...")
-//Text("", "Wait, you’re just going to accept what they say as the right thing to do?")
-//Text("", "Yes. It seems like the only option out of this war. Everything here has failed.")
-//Text("", "I could wipe them clean. You know that.")
-//Text("", "What good would that do? They’d come back from some grotto they’ve built for themselves. They’ve been doing that Prometheus. For eons.")
-//Text("", "...okay.")
-//Text("", "These are my memories you are viewing.")
-//Text("", "Do you think the leader was lying to you?")
-//Text("", "Then? It was a perfectly reasonable argument. Now? Yes.")
-//Text("", "...")
-//Text("", "Find the last artifact. That will reactivate this cradle and provide me a new form.")
-//Text("", "- Find the final artifact and bring it to The Cradle.")
+Task(
+    taskID=Legend_findSecondArtifact,
+    objectives=Legend_findSecondArtifact_objectives
+)
+Text("Legend_findSecondArtifact_objectives", "- Find a second artifact and bring it to The Cradle.
+- Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
+
+Text("Legend_cs3_d1", "You should go to the abandoned sectors as their leader told you. Thank you for relaying this information to me.")
+Text("Legend_cs3_d2", "...")
+Text("Legend_cs3_d3", "Wait, you’re just going to accept what they say as the right thing to do?")
+Text("Legend_cs3_d4", "Yes. It seems like the only option out of this war. Everything here has failed.")
+Text("Legend_cs3_d5", "I could wipe them clean. You know that.")
+Text("Legend_cs3_d6", "What good would that do? They’d come back from some grotto they’ve built for themselves. They’ve been doing that Prometheus. For eons.")
+Text("Legend_cs3_d7", "...okay.")
+D(
+    Legend_cs3_d1,
+    infectedleader,
+    Legend_cs3_d,
+    R(
+        Legend_cs3_d2,
+        D(
+            Legend_cs3_d3,
+            prometheus,
+            R(
+                Legend_cs3_d2,
+                D(
+                    Legend_cs3_d4,
+                    infectedleader,
+                    R(
+                        Legend_cs3_d2,
+                        D(
+                            Legend_cs3_d5,
+                            prometheus,
+                            R(
+                                Legend_cs3_d2,
+                                D(
+                                    Legend_cs3_d6,
+                                    infectedleader
+                                    R(
+                                        Legend_cs3_d2,
+                                        D(
+                                            Legend_cs3_d7,
+                                            Call(Legend_cs3_part2)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs3_part2,
+    sequence=(
+        ForceStartDialogue()
+    )
+)
+
+Text("Legend_cs3_d8", "These are my memories you are viewing.")
+Text("Legend_cs3_d9", "Do you think the leader was lying to you?")
+Text("Legend_cs3_d10", "Then? It was a perfectly reasonable argument. Now? Yes.")
+Text("Legend_cs3_d11", "...")
+
+D(
+    Legend_cs3_d8,
+    ,
+    Legend_cs3_p2_d,
+    R(
+        Legend_cs3_d9,
+        D(
+            Legend_cs3_d10,
+            R(
+                Legend_cs3_d11,
+            )
+        )
+    )
+)
+
+//Text("Legend_cs3_d12", "Find the last artifact. That will reactivate this cradle and provide me a new form.")
+//Text("Legend_findLastArtifact_objectives", "- Find the final artifact and bring it to The Cradle.
+- Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
 //Text("", "Pytha. The Leader is sending me to the Jump Gate.")
 //Text("", "So?")
 //Text("", "Come with me. The two of us could surely deal with whatever is on the other side.")
