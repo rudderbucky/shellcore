@@ -39,15 +39,6 @@ SectorTrigger(
                         faction=5,
                         name=Gate Pylon
                     ),
-                    SpawnEntity(
-                        entityID=Legend_pylon1,
-                        flagName=Legend-cradle-flag3,
-                        blueprintJSON=SimplePylon,
-                        faction=5,
-                        assetID=air_weapon_station,
-                        overrideTractorTarget=true,
-                        name=Pylon
-                    ),
                     ConditionBlock(
                         Comparison(
                             val1=SqrDistance(Legend_pylonTarget1, Legend_pylon1),
@@ -103,6 +94,75 @@ SectorTrigger(
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon1,
+                val2=0,
+                comp=Neq,
+                sequence=(
+
+                )
+            ),
+        )
+    )
+)
+
+
+// Legend-pylon-pickup-flag1
+SectorTrigger(
+    sectorName=BattleZone Xi,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Legend_cradlePylon2,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Legend_pylon2,
+                        flagName=Legend-pylon-pickup-flag1,
+                        blueprintJSON=SimplePylon,
+                        faction=5,
+                        assetID=air_weapon_station,
+                        overrideTractorTarget=true,
+                        name=Pylon,
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_cradlePylon2,
+                val2=0,
+                comp=Neq,
+                sequence=(
+
+                )
+            ),
+        )
+    )
+)
+
+
+
+// Legend-pylon-pickup-flag1
+SectorTrigger(
+    sectorName=BattleZone Omicron,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Legend_cradlePylon3,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Legend_pylon3,
+                        flagName=Legend-pylon-pickup-flag1,
+                        blueprintJSON=SimplePylon,
+                        faction=5,
+                        assetID=air_weapon_station,
+                        overrideTractorTarget=true,
+                        name=Pylon,
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_cradlePylon3,
                 val2=0,
                 comp=Neq,
                 sequence=(

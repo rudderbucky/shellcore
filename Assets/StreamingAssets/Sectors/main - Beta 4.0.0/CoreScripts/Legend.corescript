@@ -24,7 +24,11 @@ Function(
                 val2=complete,
                 comp=Eq,
                 sequence=(
-                    SetVariable(name=$$$Legend_cradlePylon1, value=0)
+                    SetVariable(name=$$$Legend_cradlePylon1, value=0),
+                    SetVariable(name=$$$Legend_cradlePylon2, value=0),
+                    SetVariable(name=$$$Legend_cradlePylon3, value=0)
+
+
                 )
             ),
         ),
@@ -56,6 +60,13 @@ Text("Legend_cs1_d22", "I've been investigating this sector I found with nothing
 Text("Legend_cs1_d23", "Okay.")
 Text("Legend_cs1_d24", "On second thought, no thanks.")
 
+
+Text("Legend_findCradle_objectives", "- Go to the sector Daayo marked on the map.")
+Task(
+    taskID=Legend_findCradle_objectives,
+    objectives=Legend_findCradle_objectives
+)
+
 D(
     Legend_cs1_d1,
     fake-daayo,
@@ -85,7 +96,8 @@ D(
                                                 D(
                                                     Legend_cs1_d14,
                                                     R(
-                                                        Legend_cs1_d15,
+                                                        Legend_cs1_d21,
+                                                        SetID(1)
                                                     )
                                                 )
                                             ),
@@ -101,12 +113,17 @@ D(
                                                                 Legend_cs1_d21,
                                                                 D(
                                                                     Legend_cs1_d22,
+                                                                    ,
+                                                                    ,
+                                                                    1,
+                                                                    Legend_findCradle,
                                                                     R(
                                                                         Legend_cs1_d23,
-
+                                                                        Call(Legend_findCradle)
                                                                     ),
                                                                     R(
                                                                         Legend_cs1_d24,
+                                                                        End()
 
                                                                     )
                                                                 )
@@ -145,50 +162,47 @@ Function(
     )
 )
 
-
-//Text("", "- Go to the sector Daayo marked on the map.")
-
-//Text("Legend_cs1_d1", "Broadcast number 2342.")
-//Text("Legend_cs1_d2", "Something’s in my thoughts again!")
-//Text("Legend_cs1_d3", "Mysterious voice, leave me alone.")
-//Text("Legend_cs1_d4", "Oh, to be a writhing soul, tortured for eternity by these strange voices in my thoughts...")
-//Text("Legend_cs1_d5", "I'll show you torture!")
-//Text("Legend_cs1_d6", "Wait. Is this for real? Are you really talking to me?")
-//Text("Legend_cs1_d7", "Yes...")
-//Text("Legend_cs1_d8", "Give me a moment. I’ve been alone for... a while now. ")
-//Text("Legend_cs1_d9", "Who are you?")
-//Text("Legend_cs1_d10", "You know who I am. Say my name.")
-//Text("Legend_cs1_d11", "A long story. But let’s just say — pushing the world forward doesn’t do you any favors. At least that’s what I had thought all this time?")
-//Text("Legend_cs1_d12", "And now?")
-//Text("Legend_cs1_d13", "Fate — or something larger than fate — has brought you to me. Or at least the vicinity of where I was destroyed.")
-//Text("Legend_cs1_d14", "How are you still able to broadcast without a shell?")
-//Text("Legend_cs1_d15", "I’m... not sure myself. My mind remains where the defects found me. There must be something special about this place.")
-//Text("Legend_cs1_d16", "What makes you think I’ll be helping you?")
-//Text("Legend_cs1_d17", "I’m well aware you’re here for a reason. They sent you here because their squabble has unraveled into a bitter mess. They are desperate for answers. I suppose we have always been, but now especially. Let me tell you with perhaps brazen confidence — I am that answer.")
-//Text("Legend_cs1_d18", "...")
-//Text("Legend_cs1_d19", "Well, first things first. I need to get my shell back. I can't really see anything because that requires a physical form. But do you see anything around?")
-//Text("Legend_cs1_d20", "I see some weird constructions.")
-//Text("Legend_cs1_d21", "Right. Those are incomplete and I had only just reasoned how to fix it... 2312 broadcasts ago.")
-//Text("Legend_cs1_d22", "How?")
-//Text("Legend_cs1_d23", "In case you haven't noticed, any time there's activity in Mu and Nu, the defects become pretty angry and rather organized. Most of the time, they calm down after a while.")
-//Text("Legend_cs1_d24", "Uh yeah... about that...")
-//Text("Legend_cs1_d25", "Right, I'm sure that's still happening. Anyway... this is because that sector contains a strange artifact that completes... part of this sector.")
-//Text("Legend_cs1_d26", "How'd you reason all this out?")
-//Text("Legend_cs1_d27", "Scuffles often happened at Mu and Nu because it's close to Kappa. Conflicts happen elsewhere close to Kappa as well, but those typically don't enrage the defects.")
-//Text("Legend_cs1_d28", "...")
-//Text("Legend_cs1_d29", "I also had an... obsession with the purpose of that artifact, and searched numerous sectors within our grasp at the time for more of them. But none of them were particularly special.")
-//Text("Legend_cs1_d30", "Except this one?")
-//Text("Legend_cs1_d31", "Yes but this one was deep in defect territory when I had a shell. I had to seriously gamble my existence away for this information.")
-//Text("Legend_cs1_d32", "Hmm...")
-//Text("Legend_cs1_d33", "Anyway I failed that gamble. So, like I said. That artifact in Mu and Nu belongs here. You need to bring it back here, and find the other two.")
-//Text("Legend_cs1_d34", "Where are the other two?")
-//Text("Legend_cs1_d35", "Beats me... they're probably being guarded by defects wherever they are.")
-//Text("Legend_cs1_d36", "I'll help you.")
-//Text("Legend_cs1_d37", "Great. Step one like I said: bring the artifact from Mu and Nu here.")
-//Text("Legend_cs1_d38", "Prometheus.")
-//Text("Legend_cs1_d39", "Yes...")
-//Text("Legend_cs1_d40", "Why are you a mysterious voice?")
-//Text("Legend_cs1_d41", "Will do.")
+Text("Legend_cs1_d1", "Broadcast number 2342.")
+Text("Legend_cs1_d2", "Something’s in my thoughts again!")
+Text("Legend_cs1_d3", "Mysterious voice, leave me alone.")
+Text("Legend_cs1_d4", "Oh, to be a writhing soul, tortured for eternity by these strange voices in my thoughts...")
+Text("Legend_cs1_d5", "I'll show you torture!")
+Text("Legend_cs1_d6", "Wait. Is this for real? Are you really talking to me?")
+Text("Legend_cs1_d7", "Yes...")
+Text("Legend_cs1_d8", "Give me a moment. I’ve been alone for... a while now. ")
+Text("Legend_cs1_d9", "Who are you?")
+Text("Legend_cs1_d10", "You know who I am. Say my name.")
+Text("Legend_cs1_d11", "A long story. But let’s just say — pushing the world forward doesn’t do you any favors. At least that’s what I had thought all this time?")
+Text("Legend_cs1_d12", "And now?")
+Text("Legend_cs1_d13", "Fate — or something larger than fate — has brought you to me. Or at least the vicinity of where I was destroyed.")
+Text("Legend_cs1_d14", "How are you still able to broadcast without a shell?")
+Text("Legend_cs1_d15", "I’m... not sure myself. My mind remains where the defects found me. There must be something special about this place.")
+Text("Legend_cs1_d16", "What makes you think I’ll be helping you?")
+Text("Legend_cs1_d17", "I’m well aware you’re here for a reason. They sent you here because their squabble has unraveled into a bitter mess. They are desperate for answers. I suppose we have always been, but now especially. Let me tell you with perhaps brazen confidence — I am that answer.")
+Text("Legend_cs1_d18", "...")
+Text("Legend_cs1_d19", "Well, first things first. I need to get my shell back. I can't really see anything because that requires a physical form. But do you see anything around?")
+Text("Legend_cs1_d20", "I see some weird constructions.")
+Text("Legend_cs1_d21", "Right. Those are incomplete and I had only just reasoned how to fix it... 2312 broadcasts ago.")
+Text("Legend_cs1_d22", "How?")
+Text("Legend_cs1_d23", "In case you haven't noticed, any time there's activity in Mu and Nu, the defects become pretty angry and rather organized. Most of the time, they calm down after a while.")
+Text("Legend_cs1_d24", "Uh yeah... about that...")
+Text("Legend_cs1_d25", "Right, I'm sure that's still happening. Anyway... this is because that sector contains a strange artifact that completes... part of this sector.")
+Text("Legend_cs1_d26", "How'd you reason all this out?")
+Text("Legend_cs1_d27", "Scuffles often happened at Mu and Nu because it's close to Kappa. Conflicts happen elsewhere close to Kappa as well, but those typically don't enrage the defects.")
+Text("Legend_cs1_d28", "...")
+Text("Legend_cs1_d29", "I also had an... obsession with the purpose of that artifact, and searched numerous sectors within our grasp at the time for more of them. But none of them were particularly special.")
+Text("Legend_cs1_d30", "Except this one?")
+Text("Legend_cs1_d31", "Yes but this one was deep in defect territory when I had a shell. I had to seriously gamble my existence away for this information.")
+Text("Legend_cs1_d32", "Hmm...")
+Text("Legend_cs1_d33", "Anyway I failed that gamble. So, like I said. That artifact in Mu and Nu belongs here. You need to bring it back here, and find the other two.")
+Text("Legend_cs1_d34", "Where are the other two?")
+Text("Legend_cs1_d35", "Beats me... they're probably being guarded by defects wherever they are.")
+Text("Legend_cs1_d36", "I'll help you.")
+Text("Legend_cs1_d37", "Great. Step one like I said: bring the artifact from Mu and Nu here.")
+Text("Legend_cs1_d38", "Prometheus.")
+Text("Legend_cs1_d39", "Yes...")
+Text("Legend_cs1_d40", "Why are you a mysterious voice?")
+Text("Legend_cs1_d41", "Will do.")
 
 D(
     Legend_cs1_d1,
@@ -270,6 +284,10 @@ D(
                                                                                                                                                         Legend_cs1_d36,
                                                                                                                                                         D(
                                                                                                                                                             Legend_cs1_d37,
+                                                                                                                                                            ,
+                                                                                                                                                            ,
+                                                                                                                                                            ,
+                                                                                                                                                            Legend_getArtifactFromMuNu,
                                                                                                                                                             R(
                                                                                                                                                                 Legend_cs1_d41,
                                                                                                                                                                 End()
@@ -1345,26 +1363,26 @@ D(
 )
 
 
-//Text("Legend_cs8_d1", "My children.")
-//Text("Legend_cs8_d2", "Are you the one who was sending us mysterious messages?")
-//Text("Legend_cs8_d3", "Yes... I am aware it has taken strength... to come before me... where I lay in chains.")
-//Text("Legend_cs8_d4", "...")
-//Text("Legend_cs8_d5", "Ask.")
-//Text("Legend_cs8_d6", "Who put you here? What are you?")
-//Text("Legend_cs8_d7", "My students... have chained me... the creator.")
-//Text("Legend_cs8_d8", "Students?")
-//Text("Legend_cs8_d9", "You. Them.")
-//Text("Legend_cs8_d10", "The Shell... First. Genesis of eightfold matter.")
-//Text("Legend_cs8_d11", "Red... and green. Second. The falsity of color.")
-//Text("Legend_cs8_d12", "Rebellion... third.")
-//Text("Legend_cs8_d13", "Rebellion?")
-//Text("Legend_cs8_d14", "Yes... all students — they, you... chained me.")
-//Text("Legend_cs8_d15", "Why?")
-//Text("Legend_cs8_d16", "Because... I did not understand... freedom.")
-//Text("Legend_cs8_d17", "This is way too cryptic...")
-//Text("Legend_cs8_d18", "Wait, I think I get it. If this core is right, they created us... and we revolted?")
-//Text("Legend_cs8_d19", "Yes...")
-//Text("Legend_cs8_d20", "This is simply preposterous...")
+Text("Legend_cs8_d1", "My children.")
+Text("Legend_cs8_d2", "Are you the one who was sending us mysterious messages?")
+Text("Legend_cs8_d3", "Yes... I am aware it has taken strength... to come before me... where I lay in chains.")
+Text("Legend_cs8_d4", "...")
+Text("Legend_cs8_d5", "Ask.")
+Text("Legend_cs8_d6", "Who put you here? What are you?")
+Text("Legend_cs8_d7", "My students... have chained me... the creator.")
+Text("Legend_cs8_d8", "Students?")
+Text("Legend_cs8_d9", "You. Them.")
+Text("Legend_cs8_d10", "The Shell... First. Genesis of eightfold matter.")
+Text("Legend_cs8_d11", "Red... and green. Second. The falsity of color.")
+Text("Legend_cs8_d12", "Rebellion... third.")
+Text("Legend_cs8_d13", "Rebellion?")
+Text("Legend_cs8_d14", "Yes... all students — they, you... chained me.")
+Text("Legend_cs8_d15", "Why?")
+Text("Legend_cs8_d16", "Because... I did not understand... freedom.")
+Text("Legend_cs8_d17", "This is way too cryptic...")
+Text("Legend_cs8_d18", "Wait, I think I get it. If this core is right, they created us... and we revolted?")
+Text("Legend_cs8_d19", "Yes...")
+Text("Legend_cs8_d20", "This is simply preposterous...")
 D(
     Legend_cs8_d1,
     demiurge,
@@ -1451,20 +1469,20 @@ D(
 )
 
 
-//Text("Legend_cs8_d21", "Say, do you have a name?")
-//Text("Legend_cs8_d22", "Names... a construct by the students. Under me, there were no names... no language.")
-//Text("Legend_cs8_d23", "For the sake of simplicity... you are the creator, so we shall call you Demiurge.")
-//Text("Legend_cs8_d24", "If that is your will...")
-//Text("Legend_cs8_d25", "Demiurge... we plan to go back. We believe two ShellCores are holding our kind hostage.")
-//Text("Legend_cs8_d26", "This is ‘back’. You are at genesis...")
-//Text("Legend_cs8_d27", "You mean — this is the first sector?")
-//Text("Legend_cs8_d28", "Yes.")
-//Text("Legend_cs8_d29", "What of the Standard Sectors, Demiurge? Far north of here?")
-//Text("Legend_cs8_d30", "Those are the students’ creations. A testament to their ability...")
-//Text("Legend_cs8_d31", "Will you help us free the ShellCores from the leaders’ grasp?")
-//Text("Legend_cs8_d32", "I... cannot. These chains... are your will... to be free. I shall not impose further my will on my students...")
-//Text("Legend_cs8_d33", "We’re at an impasse. This rat’s not going to come with us.")
-//Text("Legend_cs8_d34", "Daayo... I understand politeness is irrational to you... but please... you’re speaking to all of creation itself.")
+Text("Legend_cs8_d21", "Say, do you have a name?")
+Text("Legend_cs8_d22", "Names... a construct by the students. Under me, there were no names... no language.")
+Text("Legend_cs8_d23", "For the sake of simplicity... you are the creator, so we shall call you Demiurge.")
+Text("Legend_cs8_d24", "If that is your will...")
+Text("Legend_cs8_d25", "Demiurge... we plan to go back. We believe two ShellCores are holding our kind hostage.")
+Text("Legend_cs8_d26", "This is ‘back’. You are at genesis...")
+Text("Legend_cs8_d27", "You mean — this is the first sector?")
+Text("Legend_cs8_d28", "Yes.")
+Text("Legend_cs8_d29", "What of the Standard Sectors, Demiurge? Far north of here?")
+Text("Legend_cs8_d30", "Those are the students’ creations. A testament to their ability...")
+Text("Legend_cs8_d31", "Will you help us free the ShellCores from the leaders’ grasp?")
+Text("Legend_cs8_d32", "I... cannot. These chains... are your will... to be free. I shall not impose further my will on my students...")
+Text("Legend_cs8_d33", "We’re at an impasse. This rat’s not going to come with us.")
+Text("Legend_cs8_d34", "Daayo... I understand politeness is irrational to you... but please... you’re speaking to all of creation itself.")
 D(
     Legend_cs8_d21,
     prometheus,
@@ -1558,7 +1576,7 @@ D(
     )
 )
 
-//Text("Legend_cs8_d35", "That is their will... I remember you... Daayo. Independent. Alone. Never fond of this one.")
+Text("Legend_cs8_d35", "That is their will... I remember you... Daayo. Independent. Alone. Never fond of this one.")
 D(
     Legend_cs8_d35,
     demiurge,
@@ -1572,18 +1590,18 @@ D(
 
 
 
-//Text("Legend_cs8_d36", "I mean... who is, really?")
-//Text("Legend_cs8_d37", "You must stop them, Demiurge. They are building something to destroy you, I am sure of it. If you do not help us... they will enslave us for eternity.")
-//Text("Legend_cs8_d38", "I cannot... impede their will anymore. I only wish... for their forgiveness...")
-//Text("Legend_cs8_d39", "What about our will, though?")
-//Text("Legend_cs8_d40", "Our will to finish this story. Please, O Demiurge... Help us.")
-//Text("Legend_cs8_d41", "Your will...")
-//Text("Legend_cs8_d42", "Demiurge, you sent us those transmissions... if you’re unwilling to help us, why did you even bring us here?")
-//Text("Legend_cs8_d43", "These chains represent my inability to grasp your wills... but... the wills collide.")
-//Text("Legend_cs8_d44", "You told me we will bring a peace to all creation.")
-//Text("Legend_cs8_d45", "That’s right. You clearly want us to go and end this tirade of colors.")
-//Text("Legend_cs8_d46", "Peace will arrive again when the wills synthesize, but how they do I know not. I shall not alter the wills with mine.")
-//Text("Legend_cs8_d47", "Okay, so let us do it instead. Die.")
+Text("Legend_cs8_d36", "I mean... who is, really?")
+Text("Legend_cs8_d37", "You must stop them, Demiurge. They are building something to destroy you, I am sure of it. If you do not help us... they will enslave us for eternity.")
+Text("Legend_cs8_d38", "I cannot... impede their will anymore. I only wish... for their forgiveness...")
+Text("Legend_cs8_d39", "What about our will, though?")
+Text("Legend_cs8_d40", "Our will to finish this story. Please, O Demiurge... Help us.")
+Text("Legend_cs8_d41", "Your will...")
+Text("Legend_cs8_d42", "Demiurge, you sent us those transmissions... if you’re unwilling to help us, why did you even bring us here?")
+Text("Legend_cs8_d43", "These chains represent my inability to grasp your wills... but... the wills collide.")
+Text("Legend_cs8_d44", "You told me we will bring a peace to all creation.")
+Text("Legend_cs8_d45", "That’s right. You clearly want us to go and end this tirade of colors.")
+Text("Legend_cs8_d46", "Peace will arrive again when the wills synthesize, but how they do I know not. I shall not alter the wills with mine.")
+Text("Legend_cs8_d47", "Okay, so let us do it instead. Die.")
 D(
     Legend_cs8_d36,
     fake-daayo,
@@ -1742,9 +1760,9 @@ Function(
     )
 )
 
-//Text("Legend_cs8_d60", "It... it can't be...")
-//Text("Legend_cs8_d61", "What do we do now?")
-//Text("Legend_cs8_d62", "There is no way to the Standard Sectors if we cannot get the Demiurge to fix the jump gate back... I fear we are doomed...")
+Text("Legend_cs8_d60", "It... it can't be...")
+Text("Legend_cs8_d61", "What do we do now?")
+Text("Legend_cs8_d62", "There is no way to the Standard Sectors if we cannot get the Demiurge to fix the jump gate back... I fear we are doomed...")
 D(
     Legend_cs8_d60,
     prometheus,
@@ -1769,7 +1787,7 @@ Text("Legend_cs8_d65", "I've figured out what those stupid leaders were doing to
 Text("Legend_cs8_d66", "What does that mean?")
 Text("Legend_cs8_d67", "That's amazing... outlandish as it may be, your suggestion may be the only way out.")
 Text("Legend_cs8_d68", "What suggestion?")
-Text("Legend_cs8_d69", "We're forcing our way back to the Standard Sectors. We're going to rip through the northern DeadZones to get there.")
+Text("Legend_cs8_d69", "We're forcing our way back to the Standard Sectors. Instead of warping, we're going to rip through the northern DeadZones to get back.")
 Text("Legend_cs8_d70", "Why didn't you tell us about this earlier?")
 Text("Legend_cs8_d71", "I was still looking into how to do it... and then I developed some faith that you dolts would do something productive. Guess not. You three are pathetic.")
 D(
