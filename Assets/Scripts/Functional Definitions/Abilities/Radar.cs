@@ -13,7 +13,7 @@ public class Radar : Ability
     {   
         ResetRadarOdds();
         if (currAction != null) SectorManager.OnSectorLoad -= currAction;
-        location = null;
+        RemoveObjectiveMarker();
     }
 
     public static void ResetRadarOdds()
@@ -66,16 +66,17 @@ public class Radar : Ability
     protected override void Execute()
     {
         ActivationCosmetic(transform.position);
+        if (currAction != null)
+        {
+            ResetRadarChain();
+        }
+
         var ls = SectorManager.instance.sectors.Where(s => s.dimension == 0 && s != SectorManager.instance.current).ToList();
         var unseenSectors = ls.Where(s => !PlayerCore.Instance.cursave.sectorsSeen.Contains(s.sectorName)).ToList();
         if (unseenSectors.Count > 0) ls = unseenSectors;
         int randInt = Random.Range(0, ls.Count);
         nextSector = ls[randInt].sectorName;
         AddObjectiveMarker(nextSector);
-        if (currAction != null)
-        {
-            ResetRadarChain();
-        }
         currAction = (s) => { SectorCheck(s); };
         SectorManager.OnSectorLoad += currAction;
         base.Execute();
