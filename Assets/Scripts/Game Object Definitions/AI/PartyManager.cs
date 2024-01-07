@@ -229,7 +229,7 @@ public class PartyManager : MonoBehaviour
     {
         foreach (var core in partyMembers)
         {
-            core.faction.overrideFaction = overrideFac;
+            core.SetOverrideFaction(overrideFac);
         }
     }
 

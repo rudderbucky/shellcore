@@ -162,7 +162,7 @@ D(
     )
 )
 
-Text("Truth_post_lambda_sisyphos_enemy_d3", "Congratulations, by taking Mu and Nu for the Conservationists you just set back our salvation for another long while.")
+Text("Truth_post_lambda_sisyphos_enemy_d3", "Congratulations, by taking Lambda for the Conservationists you just set back our salvation for another long while.")
 Text("Truth_post_lambda_sisyphos_enemy_d4", "Shut up.")
 D(
     Truth_post_lambda_sisyphos_enemy_d3,
@@ -793,6 +793,7 @@ Task(
 Function(
     name=Truth_cs2,
     sequence=(
+        SetVariable(name=$$$Truth_checkpoint, value=11),
         SetSectorType(type=Neutral),
         StartCutscene(closeWindow=true),
         ConditionBlock(
@@ -865,7 +866,7 @@ Text("Truth_co_hideout_makeshift_d1", "Our leader and Starprism have left to dea
 Text("Truth_co_hideout_makeshift_d3", "...")
 D(
     Truth_ex_hideout_makeshift_d1,
-    Exterminator_Guardian1,
+    frostsword,
     Truth_ex_hideout_makeshift_d,
     R(
         Truth_co_hideout_makeshift_d3,
@@ -957,6 +958,8 @@ Function(
 Function(
     name=Truth_makeshift_stuff_overarch,
     sequence=(
+        RemoveObjectiveMarker(ID=Truth_makeshift),
+        AddObjectiveMarker(ID=Truth_makeshift, sectorName=The Makeshift),
         SetVariable(name=$$Truth_fun_dialogue_float, value=0),
         SetVariable(name=$$$Truth_deleteEntities, value=1),
         Call(Truth_makeshift_stuff)
@@ -1227,6 +1230,7 @@ Function(
             EnterSector(
                 sectorName=Kappa,
                 sequence=(
+                    RemoveObjectiveMarker(ID=Truth_kappa),
                     ConditionBlock(
                         EnterSector(
                             sectorName=Kappa,
@@ -1906,6 +1910,12 @@ Function(
                             sequence=(
                                 Call(Truth_eleos)
                             )
+                        ),
+                        Comparison(
+                            val1=MissionStatus(Truth_missionName),
+                            val2=complete,
+                            comp=Eq,
+                            sequence=()
                         )
                     )
                 )
