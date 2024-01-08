@@ -24,11 +24,7 @@ Function(
                 val2=complete,
                 comp=Eq,
                 sequence=(
-                    SetVariable(name=$$$Legend_cradlePylon1, value=0),
-                    SetVariable(name=$$$Legend_cradlePylon2, value=0),
-                    SetVariable(name=$$$Legend_cradlePylon3, value=0)
-
-
+                    SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs1_d)
                 )
             ),
         ),
@@ -212,6 +208,9 @@ D(
         Legend_cs1_d2,
         D(
             Legend_cs1_d4,
+            ,
+            ,
+            1,
             R(
                 Legend_cs1_d5,
                 D(
@@ -290,7 +289,7 @@ D(
                                                                                                                                                             Legend_getArtifactFromMuNu,
                                                                                                                                                             R(
                                                                                                                                                                 Legend_cs1_d41,
-                                                                                                                                                                End()
+                                                                                                                                                                Call(Legend_post_cs1)
                                                                                                                                                             )
                                                                                                                                                         )
                                                                                                                                                     )
@@ -332,16 +331,24 @@ D(
     ),
     R(
         Legend_cs1_d3,
+        SetID(1)
     ),
-    R(
-        Legend_cs1_d4,
-    )
 )
 
 
 Text("Legend_getArtifactFromMuNu", "- Head to Mu and Nu.
 - Tractor the artifact at the center of the sector and return to The Cradle with it.
-- Identify which Gate Pylon reacts to it.")
+- Identify which Gate Pylon reacts to it.
+- There are other sectors with pylons which will also work.")
+
+Function(
+    name=Legend_post_cs1,
+    sequence=(
+        FinishCutscene(),
+        SetVariable(name=$$$Legend_checkpoint, value=2),
+        SetVariable(name=$$$Legend_cradlePylon1, value=0),
+    )
+)
 
 
 Text("Legend_cs2_d1", "Fear not, Newborn. For we have been one in the beginning, and we will be one in the end.")
@@ -510,13 +517,18 @@ D(
                     ,
                     Legend_findSecondArtifact,
                     R(
-                        Legend_cs1_41,
+                        Legend_findSecondArtifact,
                         End()
                     )
                 )
             )
         )
     )
+)
+
+Function(
+    name=Legend_findSecondArtifact,
+    sequence=()
 )
 
 Task(
