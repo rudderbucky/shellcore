@@ -235,7 +235,7 @@ public class FusionStationScript : GUIWindowScripts
 
         if (PlayerCore.Instance)
         {
-            PlayerCore.Instance.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
+            PlayerCore.Instance.cursave.partInventory = PlayerCore.Instance.cursave.partInventory.Where(x => x.shiny).ToList();
             foreach (EntityBlueprint.PartInfo info in buttons.Keys)
             {
                 if (buttons[info].GetCount() > 0)
