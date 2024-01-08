@@ -19,12 +19,13 @@ Function(
     name=Legend_start,
     sequence=(
         ConditionBlock(
+            
             Comparison(
                 val1=MissionStatus(Truth_missionName),
                 val2=complete,
                 comp=Eq,
                 sequence=(
-                    SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs1_d)
+                    SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs1_d),
                 )
             ),
         ),
@@ -349,6 +350,7 @@ Function(
         SetVariable(name=$$$Legend_cradlePylon1, value=0),
     )
 )
+
 
 
 Text("Legend_cs2_d1", "Fear not, Newborn. For we have been one in the beginning, and we will be one in the end.")
