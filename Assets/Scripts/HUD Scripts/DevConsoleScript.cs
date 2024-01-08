@@ -328,6 +328,10 @@ public class DevConsoleScript : MonoBehaviour
                         info.secondaryData = split.Split("=")[1];
                     if (split.StartsWith("p="))
                         info.partID = split.Split("=")[1];
+                    if (split.StartsWith("sh="))
+                    {
+                        info.shiny = split.Split("=")[1] == "true";
+                    }
 
                 }
                      
