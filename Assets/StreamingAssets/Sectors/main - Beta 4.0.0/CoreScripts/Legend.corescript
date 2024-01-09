@@ -10,6 +10,7 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=5),
         Call(Legend_start),
 //        WarpPlayer(sectorName=The Cradle, flagName=Legend-cs2-flag1),
     )
@@ -19,7 +20,13 @@ Function(
     name=Legend_start,
     sequence=(
         ConditionBlock(
-
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=5,
+                sequence=(
+                    Call(Legend_post_cs4)
+                )
+            ),
             Comparison(
                 val1=MissionStatus(Truth_missionName),
                 val2=complete,
@@ -1010,11 +1017,30 @@ Function(
     name=Legend_post_cs4,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=5),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Sector 520-6580,
+                sequence=(
+                    SpawnEntity(entityID=heracles, blueprintJSON=heracles, name=Heracles, flagName=Legend-cs5-flag2, faction=3),
+                    Rotate(entityID=heracles, angle=270),
+                    SpawnEntity(entityID=sisyphos, blueprintJSON=sisyphos, name=Sisyphos, flagName=Legend-cs5-flag3, faction=3),
+                    Rotate(entityID=sisyphos, angle=90),
+                    SetInteraction(
+                        entityID=heracles, dialogueID=Legend_cs5_p1_d, sequence=(StartCutscene())
+                    ),
+                    SetInteraction(
+                        entityID=sisyphos, dialogueID=Legend_cs5_p1_d, sequence=(StartCutscene())
+                    ),
+                )
+            )
+        )
     )
 )
 
 // They should meet here Sector 520-6580
 // Legend-cs5-flag1
+
+
 
 Text("Legend_cs5_d1", "Congratulations Heracles. You’ve somehow convinced us to dialogue despite your ideals being an absolute failure.")
 Text("Legend_cs5_d2", "At least we didn’t murder dozens of conscious cores for some meager, unmanifested improvement to our safety. Your failure is also implicated here.")
@@ -1055,7 +1081,15 @@ D(
 Function(
     name=Legend_cs5_p2,
     sequence=(
-
+        SpawnEntity(
+            SpawnEntity(
+                entityID=prometheus,
+                faction=2,
+                blueprintJSON=Fatalizer,
+                flagName=Legend-cs4-flag1
+            ),
+            ForceStartDialogue(dialogueID=Legend_cs5_p2_d)
+        )
     )
 )
 
@@ -1175,7 +1209,7 @@ D(
                                                                                                                                                     prometheus,
                                                                                                                                                     R(
                                                                                                                                                         Legend_cs5_d22,
-                                                                                                                                                        End()
+                                                                                                                                                        Call(Legend_post_cs5_p2)
                                                                                                                                                     )
                                                                                                                                                 )
                                                                                                                                             )
@@ -1213,6 +1247,14 @@ D(
                 )
             )
         )
+    )
+)
+
+
+Function(
+    name=Legend_post_cs5_p2,
+    sequence=(
+
     )
 )
 
