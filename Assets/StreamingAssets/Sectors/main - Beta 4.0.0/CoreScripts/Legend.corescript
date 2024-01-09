@@ -11,7 +11,7 @@ MissionTrigger(
     episode=3,
     sequence=(
         Call(Legend_start),
-        WarpPlayer(sectorName=The Cradle, flagName=Legend-cs2-flag1),
+//        WarpPlayer(sectorName=The Cradle, flagName=Legend-cs2-flag1),
     )
 )
 
@@ -19,13 +19,13 @@ Function(
     name=Legend_start,
     sequence=(
         ConditionBlock(
-            
+
             Comparison(
                 val1=MissionStatus(Truth_missionName),
                 val2=complete,
                 comp=Eq,
                 sequence=(
-                    SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs1_d),
+                    SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs0_d),
                 )
             ),
         ),
@@ -34,92 +34,92 @@ Function(
 
 
 
-Text("Legend_cs1_d1", "What do you want from me, you moldy brick?")
-Text("Legend_cs1_d2", "Tell me why you are here.")
-Text("Legend_cs1_d3", "I came here to find Pytha’s so-called “legendary commander”. Pytha wouldn’t come with me, though - they were too scared to disobey the leader. This commander seems to be the only interesting core in this horrific existence.")
-Text("Legend_cs1_d4", "Are you Unconvinced?")
-Text("Legend_cs1_d5", "I don’t really care what happens here, there, or anywhere. So I suppose I am.")
-Text("Legend_cs1_d6", "Then why are you really here?")
-Text("Legend_cs1_d7", "To find the “legendary commander”. The way Pytha talks about them, they seem to be the only core with an answer in this disaster of a world.")
-Text("Legend_cs1_d8", "You know what? Let me admit the strength you had shown in the Standard Sectors. You may be of use to me in finding this commander. I’ve been grasping at straws lately.")
-Text("Legend_cs1_d11", "Why do you care so much about this “legendary commander”?")
-Text("Legend_cs1_d12", "In case it isn't obvious, everyone here is a coward. The core sectors are hostile to entry and this has been known for eons here, except apparently this commander.")
-Text("Legend_cs1_d13", "What is this commander's real name?")
-Text("Legend_cs1_d14", "Prometheus.")
-Text("Legend_cs1_d15", "...")
-Text("Legend_cs1_d16", "You've been to the core sectors?")
-Text("Legend_cs1_d17", "Yes. They're not very difficult to get to. The issue is the sector appears rigged with some kind of energy that destroys everything within it.")
-Text("Legend_cs1_d18", "What lies beyond in the core?")
-Text("Legend_cs1_d19", "Nobody knows but it's the only part of these sectors that haven't been explored, so let's hope it's something interesting. Otherwise this story will never have an ending.")
-Text("Legend_cs1_d20", "...")
-Text("Legend_cs1_d21", "How do I help you?")
-Text("Legend_cs1_d22", "I've been investigating this sector I found with nothing in it but some weird contraptions. I have no idea how to activate it. Maybe you will.")
-Text("Legend_cs1_d23", "Okay.")
-Text("Legend_cs1_d24", "On second thought, no thanks.")
+Text("Legend_cs0_d1", "What do you want from me, you moldy brick?")
+Text("Legend_cs0_d2", "Tell me why you are here.")
+Text("Legend_cs0_d3", "I came here to find Pytha’s so-called “legendary commander”. Pytha wouldn’t come with me, though - they were too scared to disobey the leader. This commander seems to be the only interesting core in this horrific existence.")
+Text("Legend_cs0_d4", "Are you Unconvinced?")
+Text("Legend_cs0_d5", "I don’t really care what happens here, there, or anywhere. So I suppose I am.")
+Text("Legend_cs0_d6", "Then why are you really here?")
+Text("Legend_cs0_d7", "To find the “legendary commander”. The way Pytha talks about them, they seem to be the only core with an answer in this disaster of a world.")
+Text("Legend_cs0_d8", "You know what? Let me admit the strength you had shown in the Standard Sectors. You may be of use to me in finding this commander. I’ve been grasping at straws lately.")
+Text("Legend_cs0_d11", "Why do you care so much about this “legendary commander”?")
+Text("Legend_cs0_d12", "In case it isn't obvious, everyone here is a coward. The core sectors are hostile to entry and this has been known for eons here, except apparently this commander.")
+Text("Legend_cs0_d13", "What is this commander's real name?")
+Text("Legend_cs0_d14", "Prometheus.")
+Text("Legend_cs0_d15", "...")
+Text("Legend_cs0_d16", "You've been to the core sectors?")
+Text("Legend_cs0_d17", "Yes. They're not very difficult to get to. The issue is the sector appears rigged with some kind of energy that destroys everything within it.")
+Text("Legend_cs0_d18", "What lies beyond in the core?")
+Text("Legend_cs0_d19", "Nobody knows but it's the only part of these sectors that haven't been explored, so let's hope it's something interesting. Otherwise this story will never have an ending.")
+Text("Legend_cs0_d20", "...")
+Text("Legend_cs0_d21", "How do I help you?")
+Text("Legend_cs0_d22", "I've been investigating this sector I found with nothing in it but some weird contraptions. I have no idea how to activate it. Maybe you will.")
+Text("Legend_cs0_d23", "Okay.")
+Text("Legend_cs0_d24", "On second thought, no thanks.")
 
 
 Text("Legend_findCradle_objectives", "- Go to the sector Daayo marked on the map.")
 Task(
-    taskID=Legend_findCradle_objectives,
+    taskID=Legend_findCradle,
     objectives=Legend_findCradle_objectives
 )
 
 D(
-    Legend_cs1_d1,
+    Legend_cs0_d1,
     fake-daayo,
-    Legend_cs1_d,
+    Legend_cs0_d,
     R(
-        Legend_cs1_d2,
+        Legend_cs0_d2,
         D(
-            Legend_cs1_d3,
+            Legend_cs0_d3,
             R(
-                Legend_cs1_d4,
+                Legend_cs0_d4,
                 D(
-                    Legend_cs1_d5,
+                    Legend_cs0_d5,
                     R(
-                        Legend_cs1_d6,
+                        Legend_cs0_d6,
                         D(
-                            Legend_cs1_d7,
+                            Legend_cs0_d7,
                             R(
-                                Legend_cs1_d15,
+                                Legend_cs0_d15,
                                 D(
-                                    Legend_cs1_d8,
+                                    Legend_cs0_d8,
                                     R(
-                                        Legend_cs1_d11,
+                                        Legend_cs0_d11,
                                         D(
-                                            Legend_cs1_d12,
+                                            Legend_cs0_d12,
                                             R(
-                                                Legend_cs1_d13,
+                                                Legend_cs0_d13,
                                                 D(
-                                                    Legend_cs1_d14,
+                                                    Legend_cs0_d14,
                                                     R(
-                                                        Legend_cs1_d21,
+                                                        Legend_cs0_d21,
                                                         SetID(1)
                                                     )
                                                 )
                                             ),
                                             R(
-                                                Legend_cs1_d16,
+                                                Legend_cs0_d16,
                                                 D(
-                                                    Legend_cs1_d17,
+                                                    Legend_cs0_d17,
                                                     R(
-                                                        Legend_cs1_d18,
+                                                        Legend_cs0_d18,
                                                         D(
-                                                            Legend_cs1_d19,
+                                                            Legend_cs0_d19,
                                                             R(
-                                                                Legend_cs1_d21,
+                                                                Legend_cs0_d21,
                                                                 D(
-                                                                    Legend_cs1_d22,
+                                                                    Legend_cs0_d22,
                                                                     ,
                                                                     ,
                                                                     1,
                                                                     Legend_findCradle,
                                                                     R(
-                                                                        Legend_cs1_d23,
+                                                                        Legend_cs0_d23,
                                                                         Call(Legend_findCradle)
                                                                     ),
                                                                     R(
-                                                                        Legend_cs1_d24,
+                                                                        Legend_cs0_d24,
                                                                         End()
 
                                                                     )
@@ -336,8 +336,12 @@ D(
     ),
 )
 
+Task(
+    taskID=Legend_getArtifactFromMuNu,
+    objectives=Legend_getArtifactFromMuNu_objectives
+)
 
-Text("Legend_getArtifactFromMuNu", "- Head to Mu and Nu.
+Text("Legend_getArtifactFromMuNu_objectives", "- Head to Mu and Nu.
 - Tractor the artifact at the center of the sector and return to The Cradle with it.
 - Identify which Gate Pylon reacts to it.
 - There are other sectors with pylons which will also work.")
@@ -520,11 +524,18 @@ D(
                     Legend_findSecondArtifact,
                     R(
                         Legend_findSecondArtifact,
-                        End()
+                        Call(Legend_post_cs2)
                     )
                 )
             )
         )
+    )
+)
+
+Function(
+    name=Legend_post_cs2,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=3),
     )
 )
 
@@ -709,7 +720,7 @@ D(
                         Legend_findLastArtifact,
                         R(
                             Legend_cs3_d13,
-                            End()
+                            Call(Legend_post_cs3)
                         )
                     )
             )
@@ -717,7 +728,12 @@ D(
     )
 )
 
-
+Function(
+    name=Legend_post_cs3,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=4),
+    )
+)
 
 Text("Legend_cs4_d1", "Pytha. The Leader is sending me to the Jump Gate.")
 Text("Legend_cs4_d2", "So?")
@@ -758,7 +774,6 @@ Task(
     taskID=Legend_findHeraclesAndSisyphos,
     objectives=Legend_findHeraclesAndSisyphos_objectives
 )
-
 
 Function(
     name=Legend_cs4,
@@ -940,7 +955,7 @@ D(
                                                                         ,
                                                                         ,
                                                                         Legend_findHeraclesAndSisyphos,
-                                                                        End()
+                                                                        Call(Legend_post_cs4)
                                                                     )
                                                                 )
                                                             )
@@ -991,6 +1006,15 @@ D(
     )
 )
 
+Function(
+    name=Legend_post_cs4,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=5),
+    )
+)
+
+// They should meet here Sector 520-6580
+// Legend-cs5-flag1
 
 Text("Legend_cs5_d1", "Congratulations Heracles. You’ve somehow convinced us to dialogue despite your ideals being an absolute failure.")
 Text("Legend_cs5_d2", "At least we didn’t murder dozens of conscious cores for some meager, unmanifested improvement to our safety. Your failure is also implicated here.")
@@ -1198,6 +1222,7 @@ Text("Legend_post_cs5_d2", "Okay.")
 D(
     Legend_post_cs5_d1,
     prometheus,
+    Legend_post_cs5_d,
     R(
         Legend_post_cs5_d2,
         End()
@@ -1221,6 +1246,7 @@ Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a
 D(
     Legend_cs6_d1,
     eleos,
+    Legend_cs6_d,
     R(
         Legend_cs6_d8,
         D(
@@ -1500,6 +1526,7 @@ Text("Legend_cs8_d34", "Daayo... I understand politeness is irrational to you...
 D(
     Legend_cs8_d21,
     prometheus,
+    Legend_cs8_p2_d,
     R(
         Legend_cs8_d4,
         D(
@@ -1753,7 +1780,7 @@ Text("Legend_cs8_d58", "No! Stop!")
 D(
     Legend_cs8_d55,
     aristu,
-    Legend_cs6_p7_d,
+    Legend_cs8_p7_d,
     R(
         Legend_cs8_d56,
         D(
@@ -1807,6 +1834,7 @@ Text("Legend_cs8_d71", "I was still looking into how to do it... and then I deve
 D(
     Legend_cs8_d63,
     fake-daayo,
+    Legend_cs8_p10_d,
     R(
         Legend_cs8_d64,
         D(

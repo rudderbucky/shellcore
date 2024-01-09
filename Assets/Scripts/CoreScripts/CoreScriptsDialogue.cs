@@ -57,7 +57,7 @@ public class CoreScriptsDialogue : MonoBehaviour
         ParseDialogueShortenedHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, propertyMetadata, allNodes);
         if (string.IsNullOrEmpty(metadata.dialogueID))
         {
-            throw new System.Exception(GetValueScopeWithinLine(scope, charIndex));
+            throw new System.Exception("No dialogueID: " + GetValueScopeWithinLine(scope, charIndex));
         }
         data.dialogues[metadata.dialogueID] = dialogue;
         PlayerCore.Instance.dialogue = dialogue;

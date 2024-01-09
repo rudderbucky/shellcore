@@ -6,16 +6,15 @@ SectorTrigger(
         PassiveDialogue(entityID=player, text=The_Core_d1),
         ConditionBlock(
             Time(
-                time=5,
+                time=3,
                 sequence=(
-
+                    DevConsole(command=kill player)
                 )
             ),
             EnterSector(
                 sectorName=The Core,
                 invert=true,
                 sequence=(
-
                 )
             )
         )
