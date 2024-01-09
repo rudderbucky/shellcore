@@ -175,12 +175,12 @@ Text("Legend_cs1_d6", "Wait. Is this for real? Are you really talking to me?")
 Text("Legend_cs1_d7", "Yes...")
 Text("Legend_cs1_d8", "Give me a moment. I’ve been alone for... a while now. ")
 Text("Legend_cs1_d9", "Who are you?")
-Text("Legend_cs1_d10", "You know who I am. Say my name.")
+Text("Legend_cs1_d10", "You know who I am. You've been sent here after all. Say my name.")
 Text("Legend_cs1_d11", "A long story. But let’s just say — pushing the world forward doesn’t do you any favors. At least that’s what I had thought all this time?")
 Text("Legend_cs1_d12", "And now?")
 Text("Legend_cs1_d13", "Fate — or something larger than fate — has brought you to me. Or at least the vicinity of where I was destroyed.")
 Text("Legend_cs1_d14", "How are you still able to broadcast without a shell?")
-Text("Legend_cs1_d15", "I’m... not sure myself. My mind remains where the defects found me. There must be something special about this place.")
+Text("Legend_cs1_d15", "I’m... not that mysterious voice. For some reason, my mind remains here where the defects found me. There must be something special about this place.")
 Text("Legend_cs1_d16", "What makes you think I’ll be helping you?")
 Text("Legend_cs1_d17", "I’m well aware you’re here for a reason. They sent you here because their squabble has unraveled into a bitter mess. They are desperate for answers. I suppose we have always been, but now especially. Let me tell you with perhaps brazen confidence — I am that answer.")
 Text("Legend_cs1_d18", "...")
@@ -212,6 +212,12 @@ D(
     Legend_cs1_d1,
     ,
     Legend_cs1_d,
+    ,
+    ,
+    ,
+    ,
+    ,
+    (92,137,230),
     R(
         Legend_cs1_d2,
         D(
@@ -370,7 +376,7 @@ Text("Legend_cs2_d3", "Who are you?")
 Text("Legend_cs2_d4", "...")
 Text("Legend_cs2_d5", "What are you talking about?")
 Text("Legend_cs2_d6", "That... felt like something. I think what you’re doing is working.")
-Text("Legend_cs2_d7", "You heard a voice too!")
+Text("Legend_cs2_d7", "You heard a voice too! So you aren't the voice!")
 Text("Legend_cs2_d8", "Yes... a strange inner voice. They told me I had an ‘infection’. Gibberish.")
 Text("Legend_cs2_d9", "Same here...")
 Text("Legend_cs2_d10", "Anyway, we still have to find two others, I've no idea where they are... you should try and find them.")
@@ -516,7 +522,7 @@ D(
     ,
     ,
     ,
-    (218,166,32),
+    (92,137,230),
     R(
         Legend_cs2_d7,
         D(
@@ -712,7 +718,7 @@ D(
     ,
     ,
     ,
-    (218,166,32),
+    (92,137,230),
     R(
         Legend_cs3_d9,
         D(
@@ -755,8 +761,8 @@ Text("Legend_cs4_d10", "It’s been a pleasure fighting. Maybe one day we will h
 Text("Legend_cs4_d11", "Aaaah... Pytha... you...")
 Text("Legend_cs4_d12", "What’s going on?")
 Text("Legend_cs4_d13", "I can’t believe it... why am I remembering this now of all times...")
-Text("Legend_cs4_d14", "What?")
-Text("Legend_cs4_d15", "Tell me... do you think that core was bluffing about their order?")
+Text("Legend_cs4_d14", "You're blue and not red!")
+Text("Legend_cs4_d15", "Tell me... weirdly colored core... do you think Pytha was bluffing about their order?")
 Text("Legend_cs4_d16", "I know that core.")
 Text("Legend_cs4_d17", "Oh. I see... That’s... not good.")
 Text("Legend_cs4_d18", "Yes.")
@@ -899,7 +905,7 @@ Function(
         ),
         SpawnEntity(
             entityID=prometheus,
-            faction=2,
+            faction=5,
             blueprintJSON=Fatalizer,
             flagName=Legend-cs4-flag1
         ),
@@ -1026,10 +1032,10 @@ Function(
                     SpawnEntity(entityID=sisyphos, blueprintJSON=sisyphos, name=Sisyphos, flagName=Legend-cs5-flag3, faction=3),
                     Rotate(entityID=sisyphos, angle=90),
                     SetInteraction(
-                        entityID=heracles, dialogueID=Legend_cs5_p1_d, sequence=(StartCutscene())
+                        entityID=heracles, sequence=(Call(Legend_cs5))
                     ),
                     SetInteraction(
-                        entityID=sisyphos, dialogueID=Legend_cs5_p1_d, sequence=(StartCutscene())
+                        entityID=sisyphos, sequence=(Call(Legend_cs5))
                     ),
                 )
             )
@@ -1041,6 +1047,25 @@ Function(
 // Legend-cs5-flag1
 
 
+Function(
+    name=Legend_cs5,
+    sequence=(
+        StartCutscene(),
+        SetPath(
+            entityID=player,
+            flagName=Legend-cs5-flag10,
+            sequence=(
+                Rotate(
+                    entityID=player,
+                    flagName=Legend-cs5-flag1,
+                    sequence=(
+                        ForceStartDialogue(dialogueID=Legend_cs5_p1_d)
+                    )
+                )
+            )
+        )
+    )
+)
 
 Text("Legend_cs5_d1", "Congratulations Heracles. You’ve somehow convinced us to dialogue despite your ideals being an absolute failure.")
 Text("Legend_cs5_d2", "At least we didn’t murder dozens of conscious cores for some meager, unmanifested improvement to our safety. Your failure is also implicated here.")
@@ -1084,7 +1109,7 @@ Function(
         SpawnEntity(
             SpawnEntity(
                 entityID=prometheus,
-                faction=2,
+                faction=5,
                 blueprintJSON=Fatalizer,
                 flagName=Legend-cs4-flag1
             ),
@@ -1094,7 +1119,7 @@ Function(
 )
 
 Text("Legend_cs5_d5", "Silence.")
-Text("Legend_cs5_d6", "A defect?")
+Text("Legend_cs5_d6", "A new kind of defect?")
 Text("Legend_cs5_d7", "No... this is unbelievable.")
 Text("Legend_cs5_d8", "Just listen.")
 Text("Legend_cs5_d9", "Our enemy lies beyond here. We had fought alongside them, but they were in reality, our eternal jailers.")
@@ -1254,11 +1279,14 @@ D(
 Function(
     name=Legend_post_cs5_p2,
     sequence=(
-
+        Wait(time=1),
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        ForceStartDialogue(dialogueID=Legend_post_cs5_d)
     )
 )
 
-Text("Legend_post_cs5_d1", "Meet me at the Unconvinced Lair. We need to talk Eleos into joining us at the core.")
+Text("Legend_post_cs5_d1", "You specifically should meet me at the Unconvinced Lair. We need to talk Eleos into joining us at the core.")
 Text("Legend_post_cs5_d2", "Okay.")
 
 D(
@@ -1267,10 +1295,48 @@ D(
     Legend_post_cs5_d,
     R(
         Legend_post_cs5_d2,
-        End()
+        Call(Legend_post_cs5_and_finish_cutscene)
     )
 )
 
+Function(
+    name=Legend_post_cs5_and_finish_cutscene,
+    sequence=(
+        FinishCutscene(),
+        Call(Legend_post_cs5)
+    )
+)
+
+Function(
+    name=Legend_post_cs5,
+    sequence=(
+        FinishCutscene(),
+        SetVariable(name=$$$Legend_checkpoint, value=6),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Unconvinced Lair,
+                sequence=(
+                    SpawnEntity(
+                        entityID=prometheus,
+                        faction=5,
+                        blueprintJSON=Fatalizer,
+                        flagName=Legend-cs6-flag1
+                    ),
+                    SetInteraction(entityID=eleos, dialogueID=Legend_cs6_d),
+                    SetInteraction(entityID=prometheus, dialogueID=Legend_cs6_d),
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs6,
+    sequence=(
+        StartCutscene(),
+        ForceStartDialogue(dialogueID=Legend_cs6_d)
+    )
+)
 
 
 Text("Legend_cs6_d1", "You need not discuss your findings with us Prometheus... we're already well aware of who you are.")
@@ -1328,9 +1394,10 @@ D(
     )
 )
 
+
 Text("Legend_post_cs6_d1", "You have questions and certainly deserve answers. Please speak.")
 Text("Legend_post_cs6_d2", "The leader of the Infection told me we turned against them because we went to the core. Is that right?")
-Text("Legend_post_cs6_d3", "This “prison” is technically the core so there is some truth to that idea. However, your own leader had also told our kind the converse story. It’s wise to abandon your colors, dear commander, for your turn of events may have occurred differently in previous cycles...")
+Text("Legend_post_cs6_d3", "We will be going to the core so there is some truth to that idea. However, your old leader had also told our kind the converse story. It’s wise to abandon your colors, dear commander, for your turn of events may have occurred differently in previous cycles...")
 Text("Legend_post_cs6_d4", "I see.")
 Text("Legend_post_cs6_d5", "Perhaps the answer to this question would have been different... in another story. One we may never know the ending of...")
 Text("Legend_post_cs6_d6", "...")
@@ -1380,6 +1447,28 @@ D(
 
 
 
+// this is where you should modify stuff for the final BZ
+Function(
+    name=Legend_post_cs6,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=7),
+        ClearInteraction(entityID=eleos),
+        ClearInteraction(entityID=prometheus),
+        SetInteraction(entityID=prometheus, dialogueID=Legend_post_cs6_d),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Sector 2050-6330,
+                sequence=(
+                    SetInteraction(entityID=prometheus, dialogueID=Legend_cs7_p1_d)
+                )
+            )
+        )
+    )
+)
+
+//Legend-cs7-flag1
+
+
 Text("Legend_cs7_d1", "Well met, commander. Let us hope the rest show up.")
 Text("Legend_cs7_d2", "We are here.")
 Text("Legend_cs7_d3", "Then we await the Unconvinced...")
@@ -1389,7 +1478,7 @@ Text("Legend_cs7_d6", "Indeed. The next step is meeting our maker.")
 D(
     Legend_cs7_d1,
     prometheus,
-    Legend_cs7_d,
+    Legend_cs7_p1_d,
     R(
         Legend_cs7_d5,
         D(
@@ -1402,35 +1491,57 @@ D(
                     prometheus,
                     R(
                         Legend_cs7_d5,
-                        D(
-                            Legend_cs7_d4,
-                            eleos,
-                            R(
-                                Legend_cs7_d5,
-                                D(
-                                    Legend_cs7_d5,
-                                    prometheus,
-                                    R(
-                                        Legend_cs7_d5,
-                                        D(
-                                            Legend_cs7_d6,
-                                            R(
-                                                Legend_cs7_d5,
-                                                End()
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
+                        
                     )
                 )
             )
         )
     )
-
 )
 
+Function(
+    name=Legend_cs7_p2,
+    sequence=(
+        SpawnEntity(
+            entityID=eleos,
+            blueprintJSON=eleos,
+            flagName=Legend-cs7-flag4,
+            faction=1,
+        ),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs7_p2_d)
+    )
+)
+
+D(
+    Legend_cs7_d4,
+    eleos,
+    Legend_cs7_p2_d,
+    R(
+        Legend_cs7_d5,
+        D(
+            Legend_cs7_d5,
+            prometheus,
+            R(
+                Legend_cs7_d5,
+                D(
+                    Legend_cs7_d6,
+                    R(
+                        Legend_cs7_d5,
+                        Call(Legend_post_cs7)
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_post_cs7,
+    sequence=(
+        SetInteraction(entityID=demiurge, dialogueID=Legend_cs8_p1_d)
+    )
+)
 
 Text("Legend_cs7_d7", "We haven't figured out why the Core is still so hostile to us... Daayo has been making significant progress, but not enough. I have a hunch it's related to the cradle again...")
 Text("Legend_cs7_d8", "I'll try and find that last artifact.")
@@ -1522,7 +1633,7 @@ D(
                                                                                                     eleos,
                                                                                                     R(
                                                                                                         Legend_cs8_d4,
-                                                                                                        End()
+                                                                                                        Call(Legend_cs8_p2)
                                                                                                     )
                                                                                                 )
                                                                                             )
@@ -1550,6 +1661,13 @@ D(
     )
 )
 
+Function(
+    name=Legend_cs8_p2,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p2_d)
+    )
+)
 
 Text("Legend_cs8_d21", "Say, do you have a name?")
 Text("Legend_cs8_d22", "Names... a construct by the students. Under me, there were no names... no language.")
@@ -1630,7 +1748,7 @@ D(
                                                                                                     eleos,
                                                                                                     R(
                                                                                                         Legend_cs8_d4,
-                                                                                                        End()
+                                                                                                        Call(Legend_cs8_p3)
                                                                                                     )
                                                                                                 )
                                                                                             )
@@ -1659,6 +1777,15 @@ D(
     )
 )
 
+Function(
+    name=Legend_cs8_p3,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p3_d)
+    )
+)
+
+
 Text("Legend_cs8_d35", "That is their will... I remember you... Daayo. Independent. Alone. Never fond of this one.")
 D(
     Legend_cs8_d35,
@@ -1666,12 +1793,19 @@ D(
     Legend_cs8_p3_d,
     R(
         Legend_cs8_d4,
-        End()
+        Call(Legend_cs8_p4)
     )
 )
 
 
 
+Function(
+    name=Legend_cs8_p4,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p4_d)
+    )
+)
 
 Text("Legend_cs8_d36", "I mean... who is, really?")
 Text("Legend_cs8_d37", "You must stop them, Demiurge. They are building something to destroy you, I am sure of it. If you do not help us... they will enslave us for eternity.")
@@ -1736,7 +1870,7 @@ D(
                                                                             fake-daayo,
                                                                             R(
                                                                                 Legend_cs8_d4,
-                                                                                End()
+                                                                                Call(Legend_cs8_p5)
                                                                             )
                                                                         )
                                                                     )
@@ -1759,6 +1893,15 @@ D(
 )
 
 
+Function(
+    name=Legend_cs8_p5,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p5_d)
+    )
+)
+
+
 Text("Legend_cs8_d48", "Yes. It has come to that. I possess the power to destroy my students, as I have created. I can pass my powers to a successor.")
 Text("Legend_cs8_d49", "This... isn’t okay. This unitary idea of godhood — one controlling all... It shouldn’t be how the world is.")
 D(
@@ -1772,13 +1915,21 @@ D(
             aristu,
             R(
                 Legend_cs8_d4,
-                End()
+                Call(Legend_cs8_p6)
             )
         )
 
     )
 )
 
+
+Function(
+    name=Legend_cs8_p6,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p6_d)
+    )
+)
 
 Text("Legend_cs8_d50", "I have already chosen. It will be you...")
 Text("Legend_cs8_d51", "I don’t want it to be me...")
@@ -1796,7 +1947,7 @@ D(
             prometheus,
             R(
                 Legend_cs8_d4,
-                End()
+                Call(Legend_cs8_p7)
             )
         )
     ),
@@ -1807,9 +1958,18 @@ D(
             demiurge,
             R(
                 Legend_cs8_d4,
-                End()
+                Call(Legend_cs8_p7)
             )
         )
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p7,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p7_d)
     )
 )
 
@@ -1829,7 +1989,7 @@ D(
             Legend_cs8_d57,
             R(
                 Legend_cs8_d58,
-                End()
+                Call(Legend_cs8_p9)
             )
         )
     )
@@ -1837,9 +1997,11 @@ D(
 
 Text("Legend_cs8_d59", "Aristu!!!!")
 Function(
-    name=Legend_cs8_p8,
+    name=Legend_cs8_p9,
     sequence=(
-        PassiveDialogue(entityID=sukrat, text=Legend_cs8_d59)
+        PassiveDialogue(entityID=sukrat, text=Legend_cs8_d59),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p9_d)
     )
 )
 
@@ -1857,9 +2019,17 @@ D(
             prometheus,
             R(
                 Legend_cs8_d4,
-                End()
+                Call(Legend_cs8_p10)
             )
         )
+    )
+)
+
+Function(
+    name=Legend_cs8_p10,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p10_d)
     )
 )
 
@@ -1897,7 +2067,7 @@ D(
                                     Legend_cs8_d71,
                                     R(
                                         Legend_cs8_d4,
-                                        End()
+                                        Call(Legend_cs8_p11)
                                     )
                                 )
                             )
@@ -1906,6 +2076,15 @@ D(
                 )
             )
         )
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p11,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p11_d)
     )
 )
 
@@ -1925,5 +2104,21 @@ D(
                 End()
             )
         )
+    )
+)
+
+
+Text("Legend_endOfStory", "End of EP3 and story as of Beta 5.0.0.
+Thank you for playing ShellCore Command Remastered!")
+
+Function(
+    name=Legend_end,
+    sequence=(
+        FinishTask(),
+        FinishCutscene(),
+        ClearInteraction(entityID=eleos),
+        ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
+        FinishMission(soundID=clip_missioncompleteep3),
+        ShowPopup(text=Legend_endOfStory)
     )
 )
