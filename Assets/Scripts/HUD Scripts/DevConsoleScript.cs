@@ -314,7 +314,7 @@ public class DevConsoleScript : MonoBehaviour
                 var info = new EntityBlueprint.PartInfo();
                 if (splits.Length < 2)
                 {
-                    textBox.text += "\nUsage: addpart a=<abilityID> t=<tier> c=<count> s=<secondaryData> p=<partID>";
+                    textBox.text += "\nUsage: addpart a=<abilityID> t=<tier> c=<count> s=<secondaryData> p=<partID> sh=<true/false>";
                 }
                 foreach(var split in splits)
                 {
