@@ -373,8 +373,9 @@ public class CoreScriptsSequence : MonoBehaviour
                     var rotateWhileMoving = GetArgument(inst.arguments, "rotateWhileMoving") != "false";
                     var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"), CultureInfo.InvariantCulture);
                     flagName = GetArgument(inst.arguments, "flagName");
+                    var targetEntityID = GetArgument(inst.arguments, "targetEntityID");
 
-                    Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
+                    Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, targetEntityID, inst.sequence, context);
                     break;
                 case InstructionCommand.Rotate:
                     entityID = GetArgument(inst.arguments, "entityID");

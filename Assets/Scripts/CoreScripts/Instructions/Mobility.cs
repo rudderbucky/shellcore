@@ -7,18 +7,34 @@ using static CoreScriptsSequence;
 public class Mobility : MonoBehaviour
 {
 
-    public static void SetPath(string entityID, bool rotateWhileMoving, float customMass, string flagName, Sequence sequence, Context context)
+    public static void SetPath(string entityID, bool rotateWhileMoving, float customMass, string flagName, string targetEntityID, Sequence sequence, Context context)
     {
-        flagName = flagName.Trim();
-        Debug.Log("<Set Path> Entity ID: " + entityID + ", Flag name: " + flagName + ", Flag array count: " + AIData.flags.Count);
-
         Vector2 coords = new Vector2();
-        for (int i = 0; i < AIData.flags.Count; i++)
+
+        if (flagName != null)
         {
-            if (AIData.flags[i].name == flagName)
+            flagName = flagName.Trim();
+            Debug.Log("<Set Path> Entity ID: " + entityID + ", Flag name: " + flagName + ", Flag array count: " + AIData.flags.Count);
+
+            for (int i = 0; i < AIData.flags.Count; i++)
             {
-                coords = AIData.flags[i].transform.position;
-                break;
+                if (AIData.flags[i].name == flagName)
+                {
+                    coords = AIData.flags[i].transform.position;
+                    break;
+                }
+            }
+        }
+
+        if (coords == Vector2.zero)
+        {
+            for (int i = 0; i < AIData.entities.Count; i++)
+            {
+                if (AIData.entities[i].ID == targetEntityID)
+                {
+                    coords = AIData.entities[i].transform.position;
+                    break;
+                }
             }
         }
 
