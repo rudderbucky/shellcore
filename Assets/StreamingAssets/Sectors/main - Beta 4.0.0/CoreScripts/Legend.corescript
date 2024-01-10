@@ -10,7 +10,7 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=5),
+        SetVariable(name=$$$Legend_checkpoint, value=8),
         Call(Legend_start),
 //        WarpPlayer(sectorName=The Cradle, flagName=Legend-cs2-flag1),
     )
@@ -20,6 +20,13 @@ Function(
     name=Legend_start,
     sequence=(
         ConditionBlock(
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=8,
+                sequence=(
+                    Call(Legend_post_cs7)
+                )
+            ),
             Comparison(
                 val1=$$$Legend_checkpoint,
                 val2=5,
@@ -1539,7 +1546,8 @@ D(
 Function(
     name=Legend_post_cs7,
     sequence=(
-        SetInteraction(entityID=demiurge, dialogueID=Legend_cs8_p1_d)
+        SetVariable(name=$$$Legend_checkpoint, value=8),
+        SetInteraction(entityID=demiurge, sequence=(Call(Legend_cs8)))
     )
 )
 
@@ -1555,6 +1563,102 @@ D(
     )
 )
 
+
+Function(
+    name=Legend_cs8,
+    sequence=(
+        StartCutscene(),
+        SetPath(
+            entityID=player,
+            flagName=Legend-cs8-flag4,
+            sequence=(
+                Rotate(
+                    entityID=player,
+                    targetID=demiurge,
+                    sequence=(
+                        SpawnEntity(
+                            entityID=fake-daayo,
+                            name=Daayo,
+                            blueprintJSON=daayo_4,
+                            faction=1,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=sukrat,
+                            forceCharacterTeleport=true,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=aristu,
+                            forceCharacterTeleport=true,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=prometheus,
+                            faction=5,
+                            name=Prometheus,
+                            blueprintJSON=Fatalizer,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=heracles,
+                            faction=3,
+                            name=Heracles,
+                            blueprintJSON=heracles,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=sisyphos,
+                            faction=3,
+                            name=Sisyphos,
+                            blueprintJSON=sisyphos,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=eleos,
+                            faction=1,
+                            name=Eleos,
+                            blueprintJSON=Slayer,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SetPath(
+                            entityID=fake-daayo,
+                            flagName=Legend-cs8-flag1
+                        ),
+
+                        SetPath(
+                            entityID=sukrat,
+                            flagName=Legend-cs8-flag3
+                        ),
+
+                        SetPath(
+                            entityID=aristu,
+                            flagName=Legend-cs8-flag5
+                        ),
+                        SetPath(
+                            entityID=prometheus,
+                            flagName=Legend-cs8-flag2
+                        ),
+                        SetPath(
+                            entityID=eleos,
+                            flagName=Legend-cs8-flag6
+                        ),
+                        SetPath(
+                            entityID=heracles,
+                            flagName=Legend-cs8-flag7
+                        ),
+                        SetPath(
+                            entityID=sisyphos,
+                            flagName=Legend-cs8-flag8
+                        ),
+                        Wait(time=5),
+                        ForceStartDialogue(dialogueID=Legend_cs8_p1_d)
+                    )
+                )
+            )
+        )
+    )
+)
 
 Text("Legend_cs8_d1", "My children.")
 Text("Legend_cs8_d2", "Are you the one who was sending us mysterious messages?")
@@ -1580,6 +1684,10 @@ D(
     Legend_cs8_d1,
     demiurge,
     Legend_cs8_p1_d,
+    ,
+    ,
+    ,
+    0.4,
     R(
         Legend_cs8_d2,
         D(
@@ -1603,7 +1711,7 @@ D(
                                             R(
                                                 Legend_cs8_d4,
                                                 D(
-                                                    Legend_cs8_d11
+                                                    Legend_cs8_d11,
                                                     R(
                                                         Legend_cs8_d4,
                                                         D(
@@ -1679,7 +1787,7 @@ Text("Legend_cs8_d27", "You mean — this is the first sector?")
 Text("Legend_cs8_d28", "Yes.")
 Text("Legend_cs8_d29", "What of the Standard Sectors, Demiurge? Far north of here?")
 Text("Legend_cs8_d30", "Those are the students’ creations. A testament to their ability...")
-Text("Legend_cs8_d31", "Will you help us free the ShellCores from the leaders’ grasp?")
+Text("Legend_cs8_d31", "Will you help us free the ShellCores there?")
 Text("Legend_cs8_d32", "I... cannot. These chains... are your will... to be free. I shall not impose further my will on my students...")
 Text("Legend_cs8_d33", "We’re at an impasse. This rat’s not going to come with us.")
 Text("Legend_cs8_d34", "Daayo... I understand politeness is irrational to you... but please... you’re speaking to all of creation itself.")
@@ -2101,7 +2209,7 @@ D(
             prometheus,
             R(
                 Legend_cs8_d4,
-                End()
+                Call(Legend_end)
             )
         )
     )

@@ -4,11 +4,78 @@ SectorTrigger(
     sectorName=The Core,
     sequence=(
         PassiveDialogue(entityID=player, text=The_Core_d1),
+        SpawnEntity(
+            entityID=demiurge,
+            name=Name Unknown,
+            flagName=Legend-cs8-flag13,
+            faction=5,
+            blueprintJSON=Newborn
+        ),
+        SpawnEntity
+        (
+            entityID=Legend_nanoscope_1,
+            name=Nanoscope,
+            faction=5,
+            blueprintJSON=Nanoscope,
+            flagName=Legend-cs8-flag12
+        ),  
+        SpawnEntity
+        (
+            entityID=Legend_nanoscope_2,
+            name=Nanoscope,
+            faction=5,
+            blueprintJSON=Nanoscope,
+            flagName=Legend-cs8-flag14
+        ),  
+        SpawnEntity
+        (
+            entityID=Legend_nanoscope_3,
+            name=Nanoscope,
+            faction=5,
+            blueprintJSON=Nanoscope,
+            flagName=Legend-cs8-flag15
+        ),  
+        SpawnEntity
+        (
+            entityID=Legend_nanoscope_4,
+            name=Nanoscope,
+            faction=5,
+            blueprintJSON=Nanoscope,
+            flagName=Legend-cs8-flag16
+        ),  
+        SpawnEntity
+        (
+            entityID=Legend_nanoscope_5,
+            name=Nanoscope,
+            faction=5,
+            blueprintJSON=Nanoscope,
+            flagName=Legend-cs8-flag17
+        ),
+        ForceTractor(
+            entityID=Legend_nanoscope_1,
+            targetEntityID=demiurge,
+        ),
+        ForceTractor(
+            entityID=Legend_nanoscope_2,
+            targetEntityID=demiurge,
+        ),
+        ForceTractor(
+            entityID=Legend_nanoscope_3,
+            targetEntityID=demiurge,
+        ),
+        ForceTractor(
+            entityID=Legend_nanoscope_4,
+            targetEntityID=demiurge,
+        ),
+        ForceTractor(
+            entityID=Legend_nanoscope_5,
+            targetEntityID=demiurge,
+        ),
         ConditionBlock(
             Time(
                 time=3,
                 sequence=(
-                    DevConsole(command=kill player)
+//                    DevConsole(command=kill player)
                 )
             ),
             EnterSector(
@@ -17,7 +84,28 @@ SectorTrigger(
                 sequence=(
                 )
             )
-        )
+        ),
+        Wait(time=0.5),
+        Rotate(
+            entityID=Legend_nanoscope_1,
+            targetID=demiurge,
+        ),
+        Rotate(
+            entityID=Legend_nanoscope_2,
+            targetID=demiurge,
+        ),
+        Rotate(
+            entityID=Legend_nanoscope_3,
+            targetID=demiurge,
+        ),
+        Rotate(
+            entityID=Legend_nanoscope_4,
+            targetID=demiurge,
+        ),
+        Rotate(
+            entityID=Legend_nanoscope_5,
+            targetID=demiurge,
+        ),
     )
 )
 
