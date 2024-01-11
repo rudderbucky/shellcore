@@ -1,8 +1,39 @@
 Text("The_Core_d1", "I have the feeling I am going to perish if I don't get out of here quick.")
 
+Function(
+    name=Core_truce,
+    sequence=(
+        SetFactionRelations(
+            factionID=0,
+            sum=59
+        ),
+        SetFactionRelations(
+            factionID=1,
+            sum=59
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Core,
+                invert=true,
+                sequence=(
+                    SetFactionRelations(
+                        factionID=0,
+                        sum=57
+                    ),
+                    SetFactionRelations(
+                        factionID=1,
+                        sum=58
+                    ),
+                )
+            )
+        ),
+    )
+)
+
 SectorTrigger(
     sectorName=The Core,
     sequence=(
+        Call(Core_truce),
         PassiveDialogue(entityID=player, text=The_Core_d1),
         SpawnEntity(
             entityID=demiurge,
