@@ -59,6 +59,13 @@ public class CoreScriptsDialogue : MonoBehaviour
         {
             throw new System.Exception("No dialogueID: " + GetValueScopeWithinLine(scope, charIndex));
         }
+
+        if (!dialogue.nodes.Exists(n => n.ID == 0))
+        {
+            throw new System.Exception($"Internal bug: dialogue without ID 0 found: {metadata.dialogueID}");
+        }
+
+
         data.dialogues[metadata.dialogueID] = dialogue;
         PlayerCore.Instance.dialogue = dialogue;
     }
@@ -319,9 +326,9 @@ public class CoreScriptsDialogue : MonoBehaviour
         }
         node.ID = ID;
         if (nextID == ID) nextID++;
-        if (allNodes.Exists(n => n.ID == ID) && forceReplacement)
+        if (allNodes.Exists(n => n.ID == ID && n != node) && forceReplacement)
         {
-            var index = allNodes.FindIndex(n => n.ID == ID);
+            var index = allNodes.FindIndex(n => n.ID == ID && n != node);
             allNodes[index] = SetNodeID(allNodes, allNodes[index], nextID);
 
             for (int i = 0; i < allNodes.Count; i++)
@@ -362,6 +369,7 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
             // force the top-level node to have ID 0
             node = SetNodeID(allNodes, node, nextID, true);
             skipSettingID = true;
+            forcedID = true;
         }
 
 

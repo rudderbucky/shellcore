@@ -30,7 +30,7 @@ public class Dialogue : ScriptableObject, IDialogueable
     public VendingBlueprint vendingBlueprint;
 
     [System.Serializable]
-    public struct Node
+    public class Node
     {
         public string buttonText;
         public string text;
