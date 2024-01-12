@@ -567,6 +567,9 @@ public class CoreScriptsSequence : MonoBehaviour
                             case "PinDown":
                                 PinDown.InflictionCosmetic(data, 0, false);
                                 break;
+                            case "Stealth":
+                                if (data.StealthStacks == 0) data.StealthStacks++;
+                                break;
                         }
                     }
                     
@@ -589,6 +592,10 @@ public class CoreScriptsSequence : MonoBehaviour
                                 {
                                     data.StopPinDownCosmetic();
                                 }
+                                break;
+
+                            case "Stealth":
+                                if (data.StealthStacks > 0) data.StealthStacks--;
                                 break;
                         }
                     }

@@ -11,7 +11,7 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=4),
+        SetVariable(name=$$$Legend_checkpoint, value=7),
         SetVariable(name=$$$Legend_pylonsMerged, value=2),
         SetVariable(name=$$$Legend_cradlePylon1, value=1),
         SetVariable(name=$$$Legend_cradlePylon2, value=1),
@@ -25,25 +25,58 @@ Function(
     name=Legend_start,
     sequence=(
         ConditionBlock(
-            
             Comparison(
                 val1=$$$Legend_checkpoint,
                 val2=8,
+                comp=Eq,
                 sequence=(
                     Call(Legend_post_cs7)
                 )
             ),
             Comparison(
                 val1=$$$Legend_checkpoint,
+                val2=7,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs6)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=6,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs5)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
                 val2=5,
+                comp=Eq,
                 sequence=(
                     Call(Legend_post_cs4)
                 )
             ),
-
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=4,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs3)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=3,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs2)
+                )
+            ),
             Comparison(
                 val1=$$$Legend_checkpoint,
                 val2=2,
+                comp=Eq,
                 sequence=(
                     Call(Legend_post_cs1)
                 )
@@ -51,6 +84,7 @@ Function(
             Comparison(
                 val1=$$$Legend_checkpoint,
                 val2=1,
+                comp=Eq,
                 sequence=(
                     Call(Legend_findCradle)
                 )
@@ -418,6 +452,10 @@ Function(
     name=Legend_cs2,
     sequence=(
         StartCutscene(),
+        StartInflictionCosmetic(
+            entityID=player,
+            type=Stealth
+        ),
         SpawnEntity(
             entityID=Legend_cs2_e1,
             assetID=core_gate,
@@ -542,6 +580,10 @@ Function(
         SetSectorColor(
             color=(103,103,103)
         ),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=Stealth
+        ),
         ForceStartDialogue(dialogueID=Legend_cs2_p2_d)
     )
 )
@@ -604,6 +646,10 @@ Function(
     name=Legend_cs3,
     sequence=(
         StartCutscene(),
+        StartInflictionCosmetic(
+            entityID=player,
+            type=Stealth
+        ),
         SpawnEntity(
             entityID=infectedleader,
             blueprintJSON=Infected Leader,
@@ -722,6 +768,10 @@ Function(
         SetSectorColor(
             color=(103,103,103)
         ),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=Stealth
+        ),
         ForceStartDialogue(dialogueID=Legend_cs3_p2_d)
     )
 )
@@ -823,6 +873,10 @@ Function(
     name=Legend_cs4,
     sequence=(
         StartCutscene(),
+        StartInflictionCosmetic(
+            entityID=player,
+            type=Stealth
+        ),
         SpawnEntity(
             entityID=pytha,
             name=Pytha,
@@ -936,6 +990,10 @@ Function(
         ),
         DeleteEntity(
             entityID=pytha,
+        ),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=Stealth
         ),
         FinishCameraPan(),
         SetSectorColor(
@@ -1053,6 +1111,7 @@ Function(
     name=Legend_post_cs4,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=5),
+        FinishCutscene(),
         ConditionBlock(
             EnterSector(
                 sectorName=Sector 520-6580,
@@ -1062,10 +1121,16 @@ Function(
                     SpawnEntity(entityID=sisyphos, blueprintJSON=sisyphos, name=Sisyphos, flagName=Legend-cs5-flag3, faction=3),
                     Rotate(entityID=sisyphos, angle=90),
                     SetInteraction(
-                        entityID=heracles, sequence=(Call(Legend_cs5))
+                        entityID=heracles, 
+                        sequence=(
+                            Call(Legend_cs5)
+                        )
                     ),
                     SetInteraction(
-                        entityID=sisyphos, sequence=(Call(Legend_cs5))
+                        entityID=sisyphos, 
+                        sequence=(
+                            Call(Legend_cs5)
+                        )
                     ),
                 )
             )
@@ -1087,7 +1152,7 @@ Function(
             sequence=(
                 Rotate(
                     entityID=player,
-                    flagName=Legend-cs5-flag1,
+                    targetID=Legend-cs5-flag1,
                     sequence=(
                         ForceStartDialogue(dialogueID=Legend_cs5_p1_d)
                     )
@@ -1137,14 +1202,12 @@ Function(
     name=Legend_cs5_p2,
     sequence=(
         SpawnEntity(
-            SpawnEntity(
-                entityID=prometheus,
-                faction=5,
-                blueprintJSON=Fatalizer,
-                flagName=Legend-cs4-flag1
-            ),
-            ForceStartDialogue(dialogueID=Legend_cs5_p2_d)
-        )
+            entityID=prometheus,
+            faction=5,
+            blueprintJSON=Fatalizer,
+            flagName=Legend-cs5-flag1
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs5_p2_d)
     )
 )
 
@@ -1350,7 +1413,12 @@ Function(
                         entityID=prometheus,
                         faction=5,
                         blueprintJSON=Fatalizer,
-                        flagName=Legend-cs6-flag1
+                        flagName=Legend-cs6-flag1,
+                        name=Prometheus,
+                    ),
+                    Rotate(
+                        entityID=prometheus,
+                        angle=180,
                     ),
                     SetInteraction(entityID=eleos, dialogueID=Legend_cs6_d),
                     SetInteraction(entityID=prometheus, dialogueID=Legend_cs6_d),
@@ -1369,7 +1437,7 @@ Function(
 )
 
 
-Text("Legend_cs6_d1", "You need not discuss your findings with us Prometheus... we're already well aware of who you are.")
+Text("Legend_cs6_d1", "You need not discuss your findings with us, Prometheus... we're already well aware of who you are.")
 Text("Legend_cs6_d2", "Is that a bad thing?")
 Text("Legend_cs6_d3", "No... we have discussed these revelations among each other, and the consensus is you are telling the truth. However...")
 Text("Legend_cs6_d4", "I can't abandon hope that the infection is a lie... That our leaders lied to us...")
@@ -1377,10 +1445,6 @@ Text("Legend_cs6_d5", "The leaders wanted exactly this response from you. If we 
 Text("Legend_cs6_d6", "I... uh... it's... hard to do such a thing...")
 Text("Legend_cs6_d7", "Please think about it. I hope to see you all at the meeting point south of the core sectors. As allies.")
 Text("Legend_cs6_d8", "...")
-Text("Legend_cs6_d9", "Thank you for all your work so far... but I have one last favor to ask from you. The Core is still hostile to us and we need to figure out why.")
-Text("Legend_cs6_d10", "Why do you think it is?")
-Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend trying to find it.")
-
 D(
     Legend_cs6_d1,
     eleos,
@@ -1410,7 +1474,7 @@ D(
                                             Legend_cs6_d7,
                                             R(
                                                 Legend_cs6_d8,
-                                                End()
+                                                Call(Legend_cs6_p2)
                                             )
                                         )
                                     )
@@ -1425,13 +1489,26 @@ D(
 )
 
 
+Text("Legend_cs6_d9", "Thank you for all your work so far... but I have one last favor to ask from you. The Core is still hostile to us and we need to figure out why.")
+Text("Legend_cs6_d10", "Why do you think it is?")
+Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend trying to find it.")
+
+
+Function(
+    name=Legend_cs6_p2,
+    sequence=(
+        Call(Legend_post_cs6)
+    )
+)
+
+
 Text("Legend_post_cs6_d1", "You have questions and certainly deserve answers. Please speak.")
-Text("Legend_post_cs6_d2", "The leader of the Infection told me we turned against them because we went to the core. Is that right?")
+Text("Legend_post_cs6_d2", "Were we at war because we went to the core?")
 Text("Legend_post_cs6_d3", "We will be going to the core so there is some truth to that idea. However, your old leader had also told our kind the converse story. It’s wise to abandon your colors, dear commander, for your turn of events may have occurred differently in previous cycles...")
 Text("Legend_post_cs6_d4", "I see.")
 Text("Legend_post_cs6_d5", "Perhaps the answer to this question would have been different... in another story. One we may never know the ending of...")
 Text("Legend_post_cs6_d6", "...")
-Text("Legend_post_cs6_d7", "This doesn’t make any sense. Why would the leaders be pitting our brethren against each other?")
+Text("Legend_post_cs6_d7", "Why would our leaders make us fight each other?")
 Text("Legend_post_cs6_d8", "The same reason they sent us here. To neutralize us as threats. The ones they can’t keep entertained with the war, they send here. They’re probably also using those who remain entertained as a line of defense.")
 Text("Legend_post_cs6_d9", "Against what?")
 Text("Legend_post_cs6_d10", "Us.")
@@ -1489,7 +1566,26 @@ Function(
             EnterSector(
                 sectorName=Sector 2050-6330,
                 sequence=(
-                    SetInteraction(entityID=prometheus, dialogueID=Legend_cs7_p1_d)
+                    SpawnEntity(
+                        entityID=prometheus,
+                        faction=5,
+                        blueprintJSON=Fatalizer,
+                        flagName=Legend-cs7-flag1,
+                        name=Prometheus,
+                    ),
+                    SpawnEntity(
+                        entityID=fake-daayo,
+                        name=Daayo,
+                        blueprintJSON=daayo_4,
+                        faction=1,
+                        flagName=Legend-cs7-flag2
+                    ),
+                    SetInteraction(
+                        entityID=prometheus, 
+                        sequence=(
+                            Call(Legend_cs7)
+                        )
+                    )
                 )
             )
         )
@@ -1498,6 +1594,46 @@ Function(
 
 //Legend-cs7-flag1
 
+SectorTrigger(
+    sectorName=Sector 2050-6330,
+    sequence=(
+        SetFactionRelations(
+            factionID=0,
+            sum=59
+        ),
+        SetFactionRelations(
+            factionID=1,
+            sum=59
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Sector 2050-6330,
+                invert=true,
+                sequence=(
+                    SetFactionRelations(
+                        factionID=0,
+                        sum=57
+                    ),
+                    SetFactionRelations(
+                        factionID=1,
+                        sum=58
+                    ),
+                )
+            )
+        ),
+    )
+)
+
+
+
+
+Function(
+    name=Legend_cs7,
+    sequence=(
+        StartCutscene(),
+        ForceStartDialogue(dialogueID=Legend_cs7_p1_d)
+    )
+)
 
 Text("Legend_cs7_d1", "Well met, commander. Let us hope the rest show up.")
 Text("Legend_cs7_d2", "We are here.")
@@ -1511,21 +1647,7 @@ D(
     Legend_cs7_p1_d,
     R(
         Legend_cs7_d5,
-        D(
-            Legend_cs7_d2,
-            sisyphos,
-            R(
-                Legend_cs7_d5,
-                D(
-                    Legend_cs7_d3,
-                    prometheus,
-                    R(
-                        Legend_cs7_d5,
-                        
-                    )
-                )
-            )
-        )
+        Call(Legend_cs7_p2)
     )
 )
 
@@ -1533,20 +1655,96 @@ Function(
     name=Legend_cs7_p2,
     sequence=(
         SpawnEntity(
+            entityID=heracles,
+            faction=3,
+            name=Heracles,
+            blueprintJSON=heracles,
+            flagName=Legend-cs7-flag12
+        ),
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Legend-cs7-flag12
+        ),
+        SpawnEntity(
+            entityID=heavensgate,
+            blueprintJSON=heavensgate,
+            flagName=Legend-cs7-flag12,
+            name=Heavensgate,
+            faction=4
+        ),
+        SpawnEntity(
+            entityID=starprism,
+            blueprintJSON=starprism,
+            flagName=Legend-cs7-flag12,
+            name=Starprism,
+            faction=3
+        ),
+        SetPath(
+            entityID=heracles,
+            flagName=Legend-cs7-flag3,
+        ),
+        SetPath(
+            entityID=sisyphos,
+            flagName=Legend-cs7-flag5,
+            sequence=(
+                ForceStartDialogue(dialogueID=Legend_cs7_p2_d)
+            )
+        ),
+        SetPath(
+            entityID=heavensgate,
+            flagName=Legend-cs7-flag6,
+        ),
+        SetPath(
+            entityID=starprism,
+            flagName=Legend-cs7-flag7,
+        ),
+    )
+)
+
+D(
+    Legend_cs7_d2,
+    sisyphos,
+    Legend_cs7_p2_d,
+    R(
+        Legend_cs7_d5,
+        D(
+            Legend_cs7_d3,
+            prometheus,
+            R(
+                Legend_cs7_d5,
+                Call(Legend_cs7_p3)
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs7_p3,
+    sequence=(
+        SpawnEntity(
             entityID=eleos,
-            blueprintJSON=eleos,
-            flagName=Legend-cs7-flag4,
+            blueprintJSON=Slayer,
+            flagName=Legend-cs7-flag12,
             faction=1,
         ),
-        Wait(time=1),
-        ForceStartDialogue(dialogueID=Legend_cs7_p2_d)
+        SetPath(
+            entityID=eleos,
+            flagName=Legend-cs7-flag4,
+            sequence=(
+                Wait(time=1),
+                ForceStartDialogue(dialogueID=Legend_cs7_p3_d)
+            )
+        )
     )
 )
 
 D(
     Legend_cs7_d4,
     eleos,
-    Legend_cs7_p2_d,
+    Legend_cs7_p3_d,
     R(
         Legend_cs7_d5,
         D(
@@ -1571,7 +1769,13 @@ Function(
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=8),
         SetVariable(name=$$$Legend_coreSafe, value=1),
-        SetInteraction(entityID=demiurge, sequence=(Call(Legend_cs8)))
+        FinishCutscene(),
+        SetInteraction(
+            entityID=demiurge, 
+            sequence=(
+                Call(Legend_cs8)
+            )
+        )
     )
 )
 

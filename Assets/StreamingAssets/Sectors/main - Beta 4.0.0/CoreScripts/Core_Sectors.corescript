@@ -34,7 +34,6 @@ SectorTrigger(
     sectorName=The Core,
     sequence=(
         Call(Core_truce),
-        PassiveDialogue(entityID=player, text=The_Core_d1),
         SpawnEntity
         (
             entityID=Legend_nanoscope_1,
@@ -80,6 +79,7 @@ SectorTrigger(
             Time(
                 time=3,
                 sequence=(
+                    PassiveDialogue(entityID=player, text=The_Core_d1),
                     ConditionBlock(
                         Comparison(
                             val1=$$$Legend_coreSafe,
