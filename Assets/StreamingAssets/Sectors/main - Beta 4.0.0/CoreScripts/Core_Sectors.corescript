@@ -3,18 +3,61 @@ Text("The_Core_d1", "I have the feeling I am going to perish if I don't get out 
 Function(
     name=Core_truce,
     sequence=(
-        SetFactionRelations(
-            factionID=0,
-            sum=59
-        ),
-        SetFactionRelations(
-            factionID=1,
-            sum=59
-        ),
+        Call(Core_incrementTruce),
         ConditionBlock(
             EnterSector(
                 sectorName=The Core,
                 invert=true,
+                sequence=(
+                    Call(Core_decrementTruce),
+                )
+            )
+        ),
+    )
+)
+
+Function(
+    name=Core_incrementTruce,
+    sequence=(
+        SetVariable(name=$$Core_truceCount, value=0, onlyIfNull=true),
+        AddIntValues(val1=$$Core_truceCount, val2=1, name=$$Core_truceCount),
+        Call(Core_truceCalculation)
+    )
+)
+
+Function(
+    name=Core_decrementTruce,
+    sequence=(
+        SetVariable(name=$$Core_truceCount, value=0, onlyIfNull=true),
+        AddIntValues(val1=$$Core_truceCount, val2=-1, name=$$Core_truceCount),
+        Call(Core_truceCalculation)
+    )
+)
+
+
+Function(
+    name=Core_truceCalculation,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Core_truceCount,
+                val2=0,
+                comp=Gt,
+                sequence=(
+                    SetFactionRelations(
+                        factionID=0,
+                        sum=59
+                    ),
+                    SetFactionRelations(
+                        factionID=1,
+                        sum=59
+                    ),
+                )
+            ),
+            Comparison(
+                val1=$$Core_truceCount,
+                val2=0,
+                comp=Eq,
                 sequence=(
                     SetFactionRelations(
                         factionID=0,
@@ -26,9 +69,10 @@ Function(
                     ),
                 )
             )
-        ),
+        )
     )
 )
+
 
 SectorTrigger(
     sectorName=The Core,
@@ -76,10 +120,28 @@ SectorTrigger(
         ),
 
         ConditionBlock(
+            Comparison(
+                val1=$$$Legend_coreSafe,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    PassiveDialogue(entityID=player, text=The_Core_d1),
+                    DevConsole(command=kill player)
+                )
+            ), 
+            Comparison(
+                val1=$$$Legend_coreSafe,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                )
+            ), 
+        ),  
+
+        ConditionBlock(
             Time(
                 time=3,
                 sequence=(
-                    PassiveDialogue(entityID=player, text=The_Core_d1),
                     ConditionBlock(
                         Comparison(
                             val1=$$$Legend_coreSafe,
@@ -88,8 +150,16 @@ SectorTrigger(
                             sequence=(
                                 DevConsole(command=kill player)
                             )
-                        )   
-                    )                 
+                        ),
+                        Comparison(
+                            val1=$$$Legend_coreSafe,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+
+                            )
+                        )  
+                    ),          
                 )
             ),
             EnterSector(

@@ -1597,27 +1597,13 @@ Function(
 SectorTrigger(
     sectorName=Sector 2050-6330,
     sequence=(
-        SetFactionRelations(
-            factionID=0,
-            sum=59
-        ),
-        SetFactionRelations(
-            factionID=1,
-            sum=59
-        ),
+        Call(Core_incrementTruce),
         ConditionBlock(
             EnterSector(
                 sectorName=Sector 2050-6330,
                 invert=true,
                 sequence=(
-                    SetFactionRelations(
-                        factionID=0,
-                        sum=57
-                    ),
-                    SetFactionRelations(
-                        factionID=1,
-                        sum=58
-                    ),
+                    Call(Core_decrementTruce)
                 )
             )
         ),
@@ -1631,6 +1617,10 @@ Function(
     name=Legend_cs7,
     sequence=(
         StartCutscene(),
+        Rotate(
+            entityID=fake-daayo,
+            targetID=prometheus
+        ),
         ForceStartDialogue(dialogueID=Legend_cs7_p1_d)
     )
 )
@@ -1685,21 +1675,43 @@ Function(
         SetPath(
             entityID=heracles,
             flagName=Legend-cs7-flag3,
+            sequence=(
+                Rotate(
+                    entityID=heracles,
+                    targetID=prometheus
+                )
+            )
         ),
         SetPath(
             entityID=sisyphos,
             flagName=Legend-cs7-flag5,
             sequence=(
+                Rotate(
+                    entityID=sisyphos,
+                    targetID=prometheus,
+                ),
                 ForceStartDialogue(dialogueID=Legend_cs7_p2_d)
             )
         ),
         SetPath(
             entityID=heavensgate,
             flagName=Legend-cs7-flag6,
+            sequence=(
+                Rotate(
+                    entityID=heavensgate,
+                    targetID=prometheus,
+                ),
+            )
         ),
         SetPath(
             entityID=starprism,
             flagName=Legend-cs7-flag7,
+            sequence=(
+                Rotate(
+                    entityID=starprism,
+                    targetID=prometheus,
+                ),
+            )
         ),
     )
 )
@@ -1734,6 +1746,10 @@ Function(
             entityID=eleos,
             flagName=Legend-cs7-flag4,
             sequence=(
+                Rotate(
+                    entityID=eleos,
+                    targetID=prometheus,
+                ),
                 Wait(time=1),
                 ForceStartDialogue(dialogueID=Legend_cs7_p3_d)
             )
@@ -1770,6 +1786,7 @@ Function(
         SetVariable(name=$$$Legend_checkpoint, value=8),
         SetVariable(name=$$$Legend_coreSafe, value=1),
         FinishCutscene(),
+        ClearInteraction(entityID=prometheus),
         SetInteraction(
             entityID=demiurge, 
             sequence=(
@@ -2061,28 +2078,29 @@ Function(
     )
 )
 
-Text("Legend_cs8_d21", "Say, do you have a name?")
-Text("Legend_cs8_d22", "Names... a construct by the students. Under me, there were no names... no language.")
-Text("Legend_cs8_d23", "For the sake of simplicity... you are the creator, so we shall call you Demiurge.")
-Text("Legend_cs8_d24", "If that is your will...")
-Text("Legend_cs8_d25", "Demiurge... we plan to go back. We believe two ShellCores are holding our kind hostage.")
+Text("Legend_cs8_d25", "Creator... we plan to go back. We believe two ShellCores are holding our kind hostage.")
 Text("Legend_cs8_d26", "This is ‘back’. You are at genesis...")
 Text("Legend_cs8_d27", "You mean — this is the first sector?")
 Text("Legend_cs8_d28", "Yes.")
-Text("Legend_cs8_d29", "What of the Standard Sectors, Demiurge? Far north of here?")
+Text("Legend_cs8_d29", "What of the Standard Sectors? Far north of here?")
 Text("Legend_cs8_d30", "Those are the students’ creations. A testament to their ability...")
 Text("Legend_cs8_d31", "Will you help us free the ShellCores there?")
 Text("Legend_cs8_d32", "I... cannot. These chains... are your will... to be free. I shall not impose further my will on my students...")
 Text("Legend_cs8_d33", "We’re at an impasse. This rat’s not going to come with us.")
 Text("Legend_cs8_d34", "Daayo... I understand politeness is irrational to you... but please... you’re speaking to all of creation itself.")
+
 D(
-    Legend_cs8_d21,
+    Legend_cs8_d25,
     prometheus,
     Legend_cs8_p2_d,
+    ,
+    ,
+    ,
+    1,
     R(
         Legend_cs8_d4,
         D(
-            Legend_cs8_d22,
+            Legend_cs8_d26,
             demiurge,
             ,
             ,
@@ -2092,17 +2110,17 @@ D(
             R(
                 Legend_cs8_d4,
                 D(
-                    Legend_cs8_d23,
-                    prometheus,
+                    Legend_cs8_d27,
+                    aristu,
                     ,
                     ,
                     ,
                     ,
-                    1,                    
+                    1,
                     R(
                         Legend_cs8_d4,
                         D(
-                            Legend_cs8_d24,
+                            Legend_cs8_d28,
                             demiurge,
                             ,
                             ,
@@ -2112,8 +2130,8 @@ D(
                             R(
                                 Legend_cs8_d4,
                                 D(
-                                    Legend_cs8_d25,
-                                    prometheus,
+                                    Legend_cs8_d29,
+                                    heracles,
                                     ,
                                     ,
                                     ,
@@ -2122,7 +2140,7 @@ D(
                                     R(
                                         Legend_cs8_d4,
                                         D(
-                                            Legend_cs8_d26,
+                                            Legend_cs8_d30,
                                             demiurge,
                                             ,
                                             ,
@@ -2130,75 +2148,27 @@ D(
                                             ,
                                             0.4,
                                             R(
-                                                Legend_cs8_d4,
+                                                Legend_cs8_d31,
                                                 D(
-                                                    Legend_cs8_d27,
-                                                    aristu,
-                                                    ,
-                                                    ,
-                                                    ,
-                                                    ,
-                                                    1,
+                                                    Legend_cs8_d32,
                                                     R(
                                                         Legend_cs8_d4,
                                                         D(
-                                                            Legend_cs8_d28,
-                                                            demiurge,
+                                                            Legend_cs8_d33,
+                                                            fake-daayo,
                                                             ,
                                                             ,
                                                             ,
                                                             ,
-                                                            0.4,
+                                                            1,
                                                             R(
                                                                 Legend_cs8_d4,
                                                                 D(
-                                                                    Legend_cs8_d29,
-                                                                    heracles,
-                                                                    ,
-                                                                    ,
-                                                                    ,
-                                                                    ,
-                                                                    1,
+                                                                    Legend_cs8_d34,
+                                                                    eleos,
                                                                     R(
                                                                         Legend_cs8_d4,
-                                                                        D(
-                                                                            Legend_cs8_d30,
-                                                                            demiurge,
-                                                                            ,
-                                                                            ,
-                                                                            ,
-                                                                            ,
-                                                                            0.4,
-                                                                            R(
-                                                                                Legend_cs8_d31,
-                                                                                D(
-                                                                                    Legend_cs8_d32,
-                                                                                    R(
-                                                                                        Legend_cs8_d4,
-                                                                                        D(
-                                                                                            Legend_cs8_d33,
-                                                                                            fake-daayo,
-                                                                                            ,
-                                                                                            ,
-                                                                                            ,
-                                                                                            ,
-                                                                                            1,
-                                                                                            R(
-                                                                                                Legend_cs8_d4,
-                                                                                                D(
-                                                                                                    Legend_cs8_d34,
-                                                                                                    eleos,
-                                                                                                    R(
-                                                                                                        Legend_cs8_d4,
-                                                                                                        Call(Legend_cs8_p3)
-                                                                                                    )
-                                                                                                )
-                                                                                            )
-                                                                                        )
-                                                                                    )
-                                                                                )
-                                                                            )
-                                                                        )
+                                                                        Call(Legend_cs8_p3)
                                                                     )
                                                                 )
                                                             )
@@ -2213,11 +2183,11 @@ D(
                         )
                     )
                 )
-                
             )
         )
     )
 )
+
 
 Function(
     name=Legend_cs8_p3,
@@ -2249,18 +2219,25 @@ Function(
     name=Legend_cs8_p4,
     sequence=(
         Wait(time=1),
-        ForceStartDialogue(dialogueID=Legend_cs8_p4_d)
+        Rotate(
+            entityID=fake-daayo,
+            targetID=player,
+            sequence=(
+                ForceStartDialogue(dialogueID=Legend_cs8_p4_d)
+
+            )
+        )
     )
 )
 
 Text("Legend_cs8_d36", "I mean... who is, really?")
-Text("Legend_cs8_d37", "You must stop them, Demiurge. They are building something to destroy you, I am sure of it. If you do not help us... they will enslave us for eternity.")
+Text("Legend_cs8_d37", "You must stop them, creator. They are building something to destroy you, I am sure of it. If you do not help us... they will enslave us for eternity.")
 Text("Legend_cs8_d38", "I cannot... impede their will anymore. I only wish... for their forgiveness...")
 Text("Legend_cs8_d39", "What about our will, though?")
-Text("Legend_cs8_d40", "Our will to finish this story. Please, O Demiurge... Help us.")
+Text("Legend_cs8_d40", "Our will to finish this story. Please... Help us.")
 Text("Legend_cs8_d41", "Your will...")
-Text("Legend_cs8_d42", "Demiurge, you sent us those transmissions... if you’re unwilling to help us, why did you even bring us here?")
-Text("Legend_cs8_d43", "These chains represent my inability to grasp your wills... but... the wills collide.")
+Text("Legend_cs8_d42", "You sent us those transmissions... if you’re unwilling to help us, why did you even bring us here?")
+Text("Legend_cs8_d43", "These beams represent my inability to grasp your wills... but... the wills collide.")
 Text("Legend_cs8_d44", "You told me we will bring a peace to all creation.")
 Text("Legend_cs8_d45", "That’s right. You clearly want us to go and end this tirade of colors.")
 Text("Legend_cs8_d46", "Peace will arrive again when the wills synthesize, but how they do I know not. I shall not alter the wills with mine.")
@@ -2536,7 +2513,7 @@ Function(
 
 Text("Legend_cs8_d60", "It... it can't be...")
 Text("Legend_cs8_d61", "What do we do now?")
-Text("Legend_cs8_d62", "There is no way to the Standard Sectors if we cannot get the Demiurge to fix the jump gate back... I fear we are doomed...")
+Text("Legend_cs8_d62", "There is no way to the Standard Sectors if we cannot get the creator to fix the jump gate back... I fear we are doomed...")
 D(
     Legend_cs8_d60,
     prometheus,

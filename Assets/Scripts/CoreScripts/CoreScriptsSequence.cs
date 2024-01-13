@@ -349,7 +349,8 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.SetVariable:
                     var variableName = GetArgument(inst.arguments, "name", true);
                     var variableValue = GetArgument(inst.arguments, "value");
-                    Variable.SetVariable(variableName, variableValue);
+                    var onlyIfNull = GetArgument(inst.arguments, "onlyIfNull") == "true";
+                    Variable.SetVariable(variableName, variableValue, onlyIfNull);
                     break;
                 case InstructionCommand.AddIntValues:
                     var val1 = int.Parse(GetArgument(inst.arguments, "val1"));
