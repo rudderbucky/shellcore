@@ -340,7 +340,8 @@ public class CoreScriptsSequence : MonoBehaviour
                         overrideFac,
                         GetArgument(inst.arguments, "name"),
                         GetArgument(inst.arguments, "assetID"),
-                        GetArgument(inst.arguments, "stopIfIDExists") == "true");
+                        GetArgument(inst.arguments, "stopIfIDExists") == "true",
+                        GetArgument(inst.arguments, "overrideTractorTarget") == "true");
                     break;
                 case InstructionCommand.Log:
                     Debug.LogWarning(GetArgument(inst.arguments, "message"));
@@ -348,7 +349,8 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.SetVariable:
                     var variableName = GetArgument(inst.arguments, "name", true);
                     var variableValue = GetArgument(inst.arguments, "value");
-                    Variable.SetVariable(variableName, variableValue);
+                    var onlyIfNull = GetArgument(inst.arguments, "onlyIfNull") == "true";
+                    Variable.SetVariable(variableName, variableValue, onlyIfNull);
                     break;
                 case InstructionCommand.AddIntValues:
                     var val1 = int.Parse(GetArgument(inst.arguments, "val1"));
@@ -372,8 +374,9 @@ public class CoreScriptsSequence : MonoBehaviour
                     var rotateWhileMoving = GetArgument(inst.arguments, "rotateWhileMoving") != "false";
                     var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"), CultureInfo.InvariantCulture);
                     flagName = GetArgument(inst.arguments, "flagName");
+                    var targetEntityID = GetArgument(inst.arguments, "targetEntityID");
 
-                    Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
+                    Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, targetEntityID, inst.sequence, context);
                     break;
                 case InstructionCommand.Rotate:
                     entityID = GetArgument(inst.arguments, "entityID");
@@ -565,6 +568,9 @@ public class CoreScriptsSequence : MonoBehaviour
                             case "PinDown":
                                 PinDown.InflictionCosmetic(data, 0, false);
                                 break;
+                            case "Stealth":
+                                if (data.StealthStacks == 0) data.StealthStacks++;
+                                break;
                         }
                     }
                     
@@ -587,6 +593,10 @@ public class CoreScriptsSequence : MonoBehaviour
                                 {
                                     data.StopPinDownCosmetic();
                                 }
+                                break;
+
+                            case "Stealth":
+                                if (data.StealthStacks > 0) data.StealthStacks--;
                                 break;
                         }
                     }
@@ -649,10 +659,6 @@ public class CoreScriptsSequence : MonoBehaviour
         var seq = new Sequence();
         seq.instructions = new List<Instruction>();
 
-        List<string> stx = null;
-        bool skipToComma = false;
-        int brax = 0;
-
         List<string> standardInstructions = new List<string>();
 
         foreach (string instType in Enum.GetNames(typeof(InstructionCommand)))
@@ -664,11 +670,10 @@ public class CoreScriptsSequence : MonoBehaviour
         }
 
         line = GetValueScopeWithinLine(line, index);
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             if (standardInstructions.Exists(s => lineSubstr.StartsWith(s)))
             {
                 seq.instructions.Add(ParseInstruction(i, line, blocks));
@@ -684,7 +689,7 @@ public class CoreScriptsSequence : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("ConditionBlock"))
             {
-                var b = CoreScriptsCondition.ParseConditionBlock(i, line, blocks);
+                var b = CoreScriptsCondition.ParseConditionBlock(0, lineSubstr, blocks);
                 blocks.Add(b.ID, b);
                 var inst = new Instruction();
                 inst.command = InstructionCommand.ConditionBlock;
@@ -749,17 +754,11 @@ public class CoreScriptsSequence : MonoBehaviour
         var inst = new Instruction();
         Enum.TryParse<InstructionCommand>(substr, out inst.command);
         inst.arguments = "";
-        bool skipToComma = true;
-        List<string> stx = null;
-        int brax = 0;
-
         line = GetValueScopeWithinLine(line, index);
-        
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
 
             var name = "";
             var val = "";
@@ -848,17 +847,17 @@ public class CoreScriptsSequence : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("<Change Character Blueprint Node> Cannot force reconstruct since entity does not exist, traversing");
+                    Debug.Log("<Change Character Blueprint Node> Cannot force reconstruct since entity does not exist, traversing");
                 }
             }
         }
         else
         {
-            Debug.LogWarning("<Change Character Blueprint Node> Character not found, traversing");
+            Debug.Log("<Change Character Blueprint Node> Character not found, traversing");
         }
     }
 
-    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID, bool stopIfIDExists)
+    private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, int overrideFaction, string name, string assetID, bool stopIfIDExists, bool isStandardTractorTarget)
     {
         if (stopIfIDExists)
         {
@@ -893,6 +892,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 ID = entityID,
                 assetID = assetID,
                 blueprintJSON = blueprintJSON,
+                isStandardTractorTarget = isStandardTractorTarget
             };
             
             SectorManager.instance.SpawnAsset(entityData);

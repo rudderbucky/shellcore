@@ -544,6 +544,9 @@ public class ShellPart : MonoBehaviour
             {
                 block.SetFloat("_Min", 0.07F);
             }
+            if (!detachible)
+                block.SetFloat("_Symmetry", 0);
+            else block.SetFloat("_Symmetry", 1);
         }
         if (shaderMaterials != null && shaderMaterials.Count > 0 && block != null) spriteRenderer.SetPropertyBlock(block);
     }

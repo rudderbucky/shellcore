@@ -53,20 +53,12 @@ public class CoreScriptsCondition : MonoBehaviour
     public static ConditionBlock ParseConditionBlock(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
         var block = CreateConditionBlock();
-        bool skipToComma = false;
-        int brax = 0;
-        List<string> stx = new List<string>()
-        {
-            "ConditionBlock"
-        };
 
         int condIndex = 0;
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        stx = null;
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "ConditionBlock(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             var condition = ParseCondition(i, line, condIndex, blocks);
             block.conditions.Add(condition);
             condIndex++;
@@ -77,21 +69,16 @@ public class CoreScriptsCondition : MonoBehaviour
     private static Condition ParseCondition(int index, string line, int condIndex, Dictionary<int, ConditionBlock> blocks)
     {
         var cond = new Condition();
-        bool skipToComma = false;
-        int brax = 0;
-        List<string> stx = null;
-        skipToComma = true;
 
         var substr = line.Substring(index).Split("(")[0].Trim();
         
         Enum.TryParse<ConditionType>(substr, out cond.type);
         
         line = GetValueScopeWithinLine(line, index);
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("sequence=")) 
             {
                 cond.sequence = ParseSequence(i, line, blocks);

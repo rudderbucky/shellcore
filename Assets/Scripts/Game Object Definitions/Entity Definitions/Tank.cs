@@ -64,6 +64,7 @@ public class Tank : GroundCraft, IOwnable
     protected override void Awake()
     {
         base.Awake();
+        isStandardTractorTarget = true;
         if (!AIData.tanks.Contains(this))
         {
             AIData.tanks.Add(this);

@@ -274,7 +274,10 @@ public class CoreScriptsManager : MonoBehaviour
         };
 
         var current = sectorTriggers.Find(c => c.sectorName == SectorManager.instance.current.sectorName);
-        if (current != null) CoreScriptsSequence.RunSequence(current.sequence, current);
+        if (current != null)
+        {
+            CoreScriptsSequence.RunSequence(current.sequence, current);
+        } 
 
     }
 
@@ -316,6 +319,11 @@ public class CoreScriptsManager : MonoBehaviour
         }
 
         return data;
+    }
+
+    public static int GetIndexAfter(string line, string matcher)
+    {
+        return line.IndexOf(matcher)+matcher.Length;
     }
 
     void ParsePass2(string[] lines, ScopeParseData data)
@@ -430,78 +438,34 @@ public class CoreScriptsManager : MonoBehaviour
         return stringScopes;
     }
 
-    // if strings is null it treats every character as valid for comma skipping purposes
-    public static int GetNextOccurenceInScope(int lastOccurrence, string scope, List<string> strings, 
-        ref int brackets, ref bool skipToComma, char opBracket, char clBracket)
+    private static int AttemptReturn(int cnt, int lastOccurrence, string scope)
     {
-        // TODO: Optimize by turning string list into a dict, and then using max length strings as keys
+        if (lastOccurrence == cnt) throw new System.Exception(scope.Substring(cnt));
+        return cnt;
+    }
+
+    // if strings is null it treats every character as valid for comma skipping purposes
+    public static int GetNextOccurenceInScope(int lastOccurrence, string scope, bool debug=false)
+    {
         var cnt = lastOccurrence;
-
-        // find the first bracket
-        while (cnt < scope.Length && scope[cnt] != opBracket && brackets == 0) cnt++;
-        if (cnt < scope.Length) cnt++;
-        if (brackets == 0)
+        if (debug) Debug.LogWarning(scope.Substring(cnt));
+        int brackets = 0;
+        for (int i = cnt; i < scope.Length; i++)
         {
-            brackets = 1;
-            while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt])) cnt++;
-            return cnt;
+            if (scope[i] == '(') brackets++;
+            if (scope[i] == ')') brackets--;
+            if (scope[i] == ',' && debug)
+            {
+                Debug.LogWarning(scope.Substring(i));
+            }
+            if (brackets == 0 && scope[i] == ',')
+            {
+                if (debug) Debug.LogWarning(scope.Substring(i+1));
+                return AttemptReturn(i+1, lastOccurrence, scope);
+            }
         }
 
-        if (skipToComma && cnt <= scope.Length && cnt-1 >= 0 && scope[cnt-1] == ',') cnt--;
-        while (skipToComma && cnt < scope.Length && (brackets > 1 || scope[cnt] != ',')) 
-        {
-            if (scope[cnt] == opBracket)
-            {
-                brackets++;
-            }
-            else if (scope[cnt] == clBracket)
-            {
-                brackets--;
-            }
-
-            cnt++;
-        }
-        if (skipToComma) 
-        {
-            cnt++;
-            while (cnt < scope.Length && char.IsWhiteSpace(scope[cnt]))
-            {
-                cnt++;
-            }
-            if (cnt < scope.Length && scope[cnt] == ')') 
-            {
-                return scope.Length;
-            }
-        }
-        skipToComma = false;
-
-
-        while(cnt < scope.Length && brackets > 0)
-        {
-            if (scope[cnt] == opBracket)
-            {
-                brackets++;
-            }
-            else if (scope[cnt] == clBracket)
-            {
-                brackets--;
-            }
-
-            if (brackets > 1 || char.IsWhiteSpace(scope[cnt]))
-            {
-                cnt++;
-                continue;
-            }
-
-            if (strings != null)
-            {
-                var x = strings.Find(s => scope.Substring(cnt).StartsWith(s));
-                if (x != null) return cnt;
-            }
-            else return cnt;
-            cnt++;
-        }
-
+        if (debug) Debug.LogWarning("TEST");
         return scope.Length;
     }
 

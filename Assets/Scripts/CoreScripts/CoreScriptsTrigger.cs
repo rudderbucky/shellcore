@@ -20,7 +20,7 @@ public class CoreScriptsTrigger : MonoBehaviour
         "episode"
     };
 
-        private static readonly List<string> requiredSectorTriggerArguments = new List<string>()
+    private static readonly List<string> requiredSectorTriggerArguments = new List<string>()
     {
         "sectorName"
     };
@@ -30,16 +30,12 @@ public class CoreScriptsTrigger : MonoBehaviour
         var trigger = new Context();
         trigger.prerequisites = new List<string>();
         trigger.type = type;
-        bool skipToComma = true;
-        int brax = 0;
-        List<string> stx = null;
         var fakeArgString = "";
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "Trigger(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("sequence=")) 
             {
                 trigger.sequence = ParseSequence(i, line, blocks);
@@ -85,6 +81,7 @@ public class CoreScriptsTrigger : MonoBehaviour
             default:
                 break;
         }
+
         return trigger;
     }
 }
