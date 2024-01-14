@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="0,0" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Adjust Party Member" ID="-2094786132" type="PartyMemberAvailability" pos="111.7729,-204.3187">
+			<Port ID="-21093316" name="input" dynamic="False" />
+			<Port ID="1471511694" name="output" dynamic="False" />
+			<Variable name="entityID" refID="-560246171" />
+			<boolean name="disableMember">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="1650064560" type="LoadSectorNode" pos="-446.2271,-164.3187">
+			<Port ID="-203941050" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1886157392" />
+		</Node>
+		<Node name="Party Manager" ID="1608475064" type="PartyManagementNode" pos="-185.2271,-64.31873">
+			<Port ID="-1330850592" name="input" dynamic="False" />
+			<Port ID="161754418" name="output" dynamic="False" />
+			<boolean name="clearParty">false</boolean>
+			<Variable name="entityID" refID="-560246171" />
+			<boolean name="deletePartyMembers">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-21093316" port2ID="161754418" />
+		<Connection port1ID="-203941050" port2ID="-1330850592" />
+	</Connections>
+	<Objects>
+		<Object refID="-560246171" type="System.String">
+			<string>Tester</string>
+		</Object>
+		<Object refID="-1886157392" type="System.String">
+			<string>TestSector</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
