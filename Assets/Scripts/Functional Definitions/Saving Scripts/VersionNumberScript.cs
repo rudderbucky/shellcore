@@ -37,6 +37,9 @@ public class VersionNumberScript : MonoBehaviour
             string trc = "TACTICAL RETRO COMBAT.\n";
             switch (episode)
             {
+                case 3:
+                    instance.episodeText.text = $"{trc}<color=#5C89E6>THE FINAL EPISODE</color>";
+                    break;
                 case 2:
                     instance.episodeText.text = $"{trc}<color=#daa620>EPISODE 3: ABANDONED</color>";
                     break;
