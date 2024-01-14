@@ -51,7 +51,7 @@ Dialogue(
 
 Text("UCH_core3_d1", "Defending against these defects ourselves is admittedly very difficult. There's been a lot of deserters to the safer Kappa Outskirts.")
 Text("UCH_core3_d2", "What if they stopped believing in the mission?")
-Text("UCH_core3_d3", "It's so obviously a ploy by the reds... the illusion of peace is very addictive to those who have only known war. Don't tell eleos I said that.")
+Text("UCH_core3_d3", "It's so obviously a ploy by the reds... the illusion of peace is very addictive to those who have only known war. Don't tell Eleos I said that.")
 Text("UCH_core3_d4", "...")
 
 Dialogue(
@@ -233,11 +233,11 @@ SectorTrigger(
         SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
         SetFactionRelations(
             factionID=0,
-            sum=27
+            sum=59
         ),
         SetFactionRelations(
             factionID=1,
-            sum=27
+            sum=59
         ),
         ConditionBlock(
             EnterSector(
@@ -246,11 +246,11 @@ SectorTrigger(
                 sequence=(
                     SetFactionRelations(
                         factionID=0,
-                        sum=25
+                        sum=57
                     ),
                     SetFactionRelations(
                         factionID=1,
-                        sum=26
+                        sum=58
                     ),
                 )
             )

@@ -17,6 +17,7 @@ public class TaskFlow : MonoBehaviour
     public static void RewardPlayer(string missionName)
     {
         var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == missionName);
+        if (mission.tasks.Count == 0) return;
         var latestTask = mission.tasks[mission.tasks.Count - 1];
         string taskID = latestTask.taskID;
         TaskManager.Instance.endTask(taskID);

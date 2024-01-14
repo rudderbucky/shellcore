@@ -13,28 +13,15 @@ public class CoreScriptsTask : MonoBehaviour
 
     private static Task ParseTaskHelper(int index, string line, Dictionary<string, string> localMap)
     {
-        List<string> stx = new List<string>()
-        {
-            "taskID=",
-            "objectives=",
-            "creditReward=",
-            "reputationReward=",
-            "shardReward=",
-            "partID=",
-            "abilityID=",
-            "tier=",
-        };
-        bool skipToComma = false;
-        int brax = 0;
-
         var task = new Task();
         task.useLocalMap = true;
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+
+        index = GetIndexAfter(line, "Task(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
+
             var name = "";
             var val = "";
             CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);

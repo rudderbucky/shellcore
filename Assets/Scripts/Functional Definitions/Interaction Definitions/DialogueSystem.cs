@@ -327,7 +327,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             if (speaker && remastered)
             {
                 DialogueViewTransitionIn(speaker);
-                display.AssignDisplay(speaker.blueprint, null, speaker.faction.factionID);
+                AssignRadioDisplay(speaker);
                 window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = speaker.blueprint.entityName;
             }
             else
@@ -842,6 +842,18 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         builder.Initialize(BuilderMode.Workshop);
     }
 
+    private void AssignRadioDisplay(Entity ent)
+    {
+        var disp = window.transform.Find("Background/RadioVisual/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>();
+        if (!disp) return;
+        if (!ent)
+        {
+            disp.ClearDisplay();
+            window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = "Unknown Speaker";
+
+        }
+        else disp.AssignDisplay(ent.blueprint, null, ent.faction.factionID);
+    }
     private void next(Dialogue dialogue, int ID, IInteractable speaker, Context context = null)
     {
         if (dialogue.nodes.Count == 0)
@@ -949,7 +961,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             var speakerID = current.speakerID;
             if (current.coreScriptsMode) speakerID = CoreScriptsSequence.VariableSensitizeValue(speakerID);
             speaker = AIData.entities.Find(x => x.ID == speakerID);
-            speakerPos = speaker.GetTransform().position;
+            if (speaker != null && !speaker.Equals(null)) speakerPos = speaker.GetTransform().position;
         }
 
         var remastered = GetDialogueStyle() == DialogueStyle.Remastered;
@@ -960,9 +972,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             var entName = ent.blueprint.entityName;
             if (current.concealName) entName = "Unknown Speaker";
             if (remastered)
-                window.transform.Find("Background/RadioVisual/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction.factionID);
+                AssignRadioDisplay(ent);
             window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = remastered ? entName : "";
         }
+        else AssignRadioDisplay(null);
 
         // change text
         if (current.coreScriptsMode)

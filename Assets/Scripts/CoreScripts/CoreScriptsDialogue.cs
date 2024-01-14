@@ -55,6 +55,17 @@ public class CoreScriptsDialogue : MonoBehaviour
         var propertyMetadata = tup.Item4;
         var allNodes = new List<Dialogue.Node>();
         ParseDialogueShortenedHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, propertyMetadata, allNodes);
+        if (string.IsNullOrEmpty(metadata.dialogueID))
+        {
+            throw new System.Exception("No dialogueID: " + GetValueScopeWithinLine(scope, charIndex));
+        }
+
+        if (!dialogue.nodes.Exists(n => n.ID == 0))
+        {
+            throw new System.Exception($"Internal bug: dialogue without ID 0 found: {metadata.dialogueID}");
+        }
+
+
         data.dialogues[metadata.dialogueID] = dialogue;
         PlayerCore.Instance.dialogue = dialogue;
     }
@@ -107,23 +118,6 @@ public class CoreScriptsDialogue : MonoBehaviour
         bool forcedID = false;
         node.buttonText = responseText;
 
-        bool skipToComma = false;
-        int brax = 0;
-        var stx = new List<string>()
-        {
-            "dialogueID=",
-            "entityID=",
-            "dialogueText=",
-            "nodeID=",
-            "color=",
-            "useSpeakerColor=",
-            "responses=",
-            "taskID=",
-            "finishTask=",
-            "typingSpeedFactor=",
-            "concealName="
-        };
-
         var skipSettingID = false;
         if (nextID == 0)
         {
@@ -132,8 +126,8 @@ public class CoreScriptsDialogue : MonoBehaviour
             skipSettingID = true;
         }
 
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "Dialogue(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
             var lineSubstr = line.Substring(i).Trim();
             
@@ -143,11 +137,10 @@ public class CoreScriptsDialogue : MonoBehaviour
 
             if (lineSubstr.StartsWith("responses="))
             {
-                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks, data);
+                ParseResponses(0, lineSubstr, dialogue, node.nextNodes, localMap, tasks, data);
                 continue;
             }
 
-            skipToComma = true;
             if (lineSubstr.StartsWith("dialogueID="))
             {
                 metadata.dialogueID = val;
@@ -216,20 +209,13 @@ public class CoreScriptsDialogue : MonoBehaviour
         List<int> nextNodes, Dictionary<string, string> localMap, 
         Dictionary<string, Task> tasks, DialoguePropertyMetadata data)
     {
-        bool skipToComma = false;
-        int brax = 0;
-        var stx = new List<string>()
-        {
-            "Response(",
-        };
-
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = line.IndexOf('(')+1;
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
             var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("Response("))
             {
-                ParseResponse(i, line, dialogue, localMap, nextNodes, tasks, data);
+                ParseResponse(0, lineSubstr, dialogue, localMap, nextNodes, tasks, data);
             }
         }
     }
@@ -244,19 +230,10 @@ public class CoreScriptsDialogue : MonoBehaviour
         bool insertNode = true;
         bool forcedID = false;
 
-        
-        bool skipToComma = false;
-        int brax = 0;
-        var stx = new List<string>()
+        index = GetIndexAfter(line, "Response(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            "responseText=",
-            "next="
-        };
-
-        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
-        {
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
 
             var name = "";
             var val = "";
@@ -282,8 +259,7 @@ public class CoreScriptsDialogue : MonoBehaviour
                 {
                     insertNode = false;
                     DialogueRecursionMetadata metadata;
-                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, data, responseText);
-                    index = metadata.index;
+                    ParseDialogueHelper(0, lineSubstr, dialogue, localMap, out metadata, tasks, data, responseText);
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
                     
                 }
@@ -350,9 +326,9 @@ public class CoreScriptsDialogue : MonoBehaviour
         }
         node.ID = ID;
         if (nextID == ID) nextID++;
-        if (allNodes.Exists(n => n.ID == ID) && forceReplacement)
+        if (allNodes.Exists(n => n.ID == ID && n != node) && forceReplacement)
         {
-            var index = allNodes.FindIndex(n => n.ID == ID);
+            var index = allNodes.FindIndex(n => n.ID == ID && n != node);
             allNodes[index] = SetNodeID(allNodes, allNodes[index], nextID);
 
             for (int i = 0; i < allNodes.Count; i++)
@@ -387,48 +363,41 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
         bool forcedID = false;
         node.buttonText = responseText;
 
-        bool skipToComma = false;
-        int brax = 0;
-        List<string> stx = null;
-
-        /*
-            "dialogueID=",
-            "entityID=",
-            "dialogueText=",
-            "nodeID=",
-            "color=",
-            "useSpeakerColor=",
-            "responses=",
-            "taskID=",
-            "finishTask=",
-            "typingSpeedFactor=",
-            "concealName="
-        */
-
         var skipSettingID = false;
         if (nextID == 0)
         {
             // force the top-level node to have ID 0
             node = SetNodeID(allNodes, node, nextID, true);
             skipSettingID = true;
+            forcedID = true;
         }
 
 
         line = GetValueScopeWithinLine(line, index);
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
+        index = GetIndexAfter(line, "(");
         var argIndex = 0;
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
             var lineSubstr = line.Substring(i).Trim();
-            
             if (lineSubstr.StartsWith("R("))
             {
-                ParseResponseShortened(i, line, dialogue, localMap, node.nextNodes, tasks, data, allNodes);
+                ParseResponseShortened(0, lineSubstr, dialogue, localMap, node.nextNodes, tasks, data, allNodes);
                 continue;
             }
-            var val = lineSubstr.Split(')')[0];
-            val = val.Split(',')[0].Trim();
+
+            int bx = 0;
+            var val = "";
+            for (int ii = 0; ii < lineSubstr.Length; ii++)
+            {
+                if (lineSubstr[ii] == '(') bx++;
+                if (lineSubstr[ii] == ')') bx--;
+                if (lineSubstr[ii] == ',' && bx == 0)
+                {
+                    val = lineSubstr.Substring(0, ii);
+                    break;
+                }
+            }
+
             if (!string.IsNullOrEmpty(val))
             {
                 switch (argIndex)
@@ -453,11 +422,26 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
                     case 5:
                         if (val == "true") node.action = Dialogue.DialogueAction.FinishTask;
                         break;
+                    case 6:
+                        node.typingSpeedFactor = float.Parse(val, CultureInfo.InvariantCulture);
+                        data.typingSpeedFactor = node.typingSpeedFactor;
+                        break;
+                    case 7:
+                        if (val == "false")
+                        {
+                            data.useSpeakerColor = true;
+                            break;
+                        }
+                        var color = ParseColor(val);
+                        data.defaultColor = color;
+                        data.useSpeakerColor = false;
+                        break;
                 }
             }  
             argIndex++;
         }
-        
+
+
         node.concealName = data.concealName;
         node.useSpeakerColor = data.useSpeakerColor;
         node.textColor = Color.white;
@@ -487,19 +471,15 @@ private static void ParseDialogueShortenedHelper(int index, string line, Dialogu
         bool forcedID = false;
 
         
-        bool skipToComma = false;
-        int brax = 0;
-        List<string> stx = null;
         int argIndex = 0;
 
         var queueDialogue = false;
 
         line = GetValueScopeWithinLine(line, index);
-        index = CoreScriptsManager.GetNextOccurenceInScope(0, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = GetIndexAfter(line, "(");
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
+            var lineSubstr = line.Substring(i).Trim();
             //Debug.LogWarning(lineSubstr);
 
             if (lineSubstr.StartsWith("D("))

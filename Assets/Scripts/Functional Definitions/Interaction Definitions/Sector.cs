@@ -38,6 +38,8 @@ public class Sector : ScriptableObject
         public string pathID;
         public Vector2 position;
         public NodeEditorFramework.Standard.PathData patrolPath;
+        [System.NonSerialized]
+        public bool isStandardTractorTarget;
     }
 
     public enum SectorType

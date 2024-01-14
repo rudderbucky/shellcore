@@ -10,6 +10,7 @@
     protected override void Awake()
     {
         Category = EntityCategory.Station;
+        isStandardTractorTarget = true;
         base.Awake();
     }
 

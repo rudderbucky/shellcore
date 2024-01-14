@@ -194,7 +194,7 @@ public class Variable : MonoBehaviour
         return false;
     }
 
-    public static void SetVariable(string variableName, string variableValue)
+    public static void SetVariable(string variableName, string variableValue, bool onlyIfNull = false)
     {
         var key = "";
         if (variableName.StartsWith("$$$"))
@@ -203,7 +203,11 @@ public class Variable : MonoBehaviour
             var vals = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues;
             key = variableName.Substring(3).Trim();
             var index = names.IndexOf(key);
-            if (index >= 0) vals[index] = variableValue;
+            if (index >= 0) 
+            {
+                if (!onlyIfNull)
+                    vals[index] = variableValue;
+            }
             else
             {
                 names.Add(key);
@@ -216,7 +220,8 @@ public class Variable : MonoBehaviour
             key = variableName.Substring(2).Trim();
             if (dict.ContainsKey(key))
             {
-                dict[key] = variableValue;
+                if (!onlyIfNull)
+                    dict[key] = variableValue;
             }
             else dict.Add(key, variableValue);
         }
