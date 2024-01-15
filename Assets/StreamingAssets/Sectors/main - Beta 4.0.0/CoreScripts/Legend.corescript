@@ -3,19 +3,26 @@ Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
 
 // TODO: Deal with race condition of saving checkpoints before getting Task
 
+
+// TODO: missing objective marker on bz munu after accepting prometheus task
+
 MissionTrigger(
     name=Legend_missionName,
     entryPoint=Legend_entryPoint,
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=7),
-        SetVariable(name=$$$Legend_pylonsMerged, value=2),
+        SetVariable(name=$$$Legend_checkpoint, value=3),
+        SetVariable(name=$$$Legend_pylonsMerged, value=1),
         SetVariable(name=$$$Legend_cradlePylon1, value=1),
-        SetVariable(name=$$$Legend_cradlePylon2, value=1),
+        SetVariable(name=$$$Legend_cradlePylon2, value=0),
         SetVariable(name=$$$Legend_cradlePylon3, value=0),
-        SetVariable(name=$$$Legend_coreSafe, value=0),
+//        SetVariable(name=$$$Legend_coreSafe, value=0),
         Call(Legend_start),
+        WarpPlayer(
+            sectorName=BattleZone Omicron,
+            flagName=Legend-pylon-pickup-flag2
+        )
     )
 )
 
@@ -327,71 +334,7 @@ D(
                                                                             Legend_cs1_d17,
                                                                             R(
                                                                                 Legend_cs1_d18,
-                                                                                D(
-                                                                                    Legend_cs1_d19,
-                                                                                    R(
-                                                                                        Legend_cs1_d20,
-                                                                                        D(
-                                                                                            Legend_cs1_d21,
-                                                                                            R(
-                                                                                                Legend_cs1_d22,
-                                                                                                D(
-                                                                                                    Legend_cs1_d23,
-                                                                                                    R(
-                                                                                                        Legend_cs1_d24,
-                                                                                                        D(
-                                                                                                            Legend_cs1_d25,
-                                                                                                            R(
-                                                                                                                Legend_cs1_d26,
-                                                                                                                D(
-                                                                                                                    Legend_cs1_d27,
-                                                                                                                    R(
-                                                                                                                        Legend_cs1_d28,
-                                                                                                                        D(
-                                                                                                                            Legend_cs1_d29,
-                                                                                                                            R(
-                                                                                                                                Legend_cs1_d30,
-                                                                                                                                D(
-                                                                                                                                    Legend_cs1_d31,
-                                                                                                                                    R(
-                                                                                                                                        Legend_cs1_d32,
-                                                                                                                                        D(
-                                                                                                                                            Legend_cs1_d33,
-                                                                                                                                            R(
-                                                                                                                                                Legend_cs1_d34,
-                                                                                                                                                D(
-                                                                                                                                                    Legend_cs1_d35,
-                                                                                                                                                    R(
-                                                                                                                                                        Legend_cs1_d36,
-                                                                                                                                                        D(
-                                                                                                                                                            Legend_cs1_d37,
-                                                                                                                                                            ,
-                                                                                                                                                            ,
-                                                                                                                                                            ,
-                                                                                                                                                            Legend_getArtifactFromMuNu,
-                                                                                                                                                            R(
-                                                                                                                                                                Legend_cs1_d41,
-                                                                                                                                                                Call(Legend_post_cs1)
-                                                                                                                                                            )
-                                                                                                                                                        )
-                                                                                                                                                    )
-                                                                                                                                                )
-                                                                                                                                            )
-                                                                                                                                        )
-                                                                                                                                    )
-                                                                                                                                )
-                                                                                                                            )
-                                                                                                                        )
-                                                                                                                    )
-                                                                                                                )
-                                                                                                            )
-                                                                                                        )
-                                                                                                    )
-                                                                                                )
-                                                                                            )
-                                                                                        )
-                                                                                    )
-                                                                                )
+                                                                                Call(Legend_cradle_pan)
                                                                             )
                                                                         )
                                                                     )
@@ -417,6 +360,95 @@ D(
     ),
 )
 
+Function(
+    name=Legend_cradle_pan,
+    sequence=(
+        SetVariable(name=$$$Legend_cradlePylon1, value=0),
+        SetVariable(name=$$$Legend_cradlePylon2, value=0),
+        SetVariable(name=$$$Legend_cradlePylon3, value=0),
+        StartCameraPan(
+            flagName=Legend-cradle-flag2,
+            instant=true,
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs1_p2_d)
+    )
+)
+
+D(
+    Legend_cs1_d19,
+    ,
+    Legend_cs1_p2_d,
+    ,
+    ,
+    ,
+    ,
+    (92,137,230),
+    R(
+        Legend_cs1_d20,
+        D(
+            Legend_cs1_d21,
+            R(
+                Legend_cs1_d22,
+                D(
+                    Legend_cs1_d23,
+                    R(
+                        Legend_cs1_d24,
+                        D(
+                            Legend_cs1_d25,
+                            R(
+                                Legend_cs1_d26,
+                                D(
+                                    Legend_cs1_d27,
+                                    R(
+                                        Legend_cs1_d28,
+                                        D(
+                                            Legend_cs1_d29,
+                                            R(
+                                                Legend_cs1_d30,
+                                                D(
+                                                    Legend_cs1_d31,
+                                                    R(
+                                                        Legend_cs1_d32,
+                                                        D(
+                                                            Legend_cs1_d33,
+                                                            R(
+                                                                Legend_cs1_d34,
+                                                                D(
+                                                                    Legend_cs1_d35,
+                                                                    R(
+                                                                        Legend_cs1_d36,
+                                                                        D(
+                                                                            Legend_cs1_d37,
+                                                                            ,
+                                                                            ,
+                                                                            ,
+                                                                            Legend_getArtifactFromMuNu,
+                                                                            R(
+                                                                                Legend_cs1_d41,
+                                                                                Call(Legend_post_cs1)
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+
 Task(
     taskID=Legend_getArtifactFromMuNu,
     objectives=Legend_getArtifactFromMuNu_objectives
@@ -431,11 +463,12 @@ Function(
     name=Legend_post_cs1,
     sequence=(
         FinishCutscene(),
+        FinishCameraPan(),
         SetVariable(name=$$$Legend_checkpoint, value=2),
         SetVariable(name=$$$Legend_cradlePylon1, value=0),
         SetVariable(name=$$$Legend_cradlePylon2, value=0),
         SetVariable(name=$$$Legend_cradlePylon3, value=0),
-
+        SetVariable(name=$$$Legend_pylonsMerged, value=0)
     )
 )
 
@@ -1866,18 +1899,6 @@ Function(
     )
 )
 
-Text("Legend_cs7_d7", "We haven't figured out why the Core is still so hostile to us... Daayo has been making significant progress, but not enough. I have a hunch it's related to the cradle again...")
-Text("Legend_cs7_d8", "I'll try and find that last artifact.")
-D(
-    Legend_cs7_d7,
-    prometheus,
-    Legend_cs7_remaining_d,
-    R(
-        Legend_cs7_d8,
-        End()
-    )
-)
-
 Text("Legend_cs7_remaining_d1", "I've become pretty good at finding these hidden pylons. I know exactly where you need to go to get it. Bring it to me.")
 Text("Legend_cs7_remaining_d2", "Okay.")
 Text("Legend_cs7_remaining_d3", "On second thought, no thanks.")
@@ -1910,7 +1931,7 @@ Function(
     name=Legend_cs7_remaining_startPylonSpawn,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=8),
-        RemoveObjectiveMarker(ID=Legend_tau)
+        RemoveObjectiveMarker(ID=Legend_tau),
         AddObjectiveMarker(ID=Legend_tau, sectorName=BattleZone Tau),
         ClearInteraction(entityID=fake-daayo),
         ConditionBlock(
