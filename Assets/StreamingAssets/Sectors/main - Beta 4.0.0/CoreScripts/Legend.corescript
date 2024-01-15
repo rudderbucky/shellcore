@@ -25,10 +25,18 @@ Function(
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_checkpoint,
-                val2=8,
+                val2=9,
                 comp=Eq,
                 sequence=(
                     Call(Legend_post_cs7)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=8,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_cs7_remaining_startPylonSpawn)
                 )
             ),
             Comparison(
@@ -1227,7 +1235,7 @@ Text("Legend_cs5_d19", "Leadership changes the self. But you are still able to b
 Text("Legend_cs5_d20", "I can’t work with this murderer, Prometheus.")
 Text("Legend_cs5_d21", "Who is this \"murderer\"? Me? Or you? Tell me, Heracles, how many did you murder in the Standard Sectors when it was your turn? And how many will be murdered in the future?")
 Text("Legend_cs5_d22", "...")
-Text("Legend_cs5_d23", "You all shall meet me at Sector ??? where we will attempt to breach The Core. I'm going to the Unconvinced Lair to bring them along as well.")
+Text("Legend_cs5_d23", "You all shall meet me at Sector 2050-6330 where we will attempt to breach The Core. I'm going to the Unconvinced Lair to bring them along as well.")
 Text("Legend_cs5_d24", "We're really going back to this aren't we...")
 
 D(
@@ -1487,21 +1495,48 @@ D(
 )
 
 
-Text("Legend_cs6_d9", "Thank you for all your work so far... but I have one last favor to ask from you. The Core is still hostile to us and we need to figure out why.")
+Text("Legend_cs6_d9", "Thank you for all your work so far... but I have another favor to ask from you. The Core is still hostile to us and we need to figure out why.")
 Text("Legend_cs6_d10", "Why do you think it is?")
-Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend asking Daayo about it.")
-Text("Legend_cs6_d12", "I've become pretty good at finding these hidden pylons. I know exactly where you need to go to get it. Bring it to me.")
-Text("Legend_cs6_d13", "Okay.")
-Text("Legend_cs6_d14", "On second thought, no thanks.")
-Text("Legend_cs6_d13", "- Head to the sector marked on the map.
-- Obtain the Pylon by defeating the ordeal there.
-- Return to Daayo in Sector ??? with the Pylon for your reward.")
+Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend asking Daayo about it in Sector 2050-6330.")
+Text("Legend_meetDaayo_2_objectives", "-Head to Sector 2050-6330 and speak with Daayo there for further instructions.")
+Text("Legend_cs6_d12", "Okay.")
 
+
+Task(
+    taskID=Legend_meetDaayo_2,
+    objectives=Legend_meetDaayo_2_objectives
+)
+
+D(
+    Legend_cs6_d9,
+    prometheus,
+    Legend_cs6_p2_d,
+    R(
+        Legend_cs6_d10,
+        D(
+            Legend_cs6_d11,
+            ,
+            ,
+            ,
+            Legend_meetDaayo_2,
+            R(
+                Legend_cs6_d12,
+                Call(Legend_post_cs6)
+            )
+        )
+    )
+)
 
 Function(
     name=Legend_cs6_p2,
     sequence=(
-        Call(Legend_post_cs6)
+        Rotate(
+            entityID=prometheus,
+            targetID=player,
+            sequence=(
+                ForceStartDialogue(dialogueID=Legend_cs6_p2_d)
+            )
+        )
     )
 )
 
@@ -1584,12 +1619,11 @@ Function(
                         faction=1,
                         flagName=Legend-cs7-flag2
                     ),
+
                     SetInteraction(
-                        entityID=prometheus, 
-                        sequence=(
-                            Call(Legend_cs7)
-                        )
-                    )
+                        entityID=fake-daayo,
+                        dialogueID=Legend_cs7_remaining_daayo_d
+                    ),
                 )
             )
         )
@@ -1622,6 +1656,29 @@ Function(
             entityID=fake-daayo,
             targetID=prometheus
         ),
+        Rotate(
+            entityID=prometheus,
+            targetID=player
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs7_daayo_d),
+    )
+)
+
+
+Function(
+    name=Legend_cs7_post_daayo,
+    sequence=(
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
+        Wait(time=4),
+        DeleteEntity(entityID=Legend_pylon4),
+        FadeOutOfBlack(
+            color=(255,255,255),
+            speedFactor=0.5,
+        ),
+        Wait(time=2),
         ForceStartDialogue(dialogueID=Legend_cs7_p1_d)
     )
 )
@@ -1632,6 +1689,18 @@ Text("Legend_cs7_d3", "Then we await the Unconvinced...")
 Text("Legend_cs7_d4", "Prometheus... we are tired of listening from the sidelines. If this is the only way to push the story forward we are here for it.")
 Text("Legend_cs7_d5", "...")
 Text("Legend_cs7_d6", "Indeed. The next step is meeting our maker.")
+Text("Legend_cs7_d7", "It pains me to say it to you, but good job. I can fix the core sectors with this.")
+
+D(
+    Legend_cs7_d7,
+    fake-daayo,
+    Legend_cs7_daayo_d,
+    R(
+        Legend_cs7_d5,
+        Call(Legend_cs7_post_daayo)
+    )
+)
+
 D(
     Legend_cs7_d1,
     prometheus,
@@ -1808,6 +1877,88 @@ D(
         End()
     )
 )
+
+Text("Legend_cs7_remaining_d1", "I've become pretty good at finding these hidden pylons. I know exactly where you need to go to get it. Bring it to me.")
+Text("Legend_cs7_remaining_d2", "Okay.")
+Text("Legend_cs7_remaining_d3", "On second thought, no thanks.")
+
+Task(
+    taskID=Legend_cs7_remaining,
+    objectives=Legend_cs7_remaining_objectives
+)
+
+Text("Legend_cs7_remaining_objectives", "- Head to the sector marked on the map.
+- Obtain the Pylon by defeating the ordeal there.
+- Return to Daayo in Sector 2050-6330 with the Pylon for your reward.")
+D(
+    Legend_cs7_remaining_d1,
+    fake-daayo,
+    Legend_cs7_remaining_daayo_d,
+    ,
+    Legend_cs7_remaining,
+    R(
+        Legend_cs7_remaining_d2,
+        Call(Legend_cs7_remaining_startPylonSpawn)
+    ),
+    R(
+        Legend_cs7_remaining_d3,
+        End()
+    )
+)
+
+Function(
+    name=Legend_cs7_remaining_startPylonSpawn,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=8),
+        RemoveObjectiveMarker(ID=Legend_tau)
+        AddObjectiveMarker(ID=Legend_tau, sectorName=BattleZone Tau),
+        ClearInteraction(entityID=fake-daayo),
+        ConditionBlock(
+            EnterSector(
+                sectorName=BattleZone Tau,
+                sequence=(
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$BattleZoneTauComplete,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(
+                                RemoveObjectiveMarker(ID=Legend_tau),
+                                RemoveObjectiveMarker(ID=Legend_2050),
+                                AddObjectiveMarker(ID=Legend_2050, sectorName=2050-6330),
+                                DeleteEntity(
+                                    entityID=Legend_pylon4
+                                ),
+                                SpawnEntity(
+                                    flagName=Legend_finalPylon,
+                                    entityID=Legend_pylon4,
+                                    blueprintJSON=SimplePylon,
+                                    faction=5,
+                                    assetID=air_weapon_station,
+                                    overrideTractorTarget=true,
+                                    name=Pylon,
+                                ),
+                                ConditionBlock(
+                                    Comparison(                            
+                                        val1=SqrDistance(fake-daayo, Legend_pylon4),
+                                        val2=5,
+                                        comp=Lt,
+                                        sequence=(
+                                            Call(Legend_cs7)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+
 
 
 Function(
