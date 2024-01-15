@@ -38,7 +38,7 @@ public class RollCredits : MonoBehaviour
 
     IEnumerator Wait()
     {
-        yield return new WaitForSeconds(60 * 4 + 12);
+        yield return new WaitForSeconds(60 * 4 + 17);
         AudioManager.PlayMusic("music_overworld_old");
     }
 
@@ -46,7 +46,6 @@ public class RollCredits : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        Time.timeScale = 8;
         if (timer > time1)
             cont1.gameObject.SetActive(true);
 
