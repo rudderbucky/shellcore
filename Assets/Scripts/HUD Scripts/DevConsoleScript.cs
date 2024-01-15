@@ -580,6 +580,11 @@ public class DevConsoleScript : MonoBehaviour
         if (!textBox.enabled) ToggleActive();
     }
 
+    public void SetInactive()
+    {
+        if (textBox.enabled) ToggleActive();
+    }
+
     public void ToggleActive()
     {
         textBox.enabled = image.enabled = !image.enabled;

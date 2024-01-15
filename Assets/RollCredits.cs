@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RollCredits : MonoBehaviour
 {
@@ -29,9 +31,18 @@ public class RollCredits : MonoBehaviour
     [SerializeField]
     RectTransform ty;
 
+    public static RollCredits instance;
 
     void Start()
     {
+        instance = this;
+    }
+
+    public void Init()
+    {
+        GetComponent<Image>().enabled = true;
+        container.gameObject.SetActive(true);
+        DevConsoleScript.Instance.SetInactive();
         AudioManager.PlayMusic("music_whimper", false);
         StartCoroutine(Wait());
     }
@@ -42,6 +53,12 @@ public class RollCredits : MonoBehaviour
         AudioManager.PlayMusic("music_overworld_old");
     }
 
+    IEnumerator Wait2()
+    {
+        yield return new WaitForSeconds(30);
+        SaveHandler.instance.Save();
+        SceneManager.LoadScene("MainMenu");
+    }
 
     void Update()
     {
@@ -57,13 +74,17 @@ public class RollCredits : MonoBehaviour
         if (timer > 10.5F)
         {
             var cst = 35;
-            if (Input.GetKey(KeyCode.Space)) cst *= 2;
+            if (Input.GetKey(KeyCode.Space)) cst *= 20;
             container.transform.position = container.transform.position + Vector3.up * Time.deltaTime * cst;
         }
 
-        if (container.anchoredPosition.y > 8000)
+        if (container.anchoredPosition.y > 6670)
         {
-            ty.parent = transform;
+            ty.SetParent(transform, false);
+            ty.anchorMax = Vector2.one * 0.5F;
+            ty.anchorMin = Vector2.one * 0.5F;
+            ty.anchoredPosition = Vector2.zero;
+            StartCoroutine(Wait2());
         }
     }
 }

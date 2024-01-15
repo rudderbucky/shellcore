@@ -68,7 +68,8 @@ public class CoreScriptsSequence : MonoBehaviour
         ChangeCharacterBlueprint,
         ClearFactionOverrides,
         SetSectorColor,
-        StopMusic
+        StopMusic,
+        RollCredits,
     }
     public struct Instruction
     {
@@ -608,6 +609,9 @@ public class CoreScriptsSequence : MonoBehaviour
                         GetArgument(inst.arguments, "blueprintJSON"),
                         GetArgument(inst.arguments, "forceReconstruct") != "false"
                     );
+                    break;
+                case InstructionCommand.RollCredits:
+                    RollCredits.instance.Init();
                     break;
             }
         }
