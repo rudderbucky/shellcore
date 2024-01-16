@@ -2,8 +2,6 @@ Text("Legend_missionName", "Legend")
 Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
 
 // TODO: Deal with race condition of saving checkpoints before getting Task
-
-
 // TODO: missing objective marker after prom tells you to go to Unconvinced lair
 // TODO: missing objective marker on bz munu after accepting prometheus task
 
@@ -13,8 +11,6 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=2),
-        SetVariable(name=$$Legend_daayoDistance, value=0),
         Call(Legend_start),
     )
 )
@@ -2075,6 +2071,7 @@ Function(
             entityID=player,
             flagName=Legend-cs8-flag4,
             sequence=(
+                StopMusic(),
                 Rotate(
                     entityID=player,
                     targetID=demiurge,
@@ -2196,6 +2193,7 @@ Function(
                             )
                         ),
                         Wait(time=5),
+                        StartMusicOverride(musicID=music_blue5),
                         ForceStartDialogue(dialogueID=Legend_cs8_p1_d)
                     )
                 )
@@ -2498,7 +2496,7 @@ Text("Legend_cs8_d42", "You sent us those transmissions... if you’re unwilling
 Text("Legend_cs8_d43", "These beams represent my inability to grasp your wills... but... the wills collide.")
 Text("Legend_cs8_d44", "You told me we will bring a peace to all creation.")
 Text("Legend_cs8_d45", "That’s right. You clearly want us to go and end this tirade of colors.")
-Text("Legend_cs8_d46", "Peace will arrive again when the wills synthesize, but how they do I know not. I shall not alter the wills with mine.")
+Text("Legend_cs8_d46", "Peace will arrive again when the wills synthesize, but how they will I know not. I shall not alter the wills with mine.")
 Text("Legend_cs8_d47", "Okay, so let us do it instead. Die.")
 D(
     Legend_cs8_d36,
@@ -2713,6 +2711,8 @@ Function(
     name=Legend_cs8_p7,
     sequence=(
         Wait(time=1),
+        FinishMusicOverride(),
+        StopMusic(),
         ForceStartDialogue(dialogueID=Legend_cs8_p7_d)
     )
 )
@@ -2765,6 +2765,7 @@ Function(
             speedFactor=0.5,
         ),
         Wait(time=2),
+        StartMusicOverride(musicID=music_overworld_5),
         ForceStartDialogue(dialogueID=Legend_cs8_p9_d)
     )
 )
@@ -2881,6 +2882,7 @@ Function(
         RemoveObjectiveMarker(ID=Legend_finalObj),
         FinishTask(),
         FinishCutscene(),
+        FinishMusicOverride(),
         ClearInteraction(entityID=eleos),
         ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
         FinishMission(soundID=clip_missioncompleteep3),
