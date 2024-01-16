@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+// TODO: fix escape menu during credits
 public class RollCredits : MonoBehaviour
 {
     [SerializeField]
@@ -60,18 +61,35 @@ public class RollCredits : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    string s1 = "ShellCoreCommand";
+    string s2 = "REMASTERED";
+    string s3 = "TACTICAL RETRO COMBAT.";
+    float rollStart = 10.5F;
+
+
     void Update()
     {
         timer += Time.deltaTime;
+        cont1.gameObject.SetActive(true);
+        cont2.gameObject.SetActive(true);
+        cont3.gameObject.SetActive(true);
+        cont1.GetComponentInChildren<Text>().text = s1.Substring(0, Mathf.Min(s1.Length, Mathf.FloorToInt((timer / rollStart) * s1.Length)));
+        cont2.GetComponentInChildren<Text>().text = s2.Substring(0, Mathf.Min(s2.Length, Mathf.FloorToInt((timer / rollStart) * s2.Length)));
+        cont3.GetComponentInChildren<Text>().text = s3.Substring(0, Mathf.Min(s3.Length, Mathf.FloorToInt((timer / rollStart) * s3.Length)));
+
         if (timer > time1)
-            cont1.gameObject.SetActive(true);
+        {
+        }
 
         if (timer > time2)
-            cont2.gameObject.SetActive(true);
+        {
+
+        }
 
         if (timer > time3)
-            cont3.gameObject.SetActive(true);
-        if (timer > 10.5F)
+        {
+        }
+        if (timer > rollStart)
         {
             var cst = 35;
             if (Input.GetKey(KeyCode.Space)) cst *= 20;
