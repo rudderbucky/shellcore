@@ -13,7 +13,8 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=7),
+        SetVariable(name=$$$Legend_checkpoint, value=9),
+        SetVariable(name=$$Legend_daayoDistance, value=0),
         Call(Legend_start),
     )
 )
@@ -35,6 +36,7 @@ Function(
                 val2=8,
                 comp=Eq,
                 sequence=(
+                    Call(Legend_sector20506330spawn),
                     Call(Legend_cs7_remaining_startPylonSpawn)
                 )
             ),
@@ -1648,6 +1650,12 @@ Function(
     name=Legend_sector20506330spawn,
     sequence=(
         ConditionBlock(
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=8,
+                comp=Gt,
+                sequence=()
+            ),
             EnterSector(
                 sectorName=Sector 2050-6330,
                 sequence=(
@@ -1718,14 +1726,14 @@ Function(
     name=Legend_cs7_post_daayo,
     sequence=(
         FadeIntoBlack(
-            color=(255,255,255),
+            color=(0,0,0),
             speedFactor=2,
         ),
-        Wait(time=4),
+        Wait(time=2),
         DeleteEntity(entityID=Legend_pylon4),
         FadeOutOfBlack(
-            color=(255,255,255),
-            speedFactor=0.5,
+            color=(0,0,0),
+            speedFactor=2,
         ),
         Wait(time=2),
         ForceStartDialogue(dialogueID=Legend_cs7_p1_d)
@@ -1902,7 +1910,8 @@ D(
 Function(
     name=Legend_post_cs7,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=8),
+        SetVariable(name=$$$Legend_checkpoint, value=9),
+        AddObjectiveMarker(ID=Legend_finalObj, sectorName=The Core),
         SetVariable(name=$$$Legend_coreSafe, value=1),
         FinishCutscene(),
         ClearInteraction(entityID=prometheus),
@@ -1972,17 +1981,11 @@ Function(
                                         sectorName=BattleZone Tau,
                                         invert=true,
                                         sequence=(
-                                            Log(message=TEST),
                                             Call(Legend_cs7_pylonSpawner)
                                         )
                                     ),
                                 ),
                                 ConditionBlock(
-                                    EnterSector(
-                                        sectorName=BattleZone Tau,
-                                        invert=true,
-                                        sequence=()
-                                    ),
                                     Comparison(
                                         val1=$$$BattleZoneTauComplete,
                                         val2=1,
@@ -2003,23 +2006,15 @@ Function(
                                                 overrideTractorTarget=true,
                                                 name=Pylon,
                                             ),
-                                            ConditionBlock(
-                                                Comparison(
-                                                    val1=SqrDistance(fake-daayo, Legend_pylon4),
-                                                    val2=5,
-                                                    comp=Lt,
-                                                    sequence=(
-                                                        Call(Legend_cs7)
-                                                    )
-                                                ),
-                                                EnterSector(
-                                                    sectorName=BattleZone Tau,
-                                                    invert=true,
-                                                    sequence=()
-                                                ),
-                                            )
+                                            Call(Legend_attemptDaayoDistance)
                                         )
-                                    )
+                                    ),
+
+                                    EnterSector(
+                                        sectorName=BattleZone Tau,
+                                        invert=true,
+                                        sequence=()
+                                    ),
                                 )
                             )
                         ),
@@ -2038,6 +2033,37 @@ Function(
     )
 )
 
+Function(
+    name=Legend_attemptDaayoDistance,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$Legend_daayoDistance, value=1),
+                    ConditionBlock(
+                        Comparison(
+                            val1=SqrDistance(fake-daayo, Legend_pylon4),
+                            val2=5,
+                            comp=Lt,
+                            sequence=(
+                                Call(Legend_cs7)
+                            )
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=0,
+                comp=Neq,
+                sequence=()
+            )
+        )
+    )
+)
 
 
 
@@ -2852,6 +2878,7 @@ Thank you for playing ShellCore Command Remastered!")
 Function(
     name=Legend_end,
     sequence=(
+        RemoveObjectiveMarker(ID=Legend_finalObj),
         FinishTask(),
         FinishCutscene(),
         ClearInteraction(entityID=eleos),

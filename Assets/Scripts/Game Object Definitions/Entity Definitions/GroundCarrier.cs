@@ -41,7 +41,7 @@ public class GroundCarrier : GroundConstruct, ICarrier
     {
         if (sectorMngr)
         {
-            return intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction);
+            return Mathf.Min(10, intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction));
         }
         else
         {
