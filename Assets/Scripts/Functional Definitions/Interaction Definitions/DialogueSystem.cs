@@ -889,7 +889,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         Dialogue.Node current = dialogue.nodes[currentIndex];
-
         // check if the node has an action
         switch (current.action)
         {
