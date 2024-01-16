@@ -19,7 +19,6 @@ public class ChainBeam : Beam
     protected override bool Execute(Vector3 victimPos)
     {
         base.Execute(victimPos);
-        numShots++;
         return true;
     }
 }

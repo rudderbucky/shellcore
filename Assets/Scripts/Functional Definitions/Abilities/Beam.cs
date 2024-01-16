@@ -106,7 +106,7 @@ public class Beam : WeaponAbility
 
         if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
         {
-            var vec = line.GetPosition(numShots);
+            var vec = numShots == 0 ? transform.position : line.GetPosition(numShots);
             var ents = GetClosestTargets(MAX_BOUNCES, vec);
             Transform closestEntity = null;
             foreach (var ent in ents)
@@ -149,6 +149,7 @@ public class Beam : WeaponAbility
                 line.startWidth = line.endWidth = 0;
                 firing = false;
                 line.positionCount = 0;
+                numShots = 0;
             }
         }
     }
@@ -161,8 +162,8 @@ public class Beam : WeaponAbility
         }
         targetArray.Clear();
         targetArray.Add(targetingSystem.GetTarget());
-        FireBeam(victimPos);
-        numShots++;
+        firing = true;
+        numShots = 0;
         return true;
     }
 

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
-using static CoreScriptsCondition;
 using static CoreScriptsManager;
 using static CoreScriptsSequence;
 
@@ -43,6 +42,10 @@ public class CoreScriptsDialogue : MonoBehaviour
         var propertyMetadata = tup.Item4;
         ParseDialogueHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, propertyMetadata);
         data.dialogues[metadata.dialogueID] = dialogue;
+        //if (metadata.dialogueID == "Makeshift_upgrader_d")
+        //{
+            //AssetDatabase.CreateAsset(dialogue, "Assets/CustomDialogue.asset");
+        //}
     }
 
     public static void ParseDialogueShortened(int lineIndex, int charIndex,
@@ -229,14 +232,13 @@ public class CoreScriptsDialogue : MonoBehaviour
         var responseText = "";
         bool insertNode = true;
         bool forcedID = false;
-
         index = GetIndexAfter(line, "Response(");
-        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
+        line = GetValueScopeWithinLine(line, index-1);
+        for (int i = 1; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line))
         {
             var lineSubstr = line.Substring(i).Trim();
-
             var name = "";
-            var val = "";
+            var val = "";   
             CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
             if (lineSubstr.StartsWith("responseText="))
             {

@@ -219,6 +219,23 @@ D(
     )
 )
 
+Function(
+    name=UCH_truce,
+    sequence=(
+        Call(Core_incrementTruce),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Unconvinced Hideout,
+                invert=true,
+                sequence=(
+                    Call(Core_decrementTruce),
+                )
+            )
+        ),
+    )
+)
+
+
 SectorTrigger(
     sectorName=Unconvinced Lair,
     sequence=(
@@ -231,33 +248,7 @@ SectorTrigger(
         ),
         ClearInteraction(entityID=fake-daayo),
         SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
-        SetFactionRelations(
-            factionID=0,
-            sum=59
-        ),
-        SetFactionRelations(
-            factionID=1,
-            sum=59
-        ),
-        ConditionBlock(
-            EnterSector(
-                sectorName=Unconvinced Lair,
-                invert=true,
-                sequence=(
-                    SetFactionRelations(
-                        factionID=0,
-                        sum=57
-                    ),
-                    SetFactionRelations(
-                        factionID=1,
-                        sum=58
-                    ),
-                )
-            )
-        ),
-        SetVariable(name=$$UCH_core1_loyalty_d1, value=UCH_core1_d3),
-        SetVariable(name=$$UCH_core1_loyalty_d2, value=UCH_core1_d4),
-        SetVariable(name=$$UCH_eleos_loyalty_d, value=UCH_core1_d3),
+        Call(UCH_truce),
         ConditionBlock(
             Comparison(
                 val1=$$$Loyalty_Variable,
@@ -268,7 +259,17 @@ SectorTrigger(
                     SetVariable(name=$$UCH_core1_loyalty_d2, value=UCH_core1_d6),
                     SetVariable(name=$$UCH_eleos_loyalty_d, value=UCH_core1_d2),
                 )
-            )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$UCH_core1_loyalty_d1, value=UCH_core1_d3),
+                    SetVariable(name=$$UCH_core1_loyalty_d2, value=UCH_core1_d4),
+                    SetVariable(name=$$UCH_eleos_loyalty_d, value=UCH_core1_d3),
+                )
+            ),
         ),
         ClearInteraction(entityID=UCH_core1),
         ClearInteraction(entityID=UCH_core2),
