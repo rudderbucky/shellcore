@@ -338,11 +338,13 @@ SectorTrigger(
                 sequence=()
             )
         ),
+        SetVariable(name=$$$Legend_cradlePylon2, value=0, onlyIfNull=true),
+        SetVariable(name=$$$Legend_cradlePylon3, value=0, onlyIfNull=true),
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_cradlePylon2,
-                val2=1,
-                comp=Eq,
+                val2=2,
+                comp=Lt,
                 sequence=(
                     SpawnEntity(
                         entityID=Legend_pylonTarget2,
@@ -375,7 +377,9 @@ SectorTrigger(
                 val1=$$$Legend_cradlePylon2,
                 val2=2,
                 comp=Eq,
-                sequence=()
+                sequence=(
+
+                )
             ),
             EnterSector(
                 sectorName=The Cradle,
@@ -386,8 +390,8 @@ SectorTrigger(
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_cradlePylon3,
-                val2=1,
-                comp=Eq,
+                val2=2,
+                comp=Lt,
                 sequence=(
                     SpawnEntity(
                         entityID=Legend_pylonTarget3,
@@ -451,6 +455,9 @@ Function(
                 val2=0,
                 comp=Eq,
                 sequence=(
+                    DeleteEntity(
+                        entityID=Legend_pylon1
+                    ),
                     SpawnEntity(
                         entityID=Legend_pylon1,
                         flagName=Legend-pylon-pickup-flag1,

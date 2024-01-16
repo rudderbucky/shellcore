@@ -541,17 +541,29 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.DeleteEntity:
                     var id = GetArgument(inst.arguments, "entityID");
+                    var found = false;
                     foreach (var data in AIData.entities)
                     {
                         if (data.ID == id)
                         {
+                            found = true;
                             Destroy(data.gameObject);
                             break;
                         }
                     }
+                    if (!found) Debug.Log($"<DeleteEntity> entity ID {id} not found.");
+                    else Debug.Log($"<DeleteEntity> Deleting entity with ID {id}.");
 
                     var obj = SectorManager.instance.GetObjectByID(id);
-                    if (obj) Destroy(obj);
+                    if (obj && AIData.entities.Contains(obj.GetComponentInChildren<Entity>()))
+                    {
+                        AIData.entities.Remove(obj.GetComponentInChildren<Entity>());
+                    }
+                    if (obj) 
+                    {
+                        SectorManager.instance.RemoveObject(id, obj);
+                        Destroy(obj);
+                    }
                     break;
                 case InstructionCommand.StartInflictionCosmetic:
                     id = GetArgument(inst.arguments, "entityID");

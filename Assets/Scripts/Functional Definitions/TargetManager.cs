@@ -185,6 +185,11 @@ public class TargetManager : MonoBehaviour
 
     private Entity[] getTargetList(ITargetingSystem ts, Entity.EntityCategory ec, out int count)
     {
+        if (ts == null || ts.Equals(null)) 
+        {
+            count = 0;
+            return new Entity[0];
+        }
         int faction = ts.GetEntity().faction.factionID;
 
         if (ts.GetAbility() == null)
