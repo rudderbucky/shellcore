@@ -239,15 +239,30 @@ Function(
 SectorTrigger(
     sectorName=Unconvinced Lair,
     sequence=(
-        SpawnEntity(
-            entityID=fake-daayo,
-            flagName=UCH-daayo-flag,
-            faction=1,
-            blueprintJSON=daayo_4,
-            name=Daayo
+        ConditionBlock(
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=fake-daayo,
+                        flagName=UCH-daayo-flag,
+                        faction=1,
+                        blueprintJSON=daayo_4,
+                        name=Daayo
+                    ),
+                    ClearInteraction(entityID=fake-daayo),
+                    SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
+                )
+            ),
         ),
-        ClearInteraction(entityID=fake-daayo),
-        SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
         Call(UCH_truce),
         ConditionBlock(
             Comparison(

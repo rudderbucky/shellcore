@@ -2773,7 +2773,6 @@ Function(
             speedFactor=0.5,
         ),
         Wait(time=2),
-        StartMusicOverride(musicID=music_overworld_5),
         ForceStartDialogue(dialogueID=Legend_cs8_p9_d)
     )
 )
@@ -2802,6 +2801,7 @@ Function(
     name=Legend_cs8_p10,
     sequence=(
         Wait(time=3),
+        StartMusicOverride(musicID=music_transpose),
         ForceStartDialogue(dialogueID=Legend_cs8_p10_d)
     )
 )
@@ -2890,7 +2890,6 @@ Function(
         RemoveObjectiveMarker(ID=Legend_finalObj),
         FinishTask(),
         FinishCutscene(),
-        FinishMusicOverride(),
         ClearInteraction(entityID=eleos),
         ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
         FinishMission(soundID=clip_missioncompleteep3),
