@@ -289,152 +289,181 @@ Function(
 )
 
 
-// Legend-cradle-flag1
-SectorTrigger(
-    sectorName=The Cradle,
+Function(
+    name=Legend_pylonCollection,
     sequence=(
         ConditionBlock(
             Comparison(
-                val1=$$$Legend_cradlePylon1,
-                val2=0,
+                val1=$$$Legend_pylonsMerged,
+                val2=3,
                 comp=Eq,
+                sequence=()
+            ),
+            EnterSector(
+                sectorName=The Cradle,
                 sequence=(
-                    SpawnEntity(
-                        entityID=Legend_pylonTarget1,
-                        assetID=air_weapon_station,
-                        blueprintJSON=GatePylon,
-                        flagName=Legend-cradle-flag1,
-                        faction=5,
-                        name=Gate Pylon
-                    ),
                     ConditionBlock(
                         Comparison(
-                            val1=SqrDistance(Legend_pylonTarget1, Legend_pylon1),
-                            val2=5,
-                            comp=Lt,
+                            val1=$$$Legend_cradlePylon1,
+                            val2=0,
+                            comp=Eq,
                             sequence=(
-                                DeleteEntity(
+                                SpawnEntity(
                                     entityID=Legend_pylonTarget1,
+                                    assetID=air_weapon_station,
+                                    blueprintJSON=GatePylon,
+                                    flagName=Legend-cradle-flag1,
+                                    faction=5,
+                                    name=Gate Pylon
                                 ),
-                                DeleteEntity(
-                                    entityID=Legend_pylon1
-                                ),
-                                SetVariable(name=$$$Legend_cradlePylon1, value=1),
-                                Call(Legend_triggerCutscene)
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=SqrDistance(Legend_pylonTarget1, Legend_pylon1),
+                                        val2=5,
+                                        comp=Lt,
+                                        sequence=(
+                                            DeleteEntity(
+                                                entityID=Legend_pylonTarget1,
+                                            ),
+                                            DeleteEntity(
+                                                entityID=Legend_pylon1
+                                            ),
+                                            SetVariable(name=$$$Legend_cradlePylon1, value=1),
+                                            Call(Legend_triggerCutscene)
+                                        )
+                                    )
+                                )
                             )
-                        )
-                    )
-                )
-            ),
-            Comparison(
-                val1=$$$Legend_cradlePylon1,
-                val2=1,
-                comp=Eq,
-                sequence=()
-            ),
-            EnterSector(
-                sectorName=The Cradle,
-                invert=true,
-                sequence=()
-            )
-        ),
-        SetVariable(name=$$$Legend_cradlePylon2, value=0, onlyIfNull=true),
-        SetVariable(name=$$$Legend_cradlePylon3, value=0, onlyIfNull=true),
-        ConditionBlock(
-            Comparison(
-                val1=$$$Legend_cradlePylon2,
-                val2=2,
-                comp=Lt,
-                sequence=(
-                    SpawnEntity(
-                        entityID=Legend_pylonTarget2,
-                        assetID=air_weapon_station,
-                        blueprintJSON=GatePylon,
-                        flagName=Legend-cradle-flag2,
-                        faction=5,
-                        name=Gate Pylon
-                    ),
-                    ConditionBlock(
+                        ),
                         Comparison(
-                            val1=SqrDistance(Legend_pylonTarget2, Legend_pylon2),
-                            val2=5,
-                            comp=Lt,
+                            val1=$$$Legend_cradlePylon1,
+                            val2=1,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        EnterSector(
+                            sectorName=The Cradle,
+                            invert=true,
                             sequence=(
-                                DeleteEntity(
-                                    entityID=Legend_pylonTarget2,
-                                ),
-                                DeleteEntity(
-                                    entityID=Legend_pylon2
-                                ),
-                                SetVariable(name=$$$Legend_cradlePylon2, value=2),
-                                Call(Legend_triggerCutscene)
-                            )
-                        )
-                    )
-                )
-            ),
-            Comparison(
-                val1=$$$Legend_cradlePylon2,
-                val2=2,
-                comp=Eq,
-                sequence=(
 
-                )
-            ),
-            EnterSector(
-                sectorName=The Cradle,
-                invert=true,
-                sequence=()
-            )
-        ),
-        ConditionBlock(
-            Comparison(
-                val1=$$$Legend_cradlePylon3,
-                val2=2,
-                comp=Lt,
-                sequence=(
-                    SpawnEntity(
-                        entityID=Legend_pylonTarget3,
-                        assetID=air_weapon_station,
-                        blueprintJSON=GatePylon,
-                        flagName=Legend-cradle-flag3,
-                        faction=5,
-                        name=Gate Pylon
+                            )
+                        )
+                    ),
+                    SetVariable(name=$$$Legend_cradlePylon2, value=0, onlyIfNull=true),
+                    SetVariable(name=$$$Legend_cradlePylon3, value=0, onlyIfNull=true),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Legend_cradlePylon2,
+                            val2=2,
+                            comp=Lt,
+                            sequence=(
+                                SpawnEntity(
+                                    entityID=Legend_pylonTarget2,
+                                    assetID=air_weapon_station,
+                                    blueprintJSON=GatePylon,
+                                    flagName=Legend-cradle-flag2,
+                                    faction=5,
+                                    name=Gate Pylon
+                                ),
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=SqrDistance(Legend_pylonTarget2, Legend_pylon2),
+                                        val2=5,
+                                        comp=Lt,
+                                        sequence=(
+                                            DeleteEntity(
+                                                entityID=Legend_pylonTarget2,
+                                            ),
+                                            DeleteEntity(
+                                                entityID=Legend_pylon2
+                                            ),
+                                            SetVariable(name=$$$Legend_cradlePylon2, value=2),
+                                            Call(Legend_triggerCutscene)
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_cradlePylon2,
+                            val2=2,
+                            comp=Eq,
+                            sequence=(
+
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=The Cradle,
+                            invert=true,
+                            sequence=()
+                        )
                     ),
                     ConditionBlock(
                         Comparison(
-                            val1=SqrDistance(Legend_pylonTarget3, Legend_pylon3),
-                            val2=5,
+                            val1=$$$Legend_cradlePylon3,
+                            val2=2,
                             comp=Lt,
                             sequence=(
-                                DeleteEntity(
+                                SpawnEntity(
                                     entityID=Legend_pylonTarget3,
+                                    assetID=air_weapon_station,
+                                    blueprintJSON=GatePylon,
+                                    flagName=Legend-cradle-flag3,
+                                    faction=5,
+                                    name=Gate Pylon
                                 ),
-                                DeleteEntity(
-                                    entityID=Legend_pylon3
-                                ),
-                                SetVariable(name=$$$Legend_cradlePylon3, value=2),
-                                Call(Legend_triggerCutscene)
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=SqrDistance(Legend_pylonTarget3, Legend_pylon3),
+                                        val2=5,
+                                        comp=Lt,
+                                        sequence=(
+                                            DeleteEntity(
+                                                entityID=Legend_pylonTarget3,
+                                            ),
+                                            DeleteEntity(
+                                                entityID=Legend_pylon3
+                                            ),
+                                            SetVariable(name=$$$Legend_cradlePylon3, value=2),
+                                            Call(Legend_triggerCutscene)
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_cradlePylon3,
+                            val2=2,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        EnterSector(
+                            sectorName=The Cradle,
+                            invert=true,
+                            sequence=()
+                        )
+                    ),
+
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Legend_pylonsMerged,
+                            val2=3,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        EnterSector(
+                            sectorName=The Cradle,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_pylonCollection)
                             )
                         )
-                    )
+                    ),
                 )
-            ),
-            Comparison(
-                val1=$$$Legend_cradlePylon3,
-                val2=2,
-                comp=Eq,
-                sequence=()
-            ),
-            EnterSector(
-                sectorName=The Cradle,
-                invert=true,
-                sequence=()
             )
-        ),
+        )
     )
 )
-
 
 
 

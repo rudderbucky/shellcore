@@ -81,6 +81,7 @@ StartTrigger(
                 val2=complete,
                 comp=Eq,
                 sequence=(
+                    ClearInteraction(entityID=sisyphos)
                 )
             ),
             Comparison(
@@ -88,9 +89,19 @@ StartTrigger(
                 val2=complete,
                 comp=Neq,
                 sequence=(
-                    SetInteraction(dialogueID=sisyphos_d, entityID=sisyphos)
+                    SetInteraction(dialogueID=sisyphos_d, entityID=sisyphos),
+                    ConditionBlock(
+                        Comparison(
+                            val1=MissionStatus(Truth_missionName),
+                            val2=complete,
+                            comp=Eq,
+                            sequence=(
+                                ClearInteraction(entityID=sisyphos)
+                            )
+                        ),
+                    )
                 )
             ),
-        )
+        ),
     )
 )

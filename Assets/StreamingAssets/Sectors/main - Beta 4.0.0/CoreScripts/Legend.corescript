@@ -12,6 +12,8 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=2),
+        SetVariable(name=$$$Legend_pylonsMerged, value=0),
         Call(Legend_start),
     )
 )
@@ -66,7 +68,8 @@ Function(
                 val2=4,
                 comp=Eq,
                 sequence=(
-                    Call(Legend_post_cs3)
+                    Call(Legend_post_cs3),
+                    Call(Legend_pylonCollection)
                 )
             ),
             Comparison(
@@ -74,7 +77,8 @@ Function(
                 val2=3,
                 comp=Eq,
                 sequence=(
-                    Call(Legend_post_cs2)
+                    Call(Legend_post_cs2),
+                    Call(Legend_pylonCollection)
                 )
             ),
             Comparison(
@@ -82,7 +86,8 @@ Function(
                 val2=2,
                 comp=Eq,
                 sequence=(
-                    Call(Legend_post_cs1)
+                    Call(Legend_post_cs1),
+                    Call(Legend_pylonCollection)
                 )
             ),
             Comparison(
@@ -663,6 +668,7 @@ Task(
     taskID=Legend_findSecondArtifact,
     objectives=Legend_findSecondArtifact_objectives
 )
+
 Text("Legend_findSecondArtifact_objectives", "- Find a second artifact and bring it to The Cradle.
 - Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
 
@@ -2889,10 +2895,12 @@ Function(
     sequence=(
         RemoveObjectiveMarker(ID=Legend_finalObj),
         FinishTask(),
+        ClearParty(),
+        DisablePartyMember(entityID=aristu),
         FinishCutscene(),
         ClearInteraction(entityID=eleos),
         ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
         FinishMission(soundID=clip_missioncompleteep3),
-        ShowPopup(text=Legend_endOfStory)
+        ShowPopup(text=Legend_endOfStory),
     )
 )

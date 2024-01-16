@@ -311,6 +311,7 @@ namespace NodeEditorFramework.Standard
                     mission.tasks.Add(task.GetCopy());
                 }
             }
+            else Debug.Log($"Could not find mission: {missionName}");
         }
 
         public void CreateAndRegisterTask()
