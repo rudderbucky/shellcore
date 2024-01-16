@@ -5,6 +5,7 @@ Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
 // TODO: missing objective marker after prom tells you to go to Unconvinced lair
 // TODO: missing objective marker on bz munu after accepting prometheus task
 // TODO: beef up pylons
+// TODO: fix party members not going stealth
 
 MissionTrigger(
     name=Legend_missionName,
@@ -484,7 +485,8 @@ Function(
         StartCutscene(),
         StartInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         SpawnEntity(
             entityID=Legend_cs2_e1,
@@ -612,7 +614,8 @@ Function(
         ),
         FinishInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         ForceStartDialogue(dialogueID=Legend_cs2_p2_d)
     )
@@ -678,7 +681,8 @@ Function(
         StartCutscene(),
         StartInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         SpawnEntity(
             entityID=infectedleader,
@@ -800,7 +804,8 @@ Function(
         ),
         FinishInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         ForceStartDialogue(dialogueID=Legend_cs3_p2_d)
     )
@@ -906,7 +911,8 @@ Function(
         StartCutscene(),
         StartInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         SpawnEntity(
             entityID=pytha,
@@ -1024,7 +1030,8 @@ Function(
         ),
         FinishInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         FinishCameraPan(),
         SetSectorColor(
