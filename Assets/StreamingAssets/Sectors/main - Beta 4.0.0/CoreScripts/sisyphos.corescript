@@ -5,7 +5,7 @@ Text("sisyphos_d4", "I take it you’re an exterminator.")
 Text("sisyphos_d5", "Yes. This is our lair. I take it you are still searching for what’s right.")
 Text("sisyphos_d6", "Your side seems like it’s telling the truth.")
 Text("sisyphos_d7", "If you really believe in our cause, prove it by fighting for us. Our operation to take BattleZone Lambda is nearly ready.")
-Text("sisyphos_d8", "(Come back next update) I'll wait for that then.")
+Text("sisyphos_d8", "I'll wait for that then.")
 Text("sisyphos_d9", "I know you’re wrong.")
 Text("sisyphos_d10", "I see. We’ll be seeing each other in battle as enemies then. Unfortunate. Know that you can still change your mind.")
 Text("sisyphos_d11", "I am.")
@@ -75,6 +75,22 @@ Dialogue(
 
 StartTrigger(
     sequence=(
-        SetInteraction(dialogueID=sisyphos_d, entityID=sisyphos)
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                )
+            ),
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Neq,
+                sequence=(
+                    SetInteraction(dialogueID=sisyphos_d, entityID=sisyphos)
+                )
+            ),
+        )
     )
 )
