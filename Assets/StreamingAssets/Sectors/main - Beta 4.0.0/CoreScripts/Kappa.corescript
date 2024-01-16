@@ -149,7 +149,6 @@ SectorTrigger(
                 )
             )
         ),
-        SetVariable(name=$$Kappa_core1_loyalty_d, value=Kappa_core1_d5),
         ConditionBlock(
             Comparison(
                 val1=$$$Loyalty_Variable,
@@ -158,7 +157,15 @@ SectorTrigger(
                 sequence=(
                     SetVariable(name=$$Kappa_core1_loyalty_d, value=Kappa_core1_d4)
                 )
-            )
+            ),
+            Comparison(
+                val1=$$$Loyalty_Variable,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$Kappa_core1_loyalty_d, value=Kappa_core1_d5),
+                )
+            ),
         ),
         ClearInteraction(entityID=Kappa_core1),
         ClearInteraction(entityID=Kappa_core2),
@@ -175,6 +182,12 @@ SectorTrigger(
                 sequence=(
                     Call(Kappa_setJumpGates)
                 )
+            ),
+            Comparison(
+                val1=$$$Truth_checkpoint,
+                val2=12,
+                comp=Eq,
+                sequence=()
             )
         )
     )
