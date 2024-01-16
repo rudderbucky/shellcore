@@ -341,7 +341,7 @@ SectorTrigger(
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_cradlePylon2,
-                val2=0,
+                val2=1,
                 comp=Eq,
                 sequence=(
                     SpawnEntity(
@@ -364,7 +364,7 @@ SectorTrigger(
                                 DeleteEntity(
                                     entityID=Legend_pylon2
                                 ),
-                                SetVariable(name=$$$Legend_cradlePylon2, value=1),
+                                SetVariable(name=$$$Legend_cradlePylon2, value=2),
                                 Call(Legend_triggerCutscene)
                             )
                         )
@@ -373,7 +373,7 @@ SectorTrigger(
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon2,
-                val2=1,
+                val2=2,
                 comp=Eq,
                 sequence=()
             ),
@@ -386,7 +386,7 @@ SectorTrigger(
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_cradlePylon3,
-                val2=0,
+                val2=1,
                 comp=Eq,
                 sequence=(
                     SpawnEntity(
@@ -409,7 +409,7 @@ SectorTrigger(
                                 DeleteEntity(
                                     entityID=Legend_pylon3
                                 ),
-                                SetVariable(name=$$$Legend_cradlePylon3, value=1),
+                                SetVariable(name=$$$Legend_cradlePylon3, value=2),
                                 Call(Legend_triggerCutscene)
                             )
                         )
@@ -418,7 +418,7 @@ SectorTrigger(
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon3,
-                val2=1,
+                val2=2,
                 comp=Eq,
                 sequence=()
             ),
@@ -482,13 +482,13 @@ SectorTrigger(
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_cradlePylon2,
-                val2=1,
+                val2=2,
                 comp=Eq,
                 sequence=()
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon2,
-                val2=0,
+                val2=1,
                 comp=Eq,
                 sequence=(
                     Call(Legend_spawnPylon2)
@@ -496,8 +496,8 @@ SectorTrigger(
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon2,
-                val2=1,
-                comp=Neq,
+                val2=0,
+                comp=Eq,
                 sequence=(
                     SetSectorType(type=BattleZone),
                     ConditionBlock(
@@ -509,7 +509,7 @@ SectorTrigger(
                         WinBattleZone(
                             sectorName=BattleZone Xi,
                             sequence=(    
-                                SetVariable(name=$$$Legend_cradlePylon2, value=0),
+                                SetVariable(name=$$$Legend_cradlePylon2, value=1),
                                 Call(Legend_spawnPylon2)
                             )
                         )
@@ -531,13 +531,13 @@ SectorTrigger(
         ConditionBlock(
             Comparison(
                 val1=$$$Legend_cradlePylon3,
-                val2=1,
+                val2=2,
                 comp=Eq,
                 sequence=()
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon3,
-                val2=0,
+                val2=1,
                 comp=Eq,
                 sequence=(
                     Call(Legend_spawnPylon3)
@@ -545,8 +545,8 @@ SectorTrigger(
             ),
             Comparison(
                 val1=$$$Legend_cradlePylon3,
-                val2=1,
-                comp=Neq,
+                val2=0,
+                comp=Eq,
                 sequence=(
                     SetSectorType(type=BattleZone),
                     ConditionBlock(
@@ -558,7 +558,7 @@ SectorTrigger(
                         WinBattleZone(
                             sectorName=BattleZone Omicron,
                             sequence=(    
-                                SetVariable(name=$$$Legend_cradlePylon3, value=0),
+                                SetVariable(name=$$$Legend_cradlePylon3, value=1),
                                 Call(Legend_spawnPylon3)
                             )
                         )

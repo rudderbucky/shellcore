@@ -4,6 +4,7 @@ Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
 // TODO: Deal with race condition of saving checkpoints before getting Task
 
 
+// TODO: missing objective marker after prom tells you to go to Unconvinced lair
 // TODO: missing objective marker on bz munu after accepting prometheus task
 
 MissionTrigger(
@@ -12,17 +13,8 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=3),
-        SetVariable(name=$$$Legend_pylonsMerged, value=1),
-        SetVariable(name=$$$Legend_cradlePylon1, value=1),
-        SetVariable(name=$$$Legend_cradlePylon2, value=0),
-        SetVariable(name=$$$Legend_cradlePylon3, value=0),
-//        SetVariable(name=$$$Legend_coreSafe, value=0),
+        SetVariable(name=$$$Legend_checkpoint, value=7),
         Call(Legend_start),
-        WarpPlayer(
-            sectorName=BattleZone Omicron,
-            flagName=Legend-pylon-pickup-flag2
-        )
     )
 )
 
@@ -882,7 +874,7 @@ Text("Legend_cs4_d11", "Aaaah... Pytha... you...")
 Text("Legend_cs4_d12", "What’s going on?")
 Text("Legend_cs4_d13", "I can’t believe it... why am I remembering this now of all times...")
 Text("Legend_cs4_d14", "You're blue and not red!")
-Text("Legend_cs4_d15", "Tell me... weirdly colored core... do you think Pytha was bluffing about their order?")
+Text("Legend_cs4_d15", "Strange... I thought you were green but you don't look so... anyway, do you think Pytha was bluffing about their order?")
 Text("Legend_cs4_d16", "I know that core.")
 Text("Legend_cs4_d17", "Oh. I see... That’s... not good.")
 Text("Legend_cs4_d18", "Yes.")
@@ -899,10 +891,11 @@ Text("Legend_cs4_d28", "To convince them to return to the Standard Sectors, and 
 Text("Legend_cs4_d29", "About Kappa... it's all gone now.")
 Text("Legend_cs4_d30", "Kappa is not just a place. It’s a mindset. I trained these soldiers. I can drill it into their heads again.")
 Text("Legend_cs4_d31", "...")
-Text("Legend_cs4_d32", "Find Heracles and Sisyphos. I'll join you when you find them.")
+Text("Legend_cs4_d32", "Go meet Heracles and Sisyphos. I know exactly where they are. I'll join you when you reach them.")
 Text("Legend_cs4_d33", "Okay.")
 
-Text("Legend_findHeraclesAndSisyphos_objectives", "- Find where Heracles and Sisyphos have gone to and talk with them.")
+Text("Legend_findHeraclesAndSisyphos_objectives", "- Head to the marked sector on the map.
+- Speak with Heracles and Sisyphos.")
 Task(
     taskID=Legend_findHeraclesAndSisyphos,
     objectives=Legend_findHeraclesAndSisyphos_objectives
@@ -1151,6 +1144,8 @@ Function(
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=5),
         FinishCutscene(),
+        RemoveObjectiveMarker(ID=Legend_520),
+        AddObjectiveMarker(ID=Legend_520, sectorName=Sector 520-6580),
         ConditionBlock(
             EnterSector(
                 sectorName=Sector 520-6580,
@@ -1160,13 +1155,13 @@ Function(
                     SpawnEntity(entityID=sisyphos, blueprintJSON=sisyphos, name=Sisyphos, flagName=Legend-cs5-flag3, faction=3),
                     Rotate(entityID=sisyphos, angle=90),
                     SetInteraction(
-                        entityID=heracles, 
+                        entityID=heracles,
                         sequence=(
                             Call(Legend_cs5)
                         )
                     ),
                     SetInteraction(
-                        entityID=sisyphos, 
+                        entityID=sisyphos,
                         sequence=(
                             Call(Legend_cs5)
                         )
@@ -1184,6 +1179,7 @@ Function(
 Function(
     name=Legend_cs5,
     sequence=(
+        RemoveObjectiveMarker(ID=Legend_520),
         StartCutscene(),
         SetPath(
             entityID=player,
@@ -1243,6 +1239,7 @@ Function(
         SpawnEntity(
             entityID=prometheus,
             faction=5,
+            name=Prometheus,
             blueprintJSON=Fatalizer,
             flagName=Legend-cs5-flag1
         ),
@@ -1287,9 +1284,9 @@ D(
                     sisyphos,
                     R(
                         Legend_cs5_d22,
-                        prometheus,
                         D(
                             Legend_cs5_d8,
+                            prometheus,
                             R(
                                 Legend_cs5_d22,
                                 D(
@@ -1337,7 +1334,7 @@ D(
                                                                                                     R(
                                                                                                         Legend_cs5_d22,
                                                                                                         D(
-                                                                                                            Legend_cs5_d18.
+                                                                                                            Legend_cs5_d18,
                                                                                                             heracles,
                                                                                                             R(
                                                                                                                 Legend_cs5_d22,
@@ -1414,6 +1411,10 @@ Function(
         Wait(time=1),
         ClearInteraction(entityID=heracles),
         ClearInteraction(entityID=sisyphos),
+        Rotate(
+            entityID=prometheus,
+            targetID=player,
+        ),
         ForceStartDialogue(dialogueID=Legend_post_cs5_d)
     )
 )
@@ -1634,10 +1635,31 @@ Function(
         ClearInteraction(entityID=eleos),
         ClearInteraction(entityID=prometheus),
         SetInteraction(entityID=prometheus, dialogueID=Legend_post_cs6_d),
+        SetInteraction(
+            entityID=fake-daayo,
+            dialogueID=Legend_cs7_remaining_daayo_d
+        ),
+        Call(Legend_sector20506330spawn)
+        
+    )
+)
+
+Function(
+    name=Legend_sector20506330spawn,
+    sequence=(
         ConditionBlock(
             EnterSector(
                 sectorName=Sector 2050-6330,
                 sequence=(
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Sector 2050-6330,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_sector20506330spawn)
+                            )
+                        )
+                    ),
                     SpawnEntity(
                         entityID=prometheus,
                         faction=5,
@@ -1652,17 +1674,11 @@ Function(
                         faction=1,
                         flagName=Legend-cs7-flag2
                     ),
-
-                    SetInteraction(
-                        entityID=fake-daayo,
-                        dialogueID=Legend_cs7_remaining_daayo_d
-                    ),
                 )
             )
         )
     )
 )
-
 //Legend-cs7-flag1
 
 SectorTrigger(
@@ -1891,7 +1907,7 @@ Function(
         FinishCutscene(),
         ClearInteraction(entityID=prometheus),
         SetInteraction(
-            entityID=demiurge, 
+            entityID=demiurge,
             sequence=(
                 Call(Legend_cs8)
             )
@@ -1934,50 +1950,93 @@ Function(
         RemoveObjectiveMarker(ID=Legend_tau),
         AddObjectiveMarker(ID=Legend_tau, sectorName=BattleZone Tau),
         ClearInteraction(entityID=fake-daayo),
+        Call(Legend_cs7_pylonSpawner)
+    )
+)
+
+Function(
+    name=Legend_cs7_pylonSpawner,
+    sequence=(
         ConditionBlock(
             EnterSector(
                 sectorName=BattleZone Tau,
                 sequence=(
                     ConditionBlock(
                         Comparison(
-                            val1=$$$BattleZoneTauComplete,
-                            val2=1,
+                            val1=$$$Legend_checkpoint,
+                            val2=8,
                             comp=Eq,
                             sequence=(
-                                RemoveObjectiveMarker(ID=Legend_tau),
-                                RemoveObjectiveMarker(ID=Legend_2050),
-                                AddObjectiveMarker(ID=Legend_2050, sectorName=2050-6330),
-                                DeleteEntity(
-                                    entityID=Legend_pylon4
-                                ),
-                                SpawnEntity(
-                                    flagName=Legend_finalPylon,
-                                    entityID=Legend_pylon4,
-                                    blueprintJSON=SimplePylon,
-                                    faction=5,
-                                    assetID=air_weapon_station,
-                                    overrideTractorTarget=true,
-                                    name=Pylon,
+                                ConditionBlock(
+                                    EnterSector(
+                                        sectorName=BattleZone Tau,
+                                        invert=true,
+                                        sequence=(
+                                            Log(message=TEST),
+                                            Call(Legend_cs7_pylonSpawner)
+                                        )
+                                    ),
                                 ),
                                 ConditionBlock(
-                                    Comparison(                            
-                                        val1=SqrDistance(fake-daayo, Legend_pylon4),
-                                        val2=5,
-                                        comp=Lt,
+                                    EnterSector(
+                                        sectorName=BattleZone Tau,
+                                        invert=true,
+                                        sequence=()
+                                    ),
+                                    Comparison(
+                                        val1=$$$BattleZoneTauComplete,
+                                        val2=1,
+                                        comp=Eq,
                                         sequence=(
-                                            Call(Legend_cs7)
+                                            RemoveObjectiveMarker(ID=Legend_tau),
+                                            RemoveObjectiveMarker(ID=Legend_2050),
+                                            AddObjectiveMarker(ID=Legend_2050, sectorName=2050-6330),
+                                            DeleteEntity(
+                                                entityID=Legend_pylon4
+                                            ),
+                                            SpawnEntity(
+                                                flagName=Legend_finalPylon,
+                                                entityID=Legend_pylon4,
+                                                blueprintJSON=SimplePylon,
+                                                faction=5,
+                                                assetID=air_weapon_station,
+                                                overrideTractorTarget=true,
+                                                name=Pylon,
+                                            ),
+                                            ConditionBlock(
+                                                Comparison(
+                                                    val1=SqrDistance(fake-daayo, Legend_pylon4),
+                                                    val2=5,
+                                                    comp=Lt,
+                                                    sequence=(
+                                                        Call(Legend_cs7)
+                                                    )
+                                                ),
+                                                EnterSector(
+                                                    sectorName=BattleZone Tau,
+                                                    invert=true,
+                                                    sequence=()
+                                                ),
+                                            )
                                         )
                                     )
                                 )
                             )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=8,
+                            comp=Neq,
+                            sequence=(
+
+                            )
                         )
-                    )
+                    ),
                 )
             )
         )
     )
 )
-
 
 
 
