@@ -8,7 +8,14 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
-
+        ConditionBlock(
+            EnterSector(
+                sectorName=Infected Capitol Center,
+                sequence=(
+                    Call(Ascendance_pythaFight)
+                )
+            )
+        )
     )
 )
 
@@ -57,22 +64,22 @@ D(
         Ascendance_cs0_d19,
         D(
             Ascendance_cs0_d2,
-            daayo,
+            fake-daayo,
             R(
                 Ascendance_cs0_d19,
                 D(
                     Ascendance_cs0_d3,
-                    pytha,
+                    Ascendance_pytha_1,
                     R(
                         Ascendance_cs0_d19,
                         D(
                             Ascendance_cs0_d4,
-                            daayo,
+                            fake-daayo,
                             R(
                                 Ascendance_cs0_d19,
                                 D(
                                     Ascendance_cs0_d5,
-                                    pytha,
+                                    Ascendance_pytha_1,
                                     R(
                                         Ascendance_cs0_d19,
                                         D(
@@ -86,12 +93,12 @@ D(
                                                         Ascendance_cs0_d19,
                                                         D(
                                                             Ascendance_cs0_d7,
-                                                            pytha,
+                                                            Ascendance_pytha_1,
                                                             R(
                                                                 Ascendance_cs0_d8,
                                                                 D(
                                                                     Ascendance_cs0_d9,
-                                                                    pytha,
+                                                                    Ascendance_pytha_1,
                                                                     R(
                                                                         Ascendance_cs0_d19,
                                                                         D(
@@ -102,7 +109,7 @@ D(
                                                                                     Ascendance_cs0_d11,
                                                                                     R(
                                                                                         Ascendance_cs0_d19,
-                                                                                        Call(Ascendance_pythaFight)
+                                                                                        Call(Ascendance_pythaFight_p2)
                                                                                     )
                                                                                 )
                                                                             )
@@ -130,7 +137,104 @@ D(
 Function(
     name=Ascendance_pythaFight,
     sequence=(
+        StartCutscene(),
+        DeleteEntity(
+            entityID=InfectedLeader
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_1,
+            angle=180
+        ),
+        SpawnEntity(
+            entityID=sukrat,
+            flagName=Ascendance-pytha-flag2,
+            forceCharacterTeleport=true,
+        ),
+        SetOverrideFaction(
+            entityID=sukrat,
+            overrideFaction=1,
+        ),
+        SpawnEntity(
+            entityID=fake-daayo,
+            flagName=Ascendance-pytha-flag3,
+            blueprintJSON=daayo_4,
+            faction=1,
+            name=Daayo,
+            overrideFaction=1,
+        ),
+        SetOverrideFaction(
+            entityID=player,
+            overrideFaction=1,
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-pytha-flag1,
+            sequence=(
+                Wait(time=1),
+                Rotate(
+                    entityID=player,
+                    targetID=Ascendance_pytha_1
+                ),
+                ForceStartDialogue(dialogueID=Ascendance_cs0_prefight_d)
+            )
+        ),
+    )
+)
 
+Function(
+    name=Ascendance_pythaFight_p2,
+    sequence=(
+        SpawnEntity(
+            entityID=Ascendance_pytha_2,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            overrideFaction=2,
+            name=Pytha,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_3,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            overrideFaction=2,
+            name=Pytha,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_2,
+            angle=180
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_3,
+            angle=180
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_2,
+            flagName=Ascendance-pytha-flag5
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_3,
+            flagName=Ascendance-pytha-flag6
+        ),
+        Wait(time=1),
+        Rotate(
+            entityID=Ascendance_pytha_2,
+            targetID=player,
+        ),
+
+        Rotate(
+            entityID=Ascendance_pytha_3,
+            targetID=player,
+        ),
+        ForceStartDialogue(dialogueID=Ascendance_cs0_p0_d)
     )
 )
 
@@ -151,44 +255,118 @@ Function(
     name=Ascendance_pytha_fight_p1,
     sequence=(
         FinishCutscene(),
-        SetVariable(name=$$Ascendance_pytha_death_ct, value=0),
         ConditionBlock(
             DestroyEntities(
-                entityID=Ascendance_pytha_1,
                 progressionFeedback=false,
+                nameMode=true,
+                targetID=Pytha,
+                targetFaction=1,
+                targetOverrideFaction=2,
+                targetCount=3,
                 sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
+                    Call(Ascendance_pytha_fight_p1_end)
                 )
             )
         ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_2,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_3,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            Comparison(
-                val1=$$Ascendance_pytha_death_ct,
-                val2=3,
-                comp=Eq,
-                sequence=(
+    )
+)
 
+Function(
+    name=Ascendance_pytha_fight_p1_end,
+    sequence=(
+        StartCutscene(),
+        SpawnEntity(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-pytha-flag11,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-pytha-flag1,
+            sequence=(
+                SetPath(
+                    entityID=Ascendance_pytha_1,
+                    flagName=Ascendance-pytha-flag4,
+                    sequence=(
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_2,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_3,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_4,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_5,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SetPath(
+                            entityID=Ascendance_pytha_2,
+                            flagName=Ascendance-pytha-flag5
+                        ),
+                        SetPath(
+                            entityID=Ascendance_pytha_3,
+                            flagName=Ascendance-pytha-flag6
+                        ),
+
+                        SetPath(
+                            entityID=Ascendance_pytha_4,
+                            flagName=Ascendance-pytha-flag7
+                        ),
+                        SetPath(
+                            entityID=Ascendance_pytha_5,
+                            flagName=Ascendance-pytha-flag8
+                        ),
+
+                        Wait(time=1),
+                        Rotate(
+                            entityID=Ascendance_pytha_2,
+                            targetID=player,
+                        ),
+                        Rotate(
+                            entityID=Ascendance_pytha_3,
+                            targetID=player,
+                        ),
+                        Rotate(
+                            entityID=Ascendance_pytha_4,
+                            targetID=player,
+                        ),
+                        Rotate(
+                            entityID=Ascendance_pytha_5,
+                            targetID=player,
+                        ),
+                        ForceStartDialogue(dialogueID=Ascendance_cs0_p1_d)
+                    )
                 )
             )
-        ),
+        )
     )
 )
 
@@ -209,65 +387,156 @@ Function(
     name=Ascendance_pytha_fight_p2,
     sequence=(
         FinishCutscene(),
-        SetVariable(name=$$Ascendance_pytha_death_ct, value=0),
         ConditionBlock(
             DestroyEntities(
-                entityID=Ascendance_pytha_1,
                 progressionFeedback=false,
+                nameMode=true,
+                targetID=Pytha,
+                targetFaction=1,
+                targetOverrideFaction=2,
+                targetCount=5,
                 sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_2,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_3,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_4,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_5,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            Comparison(
-                val1=$$Ascendance_pytha_death_ct,
-                val2=5,
-                comp=Eq,
-                sequence=(
-
+                    Call(Ascendance_pytha_fight_p2_end)
                 )
             )
         ),
     )
 )
 
+Function(
+    name=Ascendance_pytha_fight_p2_end,
+    sequence=(
+        StartCutscene(),
+        SpawnEntity(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-pytha-flag11,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-pytha-flag1,
+            sequence=(
+                SetPath(
+                    entityID=Ascendance_pytha_1,
+                    flagName=Ascendance-pytha-flag4,
+                    sequence=(
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_2,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_3,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_4,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_5,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_6,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+                        SpawnEntity(
+                            entityID=Ascendance_pytha_7,
+                            flagName=Ascendance-pytha-flag4,
+                            faction=1,
+                            blueprintJSON=pytha_3,
+                            name=Pytha,
+                            overrideFaction=2,
+                        ),
+
+                        SetPath(
+                            entityID=Ascendance_pytha_2,
+                            flagName=Ascendance-pytha-flag5
+                        ),
+                        SetPath(
+                            entityID=Ascendance_pytha_3,
+                            flagName=Ascendance-pytha-flag6
+                        ),
+
+                        SetPath(
+                            entityID=Ascendance_pytha_4,
+                            flagName=Ascendance-pytha-flag7
+                        ),
+                        SetPath(
+                            entityID=Ascendance_pytha_5,
+                            flagName=Ascendance-pytha-flag8
+                        ),
+
+                        SetPath(
+                            entityID=Ascendance_pytha_6,
+                            flagName=Ascendance-pytha-flag9
+                        ),
+
+                        SetPath(
+                            entityID=Ascendance_pytha_7,
+                            flagName=Ascendance-pytha-flag10
+                        ),
+
+                        Wait(time=1),
+                        Rotate(
+                            entityID=Ascendance_pytha_2,
+                            targetID=player,
+                        ),
+                        Rotate(
+                            entityID=Ascendance_pytha_3,
+                            targetID=player,
+                        ),
+                        Rotate(
+                            entityID=Ascendance_pytha_4,
+                            targetID=player,
+                        ),
+                        Rotate(
+                            entityID=Ascendance_pytha_5,
+                            targetID=player,
+                        ),
+
+                        Rotate(
+                            entityID=Ascendance_pytha_6,
+                            targetID=player,
+                        ),
+
+                        Rotate(
+                            entityID=Ascendance_pytha_7,
+                            targetID=player,
+                        ),
+                        ForceStartDialogue(dialogueID=Ascendance_cs0_p2_d)
+                    )
+                )
+            )
+        )
+    )
+)
 
 
 Text("Ascendance_cs0_d15", "This time you're seriously toast.")
@@ -286,85 +555,26 @@ Function(
     name=Ascendance_pytha_fight_p3,
     sequence=(
         FinishCutscene(),
-        SetVariable(name=$$Ascendance_pytha_death_ct, value=0),
         ConditionBlock(
             DestroyEntities(
-                entityID=Ascendance_pytha_1,
                 progressionFeedback=false,
+                nameMode=true,
+                targetID=Pytha,
+                targetFaction=1,
+                targetOverrideFaction=2,
+                targetCount=7,
                 sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_2,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_3,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_4,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_5,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_6,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            DestroyEntities(
-                entityID=Ascendance_pytha_7,
-                progressionFeedback=false,
-                sequence=(
-                    AddIntValues(val1=$$Ascendance_pytha_death_ct, val2=1, name=$$Ascendance_pytha_death-ct)
-                )
-            )
-        ),
-        ConditionBlock(
-            Comparison(
-                val1=$$Ascendance_pytha_death_ct,
-                val2=7,
-                comp=Eq,
-                sequence=(
-
+                    Call(Ascendance_pytha_fight_p3_end)
                 )
             )
         ),
     )
 )
 
-
-
+Function(
+    name=Ascendance_pytha_fight_p3_end,
+    sequence=()
+)
 
 
 
@@ -430,7 +640,7 @@ Function(
 //Text("", "Finally, you meddling twits made it. Prometheus, welcome back.")
 //Text("", "We're here to end this war, leaders. The game is up.")
 //Text("", "Do you really think we weren’t monitoring the cradle? We noticed your activity.")
-//Text("", "The weapon was nearly complete at the time, but you will be the last thing we needed - the fire we can no longer produce.")
+//Text("", "The weapon was nearly complete at the time, but you will be the last thing we needed - the fire we cannot produce.")
 //Text("", "Oh dear.")
 //Text("", "That's right, we know. You've managed to learn how to manipulate the basic energies of this world - however crudely. This talent was only known by our creator...")
 //Text("", "You've... surpassed us. You're the missing piece of our weapon.")
