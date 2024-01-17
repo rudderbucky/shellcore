@@ -1468,6 +1468,8 @@ Function(
     sequence=(
         FinishCutscene(),
         SetVariable(name=$$$Legend_checkpoint, value=6),
+        RemoveObjectiveMarker(ID=Legend_UCL_marker),
+        AddObjectiveMarker(ID=Legend_UCL_marker, sectorName=Unconvinced Lair),
         ConditionBlock(
             EnterSector(
                 sectorName=Unconvinced Lair,
@@ -1655,6 +1657,9 @@ Function(
     name=Legend_post_cs6,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=7),
+        RemoveObjectiveMarker(ID=Legend_UCL_marker),
+        RemoveObjectiveMarker(ID=Legend_2050),
+        AddObjectiveMarker(ID=Legend_2050, sectorName=Sector 2050-6330),
         ClearInteraction(entityID=eleos),
         ClearInteraction(entityID=prometheus),
         SetInteraction(entityID=prometheus, dialogueID=Legend_post_cs6_d),
@@ -1942,6 +1947,7 @@ Function(
     name=Legend_post_cs7,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=9),
+        RemoveObjectiveMarker(ID=Legend_2050),
         AddObjectiveMarker(ID=Legend_finalObj, sectorName=The Core),
         SetVariable(name=$$$Legend_coreSafe, value=1),
         FinishCutscene(),
@@ -1987,6 +1993,7 @@ Function(
     name=Legend_cs7_remaining_startPylonSpawn,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=8),
+        RemoveObjectiveMarker(ID=Legend_2050),
         RemoveObjectiveMarker(ID=Legend_tau),
         AddObjectiveMarker(ID=Legend_tau, sectorName=BattleZone Tau),
         ClearInteraction(entityID=fake-daayo),
