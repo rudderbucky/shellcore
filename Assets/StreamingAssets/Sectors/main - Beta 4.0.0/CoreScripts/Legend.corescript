@@ -21,6 +21,12 @@ Function(
     sequence=(
         ConditionBlock(
             Comparison(
+                val1=MissionStatus(Legend_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
                 val1=$$$Legend_checkpoint,
                 val2=9,
                 comp=Eq,
@@ -360,6 +366,7 @@ Function(
         SetVariable(name=$$$Legend_cradlePylon1, value=0),
         SetVariable(name=$$$Legend_cradlePylon2, value=0),
         SetVariable(name=$$$Legend_cradlePylon3, value=0),
+        Call(Legend_pylonCollection),
         StartCameraPan(
             flagName=Legend-cradle-flag2,
             instant=true,
@@ -819,8 +826,7 @@ Text("Legend_cs3_d9", "Do you think the leader was lying to you?")
 Text("Legend_cs3_d10", "Then? It was a perfectly reasonable argument. Now? Yes.")
 Text("Legend_cs3_d11", "...")
 Text("Legend_cs3_d12", "Find the last artifact. That will reactivate this cradle and provide me a new form.")
-Text("Legend_findLastArtifact_objectives", "- Find the final artifact and bring it to The Cradle.
-- Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
+Text("Legend_findLastArtifact_objectives", "- Find the final artifact and bring it to The Cradle.")
 Text("Legend_cs3_d13", "I'll do it.")
 
 Task(
@@ -1430,11 +1436,19 @@ Function(
 
 Text("Legend_post_cs5_d1", "You specifically should meet me at the Unconvinced Lair. We need to talk Eleos into joining us at the core.")
 Text("Legend_post_cs5_d2", "Okay.")
+Text("Legend_UCL_task_objectives", "- Head to the Unconvinced Lair and speak with Eleos.")
+
+Task(
+    taskID=Legend_UCL_task,
+    objectives=Legend_UCL_task_objectives
+)
 
 D(
     Legend_post_cs5_d1,
     prometheus,
     Legend_post_cs5_d,
+    ,
+    Legend_UCL_task,
     R(
         Legend_post_cs5_d2,
         Call(Legend_post_cs5_and_finish_cutscene)
@@ -1541,7 +1555,7 @@ D(
 Text("Legend_cs6_d9", "Thank you for all your work so far... but I have another favor to ask from you. The Core is still hostile to us and we need to figure out why.")
 Text("Legend_cs6_d10", "Why do you think it is?")
 Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend asking Daayo about it in Sector 2050-6330.")
-Text("Legend_meetDaayo_2_objectives", "-Head to Sector 2050-6330 and speak with Daayo there for further instructions.")
+Text("Legend_meetDaayo_2_objectives", "- Head to Sector 2050-6330 and speak with Daayo there for further instructions.")
 Text("Legend_cs6_d12", "Okay.")
 
 
@@ -1904,6 +1918,10 @@ D(
                 Legend_cs7_d5,
                 D(
                     Legend_cs7_d6,
+                    ,
+                    ,
+                    ,
+                    Legend_cs7_meet_demiurge,
                     R(
                         Legend_cs7_d5,
                         Call(Legend_post_cs7)
@@ -1912,6 +1930,12 @@ D(
             )
         )
     )
+)
+
+Text("Legend_cs7_meet_demiurge_objectives", "- Head to the Core and interact with whatever lies within the sector.")
+Task(
+    taskID=Legend_cs7_meet_demiurge,
+    objectives=Legend_cs7_meet_demiurge_objectives
 )
 
 Function(
@@ -2897,8 +2921,8 @@ Function(
         DisablePartyMember(entityID=aristu),
         FinishCutscene(),
         ClearInteraction(entityID=eleos),
-        ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
-        FinishMission(soundID=clip_missioncompleteep3),
+        ShowAlert(text=Abandonment_missionComplete),
+        FinishMission(),
         ShowPopup(text=Legend_endOfStory),
     )
 )
