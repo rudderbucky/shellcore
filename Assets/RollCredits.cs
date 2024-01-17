@@ -64,18 +64,27 @@ public class RollCredits : MonoBehaviour
     string s1 = "ShellCoreCommand";
     string s2 = "REMASTERED";
     string s3 = "TACTICAL RETRO COMBAT.";
-    float rollStart = 10.5F;
+    [SerializeField]
+    float rollStart;
+    [SerializeField]
+    float finalRoll = 10.3F;
 
-
+// 10.3
     void Update()
     {
         timer += Time.deltaTime;
         cont1.gameObject.SetActive(true);
         cont2.gameObject.SetActive(true);
         cont3.gameObject.SetActive(true);
+        // (m * rs + c = 1, m * time2 + c = 0 )
+        var v21 = Mathf.Max(0, timer / (rollStart - time2) - (time2 / (rollStart - time2)));
+        var v2 = Mathf.Min(s2.Length, Mathf.FloorToInt(v21 * s2.Length));
+
+        var v31 = Mathf.Max(0, timer / (rollStart - time1) - (time1 / (rollStart - time1)));
+        var v3 = Mathf.Min(s3.Length, Mathf.FloorToInt(v31 * s3.Length));
         cont1.GetComponentInChildren<Text>().text = s1.Substring(0, Mathf.Min(s1.Length, Mathf.FloorToInt((timer / rollStart) * s1.Length)));
-        cont2.GetComponentInChildren<Text>().text = s2.Substring(0, Mathf.Min(s2.Length, Mathf.FloorToInt((timer / rollStart) * s2.Length)));
-        cont3.GetComponentInChildren<Text>().text = s3.Substring(0, Mathf.Min(s3.Length, Mathf.FloorToInt((timer / rollStart) * s3.Length)));
+        cont2.GetComponentInChildren<Text>().text = s2.Substring(0, v2);
+        cont3.GetComponentInChildren<Text>().text = s3.Substring(0, v3);
 
         if (timer > time1)
         {
@@ -89,14 +98,14 @@ public class RollCredits : MonoBehaviour
         if (timer > time3)
         {
         }
-        if (timer > rollStart)
+        if (timer > finalRoll)
         {
             var cst = 35;
             if (Input.GetKey(KeyCode.Space)) cst *= 20;
             container.transform.position = container.transform.position + Vector3.up * Time.deltaTime * cst;
         }
 
-        if (container.anchoredPosition.y > 6670)
+        if (ty.parent != transform && ty.transform.position.y > 0.5 * Screen.height)
         {
             ty.SetParent(transform, false);
             ty.anchorMax = Vector2.one * 0.5F;
