@@ -299,6 +299,8 @@ public class ShellPart : MonoBehaviour
     {
         if (shooter)
         {
+            if (DialogueSystem.isInCutscene) return;
+            
             var weapon = GetComponent<WeaponAbility>();
             var targ = weapon.GetTarget();
             if (weapon as Ion) 

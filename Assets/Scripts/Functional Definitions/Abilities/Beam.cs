@@ -89,6 +89,14 @@ public class Beam : WeaponAbility
 
     protected virtual void Update()
     {
+        if (DialogueSystem.isInCutscene)
+        {
+            line.startWidth = line.endWidth = 0;
+            firing = false;
+            line.positionCount = 0;
+            numShots = 0;
+        }
+
         if (!firing)
         {
             numShots = 0;
@@ -99,7 +107,6 @@ public class Beam : WeaponAbility
             else MAX_BOUNCES = 3;
             return;
         }
-
 
         if (firing)
             timer += Time.deltaTime;

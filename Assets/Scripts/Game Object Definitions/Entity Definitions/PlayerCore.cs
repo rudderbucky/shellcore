@@ -414,6 +414,13 @@ public class PlayerCore : ShellCore
 
     public override void Warp(Vector3 point, bool setWarpUninteractable = true)
     {
+#if UNITY_EDITOR
+        if (GetTractorTarget() && GetTractorTarget().GetComponent<Entity>())
+        {
+            GetTractorTarget().GetComponent<Entity>().transform.position = point;
+        }
+#endif
+
         base.Warp(point, setWarpUninteractable);
         CameraScript.instance.Focus(transform.position);
         foreach (var instance in RectangleEffectScript.instances)
@@ -426,6 +433,7 @@ public class PlayerCore : ShellCore
         AudioManager.PlayClipByID("clip_respawn", transform.position);
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
             SectorManager.instance.AttemptSectorLoad();
+
     }
 
     protected override void CraftMover(Vector2 directionVector)

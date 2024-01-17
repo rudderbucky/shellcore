@@ -239,15 +239,30 @@ Function(
 SectorTrigger(
     sectorName=Unconvinced Lair,
     sequence=(
-        SpawnEntity(
-            entityID=fake-daayo,
-            flagName=UCH-daayo-flag,
-            faction=1,
-            blueprintJSON=daayo_4,
-            name=Daayo
+        ConditionBlock(
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=fake-daayo,
+                        flagName=UCH-daayo-flag,
+                        faction=1,
+                        blueprintJSON=daayo_4,
+                        name=Daayo
+                    ),
+                    ClearInteraction(entityID=fake-daayo),
+                    SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
+                )
+            ),
         ),
-        ClearInteraction(entityID=fake-daayo),
-        SetInteraction(entityID=fake-daayo, dialogueID=UCH_daayo_d),
         Call(UCH_truce),
         ConditionBlock(
             Comparison(
@@ -277,13 +292,42 @@ SectorTrigger(
         ClearInteraction(entityID=UCH_core4),
         ClearInteraction(entityID=UCH_core5),
         ClearInteraction(entityID=UCH_core6),
-        ClearInteraction(entityID=eleos),
         SetInteraction(entityID=UCH_core1, dialogueID=UCH_core1_d),
         SetInteraction(entityID=UCH_core2, dialogueID=UCH_core2_d),
         SetInteraction(entityID=UCH_core3, dialogueID=UCH_core3_d),
         SetInteraction(entityID=UCH_core4, dialogueID=UCH_core4_d),
         SetInteraction(entityID=UCH_core5, dialogueID=UCH_core5_d),
         SetInteraction(entityID=UCH_core6, dialogueID=UCH_core6_d),
-        SetInteraction(entityID=eleos, dialogueID=UCH_eleos_d),
+    )
+)
+
+StartTrigger(
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    ClearInteraction(entityID=eleos)
+                )
+            ),
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Neq,
+                sequence=(
+                    SetInteraction(entityID=eleos, dialogueID=UCH_eleos_d),
+                    Comparison(
+                        val1=MissionStatus(Truth_missionName),
+                        val2=complete,
+                        comp=Eq,
+                        sequence=(
+                            ClearInteraction(entityID=eleos)
+                        )
+                    ),
+                )
+            )
+        )
     )
 )

@@ -569,6 +569,7 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.StartInflictionCosmetic:
                     id = GetArgument(inst.arguments, "entityID");
                     var type = GetArgument(inst.arguments, "type");
+                    var partyMembers = GetArgument(inst.arguments, "runOnParty") == "true";
                     foreach (var data in AIData.entities)
                     {
                         if (data.ID != id)
@@ -576,21 +577,22 @@ public class CoreScriptsSequence : MonoBehaviour
                             continue;
                         }
 
-                        switch (type)
-                        {
-                            case "PinDown":
-                                PinDown.InflictionCosmetic(data, 0, false);
-                                break;
-                            case "Stealth":
-                                if (data.StealthStacks == 0) data.StealthStacks++;
-                                break;
-                        }
+                        StartInflictionCosmetic(data, type);
                     }
                     
+                    if (partyMembers)
+                    {
+                        foreach (var member in PartyManager.instance.partyMembers)
+                        {
+                            StartInflictionCosmetic(member, type);
+                        }
+                    }
                     break;
                 case InstructionCommand.FinishInflictionCosmetic:
                     id = GetArgument(inst.arguments, "entityID");
                     type = GetArgument(inst.arguments, "type");
+                    partyMembers = GetArgument(inst.arguments, "runOnParty") == "true";
+
                     foreach (var data in AIData.entities)
                     {
                         if (data.ID != id)
@@ -598,22 +600,16 @@ public class CoreScriptsSequence : MonoBehaviour
                             continue;
                         }
 
-                        switch (type)
+                        FinishInflictionCosmetic(data, type);
+                    }
+
+                    if (partyMembers)
+                    {
+                        foreach (var member in PartyManager.instance.partyMembers)
                         {
-                            case "PinDown":
-
-                                if (data.pinDownCosmetic != null)
-                                {
-                                    data.StopPinDownCosmetic();
-                                }
-                                break;
-
-                            case "Stealth":
-                                if (data.StealthStacks > 0) data.StealthStacks--;
-                                break;
+                            FinishInflictionCosmetic(member, type);
                         }
                     }
-                    
                     break;
                 case InstructionCommand.ChangeCharacterBlueprint:
                     ChangeCharacterBlueprint(
@@ -629,6 +625,39 @@ public class CoreScriptsSequence : MonoBehaviour
         }
         yield return null;
     }
+
+    private static void StartInflictionCosmetic(Entity data, string type)
+    {
+        switch (type)
+        {
+            case "PinDown":
+                PinDown.InflictionCosmetic(data, 0, false);
+                break;
+            case "Stealth":
+                if (data.StealthStacks == 0) data.StealthStacks++;
+                break;
+        }
+    }
+
+    private static void FinishInflictionCosmetic(Entity data, string type)
+    {
+
+        switch (type)
+        {
+            case "PinDown":
+
+                if (data.pinDownCosmetic != null)
+                {
+                    data.StopPinDownCosmetic();
+                }
+                break;
+
+            case "Stealth":
+                if (data.StealthStacks > 0) data.StealthStacks--;
+                break;
+        }
+    }
+
 
 
     private static void FinishMission(Context context, string rewardsText, string jingleID)

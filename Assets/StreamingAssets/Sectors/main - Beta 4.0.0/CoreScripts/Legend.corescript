@@ -21,6 +21,12 @@ Function(
     sequence=(
         ConditionBlock(
             Comparison(
+                val1=MissionStatus(Legend_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
                 val1=$$$Legend_checkpoint,
                 val2=9,
                 comp=Eq,
@@ -66,7 +72,8 @@ Function(
                 val2=4,
                 comp=Eq,
                 sequence=(
-                    Call(Legend_post_cs3)
+                    Call(Legend_post_cs3),
+                    Call(Legend_pylonCollection)
                 )
             ),
             Comparison(
@@ -74,7 +81,8 @@ Function(
                 val2=3,
                 comp=Eq,
                 sequence=(
-                    Call(Legend_post_cs2)
+                    Call(Legend_post_cs2),
+                    Call(Legend_pylonCollection)
                 )
             ),
             Comparison(
@@ -82,7 +90,8 @@ Function(
                 val2=2,
                 comp=Eq,
                 sequence=(
-                    Call(Legend_post_cs1)
+                    Call(Legend_post_cs1),
+                    Call(Legend_pylonCollection)
                 )
             ),
             Comparison(
@@ -357,6 +366,7 @@ Function(
         SetVariable(name=$$$Legend_cradlePylon1, value=0),
         SetVariable(name=$$$Legend_cradlePylon2, value=0),
         SetVariable(name=$$$Legend_cradlePylon3, value=0),
+        Call(Legend_pylonCollection),
         StartCameraPan(
             flagName=Legend-cradle-flag2,
             instant=true,
@@ -484,7 +494,8 @@ Function(
         StartCutscene(),
         StartInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         SpawnEntity(
             entityID=Legend_cs2_e1,
@@ -612,7 +623,8 @@ Function(
         ),
         FinishInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         ForceStartDialogue(dialogueID=Legend_cs2_p2_d)
     )
@@ -661,6 +673,7 @@ Task(
     taskID=Legend_findSecondArtifact,
     objectives=Legend_findSecondArtifact_objectives
 )
+
 Text("Legend_findSecondArtifact_objectives", "- Find a second artifact and bring it to The Cradle.
 - Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
 
@@ -678,7 +691,8 @@ Function(
         StartCutscene(),
         StartInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         SpawnEntity(
             entityID=infectedleader,
@@ -800,7 +814,8 @@ Function(
         ),
         FinishInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         ForceStartDialogue(dialogueID=Legend_cs3_p2_d)
     )
@@ -811,8 +826,7 @@ Text("Legend_cs3_d9", "Do you think the leader was lying to you?")
 Text("Legend_cs3_d10", "Then? It was a perfectly reasonable argument. Now? Yes.")
 Text("Legend_cs3_d11", "...")
 Text("Legend_cs3_d12", "Find the last artifact. That will reactivate this cradle and provide me a new form.")
-Text("Legend_findLastArtifact_objectives", "- Find the final artifact and bring it to The Cradle.
-- Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
+Text("Legend_findLastArtifact_objectives", "- Find the final artifact and bring it to The Cradle.")
 Text("Legend_cs3_d13", "I'll do it.")
 
 Task(
@@ -906,7 +920,8 @@ Function(
         StartCutscene(),
         StartInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         SpawnEntity(
             entityID=pytha,
@@ -1024,7 +1039,8 @@ Function(
         ),
         FinishInflictionCosmetic(
             entityID=player,
-            type=Stealth
+            type=Stealth,
+            runOnParty=true
         ),
         FinishCameraPan(),
         SetSectorColor(
@@ -1420,11 +1436,19 @@ Function(
 
 Text("Legend_post_cs5_d1", "You specifically should meet me at the Unconvinced Lair. We need to talk Eleos into joining us at the core.")
 Text("Legend_post_cs5_d2", "Okay.")
+Text("Legend_UCL_task_objectives", "- Head to the Unconvinced Lair and speak with Eleos.")
+
+Task(
+    taskID=Legend_UCL_task,
+    objectives=Legend_UCL_task_objectives
+)
 
 D(
     Legend_post_cs5_d1,
     prometheus,
     Legend_post_cs5_d,
+    ,
+    Legend_UCL_task,
     R(
         Legend_post_cs5_d2,
         Call(Legend_post_cs5_and_finish_cutscene)
@@ -1444,6 +1468,8 @@ Function(
     sequence=(
         FinishCutscene(),
         SetVariable(name=$$$Legend_checkpoint, value=6),
+        RemoveObjectiveMarker(ID=Legend_UCL_marker),
+        AddObjectiveMarker(ID=Legend_UCL_marker, sectorName=Unconvinced Lair),
         ConditionBlock(
             EnterSector(
                 sectorName=Unconvinced Lair,
@@ -1531,7 +1557,7 @@ D(
 Text("Legend_cs6_d9", "Thank you for all your work so far... but I have another favor to ask from you. The Core is still hostile to us and we need to figure out why.")
 Text("Legend_cs6_d10", "Why do you think it is?")
 Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend asking Daayo about it in Sector 2050-6330.")
-Text("Legend_meetDaayo_2_objectives", "-Head to Sector 2050-6330 and speak with Daayo there for further instructions.")
+Text("Legend_meetDaayo_2_objectives", "- Head to Sector 2050-6330 and speak with Daayo there for further instructions.")
 Text("Legend_cs6_d12", "Okay.")
 
 
@@ -1631,6 +1657,9 @@ Function(
     name=Legend_post_cs6,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=7),
+        RemoveObjectiveMarker(ID=Legend_UCL_marker),
+        RemoveObjectiveMarker(ID=Legend_2050),
+        AddObjectiveMarker(ID=Legend_2050, sectorName=Sector 2050-6330),
         ClearInteraction(entityID=eleos),
         ClearInteraction(entityID=prometheus),
         SetInteraction(entityID=prometheus, dialogueID=Legend_post_cs6_d),
@@ -1894,6 +1923,10 @@ D(
                 Legend_cs7_d5,
                 D(
                     Legend_cs7_d6,
+                    ,
+                    ,
+                    ,
+                    Legend_cs7_meet_demiurge,
                     R(
                         Legend_cs7_d5,
                         Call(Legend_post_cs7)
@@ -1904,10 +1937,17 @@ D(
     )
 )
 
+Text("Legend_cs7_meet_demiurge_objectives", "- Head to the Core and interact with whatever lies within the sector.")
+Task(
+    taskID=Legend_cs7_meet_demiurge,
+    objectives=Legend_cs7_meet_demiurge_objectives
+)
+
 Function(
     name=Legend_post_cs7,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=9),
+        RemoveObjectiveMarker(ID=Legend_2050),
         AddObjectiveMarker(ID=Legend_finalObj, sectorName=The Core),
         SetVariable(name=$$$Legend_coreSafe, value=1),
         FinishCutscene(),
@@ -1953,6 +1993,7 @@ Function(
     name=Legend_cs7_remaining_startPylonSpawn,
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=8),
+        RemoveObjectiveMarker(ID=Legend_2050),
         RemoveObjectiveMarker(ID=Legend_tau),
         AddObjectiveMarker(ID=Legend_tau, sectorName=BattleZone Tau),
         ClearInteraction(entityID=fake-daayo),
@@ -2003,6 +2044,7 @@ Function(
                                                 overrideTractorTarget=true,
                                                 name=Pylon,
                                             ),
+                                            SetVariable(name=$$Legend_daayoDistance, value=0, onlyIfNull=true),
                                             Call(Legend_attemptDaayoDistance)
                                         )
                                     ),
@@ -2766,7 +2808,6 @@ Function(
             speedFactor=0.5,
         ),
         Wait(time=2),
-        StartMusicOverride(musicID=music_overworld_5),
         ForceStartDialogue(dialogueID=Legend_cs8_p9_d)
     )
 )
@@ -2795,6 +2836,7 @@ Function(
     name=Legend_cs8_p10,
     sequence=(
         Wait(time=3),
+        StartMusicOverride(musicID=music_transpose),
         ForceStartDialogue(dialogueID=Legend_cs8_p10_d)
     )
 )
@@ -2882,11 +2924,12 @@ Function(
     sequence=(
         RemoveObjectiveMarker(ID=Legend_finalObj),
         FinishTask(),
+        ClearParty(),
+        DisablePartyMember(entityID=aristu),
         FinishCutscene(),
-        FinishMusicOverride(),
         ClearInteraction(entityID=eleos),
-        ShowAlert(text=Abandonment_missionComplete, soundID=clip_victory),
-        FinishMission(soundID=clip_missioncompleteep3),
-        ShowPopup(text=Legend_endOfStory)
+        ShowAlert(text=Abandonment_missionComplete),
+        FinishMission(),
+        ShowPopup(text=Legend_endOfStory),
     )
 )
