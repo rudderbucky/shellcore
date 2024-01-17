@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-78.4,9.6" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Test Variable" ID="-1243400192" type="TestVariableNode" pos="-190,-70">
+			<Port ID="-1010765824" name="inputLeft" dynamic="False" />
+			<Port ID="26674304" name="outputTrue" dynamic="False" />
+			<Port ID="1064114432" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1705787891" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Set Music" ID="-993401600" type="MusicNode" pos="50,-70">
+			<Port ID="2101554560" name="output" dynamic="False" />
+			<Port ID="-1155972608" name="input" dynamic="False" />
+			<Variable name="musicID" refID="371857150" />
+			<boolean name="defaultMusic">true</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="-808928768" type="LoadSectorNode" pos="-360,-70">
+			<Port ID="-118532480" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1132059145" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1010765824" port2ID="-118532480" />
+		<Connection port1ID="26674304" port2ID="-1155972608" />
+	</Connections>
+	<Objects>
+		<Object refID="-1705787891" type="System.String">
+			<string>BossMusicVar</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="1132059145" type="System.String">
+			<string>Infected Capitol South-East</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

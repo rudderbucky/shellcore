@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="341.8,-58" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Test Variable" ID="788150556" type="TestVariableNode" pos="-473.2,-118.4">
+			<Port ID="941287524" name="inputLeft" dynamic="False" />
+			<Port ID="-368469752" name="outputTrue" dynamic="False" />
+			<Port ID="-1678227028" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-622195009" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Delete Entity" ID="-380668524" type="Delete" pos="-118.4,-112.8">
+			<Port ID="1306982992" name="output" dynamic="False" />
+			<Port ID="-2774284" name="IDIn" dynamic="False" />
+			<Port ID="-1312531560" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-379448545" />
+		</Node>
+		<Node name="Delete Entity" ID="-676521574" type="Delete" pos="129.4,-114">
+			<Port ID="-1129683826" name="output" dynamic="False" />
+			<Port ID="1855526194" name="IDIn" dynamic="False" />
+			<Port ID="545768918" name="input" dynamic="False" />
+			<Variable name="entityID" refID="718526265" />
+		</Node>
+		<Node name="Delete Entity" ID="-972374624" type="Delete" pos="370,-110">
+			<Port ID="-763988358" name="output" dynamic="False" />
+			<Port ID="-2073745634" name="IDIn" dynamic="False" />
+			<Port ID="911464386" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1655684388" />
+		</Node>
+		<Node name="Enter Sector" ID="-1386170952" type="LoadSectorNode" pos="-668,-34.8">
+			<Port ID="-2043922496" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1749462965" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="941287524" port2ID="-2043922496" />
+		<Connection port1ID="-368469752" port2ID="-1312531560" />
+		<Connection port1ID="1306982992" port2ID="545768918" />
+		<Connection port1ID="-1129683826" port2ID="911464386" />
+	</Connections>
+	<Objects>
+		<Object refID="-622195009" type="System.String">
+			<string>FI_CapitolAttack_IsHappening</string>
+		</Object>
+		<Object refID="-379448545" type="System.String">
+			<string>uninfected-leader</string>
+		</Object>
+		<Object refID="718526265" type="System.String">
+			<string>shoot-things</string>
+		</Object>
+		<Object refID="-1655684388" type="System.String">
+			<string>shoot-things-praise</string>
+		</Object>
+		<Object refID="-1749462965" type="System.String">
+			<string>Capitol Center</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

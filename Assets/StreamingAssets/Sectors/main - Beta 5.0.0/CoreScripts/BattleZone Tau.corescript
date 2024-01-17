@@ -1,0 +1,386 @@
+SectorTrigger(
+    sectorName=BattleZone Tau,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$BattleZoneTauComplete,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(BZTauPostVictory)
+                )
+            ),
+            Comparison(
+                val1=$$$BattleZoneTauComplete,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZTauStart)
+                )
+            )
+        ),
+        ConditionBlock(
+            WinBattleZone(
+                sectorName=BattleZone Tau,
+                sequence=(
+                    SetVariable(name=$$$BattleZoneTauComplete, value=1)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Tau,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZTauStart,
+    sequence=(
+        Call(BZTauDefectedCommandersSpawn),
+        Call(BZTauStartWithArchitect2),
+        Call(BZTauStartWithoutArchitect)
+    )
+)
+
+Text("BZTau_Architect_d1", "This battlezone needs a base. Hold on for 90 seconds, I will make this quick.")
+Text("BZTau_Architect_d2", "Base is done and operational. Constructing additional encampments now.")
+Text("BZTau_Architect_d3", "Carrier construction complete! Spawning drones to support you.")
+
+Function(
+    name=BZTauStartWithArchitect,
+    sequence=(
+        PassiveDialogue(entityID=Tester, text=BZTau_Architect_d1),
+        Wait(time=90),
+        PassiveDialogue(entityID=Tester, text=BZTau_Architect_d2),
+        Call(BZTauBaseConstruction),
+        Wait(time=60),
+        PassiveDialogue(entityID=Tester, text=BZTau_Architect_d3),
+        Call(BZTauCarrierConstruction)
+    )
+)
+
+Function(
+    name=BZTauStartWithArchitect2,
+    sequence=(
+        PassiveDialogue(entityID=Tester, text=BZTau_Architect_d1),
+        ConditionBlock(
+            EnterSector(
+                sectorName=BattleZone Tau,
+                invert=true,
+                sequence=()
+            ),
+            Time(
+                time=90,
+                sequence=(
+                    PassiveDialogue(entityID=Tester, text=BZTau_Architect_d2),
+                    Call(BZTauBaseConstruction),
+                    Conditionblock(
+                        EnterSector(
+                            sectorName=BattleZone Tau,
+                            invert=true,
+                            sequence=()
+                        ),
+                        Time(
+                            time=60,
+                            sequence=(
+                                PassiveDialogue(entityID=Tester, text=BZTau_Architect_d3),
+                                Call(BZTauCarrierConstruction)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+
+)
+
+Function(
+    name=BZTauBaseConstruction,
+    sequence=(
+        SpawnEntity(
+            entityID=BZTau_ArchitectStation,        
+            assetID=groundcarrier_blueprint,
+            blueprintJSON=Ground Base Heavy,
+            flagName=BZTauBaseSpawn,
+            name=Ground Base
+        )
+    )
+)
+
+Function(
+    name=BZTauCarrierConstruction,
+    sequence=(
+        SpawnEntity(
+            entityID=BZTau_ArchitectCarrier1,        
+            assetID=carrier_blueprint,
+            blueprintJSON=CarrierMedium,
+            flagName=BZTauCarrierSpawn1,
+            name=Air Carrier
+        ),
+        SpawnEntity(
+            entityID=BZTau_ArchitectCarrier2,        
+            assetID=carrier_blueprint,
+            blueprintJSON=CarrierMedium,
+            flagName=BZTauCarrierSpawn2,
+            name=Air Carrier
+        )
+    )
+)
+
+Function(
+    name=BZTauStartWithoutArchitect,
+    sequence=(
+    )
+)
+
+Function(
+    name=BZTauPostVictory,
+    sequence=(
+        SetSectorType(type=Neutral),
+        Call(BZTauDeleteDefectedBase),
+        Call(BZTauDeleteIonStation),
+        Call(BZTauDeleteDefectedDefense)
+    )
+)
+
+Function(
+    name=BZTauDefectedCommandersSpawn,
+    sequence=(
+		SpawnEntity(
+            entityID=BZTauDefectedCommander2,
+            blueprintJSON=Defected Tau Core,
+            flagName=BZTauDefectedCommander2Spawn,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            entityID=BZTauDefectedCommander3,
+            blueprintJSON=Defected Tau Core B,
+            flagName=BZTauDefectedCommander3Spawn,
+            name=ShellCore,
+            faction=2
+        )
+    )
+)
+
+Function(
+    name=BZTauDeleteIonStation,
+    sequence=(
+		DeleteEntity(
+            entityID=BZTauIonStation1
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation2
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation3
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation4
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation5
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation6
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation7
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation8
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation9
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation10
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation11
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation12
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation13
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation14
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation15
+        ),
+        DeleteEntity(
+            entityID=BZTauIonStation16
+        )
+    )
+)
+
+Function(
+    name=BZTauDeleteDefectedBase,
+    sequence=(
+		DeleteEntity(
+            entityID=BZTauDefectedBase1
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase2
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase3
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase4
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase5
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase6
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase7
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase8
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase9
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedBase10
+        )
+    )
+)
+
+Function(
+    name=BZTauDeleteDefectedDefense,
+    sequence=(
+		DeleteEntity(
+            entityID=BZTauDefectedDefense1
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense2
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense3
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense4
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense5
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense6
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense7
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense8
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense9
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense10
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense11
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense12
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense13
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense14
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense15
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense16
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense17
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense18
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense19
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense20
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense21
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense22
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense23
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense24
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense25
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense26
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense27
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense28
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense29
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense30
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense31
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense32
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense33
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense34
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense35
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense36
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense37
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense38
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense39
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense40
+        ),
+        DeleteEntity(
+            entityID=BZTauDefectedDefense41
+        )
+    )
+)

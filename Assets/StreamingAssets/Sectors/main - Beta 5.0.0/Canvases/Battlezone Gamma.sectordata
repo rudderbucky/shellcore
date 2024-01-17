@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-382.8,113" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Set Sector Color" ID="-934941568" type="SectorColorNode" pos="142,-264">
+			<Port ID="1574423680" name="output" dynamic="False" />
+			<Port ID="-1683103488" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.3</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="-952187136" type="ConditionGroupNode" pos="168,-113">
+			<Port ID="-1406979328" name="input" dynamic="False" />
+			<Port ID="813107712" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1850547840" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="819784448" type="SectorColorNode" pos="389,-113">
+			<Port ID="667900928" name="output" dynamic="False" />
+			<Port ID="1705341056" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.3</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Enter Sector" ID="-103489536" type="LoadSectorNode" pos="-330,-140">
+			<Port ID="-1552186112" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="842771627" />
+		</Node>
+		<Node name="Test Variable" ID="-1097393920" type="TestVariableNode" pos="-130,-160">
+			<Port ID="-870775680" name="inputLeft" dynamic="False" />
+			<Port ID="166664448" name="outputTrue" dynamic="False" />
+			<Port ID="1204104576" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="1163446661" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Set Variable" ID="1122693120" type="SetVariableNode" pos="651,-111">
+			<Port ID="-1683777280" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">48</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-646337152" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">48</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="1163446661" />
+			<int name="value">1</int>
+			<boolean name="action">false</boolean>
+		</Node>
+		<Node name="Win Battle Zone" ID="-1720456832" type="WinBattleCondition" pos="118,16">
+			<Port ID="-369539200" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="842771627" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1683103488" port2ID="166664448" />
+		<Connection port1ID="-1406979328" port2ID="1204104576" />
+		<Connection port1ID="813107712" port2ID="-369539200" />
+		<Connection port1ID="1850547840" port2ID="1705341056" />
+		<Connection port1ID="667900928" port2ID="-1683777280" />
+		<Connection port1ID="-1552186112" port2ID="-870775680" />
+	</Connections>
+	<Objects>
+		<Object refID="842771627" type="System.String">
+			<string>BattleZone Gamma</string>
+		</Object>
+		<Object refID="1163446661" type="System.String">
+			<string>BattlezoneWonGamma</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

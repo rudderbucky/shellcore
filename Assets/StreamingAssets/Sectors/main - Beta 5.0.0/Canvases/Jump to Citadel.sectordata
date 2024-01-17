@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="120.6,325.8" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Set Flag Interactibility" ID="-1552918940" type="SetFlagInteractibilityNode" pos="160.8,-259.4">
+			<Port ID="772355604" name="output" dynamic="False" />
+			<Port ID="-2030006682" name="input" dynamic="False" />
+			<Variable name="flagName" refID="-892319953" />
+			<FlagInteractibility name="interactibility">Warp</FlagInteractibility>
+			<Variable name="sectorName" refID="1351360107" />
+			<Variable name="entityID" refID="-2059908365" />
+			<Variable name="intStrings" refID="157699418" />
+		</Node>
+		<Node name="Enter Sector" ID="-1438818472" type="LoadSectorNode" pos="-647,-313">
+			<Port ID="-537401672" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1808552980" />
+		</Node>
+		<Node name="Clear Pending Dialogue" ID="1095442342" type="ClearDialogue" pos="-370,-290">
+			<Port ID="589507870" name="inputLeft" dynamic="False" />
+			<Port ID="2082112880" name="outputRight" dynamic="False" />
+			<Variable name="EntityID" refID="-892319953" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Condition Check" ID="1538580372" type="GeneralConditionCheckNode" pos="-110,-290">
+			<Port ID="-873274002" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-903097140" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="955203338" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-514114623" />
+			<int name="variableType">5</int>
+			<int name="comparisonMode">2</int>
+			<int name="value">0</int>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-2030006682" port2ID="-903097140" />
+		<Connection port1ID="-537401672" port2ID="589507870" />
+		<Connection port1ID="2082112880" port2ID="-873274002" />
+	</Connections>
+	<Objects>
+		<Object refID="-892319953" type="System.String">
+			<string>Sector 120-7170-Jump-Gate-Flag</string>
+		</Object>
+		<Object refID="1351360107" type="System.String">
+			<string>Sector 7450-590</string>
+		</Object>
+		<Object refID="-2059908365" type="System.String">
+			<string>Sector 7450-590-Jump-Gate-Flag</string>
+		</Object>
+		<Object refID="157699418" type="System.String[]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>None</string>
+				<string>Warp</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1808552980" type="System.String">
+			<string>Sector 120-7180</string>
+		</Object>
+		<Object refID="-514114623" type="System.String">
+			<string>Forsaken Declaration</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

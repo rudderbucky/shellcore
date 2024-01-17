@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="356.6,-58.19999" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="1837229856" type="LoadSectorNode" pos="-880,-110">
+			<Port ID="740143452" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1707254522" />
+		</Node>
+		<Node name="Condition Check" ID="442383704" type="GeneralConditionCheckNode" pos="-684.6,-117">
+			<Port ID="374447984" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1867052994" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-935309292" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="557295718" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="2049900728" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-752461558" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-2062218834" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-569613824" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="692438218" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-1611865242" />
+			<int name="variableType">0</int>
+			<int name="comparisonMode">0</int>
+			<int name="value">0</int>
+		</Node>
+		<Node name="Set Music" ID="1048241110" type="MusicNode" pos="142.2,-99">
+			<Port ID="-2109924068" name="output" dynamic="False" />
+			<Port ID="-617319058" name="input" dynamic="False" />
+			<Variable name="musicID" refID="-739583886" />
+			<boolean name="defaultMusic">false</boolean>
+		</Node>
+		<Node name="Spawn Entity" ID="1397252624" type="SpawnEntityNode" pos="-398.8,-138.4">
+			<Port ID="875285952" name="output" dynamic="False" />
+			<Port ID="-1927076334" name="IDOut" dynamic="False" />
+			<Port ID="-434471324" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<int name="faction">1</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="118209966" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-745106019" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="2140479112" />
+			<Variable name="additionalCounts" refID="-2141148424" />
+		</Node>
+		<Node name="Change Character Blueprint" ID="752388060" type="ChangeCharacterBlueprint" pos="-169.6,-48.8">
+			<Port ID="-251623590" name="output" dynamic="False" />
+			<Port ID="1240981420" name="input" dynamic="False" />
+			<Variable name="charID" refID="-745106019" />
+			<Variable name="blueprintJSON" refID="1984818395" />
+			<boolean name="forceReconstruct">true</boolean>
+		</Node>
+		<Node name="AI Follow" ID="1777599968" type="AIFollowNode" pos="-126.8,84.8">
+			<Port ID="1058133686" name="output" dynamic="False" />
+			<Port ID="-1744228600" name="input" dynamic="False" />
+			<Variable name="followerID" refID="-745106019" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="740143452" port2ID="374447984" />
+		<Connection port1ID="1867052994" port2ID="-434471324" />
+		<Connection port1ID="-617319058" port2ID="1058133686" />
+		<Connection port1ID="875285952" port2ID="1240981420" />
+		<Connection port1ID="-251623590" port2ID="-1744228600" />
+	</Connections>
+	<Objects>
+		<Object refID="-1707254522" type="System.String">
+			<string>The Arena</string>
+		</Object>
+		<Object refID="-1611865242" type="System.String">
+			<string>Stronghold-part5-battle</string>
+		</Object>
+		<Object refID="-739583886" type="System.String">
+			<string>music_fast_3</string>
+		</Object>
+		<Object refID="118209966" type="System.String">
+			<string>arena-east-flag</string>
+		</Object>
+		<Object refID="-745106019" type="System.String">
+			<string>battlecore-01</string>
+		</Object>
+		<Object refID="2140479112" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-2141148424" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1984818395" type="System.String">
+			<string>{"entityName":"BattleCore","coreSpriteID":"core1_light","coreShellSpriteID":"core4commando_shell","shellHealth":[10000.0,3000.0,3000.0],"baseRegen":[250.0,50.0,250.0],"intendedType":0,"parts":[{"location":{"x":-2.0999996662139894,"y":2.09999942779541},"rotation":135.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":2.0999996662139894,"y":2.09999942779541},"rotation":-135.0,"mirrored":true,"abilityID":37,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":9.822845186135965e-7,"y":-2.0999999046325685},"rotation":180.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigCenter2","shiny":false},{"location":{"x":2.1000001430511476,"y":0.0},"rotation":-90.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigCenter2","shiny":false},{"location":{"x":-2.1000001430511476,"y":0.0},"rotation":90.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigCenter2","shiny":false},{"location":{"x":4.95910626341356e-7,"y":2.0999999046325685},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigCenter2","shiny":false},{"location":{"x":0.8999999761581421,"y":-3.299999952316284},"rotation":0.0,"mirrored":true,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-0.8999999761581421,"y":-3.299999952316284},"rotation":0.0,"mirrored":false,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":0.000003051757857974735,"y":-3.4000000953674318},"rotation":180.0,"mirrored":false,"abilityID":34,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":3.299999475479126,"y":-0.8999999761581421},"rotation":90.0,"mirrored":false,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-3.299999475479126,"y":-0.8999999761581421},"rotation":-90.0,"mirrored":true,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":3.299999952316284,"y":0.8999999761581421},"rotation":90.0,"mirrored":true,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-3.299999952316284,"y":0.8999999761581421},"rotation":-90.0,"mirrored":false,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":3.4000003337860109,"y":0.0},"rotation":-90.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":-3.4000003337860109,"y":0.0},"rotation":90.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":-2.59999942779541,"y":1.5},"rotation":90.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":2.59999942779541,"y":1.5},"rotation":-90.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.2000000476837159,"y":4.499999523162842},"rotation":180.0,"mirrored":true,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":1.2000000476837159,"y":4.5},"rotation":-180.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":-0.8999999761581421,"y":3.299999952316284},"rotation":180.0,"mirrored":true,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":0.8999999761581421,"y":3.299999952316284},"rotation":-180.0,"mirrored":false,"abilityID":26,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-1.5,"y":2.5999999046325685},"rotation":0.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.5,"y":2.5999999046325685},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.2999995946884156,"y":1.3000001907348633},"rotation":45.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":1.2999995946884156,"y":1.3000001907348633},"rotation":-45.0,"mirrored":false,"abilityID":29,"tier":0,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":0.000003566741952454322,"y":0.8999999761581421},"rotation":180.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.800000011920929,"y":5.699999809265137},"rotation":180.0,"mirrored":false,"abilityID":33,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-0.800000011920929,"y":5.699999809265137},"rotation":-180.0,"mirrored":true,"abilityID":33,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":4.099999904632568,"y":-3.5},"rotation":45.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"gun_drone","partID":"BigSide5","shiny":false},{"location":{"x":-4.099999904632568,"y":-3.5},"rotation":-45.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"gun_drone","partID":"BigSide5","shiny":false},{"location":{"x":5.300000190734863,"y":-2.5},"rotation":90.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"gun_drone","partID":"BigSide5","shiny":false},{"location":{"x":-5.300000190734863,"y":-2.5},"rotation":-90.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"gun_drone","partID":"BigSide5","shiny":false},{"location":{"x":4.499999523162842,"y":-1.5},"rotation":-45.0,"mirrored":true,"abilityID":5,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-4.499999523162842,"y":-1.5},"rotation":45.0,"mirrored":false,"abilityID":5,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":3.799999952316284,"y":-2.5},"rotation":0.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumSide2","shiny":false},{"location":{"x":-3.799999952316284,"y":-2.5},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumSide2","shiny":false},{"location":{"x":3.1999998092651369,"y":-2.799999952316284},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":-3.1999998092651369,"y":-2.799999952316284},"rotation":0.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":2.5,"y":-2.5},"rotation":0.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":-2.5,"y":-2.5},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":2.09999942779541,"y":-3.799999952316284},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing4","shiny":false},{"location":{"x":-2.09999942779541,"y":-3.799999952316284},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing4","shiny":false},{"location":{"x":4.400000095367432,"y":-2.5},"rotation":180.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false},{"location":{"x":-4.400000095367432,"y":-2.5},"rotation":-180.0,"mirrored":true,"abilityID":17,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false},{"location":{"x":2.5999996662139894,"y":-1.5},"rotation":-90.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-2.5999996662139894,"y":-1.5},"rotation":90.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.5,"y":-2.5999996662139894},"rotation":180.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.5,"y":-2.5999996662139894},"rotation":-180.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.2999999523162842,"y":-1.2999999523162842},"rotation":-135.0,"mirrored":false,"abilityID":32,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":-1.2999999523162842,"y":-1.2999999523162842},"rotation":135.0,"mirrored":false,"abilityID":34,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":0.9000006318092346,"y":0.0},"rotation":90.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":-0.9000006318092346,"y":0.0},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.000006847381428087829,"y":-0.9000001549720764},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.0,"y":4.400000095367432},"rotation":-90.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"torpedo_drone","partID":"MediumSide2","shiny":false},{"location":{"x":0.000002441406195430318,"y":5.400000095367432},"rotation":-180.0,"mirrored":false,"abilityID":34,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":0.000002441406195430318,"y":3.4000000953674318},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":-1.399999976158142,"y":-5.300000190734863},"rotation":45.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":1.399999976158142,"y":-5.300000190734863},"rotation":-45.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

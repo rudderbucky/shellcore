@@ -1,0 +1,20 @@
+Text("heavensgate_d1", "You new folk should cherish your youth... you'll be as gray as us before you know it.")
+Text("heavensgate_d2", "...")
+
+Dialogue(
+    dialogueID=heavensgate_d,
+    dialogueText=heavensgate_d1,
+    entityID=heavensgate,
+    responses=(
+        Response(
+            responseText=heavensgate_d2,
+            next=End()
+        )
+    )
+)
+
+StartTrigger(
+    sequence=(
+        SetInteraction(dialogueID=heavensgate_d, entityID=heavensgate)
+    )
+)

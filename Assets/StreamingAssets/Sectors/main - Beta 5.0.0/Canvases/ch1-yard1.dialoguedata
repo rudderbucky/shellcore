@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="163.4,33.4" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-340910798" type="StartDialogueNode" pos="-570,-180">
+			<Port ID="-461982086" name="input" dynamic="False" />
+			<Port ID="-2137434830" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="1287704082" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-616223972" type="EndDialogue" pos="-63.8,-110.8">
+			<Port ID="-827677554" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">true</boolean>
+			<boolean name="openTrader">false</boolean>
+			<boolean name="openUpgrader">false</boolean>
+			<boolean name="openWorkshop">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="161325888" type="DialogueNode" pos="-330,-180">
+			<Port ID="664927456" name="input" dynamic="False" />
+			<Port ID="-644829820" name="cancel" dynamic="False" />
+			<Port ID="-1954587096" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">212</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1357101318" />
+			<Variable name="answers" refID="-72204816" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-2137434830" port2ID="664927456" />
+		<Connection port1ID="-827677554" port2ID="-1954587096" />
+	</Connections>
+	<Objects>
+		<Object refID="1287704082" type="System.String">
+			<string>crimsonhideout1-yard1</string>
+		</Object>
+		<Object refID="-1357101318" type="System.String">
+			<string>I would be careful. There are a lot of traitors in these regions. You might get attacked by one of them. I'm just saying.</string>
+		</Object>
+		<Object refID="-72204816" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I want to reconfigure.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

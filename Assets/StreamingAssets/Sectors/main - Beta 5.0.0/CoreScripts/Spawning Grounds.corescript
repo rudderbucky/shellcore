@@ -1,0 +1,11 @@
+Text("Spawning Grounds_statusmenu", "PRESS 'E' TO OPEN THE MAP. VIEW MISSIONS BY CLICKING THE MISSIONS TAB IN THE WINDOW.")
+
+SectorTrigger(
+    sectorName=Spawning Grounds,
+    sequence=(
+        AddTextToFlag(
+            text=Spawning Grounds_statusmenu,
+            flagName=Spawning_Grounds_statusmenu
+        )
+    )
+)
