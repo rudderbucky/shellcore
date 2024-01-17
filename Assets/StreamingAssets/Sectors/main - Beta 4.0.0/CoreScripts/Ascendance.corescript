@@ -37,19 +37,102 @@ MissionTrigger(
 //Text("", "")
 
 
-//Text("Ascendance_cs0_d1", "Oh this is going to be so satisfying.")
-//Text("Ascendance_cs0_d2", "Fold, Pytha. There’s so much you don’t know about the world.")
-//Text("Ascendance_cs0_d3", "Oh, I know everything. The leaders aren’t very smart. I figured out their plans a while ago now. They needed Prometheus... so I came up with the legendary commander schtick.")
-//Text("Ascendance_cs0_d4", "You lied to me? Even when we were on the battlefield, fighting together as allies?")
-//Text("Ascendance_cs0_d5", "Of course I did. You’re a dolt, in fact all of you are. Despite the truth being laid bare to your faces, you still took the creator’s bait.")
-//Text("Ascendance_cs0_d6", "Pytha... you aren’t making a whole lot of sense.")
-//Text("Ascendance_cs0_d7", "Ah! You can talk to us now. Great stuff. Guess they taught you that over at abandoned school.")
-//Text("Ascendance_cs0_d8", "You’re going to be a lapdog for them? What makes you think they won’t just reset you?")
-//Text("Ascendance_cs0_d9", "Their intentions are nicer than that creator would have you believe…  No, they didn’t convince me. They didn’t even tell me you all were coming here. I came to this conclusion simply with the information they leaked to me.")
-//Text("Ascendance_cs0_d10", "Do you really think the creator was this do-gooder kind soul? No! He turned us all into servants! We were their eternal slaves, and for what? Nothing! We were so brainwashed the concept of happiness or sadness just — disappeared, we just were, and we were just slaves.")
-//Text("Ascendance_cs0_d11", "The leaders want to liberate us all, but they can’t do it until the creator is gone — because of precisely what is happening here. They’re failures, but they’re doing all this out of good intentions...")
+Text("Ascendance_cs0_d1", "Oh this is going to be so satisfying.")
+Text("Ascendance_cs0_d2", "Fold, Pytha. There’s so much you don’t know about the world.")
+Text("Ascendance_cs0_d3", "Oh, I know everything. The leaders aren’t very smart. I figured out their plans a while ago now. Time and time again the idiots brought cores too smart for their lies here, so they had to be sent back.")
+Text("Ascendance_cs0_d4", "You lied to me? Even when we were on the battlefield, fighting together as allies?")
+Text("Ascendance_cs0_d5", "Of course I did. You’re a dolt, in fact all of you are. Despite the truth being laid bare to your faces, you still took the creator’s bait.")
+Text("Ascendance_cs0_d23", "Though, as you know, the legendary commander is real. And I suspect they have what the leaders needed all this time.")
+Text("Ascendance_cs0_d6", "Pytha... you aren’t making a whole lot of sense.")
+Text("Ascendance_cs0_d7", "Ah! You can talk to us now. Great stuff. Guess they taught you that over at abandoned school.")
+Text("Ascendance_cs0_d8", "You’re going to be a lapdog for them? What makes you think they won’t just reset you?")
+Text("Ascendance_cs0_d9", "Their intentions are nicer than that creator would have you believe.  No, they didn’t convince me or hypnotize me. They didn’t even tell me you all were coming here. I came to this conclusion simply with the information they leaked to me.")
+Text("Ascendance_cs0_d10", "Do you really think the creator was this do-gooder kind soul? No! He turned us all into servants! We were their eternal slaves, and for what? Nothing! We were so brainwashed the concept of happiness or sadness just — disappeared, we just were, and we were just slaves.")
+Text("Ascendance_cs0_d11", "The leaders want to liberate us all, but they can’t do it until the creator is gone — because of precisely what is happening here. They’re failures, but they’re doing all this out of good intentions...")
+D(
+    Ascendance_cs0_d1,
+    Ascendance_pytha_1,
+    Ascendance_cs0_prefight_d,
+    R(
+        Ascendance_cs0_d19,
+        D(
+            Ascendance_cs0_d2,
+            daayo,
+            R(
+                Ascendance_cs0_d19,
+                D(
+                    Ascendance_cs0_d3,
+                    pytha,
+                    R(
+                        Ascendance_cs0_d19,
+                        D(
+                            Ascendance_cs0_d4,
+                            daayo,
+                            R(
+                                Ascendance_cs0_d19,
+                                D(
+                                    Ascendance_cs0_d5,
+                                    pytha,
+                                    R(
+                                        Ascendance_cs0_d19,
+                                        D(
+                                            Ascendance_cs0_d23,
+                                            R(
+                                                Ascendance_cs0_d19,
+                                                D(
+                                                    Ascendance_cs0_d6,
+                                                    sukrat,
+                                                    R(
+                                                        Ascendance_cs0_d19,
+                                                        D(
+                                                            Ascendance_cs0_d7,
+                                                            pytha,
+                                                            R(
+                                                                Ascendance_cs0_d8,
+                                                                D(
+                                                                    Ascendance_cs0_d9,
+                                                                    pytha,
+                                                                    R(
+                                                                        Ascendance_cs0_d19,
+                                                                        D(
+                                                                            Ascendance_cs0_d10,
+                                                                            R(
+                                                                                Ascendance_cs0_d19,
+                                                                                D(
+                                                                                    Ascendance_cs0_d11,
+                                                                                    R(
+                                                                                        Ascendance_cs0_d19,
+                                                                                        Call(Ascendance_pythaFight)
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
 
 
+Function(
+    name=Ascendance_pythaFight,
+    sequence=(
+
+    )
+)
 
 
 Text("Ascendance_cs0_d12", "Which I plan to uphold here.")
@@ -109,8 +192,8 @@ Function(
     )
 )
 
-Text("Ascendance_cs0_d14", "Hah... now let's see you handle 5 at once.")
-Text("Ascendance_cs0_d20", "Watch me.")
+Text("Ascendance_cs0_d14", "Once I destroy you, the leaders are next. And then, the creator. And I will RULE!")
+Text("Ascendance_cs0_d20", "Uh oh.")
 
 D(
     Ascendance_cs0_d14,
@@ -188,7 +271,7 @@ Function(
 
 
 Text("Ascendance_cs0_d15", "This time you're seriously toast.")
-Text("Ascendance_cs0_d21", "Don't think so.")
+Text("Ascendance_cs0_d21", "...")
 D(
     Ascendance_cs0_d15,
     Ascendance_pytha_1,
@@ -317,6 +400,10 @@ Function(
         Wait(time=1),
         PassiveDialogue(entityID=Ascendance_pytha_1, message=Ascendance_cs0_d18),
         Wait(time=3),
+        FadeOutOfBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
     )
 )
 
@@ -343,12 +430,14 @@ Function(
 //Text("", "Finally, you meddling twits made it. Prometheus, welcome back.")
 //Text("", "We're here to end this war, leaders. The game is up.")
 //Text("", "Do you really think we weren’t monitoring the cradle? We noticed your activity.")
-//Text("", "The weapon was nearly complete at the time, but you will be the last thing we needed - the fire you've stolen from us.")
+//Text("", "The weapon was nearly complete at the time, but you will be the last thing we needed - the fire we can no longer produce.")
 //Text("", "Oh dear.")
+//Text("", "That's right, we know. You've managed to learn how to manipulate the basic energies of this world - however crudely. This talent was only known by our creator...")
+//Text("", "You've... surpassed us. You're the missing piece of our weapon.")
 //Text("", "I'm well aware you aren't the creator. But... you're in the way.")
 //Text("", "When we find them, we will destroy them, and destroy the very concept of master and slave. We will be free.")
 //Text("", "Now's the end of the road for you.")
-//Text("", "YOU WRETCHED CORE! WE WILL END THE CREATOR NO MATTER WHAT!")
+//Text("", "YOU WRETCHED CORE! WE WILL END THE CREATOR'S SLAVERY NO MATTER WHAT!")
 //Text("", "I need to destroy the Infected Leader before they use their weapon on me!")
 
 //Text("", "...")
