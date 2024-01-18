@@ -124,7 +124,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public ICarrier GetCarrier()
     {
-        if (!SectorManager.instance || SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        if (!SectorManager.instance || SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
         {
             return null;
         }

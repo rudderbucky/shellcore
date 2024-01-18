@@ -1333,7 +1333,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         busyTimer = 0; // reset busy timer
         weaponGCD = 0.1F;
         if (SectorManager.instance && SectorManager.instance.current &&
-        SectorManager.instance.current.type == Sector.SectorType.BattleZone && ((new List<string>(SectorManager.instance.current.targets)).Contains(ID) || (networkAdapter != null && networkAdapter.isPlayer.Value)) )
+        SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone && ((new List<string>(SectorManager.instance.current.targets)).Contains(ID) || (networkAdapter != null && networkAdapter.isPlayer.Value)) )
         {
             SectorManager.instance.AddTarget(this);
         }
@@ -1906,7 +1906,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (MasterNetworkAdapter.mode == NetworkMode.Client) return;
 
-        var enemyTargetFound = SectorManager.instance?.current?.type != Sector.SectorType.BattleZone;
+        var enemyTargetFound = SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone;
         if (!enemyTargetFound && BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
         {
             foreach (var target in BattleZoneManager.getTargets())

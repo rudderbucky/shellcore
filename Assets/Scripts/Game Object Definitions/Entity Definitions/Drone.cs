@@ -47,7 +47,7 @@ public class Drone : AirCraft, IOwnable
         // Drones are defensive for all carriers outside battlezones, or ground carriers anywhere
 
         // Attack enemy
-        if ((owner is AirCarrier || owner is AirWeaponStation) && SectorManager.instance?.current?.type == Sector.SectorType.BattleZone)
+        if ((owner is AirCarrier || owner is AirWeaponStation) && SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             // Get valid targets
             List<Vector2> validTargets = new List<Vector2>();

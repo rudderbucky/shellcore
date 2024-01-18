@@ -185,7 +185,7 @@ public class TargetManager : MonoBehaviour
 
     private Entity[] getTargetList(ITargetingSystem ts, Entity.EntityCategory ec, out int count)
     {
-        if (ts == null || ts.Equals(null)) 
+        if (ts == null || ts.Equals(null) || !ts.GetEntity()) 
         {
             count = 0;
             return new Entity[0];

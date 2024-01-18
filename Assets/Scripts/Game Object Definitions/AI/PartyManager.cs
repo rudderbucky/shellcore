@@ -359,7 +359,7 @@ public class PartyManager : MonoBehaviour
         partyMembers.RemoveAll(sc => !sc);
 
         // distance maximum for party members - teleport them close to the player
-        if (SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
+        if (SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
         {
             foreach (var member in partyMembers)
             {

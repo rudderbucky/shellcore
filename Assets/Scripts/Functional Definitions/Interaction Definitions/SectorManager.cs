@@ -1040,7 +1040,7 @@ public class SectorManager : MonoBehaviour
                 }
                 carrier.sectorMngr = this;
 
-                if (SectorManager.instance.current.type == SectorType.BattleZone)
+                if (SectorManager.instance.GetCurrentType() == SectorType.BattleZone)
                 {
                     carrier.faction.factionID = data.faction;
                     carrier.faction.overrideFaction = data.overrideFaction;
@@ -1069,7 +1069,7 @@ public class SectorManager : MonoBehaviour
 
                 gcarrier.sectorMngr = this;
 
-                if (SectorManager.instance.current.type == SectorType.BattleZone)
+                if (SectorManager.instance.GetCurrentType() == SectorType.BattleZone)
                 {
                     gcarrier.faction.factionID = data.faction;
                     gcarrier.faction.overrideFaction = data.overrideFaction;
