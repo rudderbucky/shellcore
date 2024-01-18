@@ -132,7 +132,7 @@ public class Mobility : MonoBehaviour
         {
             if (!(target && entity))
             {
-                Debug.LogWarning($"Could not find target/entity! {target} {entity}");
+                Debug.Log($"Could not find target/entity! {target} {entity}");
                 return;
             }
 

@@ -13,7 +13,6 @@ MissionTrigger(
     prerequisites=(Truth_missionName),
     episode=3,
     sequence=(
-        SetVariable(name=$$$Legend_checkpoint, value=6),
         Call(Legend_start),
     )
 )
@@ -1163,6 +1162,13 @@ Function(
         FinishCutscene(),
         RemoveObjectiveMarker(ID=Legend_520),
         AddObjectiveMarker(ID=Legend_520, sectorName=Sector 520-6580),
+        Call(Legend_post_cs4_sector)
+    )
+)
+
+Function(
+    name=Legend_post_cs4_sector,
+    sequence=(
         ConditionBlock(
             EnterSector(
                 sectorName=Sector 520-6580,
@@ -1183,15 +1189,25 @@ Function(
                             Call(Legend_cs5)
                         )
                     ),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Sector 520-6580,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_post_cs4_sector)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=6,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
                 )
             )
         )
     )
-)
-
-Function(
-    name=Legend_post_cs4_sector,
-    sequence=()
 )
 
 // They should meet here Sector 520-6580
