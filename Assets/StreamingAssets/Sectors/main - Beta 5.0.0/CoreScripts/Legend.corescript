@@ -1,9 +1,6 @@
 Text("Legend_missionName", "Legend")
 Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
 
-// TODO: Deal with race condition of saving checkpoints before getting Task
-// TODO: missing objective marker after prom tells you to go to Unconvinced lair
-// TODO: missing objective marker on bz munu after accepting prometheus task
 // TODO: beef up pylons
 
 MissionTrigger(
@@ -1161,6 +1158,13 @@ Function(
         FinishCutscene(),
         RemoveObjectiveMarker(ID=Legend_520),
         AddObjectiveMarker(ID=Legend_520, sectorName=Sector 520-6580),
+        Call(Legend_post_cs4_sector)
+    )
+)
+
+Function(
+    name=Legend_post_cs4_sector,
+    sequence=(
         ConditionBlock(
             EnterSector(
                 sectorName=Sector 520-6580,
@@ -1181,6 +1185,21 @@ Function(
                             Call(Legend_cs5)
                         )
                     ),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Sector 520-6580,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_post_cs4_sector)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=6,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
                 )
             )
         )
@@ -1470,6 +1489,13 @@ Function(
         SetVariable(name=$$$Legend_checkpoint, value=6),
         RemoveObjectiveMarker(ID=Legend_UCL_marker),
         AddObjectiveMarker(ID=Legend_UCL_marker, sectorName=Unconvinced Lair),
+        Call(Legend_post_cs5_sector)
+    )
+)
+
+Function(
+    name=Legend_post_cs5_sector,
+    sequence=(
         ConditionBlock(
             EnterSector(
                 sectorName=Unconvinced Lair,
@@ -1487,6 +1513,21 @@ Function(
                     ),
                     SetInteraction(entityID=eleos, dialogueID=Legend_cs6_d),
                     SetInteraction(entityID=prometheus, dialogueID=Legend_cs6_d),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Unconvinced Lair,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_post_cs5_sector)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=7,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
                 )
             )
         )

@@ -93,7 +93,7 @@ public class BattleAI : AIModule
         {
             if (targetEntities[i] is ICarrier)
             {
-                if (targetEntities[i].faction.factionID == craft.faction.factionID)
+                if (FactionManager.IsAllied(targetEntities[i].faction, craft.faction))
                 {
                     carriers.Add(targetEntities[i]);
                 }
@@ -223,7 +223,7 @@ public class BattleAI : AIModule
             {
                 state = BattleState.Collect;
             }
-            else if (AIData.vendors.Exists(v => v is TowerBase tbase && !tbase.TowerActive()))
+            else if (AIData.vendors.Exists(v => v is TowerBase tbase && !tbase.TowerActive()) && shellcore.GetPower() >= 300)
             {
                 state = BattleState.ReinforceGround;
             }
@@ -259,8 +259,8 @@ public class BattleAI : AIModule
                 }
 
                 if ((shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && !turretIsHarvester
-                                                          && ((SectorManager.instance.current.type == Sector.SectorType.BattleZone
-                                                                || SectorManager.instance.current.type == Sector.SectorType.SiegeZone) ||
+                                                          && ((SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone
+                                                                || SectorManager.instance.GetCurrentType() == Sector.SectorType.SiegeZone) ||
                                                             (shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f))) 
                                                             || harvesterTurrets.Count >= Mathf.Min(1, AIData.energyRocks.Count))
                 {
@@ -319,7 +319,6 @@ public class BattleAI : AIModule
                 }
             }
         }
-
         // go to nearest enemy construct, attack units / turrets if in visual range
         if ((primaryTarget == null && nextSearchTime < Time.time) || nextSearchTime < Time.time - 3f)
         {
