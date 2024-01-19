@@ -46,6 +46,17 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     private IEnumerator StartYardRepair()
     {
         isYardRepairing = true;
+        foreach (var ab in abilities)
+        {
+            ab.gasBoosted = false;
+        }
+
+        if (this is PlayerCore)
+        {
+            AbilityHandler.instance.ReflectGasBoost();
+        }
+
+
         foreach (var part in parts)
         {
             if (part.name != "Shell Sprite")
