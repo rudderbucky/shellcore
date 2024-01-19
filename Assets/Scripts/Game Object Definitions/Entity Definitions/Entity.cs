@@ -1740,6 +1740,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public virtual void TakeCoreDamage(float amount)
     {
         if (DialogueSystem.isInCutscene) return;
+        CoreDamageWrapper(amount);
+    }
+
+    public void CoreDamageWrapper(float amount)
+    {
         if (isAbsorbing && amount > 0f)
         {
             TakeEnergy(-amount);

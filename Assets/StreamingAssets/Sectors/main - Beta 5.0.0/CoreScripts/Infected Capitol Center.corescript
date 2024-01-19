@@ -1,0 +1,39 @@
+SectorTrigger(
+    sectorName=Infected Capitol Center,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Truthful_Revelation_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    SetPartDropRate(
+                        rate=0.35,
+                    )
+                )
+            ),
+            Comparison(
+                val1=MissionStatus(Truthful_Revelation_missionName),
+                val2=complete,
+                comp=Neq,
+                sequence=(
+                    SetPartDropRate(
+                        rate=0.0075,
+                    )
+                )
+            )
+        ),
+
+
+        ConditionBlock(
+            EnterSector(
+                sectorName=Infected Capitol Center,
+                sequence=(
+                    SetPartDropRate(
+                        default=true
+                    )
+                )
+            )
+        )
+    )
+)

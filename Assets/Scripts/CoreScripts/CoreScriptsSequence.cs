@@ -70,6 +70,8 @@ public class CoreScriptsSequence : MonoBehaviour
         SetSectorColor,
         StopMusic,
         RollCredits,
+        DealCoreDamage,
+        SetPartDropRate
     }
     public struct Instruction
     {
@@ -220,12 +222,34 @@ public class CoreScriptsSequence : MonoBehaviour
                     var flagName = GetArgument(inst.arguments, "flagName");
                     ProximityInteractScript.AddTextToFlag(text, AIData.flags.Find(f => f.name == flagName));
                     break;
+                case InstructionCommand.SetPartDropRate:
+                    var restore = GetArgument(inst.arguments, "default") == "true";
+                    if (restore)
+                    {
+                        Entity.partDropRate = Entity.DefaultPartRate;
+                    }
+                    else
+                    {
+                        var rate = float.Parse(GetArgument(inst.arguments, "rate"));
+                        Entity.partDropRate = rate;
+                    }
+                    break;
+                case InstructionCommand.DealCoreDamage:
+                    var entityID = GetArgument(inst.arguments, "entityID");
+                    var amount = float.Parse(GetArgument(inst.arguments, "amount"));
+                    var e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.CoreDamageWrapper(amount);
+                    }
+                    else Debug.Log("<DealCoreDamage> Could not find entity!");
+                    break;
                 case InstructionCommand.SetOverrideFaction:
                     var overrideFstr = GetArgument(inst.arguments, "overrideFaction");
-                    var entityID = GetArgument(inst.arguments, "entityID");
+                     entityID = GetArgument(inst.arguments, "entityID");
                     var overrideFac = 0;
                     if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
-                    var e = AIData.entities.Find(e => e.ID == entityID);
+                    e = AIData.entities.Find(e => e.ID == entityID);
                     if (e)
                     {
                         e.SetOverrideFaction(overrideFac);

@@ -15,7 +15,7 @@ MissionTrigger(
                     Call(Ascendance_pythaFight)
                 )
             )
-        )
+        ),
     )
 )
 
@@ -52,7 +52,7 @@ Text("Ascendance_cs0_d5", "Of course I did. You’re a dolt, in fact all of you 
 Text("Ascendance_cs0_d23", "Though, as you know, the legendary commander is real. And I suspect they have what the leaders needed all this time.")
 Text("Ascendance_cs0_d6", "Pytha... you aren’t making a whole lot of sense.")
 Text("Ascendance_cs0_d7", "Ah! You can talk to us now. Great stuff. Guess they taught you that over at abandoned school.")
-Text("Ascendance_cs0_d8", "You’re going to be a lapdog for them? What makes you think they won’t just reset you?")
+Text("Ascendance_cs0_d8", "You’re going to be a lapdog for them?")
 Text("Ascendance_cs0_d9", "Their intentions are nicer than that creator would have you believe.  No, they didn’t convince me or hypnotize me. They didn’t even tell me you all were coming here. I came to this conclusion simply with the information they leaked to me.")
 Text("Ascendance_cs0_d10", "Do you really think the creator was this do-gooder kind soul? No! He turned us all into servants! We were their eternal slaves, and for what? Nothing! We were so brainwashed the concept of happiness or sadness just — disappeared, we just were, and we were just slaves.")
 Text("Ascendance_cs0_d11", "The leaders want to liberate us all, but they can’t do it until the creator is gone — because of precisely what is happening here. They’re failures, but they’re doing all this out of good intentions...")
@@ -61,36 +61,36 @@ D(
     Ascendance_pytha_1,
     Ascendance_cs0_prefight_d,
     R(
-        Ascendance_cs0_d19,
+        Ascendance_cs0_d21,
         D(
             Ascendance_cs0_d2,
             fake-daayo,
             R(
-                Ascendance_cs0_d19,
+                Ascendance_cs0_d21,
                 D(
                     Ascendance_cs0_d3,
                     Ascendance_pytha_1,
                     R(
-                        Ascendance_cs0_d19,
+                        Ascendance_cs0_d21,
                         D(
                             Ascendance_cs0_d4,
                             fake-daayo,
                             R(
-                                Ascendance_cs0_d19,
+                                Ascendance_cs0_d21,
                                 D(
                                     Ascendance_cs0_d5,
                                     Ascendance_pytha_1,
                                     R(
-                                        Ascendance_cs0_d19,
+                                        Ascendance_cs0_d21,
                                         D(
                                             Ascendance_cs0_d23,
                                             R(
-                                                Ascendance_cs0_d19,
+                                                Ascendance_cs0_d21,
                                                 D(
                                                     Ascendance_cs0_d6,
                                                     sukrat,
                                                     R(
-                                                        Ascendance_cs0_d19,
+                                                        Ascendance_cs0_d21,
                                                         D(
                                                             Ascendance_cs0_d7,
                                                             Ascendance_pytha_1,
@@ -100,15 +100,15 @@ D(
                                                                     Ascendance_cs0_d9,
                                                                     Ascendance_pytha_1,
                                                                     R(
-                                                                        Ascendance_cs0_d19,
+                                                                        Ascendance_cs0_d21,
                                                                         D(
                                                                             Ascendance_cs0_d10,
                                                                             R(
-                                                                                Ascendance_cs0_d19,
+                                                                                Ascendance_cs0_d21,
                                                                                 D(
                                                                                     Ascendance_cs0_d11,
                                                                                     R(
-                                                                                        Ascendance_cs0_d19,
+                                                                                        Ascendance_cs0_d21,
                                                                                         Call(Ascendance_pythaFight_p2)
                                                                                     )
                                                                                 )
@@ -255,6 +255,7 @@ Function(
     name=Ascendance_pytha_fight_p1,
     sequence=(
         FinishCutscene(),
+        SetPartDropRate(rate=0),
         ConditionBlock(
             DestroyEntities(
                 progressionFeedback=false,
@@ -278,11 +279,9 @@ Function(
         DeleteEntity(
             entityID=Ascendance_pytha_1
         ),
-
         DeleteEntity(
             entityID=Ascendance_pytha_2
         ),
-
         DeleteEntity(
             entityID=Ascendance_pytha_3
         ),
@@ -615,32 +614,418 @@ Function(
 
 Function(
     name=Ascendance_pytha_fight_p3_end,
-    sequence=()
-)
+        sequence=(
+        StartCutscene(),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_1
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_2
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_3
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_4
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_5
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_6
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_pytha_7
+        ),
 
 
-
-Text("Ascendance_cs0_d16", "You think it's over? HAHAHAHAHA!")
-Text("Ascendance_cs0_d17", "I AM UNSTOPPABLE! PERISH NOW! HAHAHAHA!")
-Text("Ascendance_cs0_d18", "AAAAAAAAHHHHH!")
-Text("Ascendance_cs0_d19", "...")
-Text("Ascendance_cs0_d22", "I can do this all day.")
-
-D(
-    Ascendance_cs0_d16,
-    Ascendance_pytha_1,
-    Ascendance_cs0_p3_d,
-    R(
-        Ascendance_cs0_d22,
-        D(
-            Ascendance_cs0_d17,
-            R(
-                Ascendance_cs0_d19,
-                Call(Ascendance_post_pytha_fight)
+        SpawnEntity(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-pytha-flag11,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-pytha-flag1,
+            sequence=(
+                SetPath(
+                    entityID=Ascendance_pytha_1,
+                    flagName=Ascendance-pytha-flag4,
+                    sequence=(
+                        StartCameraPan(
+                            flagName=Ascendance-pytha-flag4,
+                            instant=true
+                        ),
+                        ForceStartDialogue(dialogueID=Ascendance_cs0_p3_d)
+                    )
+                )
             )
         )
     )
 )
+
+
+
+Text("Ascendance_cs0_post_d1", "You think it's over? HAHAHAHAHA!")
+Text("Ascendance_cs0_post_d2", "I AM UNSTOPPABLE! PERISH NOW! HAHAHAHA!")
+Text("Ascendance_cs0_post_d3", "I. CANNOT. LOSE TO THE LIKES OF YOU!!!!")
+Text("Ascendance_cs0_post_d4", "AAAAAAAAHHHHH!")
+Text("Ascendance_cs0_post_d5", "...")
+Text("Ascendance_cs0_post_d6", "I can do this all day.")
+Text("Ascendance_cs0_post_d7", "DIE DIE DIE!!!")
+
+D(
+    Ascendance_cs0_post_d1,
+    Ascendance_pytha_1,
+    Ascendance_cs0_p3_d,
+    R(
+        Ascendance_cs0_post_d6,
+        Call(Ascendance_pytha_end_p1)
+    )
+)
+
+
+Function(
+    name=Ascendance_pytha_end_p1,
+    sequence=(
+        SpawnEntity(
+            entityID=Ascendance_pytha_2,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_3,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_4,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_5,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_2,
+            flagName=Ascendance-pytha-flag5
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_3,
+            flagName=Ascendance-pytha-flag6
+        ),
+
+        SetPath(
+            entityID=Ascendance_pytha_4,
+            flagName=Ascendance-pytha-flag7
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_5,
+            flagName=Ascendance-pytha-flag8
+        ),
+
+        Wait(time=1),
+        Rotate(
+            entityID=Ascendance_pytha_2,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_3,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_4,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_5,
+            targetID=player,
+        ),
+        ForceStartDialogue(dialogueID=Ascendance_cs0_p4_d)
+    )
+)
+
+
+D(
+    Ascendance_cs0_post_d2,
+    Ascendance_pytha_1,
+    Ascendance_cs0_p4_d,
+    R(
+        Ascendance_cs0_post_d5,
+        Call(Ascendance_pytha_end_p2)
+    )
+)
+
+
+
+Function(
+    name=Ascendance_pytha_end_p2,
+    sequence=(
+        SpawnEntity(
+            entityID=Ascendance_pytha_6,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_7,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_8,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_9,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_6,
+            flagName=Ascendance-pytha-flag9
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_7,
+            flagName=Ascendance-pytha-flag10
+        ),
+
+        SetPath(
+            entityID=Ascendance_pytha_8,
+            flagName=Ascendance-pytha-flag12
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_9,
+            flagName=Ascendance-pytha-flag13
+        ),
+
+        Wait(time=1),
+        Rotate(
+            entityID=Ascendance_pytha_6,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_7,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_8,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_9,
+            targetID=player,
+        ),
+        ForceStartDialogue(dialogueID=Ascendance_cs0_p5_d)
+    )
+)
+
+
+D(
+    Ascendance_cs0_post_d3,
+    Ascendance_pytha_1,
+    Ascendance_cs0_p5_d,
+    R(
+        Ascendance_cs0_post_d5,
+        Call(Ascendance_pytha_end_p3)
+    )
+)
+
+
+Function(
+    name=Ascendance_pytha_end_p3,
+    sequence=(
+        SpawnEntity(
+            entityID=Ascendance_pytha_10,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_11,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_12,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SpawnEntity(
+            entityID=Ascendance_pytha_13,
+            flagName=Ascendance-pytha-flag4,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_10,
+            flagName=Ascendance-pytha-flag14
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_11,
+            flagName=Ascendance-pytha-flag15
+        ),
+
+        SetPath(
+            entityID=Ascendance_pytha_12,
+            flagName=Ascendance-pytha-flag16
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_13,
+            flagName=Ascendance-pytha-flag17
+        ),
+
+        Wait(time=1),
+        Rotate(
+            entityID=Ascendance_pytha_10,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_11,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_12,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=Ascendance_pytha_13,
+            targetID=player,
+        ),
+        ForceStartDialogue(dialogueID=Ascendance_cs0_p6_d)
+    )
+)
+
+
+D(
+    Ascendance_cs0_post_d7,
+    Ascendance_pytha_1,
+    Ascendance_cs0_p6_d,
+    R(
+        Ascendance_cs0_post_d5,
+        Call(Ascendance_pytha_end_p4)
+    )
+)
+
+Function(
+    name=Ascendance_pytha_end_p4,
+    sequence=(
+        PassiveDialogue(entityID=Ascendance_pytha_1, text=Ascendance_cs0_post_d4),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_2,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_3,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_4,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_5,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_6,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_7,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_8,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_9,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_10,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_11,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_12,
+            amount=9999999
+        ),
+        Wait(time=0.2),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_13,
+            amount=9999999
+        ),
+        Wait(time=1),
+        DealCoreDamage(
+            entityID=Ascendance_pytha_1,
+            amount=9999999
+        ),
+        Wait(time=2),
+        Call(Ascendance_post_pytha_fight)
+    )
+)
+
 
 Function(
     name=Ascendance_post_pytha_fight,
@@ -649,13 +1034,12 @@ Function(
             color=(255,255,255),
             speedFactor=2,
         ),
-        Wait(time=1),
-        PassiveDialogue(entityID=Ascendance_pytha_1, message=Ascendance_cs0_d18),
         Wait(time=3),
         FadeOutOfBlack(
             color=(255,255,255),
             speedFactor=2,
         ),
+        SetPartDropRate(default=true),
     )
 )
 
