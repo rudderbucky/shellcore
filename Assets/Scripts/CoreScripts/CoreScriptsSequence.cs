@@ -73,7 +73,8 @@ public class CoreScriptsSequence : MonoBehaviour
         DealCoreDamage,
         SetPartDropRate,
         SetImmobile,
-        SetAbilitiesUsable
+        SetAbilitiesUsable,
+        DetachPart
     }
     public struct Instruction
     {
@@ -263,6 +264,15 @@ public class CoreScriptsSequence : MonoBehaviour
                     if (e)
                     {
                         e.canUseAbilities = usable;
+                    }
+                    break;
+                case InstructionCommand.DetachPart:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    int index = int.Parse(GetArgument(inst.arguments, "index"));
+                    e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.RemovePart(e.parts[index]);
                     }
                     break;
                 case InstructionCommand.SetOverrideFaction:
