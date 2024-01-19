@@ -275,6 +275,9 @@ Function(
     name=Ascendance_pytha_fight_p1_end,
     sequence=(
         StartCutscene(),
+        DeleteEntity(
+            entityID=Ascendance_pytha_1
+        ),
         SpawnEntity(
             entityID=Ascendance_pytha_1,
             flagName=Ascendance-pytha-flag11,
@@ -291,6 +294,7 @@ Function(
                     entityID=Ascendance_pytha_1,
                     flagName=Ascendance-pytha-flag4,
                     sequence=(
+                        Log(message=test),
                         SpawnEntity(
                             entityID=Ascendance_pytha_2,
                             flagName=Ascendance-pytha-flag4,
@@ -387,6 +391,7 @@ Function(
     name=Ascendance_pytha_fight_p2,
     sequence=(
         FinishCutscene(),
+        FinishCameraPan(),
         ConditionBlock(
             DestroyEntities(
                 progressionFeedback=false,
@@ -423,6 +428,10 @@ Function(
                     entityID=Ascendance_pytha_1,
                     flagName=Ascendance-pytha-flag4,
                     sequence=(
+                        StartCameraPan(
+                            flagName=Ascendance-pytha-flag11,
+                            instant=true
+                        ),
                         SpawnEntity(
                             entityID=Ascendance_pytha_2,
                             flagName=Ascendance-pytha-flag4,
@@ -555,6 +564,7 @@ Function(
     name=Ascendance_pytha_fight_p3,
     sequence=(
         FinishCutscene(),
+        FinishCameraPan(),
         ConditionBlock(
             DestroyEntities(
                 progressionFeedback=false,

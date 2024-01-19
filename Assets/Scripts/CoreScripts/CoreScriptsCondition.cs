@@ -208,13 +208,11 @@ public class CoreScriptsCondition : MonoBehaviour
     private static int EntityCheck(Entity entity, Condition c, ConditionBlock cb,
         bool nameMode, bool progressionFeedback, string targetID, EntityFaction targetFaction, int targetCount, int killCount)
     {
-        Debug.LogWarning(entity.faction.overrideFaction + " " + targetFaction.overrideFaction);
         if (((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
             && (entity.faction.factionID == targetFaction.factionID || 
             (targetFaction.overrideFaction != 0 && entity.faction.overrideFaction == targetFaction.overrideFaction)))
         {
             killCount++;
-            Debug.LogWarning(killCount + " TEST");
 
             if (progressionFeedback)
             {
