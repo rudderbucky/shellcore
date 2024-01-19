@@ -965,7 +965,8 @@ public class BattleAI : AIModule
 
     private bool AttemptFindTank()
     {
-        if(shellcore.GetTractorTarget() == null && FindTankDropoffFlag() != null){
+        if(shellcore.GetTractorTarget() == null && FindTankDropoffFlag() != null)
+        {
             var pickupTargetFlag = FindTankPickupFlag();
             if (pickupTargetFlag && Vector2.SqrMagnitude(pickupTargetFlag.transform.position - craft.transform.position) > 250F)
             {
@@ -1028,10 +1029,11 @@ public class BattleAI : AIModule
             if (flag.name != $"tankdropoff{craft.faction.factionID}") continue;
             int alliedPresence = 0;
             int enemyPresence = 0;
-            foreach(var entity in AIData.entities){
+            foreach(var entity in AIData.entities)
+            {
                 if(Vector2.SqrMagnitude(flag.transform.position - entity.transform.position) > 25) continue;
                 if(!(entity as GroundConstruct)) continue;
-                if(entity == shellcore || entity == shellcore.GetTractorTarget().GetComponent<Entity>()) continue;
+                if(entity == shellcore || (shellcore && shellcore.GetTractorTarget() && entity == shellcore.GetTractorTarget().GetComponent<Entity>())) continue;
                 if(entity.faction.factionID == craft.faction.factionID){alliedPresence++;}
                 else{enemyPresence++;}
             }
