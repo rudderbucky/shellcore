@@ -71,7 +71,9 @@ public class CoreScriptsSequence : MonoBehaviour
         StopMusic,
         RollCredits,
         DealCoreDamage,
-        SetPartDropRate
+        SetPartDropRate,
+        SetImmobile,
+        SetAbilitiesUsable
     }
     public struct Instruction
     {
@@ -244,9 +246,28 @@ public class CoreScriptsSequence : MonoBehaviour
                     }
                     else Debug.Log("<DealCoreDamage> Could not find entity!");
                     break;
+
+                case InstructionCommand.SetImmobile:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var immobile = GetArgument(inst.arguments, "immobile") == "true";
+                    e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e is Craft c)
+                    {
+                        c.SetImmobile(immobile);
+                    }
+                    break;
+                case InstructionCommand.SetAbilitiesUsable:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var usable = GetArgument(inst.arguments, "usable") == "true";
+                    e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.canUseAbilities = usable;
+                    }
+                    break;
                 case InstructionCommand.SetOverrideFaction:
                     var overrideFstr = GetArgument(inst.arguments, "overrideFaction");
-                     entityID = GetArgument(inst.arguments, "entityID");
+                    entityID = GetArgument(inst.arguments, "entityID");
                     var overrideFac = 0;
                     if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
                     e = AIData.entities.Find(e => e.ID == entityID);

@@ -338,6 +338,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     [HideInInspector]
     public int absorptions = 0;
 
+    public bool canUseAbilities = true;
+
     public bool isAbsorbing // if true, all incoming damage is converted to energy
     {
         get { return absorptions > 0; }
