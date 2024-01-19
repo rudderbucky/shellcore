@@ -168,7 +168,6 @@ public class Beam : WeaponAbility
             SetUpCosmetics();
         }
         targetArray.Clear();
-        targetArray.Add(targetingSystem.GetTarget());
         firing = true;
         numShots = 0;
         return true;
