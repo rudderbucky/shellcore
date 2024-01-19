@@ -8,8 +8,8 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
-//        WarpPlayer(flagName=Ascendance-pytha-flag11, sectorName=Infected Capitol Center),
-//        Call(Ascendance_post_pytha_fight),
+        WarpPlayer(flagName=Ascendance-pytha-flag11, sectorName=Infected Capitol Center),
+        Call(Ascendance_post_pytha_fight),
         ConditionBlock(
             EnterSector(
                 sectorName=The Final Fight,
@@ -150,6 +150,14 @@ Function(
         ForceTractor(
             entityID=InfectedLeader,
             targetEntityID=player
+        ),
+        SpawnEntity(
+            entityID=weapon,
+            flagName=Ascendance_infected_leader_spawn2,
+            faction=1,
+            assetID=carrier_blueprint,
+            name=Weapon,
+            blueprintJSON=Citadel
         )
     )
 )
