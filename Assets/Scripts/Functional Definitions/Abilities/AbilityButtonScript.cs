@@ -338,11 +338,18 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         bool hotkeyAccepted = InputManager.GetKeyDown(keycode) && !hotkeyBlockedByVendor
                             && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
 
-        if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) return;
+        if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) 
+        {
+            return;
+        }
+
         if (Input.GetKey(KeyCode.LeftControl))
         {
+            var boosted = abilities.Exists(a => a.gasBoosted);
             foreach (var ability in abilities)
-                ability.gasBoosted = !ability.gasBoosted;
+            {
+                ability.gasBoosted = !boosted;
+            }
             return;
         }
 
