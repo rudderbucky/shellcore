@@ -153,11 +153,8 @@ public class AbilityHandler : MonoBehaviour
             }
         }
 
-        foreach (var val in betterBGboxArray.Values)
-        {
-            val.ReflectGasBoost();
-        }
-
+        ReflectGasBoost();
+        
         var HUDbgrectTransform = HUDbg.GetComponent<RectTransform>();
         if (visibleAbilities.Count > 0)
         {
@@ -218,6 +215,15 @@ public class AbilityHandler : MonoBehaviour
         else
         {
             Rearrange();
+        }
+    }
+
+    public void ReflectGasBoost()
+    {
+
+        foreach (var val in betterBGboxArray.Values)
+        {
+            val.ReflectGasBoost();
         }
     }
 

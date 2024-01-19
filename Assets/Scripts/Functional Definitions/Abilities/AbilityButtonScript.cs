@@ -314,8 +314,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             gasBoostedImage.enabled = false;
             return;
         }
-        var ab = abilities[0];
-        gasBoostedImage.enabled = ab.gasBoosted;
+        var ab = abilities.Exists(a => a.gasBoosted);
+        gasBoostedImage.enabled = ab;
     }
 
     private void UpdateAbilityActivation()

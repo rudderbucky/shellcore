@@ -1085,7 +1085,8 @@ public class SectorManager : MonoBehaviour
                     if (blueprint.dialogue == null) blueprint.dialogue = d;
                 }
 
-                blueprint.entityName = data.name;
+                if (!string.IsNullOrEmpty(data.name))
+                    blueprint.entityName = data.name;
                 Yard yard = gObj.AddComponent<Yard>();
                 yard.mode = BuilderMode.Yard;
                 break;
