@@ -100,6 +100,7 @@ public class Bullet : WeaponAbility
         script.SetCategory(type == WeaponDiversityType.Torpedo ? Entity.EntityCategory.All : category);
         script.SetTerrain(type == WeaponDiversityType.Torpedo ? Entity.TerrainType.Ground : terrain);
         script.SetShooterFaction(Core.faction);
+        if (script.owner is PlayerCore && DevConsoleScript.godModeEnabled) pierceFactor = 1;
         script.SetPierceFactor(pierceFactor);
         script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction.factionID) : new Color(0.8F, 1F, 1F, 0.9F);
         script.missParticles = true;
