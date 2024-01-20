@@ -276,6 +276,11 @@ public class IonLineController : MonoBehaviour
     float GetBearingFromVector(Vector2 vec)
     {
         var angle = Mathf.Atan(vec.y / vec.x) * Mathf.Rad2Deg;
+        if (vec.x == 0)
+        {
+            return vec.y > 0 ? 90 : 270;
+        }
+
         if (vec.x > 0)
         {
             if (angle > 0)
