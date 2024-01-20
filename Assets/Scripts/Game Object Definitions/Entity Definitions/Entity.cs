@@ -1912,6 +1912,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected void TickAbilitiesAsStation()
     {
         if (MasterNetworkAdapter.mode == NetworkMode.Client) return;
+        if (!canUseAbilities) return;
 
         var enemyTargetFound = SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone;
         if (!enemyTargetFound && BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)

@@ -8,8 +8,7 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
-        WarpPlayer(flagName=Ascendance-pytha-flag11, sectorName=Infected Capitol Center),
-        Call(Ascendance_post_pytha_fight),
+        WarpPlayer(flagName=Ascendance_leader_fight_gate, sectorName=Sector 4650-410),
         ConditionBlock(
             EnterSector(
                 sectorName=The Final Fight,
@@ -132,6 +131,7 @@ Function(
             entityID=InfectedLeader,
             flagName=Ascendance_infected_leader_spawn,
             faction=1,
+            overrideFaction=2,
             name=Infected Leader,
             blueprintJSON=Infected Leader,
         ),
@@ -154,10 +154,24 @@ Function(
         SpawnEntity(
             entityID=weapon,
             flagName=Ascendance_infected_leader_spawn2,
-            faction=1,
+            faction=5,
             assetID=carrier_blueprint,
             name=Weapon,
-            blueprintJSON=Citadel
-        )
+            blueprintJSON=Citadel,
+            overrideFaction=2,
+        ),
+        SetOverrideFaction(
+            entityID=player,
+            overrideFaction=1
+        ),
+        SetAbilitiesUsable(
+            entityID=weapon,
+            usable=false,
+        ),
+        Wait(time=10),
+        SetAbilitiesUsable(
+            entityID=weapon,
+            usable=true,
+        ),
     )
 )
