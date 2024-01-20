@@ -13,7 +13,7 @@ MissionTrigger(
             EnterSector(
                 sectorName=The Final Fight,
                 sequence=(
-                    Call(Ascendance_leaderGrab)
+                    Call(Ascendance_leaderGrab_p3)
                 )
             )
         )
@@ -122,56 +122,3 @@ Function(
 //Text("", "You chose to finish this story and we supported you along the way. What awaits us now? Only you can decide. This is the consequence of authority — you weren’t the owner of this power, but we trusted you anyway to push the rock forward.")
 //Text("", "You are a god who stole your power from god. You made your own ending to this story that wasn’t yours - that may not have been given to you willingly. Was that the right thing for you to do? For us to support? So what is next, God?")
 //Text("", "...")
-
-
-Function(
-    name=Ascendance_leaderGrab,
-    sequence=(
-        SpawnEntity(
-            entityID=InfectedLeader,
-            flagName=Ascendance_infected_leader_spawn,
-            faction=1,
-            overrideFaction=2,
-            name=Infected Leader,
-            blueprintJSON=Infected Leader,
-        ),
-        SetImmobile(
-            entityID=InfectedLeader,
-            immobile=true
-        ),
-        SetAbilitiesUsable(
-            entityID=InfectedLeader,
-            usable=false
-        ),
-        Rotate(
-            entityID=InfectedLeader,
-            angle=180
-        ),
-        ForceTractor(
-            entityID=InfectedLeader,
-            targetEntityID=player
-        ),
-        SpawnEntity(
-            entityID=weapon,
-            flagName=Ascendance_infected_leader_spawn2,
-            faction=5,
-            assetID=carrier_blueprint,
-            name=Weapon,
-            blueprintJSON=Citadel,
-            overrideFaction=2,
-        ),
-        SetOverrideFaction(
-            entityID=player,
-            overrideFaction=1
-        ),
-        SetAbilitiesUsable(
-            entityID=weapon,
-            usable=false,
-        ),
-        Wait(time=10),
-        SetAbilitiesUsable(
-            entityID=weapon,
-            usable=true,
-        ),
-    )
-)

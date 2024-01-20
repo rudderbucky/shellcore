@@ -1,0 +1,79 @@
+Function(
+    name=Ascendance_leaderGrab_p1,
+    sequence=(
+        SetVariable(name=$$Ascendance_citadelPrint, value=Citadel),
+        SetVariable(name=$$Ascendance_citadelTimer, value=15),
+        Call(Ascendance_leaderGrab)
+    )
+)
+
+Function(
+    name=Ascendance_leaderGrab_p2,
+    sequence=(
+        SetVariable(name=$$Ascendance_citadelPrint, value=Citadel Damaged),
+        SetVariable(name=$$Ascendance_citadelTimer, value=10),
+        Call(Ascendance_leaderGrab)
+    )
+)
+
+Function(
+    name=Ascendance_leaderGrab_p3,
+    sequence=(
+        SetVariable(name=$$Ascendance_citadelPrint, value=Citadel Very Damaged),
+        SetVariable(name=$$Ascendance_citadelTimer, value=5),
+        Call(Ascendance_leaderGrab)
+    )
+)
+
+
+Function(
+    name=Ascendance_leaderGrab,
+    sequence=(
+        SpawnEntity(
+            entityID=InfectedLeader,
+            flagName=Ascendance_infected_leader_spawn,
+            faction=1,
+            overrideFaction=2,
+            name=Infected Leader,
+            blueprintJSON=Infected Leader,
+        ),
+        SetImmobile(
+            entityID=InfectedLeader,
+            immobile=true
+        ),
+        SetAbilitiesUsable(
+            entityID=InfectedLeader,
+            usable=false
+        ),
+        Rotate(
+            entityID=InfectedLeader,
+            angle=180
+        ),
+        ForceTractor(
+            entityID=InfectedLeader,
+            targetEntityID=player
+        ),
+        SpawnEntity(
+            entityID=weapon,
+            flagName=Ascendance_infected_leader_spawn2,
+            faction=5,
+            assetID=carrier_blueprint,
+            name=Weapon,
+            blueprintJSON=$$Ascendance_citadelPrint,
+            overrideFaction=2,
+        ),
+        SetOverrideFaction(
+            entityID=player,
+            overrideFaction=1
+        ),
+        SetAbilitiesUsable(
+            entityID=weapon,
+            usable=false,
+        ),
+        Wait(time=$$Ascendance_citadelTimer),
+        SetAbilitiesUsable(
+            entityID=weapon,
+            usable=true,
+        ),
+    )
+)
