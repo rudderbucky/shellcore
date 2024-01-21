@@ -122,17 +122,26 @@ Dialogue(
 )
 
 
+Function(
+    name=Kappa_truce,
+    sequence=(
+        Call(Core_incrementTruce),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Kappa,
+                invert=true,
+                sequence=(
+                    Call(Core_decrementTruce),
+                )
+            )
+        ),
+    )
+)
+
 SectorTrigger(
     sectorName=Kappa,
     sequence=(
-        SetFactionRelations(
-            factionID=0,
-            sum=59
-        ),
-        SetFactionRelations(
-            factionID=1,
-            sum=59
-        ),
+        Call(Kappa_truce),
         ConditionBlock(
             EnterSector(
                 sectorName=Kappa,

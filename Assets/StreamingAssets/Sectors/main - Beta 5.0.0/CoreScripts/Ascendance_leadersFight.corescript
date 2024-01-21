@@ -25,6 +25,20 @@ Function(
     )
 )
 
+Function(
+    name=Ascendance_leaderGrabTest,
+    sequence=(
+        WarpPlayer(flagName=Ascendance_leader_fight_gate, sectorName=Sector 4650-410),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Final Fight,
+                sequence=(
+                    Call(Ascendance_leaderGrab_p3)
+                )
+            )
+        )
+    )
+)
 
 Function(
     name=Ascendance_leaderGrab,

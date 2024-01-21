@@ -64,6 +64,31 @@ Dialogue(
     )
 )
 
+
+Function(
+    name=Truth_endKappa,
+    sequence=(
+        ConditionBlock(
+            EnterSector(
+                sectorName=Kappa,
+                sequence=(
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Kappa,
+                            invert=true,
+                            sequence=(
+                                Call(Truth_endKappa)
+                            )
+                        )
+                    ),
+                    Call(Kappa_deleteEntities),
+                )
+            )
+        )
+    )
+)
+
+
 Function(
     name=Truth_start,
     sequence=(
@@ -72,7 +97,9 @@ Function(
                 val1=MissionStatus(Truth_missionName),
                 val2=complete,
                 comp=Eq,
-                sequence=()
+                sequence=(
+                    Call(Truth_endKappa)
+                )
             ),
             Comparison(
                 val1=$$$Truth_checkpoint,

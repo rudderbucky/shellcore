@@ -74,7 +74,9 @@ public class CoreScriptsSequence : MonoBehaviour
         SetPartDropRate,
         SetImmobile,
         SetAbilitiesUsable,
-        DetachPart
+        DetachPart,
+        EnableBackgroundSpawns,
+        DisableBackgroundSpawns,
     }
     public struct Instruction
     {
@@ -214,6 +216,12 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.EnableBackgroundSpawns:
+                    SectorManager.backgroundSpawnsEnabled = true;
+                    break;
+                case InstructionCommand.DisableBackgroundSpawns:
+                    SectorManager.backgroundSpawnsEnabled = false;
+                    break;
                 case InstructionCommand.ClearFactionOverrides:
                     foreach (var ent in AIData.entities)
                     {

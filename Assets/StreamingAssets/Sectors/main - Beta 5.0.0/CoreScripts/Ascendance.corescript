@@ -8,43 +8,358 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
-        WarpPlayer(flagName=Ascendance_leader_fight_gate, sectorName=Sector 4650-410),
-        ConditionBlock(
-            EnterSector(
-                sectorName=The Final Fight,
-                sequence=(
-                    Call(Ascendance_leaderGrab_p3)
-                )
-            )
-        )
+        Call(Ascendance_start)
     )
 )
+
+
+
 
 Function(
     name=Ascendance_start,
     sequence=(
         ConditionBlock(
-            EnterSector(
-                sectorName=Infected Capitol Center,
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=10,
                 sequence=(
-                    Call(Ascendance_pythaFight)
+                    EnterSector(
+                        sectorName=Infected Capitol Center,
+                        sequence=(
+                            Call(Ascendance_pythaFight)
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=2,
+                sequence=(
+                    Call(Ascendance_clearDeadZones_p1)
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=1,
+                sequence=(
+                    Call(Ascendance_cs2)
+                )
+            ),
+            Comparison(
+                val1=MissionStatus(Legend_missionName),
+                val2=complete,
+                sequence=(
+                    SetVariable(name=$$$Legend_coreSafe, value=1),
+                    Call(Ascendance_cs1)
                 )
             )
         ),
     )
 )
 
-//Text("", "I've figured out where we're going to start. Meet me at Sector X-Y for further instructions.")
-//Text("", "Okay.")
 
-//Text("", "- Meet Daayo at Sector X-Y to begin converting DeadZones.
-//- Reach the Jump Sector in the Standard Sectors.")
 
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")
-//Text("", "")
+Function(
+    name=Ascendance_cs1,
+    sequence=(
+        RemoveObjectiveMarker(ID=Ascendance_cs1DaayoMarker),
+        AddObjectiveMarker(ID=Ascendance_cs1DaayoMarker, sectorName=The Core),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Core,
+                sequence=(
+                    DeleteEntity(
+                        entityID=fake-daayo
+                    ),
+                    SpawnEntity(
+                        entityID=fake-daayo,
+                        name=Daayo,
+                        blueprintJSON=daayo_4,
+                        faction=1,
+                        flagName=Legend-cs8-flag1
+                    ),
+                    ClearInteraction(entityID=fake-daayo),
+                    SetInteraction(entityID=fake-daayo, dialogueID=Ascendance_cs1_d),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Ascendance_checkpoint,
+                            val2=1,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        EnterSector(
+                            sectorName=The Core,
+                            invert=true,
+                            sequence=(
+                                Call(Ascendance_cs1)
+                            )
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Text("Ascendance_cs1_d1", "I've figured out where we're going to start. Meet us at Kappa for further instructions.")
+Text("Ascendance_cs1_d2", "Okay.")
+Text("Ascendance_cs1_d3", "No thanks.")
+
+D(
+    Ascendance_cs1_d1,
+    fake-daayo,
+    Ascendance_cs1_d,
+    ,
+    Ascendance_kappa,
+    R(
+        Ascendance_cs1_d2,
+        Call(Ascendance_cs2)
+    ),
+    R(
+        Ascendance_cs1_d3,
+        End()
+    ),
+)
+
+Function(
+    name=Ascendance_cs2,
+    sequence=(
+        ClearInteraction(entityID=fake-daayo),
+        SetVariable(name=$$$Ascendance_checkpoint, value=1),
+        RemoveObjectiveMarker(ID=Ascendance_cs1DaayoMarker),
+        RemoveObjectiveMarker(ID=Ascendance_cs2DaayoMarker),
+        AddObjectiveMarker(ID=Ascendance_cs2DaayoMarker, sectorName=Kappa),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Kappa,
+                sequence=(
+                    SpawnEntity(
+                        entityID=fake-daayo,
+                        name=Daayo,
+                        blueprintJSON=daayo_4,
+                        faction=1,
+                        flagName=Truth-cs4-flag12
+                    ),
+                    ClearInteraction(entityID=fake-daayo),
+                    SetInteraction(entityID=fake-daayo, dialogueID=Ascendance_cs2_d),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Ascendance_checkpoint,
+                            val2=,
+                            comp=Eq,
+                            sequence=()
+                        ),
+                        EnterSector(
+                            sectorName=Kappa,
+                            invert=true,
+                            sequence=(
+                                Call(Ascendance_cs2)
+                            )
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=2,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Task(
+    taskID=Ascendance_kappa,
+    objectives=Ascendance_kappa_objectives
+)
+Text("Ascendance_kappa_objectives", "- Meet Daayo at Kappa to begin converting DeadZones.")
+
+
+Text("Ascendance_cs2_d1", "A ruined Kappa. How unfortunate it was given you as a defender.")
+Text("Ascendance_cs2_d2", "Please shut up and continue with the plan.")
+Text("Ascendance_cs2_d3", "DeadZones... are not the safest place to be. They rot at your core except if you are what we called a \"BattleCore\" in Standardness. It is odd.")
+Text("Ascendance_cs2_d4", "So?")
+Text("Ascendance_cs2_d5", "The reasons why are unclear... but it's due to an effect the leaders created that I am pretty sure I can undo, using what I've learned in the other BattleZones.")
+Text("Ascendance_cs2_d6", "How?")
+Text("Ascendance_cs2_d7", "I'm going to use you as a proxy. You'll need to go to each BattleZone I mark on the map and reverse their effect by bringing pylons together. Familiar, hm?")
+Text("Ascendance_cs2_d8", "You're not going to be fighting?")
+Text("Ascendance_cs2_d9", "Why would I when I can watch you get stomped by the BattleCores? Anyway, while I'm working on making the pylons, the others will help you.")
+Text("Ascendance_cs2_d10", "Okay...")
+Text("Ascendance_cs2_d11", "No thanks.")
+D(
+    Ascendance_cs2_d1,
+    fake-daayo,
+    Ascendance_cs2_d,
+    R(
+        Ascendance_cs2_d2,
+        D(
+            Ascendance_cs2_d3,
+            R(
+                Ascendance_cs2_d4,
+                D(
+                    Ascendance_cs2_d5,
+                    R(
+                        Ascendance_cs2_d6,
+                        D(
+                            Ascendance_cs2_d7,
+                            R(
+                                Ascendance_cs2_d8,
+                                D(
+                                    Ascendance_cs2_d9,
+                                    ,
+                                    ,
+                                    ,
+                                    Ascendance_reachJumpGate,
+                                    R(
+                                        Ascendance_cs2_d10,
+                                        Call(Ascendance_clearDeadZones_p1)
+                                    ),
+                                    R(
+                                        Ascendance_cs2_d11,
+                                        End()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Task(
+    taskID=Ascendance_reachJumpGate,
+    objectives=Ascendance_reachJumpGate_objectives
+)
+Text("Ascendance_reachJumpGate_objectives", "- Head to the sectors marked on the map.
+- Find a Pylon in the sector and bring it to a Gate Pylon to clear the sector.
+- Repeat until you are at the Jump Sector.")
+
+Function(
+    name=Ascendance_clearDeadZones_p1,
+    sequence=(
+        SetVariable(name=$$$Ascendance_checkpoint, value=2),
+        ClearInteraction(entityID=fake-daayo),
+        RemoveObjectiveMarker(ID=Ascendance_dzConv1),
+        AddObjectiveMarker(ID=Ascendance_dzConv1, sectorName=Danger Zone 1240-5040),
+        RemoveObjectiveMarker(ID=Ascendance_cs2DaayoMarker),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Danger Zone 1240-5040,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Ascendance_pylonTarget1,
+                        assetID=air_weapon_station,
+                        blueprintJSON=GatePylon,
+                        flagName=Ascendance_dc1_gatePylon,
+                        faction=5,
+                        name=Gate Pylon
+                    ),        
+                    DeleteEntity(entityID=Ascendance_pylon1),   
+                    SpawnEntity(
+                        entityID=Ascendance_pylon1,
+                        blueprintJSON=SimplePylon,
+                        faction=5,
+                        assetID=air_weapon_station,
+                        overrideTractorTarget=true,
+                        name=Pylon,
+                        flagName=Ascendance_dc1_pylon,
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=SqrDistance(Ascendance_pylon1, Ascendance_pylonTarget1),
+                            val2=10,
+                            comp=Lt,
+                            sequence=(
+                                DeleteEntity(
+                                    entityID=Ascendance_pylonTarget1
+                                ),
+                                DeleteEntity(
+                                    entityID=Ascendance_pylon1
+                                ),
+                                RemoveObjectiveMarker(
+                                    ID=Ascendance_dzConv1
+                                ),
+                                SetVariable(
+                                    name=$$$Ascendance_zonesConverted1,
+                                    value=1
+                                ),
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=Danger Zone 1240-5040,
+                            invert=true,
+                            sequence=(
+                                Call(Ascendance_clearDeadZones_p1)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_clearDeadZones_p2,
+    sequence=(
+        SetVariable(name=$$$Ascendance_checkpoint, value=2),
+        EnterSector(
+            sectorName=Danger Zone 1240-5040,
+            sequence=(
+                SpawnEntity(
+                    entityID=Ascendance_pylonTarget2,
+                    assetID=air_weapon_station,
+                    blueprintJSON=GatePylon,
+                    flagName=Ascendance_dc2_gatePylon,
+                    faction=5,
+                    name=Gate Pylon
+                ),        
+                DeleteEntity(Ascendance_pylon1),   
+                SpawnEntity(
+                    entityID=Ascendance_pylon2,
+                    blueprintJSON=SimplePylon,
+                    faction=5,
+                    assetID=air_weapon_station,
+                    overrideTractorTarget=true,
+                    name=Pylon,
+                    flagName=Ascendance_dc2_pylon,
+                ),
+                ConditionBlock(
+                    Comparison(
+                        val1=SqrDistance(Ascendance_pylon2, Ascendance_pylonTarget2),
+                        val2=10,
+                        comp=Lt,
+                        sequence=(
+                            SetVariable(
+                                name=$$$Ascendance_zonesConverted2,
+                                value=1
+                            ),
+
+                        )
+                    ),
+                    EnterSector(
+                        sectorName=Danger Zone 1240-5040,
+                        invert=true,
+                        sequence=(
+                            Call(Ascendance_clearDeadZones_p2)
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
 
 //Text("", "Wait... what's going on here?")
 //Text("", "AAAAaaaahhhh!")

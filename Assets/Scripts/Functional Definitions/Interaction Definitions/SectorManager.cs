@@ -26,6 +26,8 @@ public class SectorManager : MonoBehaviour
         return GetCurrentType() == SectorType.DangerZone || deadzoneDamageOverride;
     }
 
+    public static bool backgroundSpawnsEnabled = true;
+
     public delegate void SectorLoadDelegate(string sectorName);
 
     public static SectorLoadDelegate OnSectorLoad;
@@ -168,6 +170,8 @@ public class SectorManager : MonoBehaviour
         }
 
         instance = this;
+        backgroundSpawnsEnabled = true;
+        deadzoneDamageOverride = false;
 
         objects = new Dictionary<string, GameObject>();
         persistentObjects = new Dictionary<string, GameObject>();
@@ -342,7 +346,7 @@ public class SectorManager : MonoBehaviour
             dangerZoneTimer = 0;
         }
 
-        if (playerActive && !DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsSpeaking())
+        if (playerActive && !DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsSpeaking() && backgroundSpawnsEnabled)
         {
             bgSpawnTimer += Time.deltaTime;
 
