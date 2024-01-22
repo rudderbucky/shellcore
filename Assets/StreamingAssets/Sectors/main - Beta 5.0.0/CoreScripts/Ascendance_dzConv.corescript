@@ -1,4 +1,4 @@
-\Function(
+Function(
     name=Ascendance_clearDeadZones_p1,
     sequence=(
         SetVariable(name=$$$Ascendance_checkpoint, value=2),
@@ -134,7 +134,7 @@ Function(
         SetVariable(name=$$$Ascendance_checkpoint, value=4),
         RemoveObjectiveMarker(ID=Ascendance_dzConv2),
         RemoveObjectiveMarker(ID=Ascendance_dzConv3),
-        AddObjectiveMarker(ID=Ascendance_dzConv3, sectorName=Danger Zone 1420-3280),
+        AddObjectiveMarker(ID=Ascendance_dzConv3, sectorName=Jump Sector),
         ConditionBlock(
             EnterSector(
                 sectorName=Danger Zone 1420-3280,
@@ -173,7 +173,6 @@ Function(
                                     name=$$$Ascendance_zonesConverted3,
                                     value=1
                                 ),
-
                             )
                         ),
                         EnterSector(
