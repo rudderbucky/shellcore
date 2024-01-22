@@ -22,7 +22,7 @@ MissionTrigger(
         ),
         SetVariable(
             name=$$$Ascendance_checkpoint,
-            value=2
+            value=5
         ),
         Call(Ascendance_start)
     )
@@ -37,14 +37,17 @@ Function(
         ConditionBlock(
             Comparison(
                 val1=$$$Ascendance_checkpoint,
-                val2=10,
+                val2=6,
                 sequence=(
-                    EnterSector(
-                        sectorName=Infected Capitol Center,
-                        sequence=(
-                            Call(Ascendance_pythaFight)
-                        )
-                    )
+                    Call(Ascendance_pythaFightTrigger)
+                )
+            ),
+
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=5,
+                sequence=(
+                    Call(Ascendance_cs3)
                 )
             ),
             Comparison(
@@ -273,19 +276,396 @@ Text("Ascendance_reachJumpGate_objectives", "- Head to the sectors marked on the
 - Find a Pylon in the sector and bring it to a Gate Pylon to clear the sector.
 - Repeat until you are at the Jump Sector.")
 
+Function(
+    name=Ascendance_cs3,
+    sequence=(
+        RemoveObjectiveMarker(ID=Ascendance_dzConv3),
+        RemoveObjectiveMarker(ID=Ascendance_jumpSector),
+        AddObjectiveMarker(ID=Ascendance_jumpSector, sectorName=Jump Sector),
+        SetVariable(name=$$$Ascendance_checkpoint, value=5),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Jump Sector,
+                sequence=(
+                    StartCutscene(),
+                    SetPath(
+                        entityID=player,
+                        flagName=entrance-jump-gate-flag,
+                        sequence=(
+                            SpawnEntity(
+                                entityID=sukrat,
+                                forceCharacterTeleport=true,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SpawnEntity(
+                                entityID=the-architect,
+                                forceCharacterTeleport=true,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SpawnEntity(
+                                entityID=prometheus,
+                                faction=5,
+                                name=Prometheus,
+                                blueprintJSON=Fatalizer,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SpawnEntity(
+                                entityID=heracles,
+                                faction=3,
+                                name=Heracles,
+                                blueprintJSON=heracles,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SpawnEntity(
+                                entityID=sisyphos,
+                                faction=3,
+                                name=Sisyphos,
+                                blueprintJSON=sisyphos,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SpawnEntity(
+                                entityID=eleos,
+                                faction=1,
+                                name=Eleos,
+                                blueprintJSON=Slayer,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SpawnEntity(
+                                entityID=fake-daayo,
+                                name=Daayo,
+                                blueprintJSON=daayo_4,
+                                faction=1,
+                                flagName=Ascendance-cs3-flag6
+                            ),
+                            SetPath(
+                                entityID=sukrat,
+                                flagName=Ascendance-cs3-flag1
+                            ),   
+                            SetPath(
+                                entityID=the-architect,
+                                flagName=Ascendance-cs3-flag2
+                            ),   
+                            SetPath(
+                                entityID=prometheus,
+                                flagName=Ascendance-cs3-flag3
+                            ),   
+                            SetPath(
+                                entityID=sisyphos,
+                                flagName=Ascendance-cs3-flag4
+                            ),   
+                            SetPath(
+                                entityID=heracles,
+                                flagName=Ascendance-cs3-flag5
+                            ),   
+                            SetPath(
+                                entityID=eleos,
+                                flagName=Ascendance-cs3-flag7
+                            ),
+                            SetPath(
+                                entityID=fake-daayo,
+                                flagName=Ascendance-cs3-flag14
+                            ),
+                            Wait(time=3),
+                            ForceStartDialogue(
+                                dialogueID=Ascendance_cs3_p1_d
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
 
-//Text("", "Wait... what's going on here?")
-//Text("", "AAAAaaaahhhh!")
-//Text("", "No!")
-//Text("", "If you want your friends back, meet me at the Infected Capitol.")
-//Text("", "Pytha? What's happening?")
-//Text("", "All that time in the Abandoned Sectors and you still can't connect two dots together.")
-//Text("", "YOU!!!")
-//Text("", "Heh. Guess who's the dummy now?")
-//Text("", "After we get them, you're next.")
-//Text("", "")
-//Text("", "")
 
+Text("Ascendance_cs3_d1", "There... I just connected the gate to Kappa. You can use it to get back and forth now.")
+Text("Ascendance_cs3_d2", "Wait... what's going on here?")
+Text("Ascendance_cs3_d3", "AAAAaaaahhhh!")
+Text("Ascendance_cs3_d4", "No!")
+Text("Ascendance_cs3_d5", "If you want your friends back, meet me at the Infected Capitol.")
+Text("Ascendance_cs3_d6", "Pytha? What's happening?")
+Text("Ascendance_cs3_d7", "All that time in the Abandoned Sectors and you still can't connect two dots together.")
+Text("Ascendance_cs3_d8", "YOU!!!")
+Text("Ascendance_cs3_d9", "Heh. Guess who's the dummy now?")
+Text("Ascendance_cs3_d10", "After we get them, you're next.")
+Text("Ascendance_cs3_d11", "...")
+Text("Ascendance_cs3_d12", "Good going.")
+
+D(
+    Ascendance_cs3_d1,
+    the-architect,
+    Ascendance_cs3_p1_d,
+    R(
+        Ascendance_cs3_d12,
+        Call(Ascendance_cs3_p2)
+    )
+)
+
+Function(
+    name=Ascendance_cs3_p2,
+    sequence=(
+        SpawnEntity
+        (
+            entityID=Ascendance_nanoscope1,
+            name=Nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Ascendance-cs3-flag8
+        ),  
+        SpawnEntity
+        (
+            entityID=Ascendance_nanoscope2,
+            name=Nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Ascendance-cs3-flag9
+        ),
+        SpawnEntity
+        (
+            entityID=Ascendance_nanoscope3,
+            name=Nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Ascendance-cs3-flag10
+        ),
+        SpawnEntity
+        (
+            entityID=Ascendance_nanoscope4,
+            name=Nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Ascendance-cs3-flag11
+        ),
+        SpawnEntity
+        (
+            entityID=Ascendance_nanoscope5,
+            name=Nanoscope,
+            faction=3,
+            blueprintJSON=Nanoscope,
+            flagName=Ascendance-cs3-flag12
+        ),
+        ForceTractor(
+            entityID=Ascendance_nanoscope5,
+            targetEntityID=sisyphos
+        ),
+        ForceTractor(
+            entityID=Ascendance_nanoscope3,
+            targetEntityID=heracles
+        ),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Ascendance_cs3_p2_d)
+    )
+)
+
+
+D(
+    Ascendance_cs3_d2,
+    sukrat,
+    Ascendance_cs3_p2_d,
+    R(
+        Ascendance_cs3_d11,
+        D(
+            Ascendance_cs3_d3,
+            sisyphos,
+            R(
+                Ascendance_cs3_d4,
+                Call(Ascendance_cs3_p3)
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_cs3_p3,
+    sequence=(
+        ForceTractor(
+            entityID=Ascendance_nanoscope1,
+            targetEntityID=eleos
+        ),
+        ForceTractor(
+            entityID=Ascendance_nanoscope2,
+            targetEntityID=the-architect
+        ),
+        ForceTractor(
+            entityID=Ascendance_nanoscope4,
+            targetEntityID=prometheus
+        ),
+        Wait(time=1),        
+        SpawnEntity(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-cs3-flag10,
+            faction=1,
+            blueprintJSON=pytha_3,
+            name=Pytha,
+            overrideFaction=2,
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-cs3-flag15,
+            sequence=(
+                Wait(time=2),
+                ForceStartDialogue(dialogueID=Ascendance_cs3_p3_d)
+            )
+        ),
+    )
+)
+
+
+D(
+    Ascendance_cs3_d5,
+    Ascendance_pytha_1,
+    Ascendance_cs3_p3_d,
+    R(
+        Ascendance_cs3_d11,
+        D(
+            Ascendance_cs3_d6,
+            fake-daayo,
+            R(
+                Ascendance_cs3_d11,
+                D(
+                    Ascendance_cs3_d7,
+                    Ascendance_pytha_1,
+                    R(
+                        Ascendance_cs3_d11,
+                        D(
+                            Ascendance_cs3_d8,
+                            fake-daayo,
+                            R(
+                                Ascendance_cs3_d11,
+                                D(
+                                    Ascendance_cs3_d9,
+                                    sukrat,
+                                    R(
+                                        Ascendance_cs3_d11,
+                                        D(
+                                            Ascendance_cs3_d10,
+                                            fake-daayo,
+                                            R(
+                                                Ascendance_cs3_d11,
+                                                Call(Ascendance_cs3_end)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_cs3_end,
+    sequence=(
+        DeleteEntity(
+            entityID=heracles,
+        ),
+
+        DeleteEntity(
+            entityID=sisyphos,
+        ),
+
+        DeleteEntity(
+            entityID=the-architect,
+        ),
+
+        DeleteEntity(
+            entityID=prometheus,
+        ),
+
+        DeleteEntity(
+            entityID=eleos,
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_nanoscope1,
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_nanoscope2,
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_nanoscope3,
+        ),
+
+        DeleteEntity(
+            entityID=Ascendance_nanoscope4,
+        ),
+        DeleteEntity(
+            entityID=Ascendance_nanoscope5,
+        ),
+        SetPath(
+            entityID=Ascendance_pytha_1,
+            flagName=Ascendance-cs3-flag10,
+            sequence=(
+                DisablePartyMember(entityID=the-architect),
+                Wait(time=2),
+                FinishCutscene(),
+                DeleteEntity(
+                    entityID=Ascendance_nanoscope1,
+                ),
+                Call(Ascendance_get_to_infected_lair)
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_get_to_infected_lair,
+    sequence=(
+        SetOverrideFaction(
+            entityID=player,
+            overrideFaction=1,
+        ),
+        SetOverrideFaction(
+            entityID=sukrat,
+            overrideFaction=1,
+        ),
+        SetOverrideFaction(
+            entityID=fake-daayo,
+            overrideFaction=1,
+        ),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Jump Sector,
+                invert=true,
+                sequence=(
+                    SetOverrideFaction(
+                        entityID=player,
+                        overrideFaction=0,
+                    ),
+                    SetOverrideFaction(
+                        entityID=sukrat,
+                        overrideFaction=0,
+                    ),
+                    SetOverrideFaction(
+                        entityID=fake-daayo,
+                        overrideFaction=0,
+                    ),
+
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_pythaFightTrigger,
+    sequence=(
+        SetVariable(name=$$$Ascendance_checkpoint, value=6),
+        EnterSector(
+            sectorName=Infected Capitol Center,
+            sequence=(
+                Call(Ascendance_pythaFight)
+            )
+        )
+    )
+)
 
 
 
