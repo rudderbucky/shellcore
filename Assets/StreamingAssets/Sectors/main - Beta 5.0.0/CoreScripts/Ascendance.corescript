@@ -8,6 +8,22 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
+        SetVariable(
+            name=$$$Ascendance_zonesConverted1,
+            value=0
+        ),
+        SetVariable(
+            name=$$$Ascendance_zonesConverted2,
+            value=0
+        ),
+        SetVariable(
+            name=$$$Ascendance_zonesConverted3,
+            value=0
+        ),
+        SetVariable(
+            name=$$$Ascendance_checkpoint,
+            value=2
+        ),
         Call(Ascendance_start)
     )
 )
@@ -29,6 +45,20 @@ Function(
                             Call(Ascendance_pythaFight)
                         )
                     )
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=4,
+                sequence=(
+                    Call(Ascendance_clearDeadZones_p3)
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=3,
+                sequence=(
+                    Call(Ascendance_clearDeadZones_p2)
                 )
             ),
             Comparison(
@@ -151,7 +181,7 @@ Function(
                     ConditionBlock(
                         Comparison(
                             val1=$$$Ascendance_checkpoint,
-                            val2=,
+                            val2=2,
                             comp=Eq,
                             sequence=()
                         ),
@@ -242,123 +272,6 @@ Task(
 Text("Ascendance_reachJumpGate_objectives", "- Head to the sectors marked on the map.
 - Find a Pylon in the sector and bring it to a Gate Pylon to clear the sector.
 - Repeat until you are at the Jump Sector.")
-
-Function(
-    name=Ascendance_clearDeadZones_p1,
-    sequence=(
-        SetVariable(name=$$$Ascendance_checkpoint, value=2),
-        ClearInteraction(entityID=fake-daayo),
-        RemoveObjectiveMarker(ID=Ascendance_dzConv1),
-        AddObjectiveMarker(ID=Ascendance_dzConv1, sectorName=Danger Zone 1240-5040),
-        RemoveObjectiveMarker(ID=Ascendance_cs2DaayoMarker),
-        ConditionBlock(
-            EnterSector(
-                sectorName=Danger Zone 1240-5040,
-                sequence=(
-                    SpawnEntity(
-                        entityID=Ascendance_pylonTarget1,
-                        assetID=air_weapon_station,
-                        blueprintJSON=GatePylon,
-                        flagName=Ascendance_dc1_gatePylon,
-                        faction=5,
-                        name=Gate Pylon
-                    ),        
-                    DeleteEntity(entityID=Ascendance_pylon1),   
-                    SpawnEntity(
-                        entityID=Ascendance_pylon1,
-                        blueprintJSON=SimplePylon,
-                        faction=5,
-                        assetID=air_weapon_station,
-                        overrideTractorTarget=true,
-                        name=Pylon,
-                        flagName=Ascendance_dc1_pylon,
-                    ),
-                    ConditionBlock(
-                        Comparison(
-                            val1=SqrDistance(Ascendance_pylon1, Ascendance_pylonTarget1),
-                            val2=10,
-                            comp=Lt,
-                            sequence=(
-                                DeleteEntity(
-                                    entityID=Ascendance_pylonTarget1
-                                ),
-                                DeleteEntity(
-                                    entityID=Ascendance_pylon1
-                                ),
-                                RemoveObjectiveMarker(
-                                    ID=Ascendance_dzConv1
-                                ),
-                                SetVariable(
-                                    name=$$$Ascendance_zonesConverted1,
-                                    value=1
-                                ),
-                            )
-                        ),
-                        EnterSector(
-                            sectorName=Danger Zone 1240-5040,
-                            invert=true,
-                            sequence=(
-                                Call(Ascendance_clearDeadZones_p1)
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    )
-)
-
-
-Function(
-    name=Ascendance_clearDeadZones_p2,
-    sequence=(
-        SetVariable(name=$$$Ascendance_checkpoint, value=2),
-        EnterSector(
-            sectorName=Danger Zone 1240-5040,
-            sequence=(
-                SpawnEntity(
-                    entityID=Ascendance_pylonTarget2,
-                    assetID=air_weapon_station,
-                    blueprintJSON=GatePylon,
-                    flagName=Ascendance_dc2_gatePylon,
-                    faction=5,
-                    name=Gate Pylon
-                ),        
-                DeleteEntity(Ascendance_pylon1),   
-                SpawnEntity(
-                    entityID=Ascendance_pylon2,
-                    blueprintJSON=SimplePylon,
-                    faction=5,
-                    assetID=air_weapon_station,
-                    overrideTractorTarget=true,
-                    name=Pylon,
-                    flagName=Ascendance_dc2_pylon,
-                ),
-                ConditionBlock(
-                    Comparison(
-                        val1=SqrDistance(Ascendance_pylon2, Ascendance_pylonTarget2),
-                        val2=10,
-                        comp=Lt,
-                        sequence=(
-                            SetVariable(
-                                name=$$$Ascendance_zonesConverted2,
-                                value=1
-                            ),
-
-                        )
-                    ),
-                    EnterSector(
-                        sectorName=Danger Zone 1240-5040,
-                        invert=true,
-                        sequence=(
-                            Call(Ascendance_clearDeadZones_p2)
-                        )
-                    )
-                )
-            )
-        )
-    )
-)
 
 
 //Text("", "Wait... what's going on here?")
