@@ -606,7 +606,7 @@ Function(
                 Wait(time=2),
                 FinishCutscene(),
                 DeleteEntity(
-                    entityID=Ascendance_nanoscope1,
+                    entityID=Ascendance_pytha_1,
                 ),
                 Call(Ascendance_get_to_infected_lair)
             )
@@ -650,7 +650,8 @@ Function(
 
                 )
             )
-        )
+        ),
+        Call(Ascendance_pythaFightTrigger)
     )
 )
 
@@ -658,11 +659,15 @@ Function(
     name=Ascendance_pythaFightTrigger,
     sequence=(
         SetVariable(name=$$$Ascendance_checkpoint, value=6),
+        RemoveObjectiveMarker(ID=Ascendance_jumpSector),
+        AddObjectiveMarker(ID=Ascendance_icc, sectorName=Infected Capitol Center),
+        ConditionBlock(
         EnterSector(
             sectorName=Infected Capitol Center,
             sequence=(
                 Call(Ascendance_pythaFight)
             )
+        )
         )
     )
 )
