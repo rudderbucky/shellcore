@@ -392,13 +392,17 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.StartsWith("addp ", StringComparison.CurrentCultureIgnoreCase))
             {
                 string entityID = command.Substring(5).Trim();
-                if (!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))
-                {
-                    PlayerCore.Instance.cursave.unlockedPartyIDs.Add(entityID);
-                }
 
-                PartyManager.instance.AssignBackend(entityID);
-                textBox.text += $"\n<color=lime>{entityID}</color>";
+                if (SectorManager.instance.characters.ToList().Exists(e => e.ID == entityID))
+                {
+                    if (!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))
+                    {
+                        PlayerCore.Instance.cursave.unlockedPartyIDs.Add(entityID);
+                    }
+
+                    PartyManager.instance.AssignBackend(entityID);
+                    textBox.text += $"\n<color=lime>{entityID}</color>";
+                }
             }
             else if (command.Equals("Damacy", StringComparison.CurrentCultureIgnoreCase))
             {
