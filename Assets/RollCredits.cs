@@ -39,6 +39,7 @@ public class RollCredits : MonoBehaviour
         instance = this;
     }
 
+    public bool init;
     public void Init()
     {
         GetComponent<Image>().enabled = true;
@@ -46,6 +47,7 @@ public class RollCredits : MonoBehaviour
         DevConsoleScript.Instance.SetInactive();
         AudioManager.PlayMusic("music_whimper", false);
         StartCoroutine(Wait());
+        init = true;
     }
 
     IEnumerator Wait()
@@ -72,7 +74,8 @@ public class RollCredits : MonoBehaviour
 // 10.3
     void Update()
     {
-        timer += Time.deltaTime;
+        if (init)
+            timer += Time.deltaTime;
         cont1.gameObject.SetActive(true);
         cont2.gameObject.SetActive(true);
         cont3.gameObject.SetActive(true);
