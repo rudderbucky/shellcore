@@ -1,7 +1,8 @@
 Text("Ascendance_missionName", "Ascendance")
 Text("Ascendance_entryPoint", "Speak to Daayo in The Core.")
 
-
+// TODO: fix architect will be visible in makeshift + green capitol during pytha fight
+// TODO: fix drone workshop in makeshift pre pytha fight
 MissionTrigger(
     name=Ascendance_missionName,
     entryPoint=Ascendance_entryPoint,
@@ -10,19 +11,19 @@ MissionTrigger(
     sequence=(
         SetVariable(
             name=$$$Ascendance_zonesConverted1,
-            value=0
+            value=1
         ),
         SetVariable(
             name=$$$Ascendance_zonesConverted2,
-            value=0
+            value=1
         ),
         SetVariable(
             name=$$$Ascendance_zonesConverted3,
-            value=0
+            value=1
         ),
         SetVariable(
             name=$$$Ascendance_checkpoint,
-            value=4
+            value=6
         ),
         Call(Ascendance_start)
     )
@@ -42,7 +43,6 @@ Function(
                     Call(Ascendance_pythaFightTrigger)
                 )
             ),
-
             Comparison(
                 val1=$$$Ascendance_checkpoint,
                 val2=5,
@@ -662,33 +662,16 @@ Function(
         RemoveObjectiveMarker(ID=Ascendance_jumpSector),
         AddObjectiveMarker(ID=Ascendance_icc, sectorName=Infected Capitol Center),
         ConditionBlock(
-        EnterSector(
-            sectorName=Infected Capitol Center,
-            sequence=(
-                Call(Ascendance_pythaFight)
+            EnterSector(
+                sectorName=Infected Capitol Center,
+                sequence=(
+                    Call(Ascendance_pythaFight)
+                )
             )
-        )
         )
     )
 )
 
-
-
-//Text("", "Woah, what just happened?")
-//Text("", "It was Aristu. They freed us...")
-//Text("", "So they're watching us from the sidelines. Not sure what to think of that.")
-//Text("", "That blasted Pytha... I was just a pawn in their game...")
-//Text("", "Looks like we all were.")
-//Text("", "Yes, Daayo. This wasn't the first time they outsmarted someone...")
-
-//Text("", "Our job's not done. We need to find the leaders. No doubt they know we're here and have congregated.")
-//Text("", "Where could they be?")
-//Text("", "In this tailor-made world there's surely a behind-the-scenes. Daayo will help us drill a hole through it, right?")
-//Text("", "Hmph.")
-//Text("", "That's their way of saying yes. Anyway, this hideout of theirs... I have no idea where it is.")
-//Text("", "Um... that wasn't me.")
-//Text("", "Why can't we see Aristu when they're doing things like this?")
-//Text("", "I'm afraid... they've become what they hated the most.")
 
 //Text("", "Finally, you meddling twits made it. Prometheus, welcome back.")
 //Text("", "We're here to end this war, leaders. The game is up.")

@@ -194,13 +194,13 @@ Function(
 
 
 Text("Ascendance_cs0_d12", "Which I plan to uphold here.")
-Text("Ascendance_cs0_d13", "Something tells me this fight won’t be as easy as we would’ve thought...")
+Text("Ascendance_cs0_d13", "Something tells me this fight won’t be easy.")
 D(
     Ascendance_cs0_d12,
     Ascendance_pytha_1,
     Ascendance_cs0_p0_d,
     R(
-        Ascendance_cs0_d19,
+        Ascendance_cs0_d13,
         Call(Ascendance_pytha_fight_p1)
     )
 )
@@ -997,13 +997,222 @@ Function(
             speedFactor=2,
         ),
         SetPartDropRate(default=true),
+        Wait(time=1),
+        PassiveDialogue(entityID=player, text=Ascendance_cs4_d1),
+        Wait(time=1),
+        SpawnEntity(
+            entityID=heracles,
+            faction=3,
+            name=Heracles,
+            blueprintJSON=heracles,
+            flagName=Ascendance-pytha-flag11
+        ),
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Ascendance-pytha-flag11
+        ),
+        SpawnEntity(
+            entityID=eleos,
+            blueprintJSON=Slayer,
+            flagName=Ascendance-pytha-flag11,
+            name=Eleos,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=the-architect,
+            forceCharacterTeleport=true,
+            flagName=Ascendance-pytha-flag11,
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            faction=5,
+            name=Prometheus,
+            blueprintJSON=Fatalizer,
+            flagName=Ascendance-pytha-flag11,
+        ),
+        SetPath(
+            entityID=the-architect,
+            flagName=Ascendance-pytha-flag12
+        ),   
+        SetPath(
+            entityID=prometheus,
+            flagName=Ascendance-pytha-flag5
+        ),   
+        SetPath(
+            entityID=sisyphos,
+            flagName=Ascendance-pytha-flag4
+        ),   
+        SetPath(
+            entityID=heracles,
+            flagName=Ascendance-pytha-flag6
+        ),   
+        SetPath(
+            entityID=eleos,
+            flagName=Ascendance-pytha-flag16
+        ),
+        Wait(time=2),
+        ForceStartDialogue(
+            dialogueID=Ascendance_cs4_p1_d
+        )
+    )
+)
+
+
+
+Text("Ascendance_cs4_d1", "Woah, what just happened?")
+Text("Ascendance_cs4_d2", "...")
+
+Text("Ascendance_cs4_d3", "It was Aristu. They freed us...")
+Text("Ascendance_cs4_d4", "So they're watching us from the sidelines. Not sure what to think of that.")
+Text("Ascendance_cs4_d5", "That blasted Pytha... I was just a pawn in their game...")
+Text("Ascendance_cs4_d6", "Looks like we all were.")
+Text("Ascendance_cs4_d7", "Yes, Daayo. This wasn't the first time they outsmarted someone...")
+D(
+    Ascendance_cs4_d3,
+    prometheus,
+    Ascendance_cs4_p1_d,
+    R(
+        Ascendance_cs4_d2,
+        D(
+            Ascendance_cs4_d4,
+            the-architect,
+            R(
+                Ascendance_cs4_d2,
+                D(
+                    Ascendance_cs4_d5,
+                    fake-daayo,
+                    R(
+                        Ascendance_cs4_d2,
+                        D(
+                            Ascendance_cs4_d7,
+                            prometheus,
+                            R(
+                                Ascendance_cs4_d2,
+                                Call(Ascendance_cs4_p2)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_cs4_p2,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Ascendance_cs4_p2_d)
+    )
+)
+
+Text("Ascendance_cs4_d8", "Our job's not done. We need to find the leaders. No doubt they know we're here and have congregated.")
+Text("Ascendance_cs4_d9", "Where could they be?")
+Text("Ascendance_cs4_d10", "In this tailor-made world there's surely a behind-the-scenes. Daayo will help us drill a hole through it, right?")
+Text("Ascendance_cs4_d11", "Hmph.")
+Text("Ascendance_cs4_d12", "That's their way of saying yes. Anyway, this hideout of theirs... I have no idea where it is.")
+D(
+    Ascendance_cs4_d8,
+    prometheus,
+    Ascendance_cs4_p2_d,
+    R(
+        Ascendance_cs4_d9,
+        D(
+            Ascendance_cs4_d10,
+            R(
+                Ascendance_cs4_d2,
+                D(
+                    Ascendance_cs4_d11,
+                    fake-daayo,
+                    R(
+                        Ascendance_cs4_d2,
+                        D(
+                            Ascendance_cs4_d12,
+                            prometheus,
+                            R(
+                                Ascendance_cs4_d2,
+                                Call(Ascendance_cs4_p3)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_cs4_p3,
+    sequence=(
+        SpawnEntity(
+            entityID=Ascendance_finalGate,
+            assetID=core_gate,
+            flagName=Ascendance-pytha-flag11,
+            faction=0,
+        ),
         SetFlagInteractibility(
             flagName=Ascendance-pytha-flag11,
             sequence=(
                 WarpPlayer(flagName=Ascendance_leader_fight_gate, sectorName=Sector 4650-410),
             )
         ),
-        Wait(time=1),
+        StartCameraPan(
+            flagName=Ascendance-pytha-flag11,
+            sequence=(
+                Wait(time=1),
+                ForceStartDialogue(dialogueID=Ascendance_cs4_p3_d)
+            )
+        )
+    )
+)
+
+Text("Ascendance_cs4_d13", "Um... that wasn't me.")
+Text("Ascendance_cs4_d14", "So Aristu's really leading the way, huh?")
+Text("Ascendance_cs4_d15", "I'm afraid... they've become what they hated the most.")
+D(
+    Ascendance_cs4_d13,
+    fake-daayo,
+    Ascendance_cs4_p3_d,
+    R(
+        Ascendance_cs4_d2,
+        D(
+            Ascendance_cs4_d14,
+            sisyphos,
+            R(
+                Ascendance_cs4_d2,
+                D(
+                    Ascendance_cs4_d15,
+                    prometheus,
+                    R(
+                        Ascendance_cs4_d2,
+                        Call(Ascendance_cs4_end)
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_cs4_end,
+    sequence=(
+        SetVariable(name=$$$Ascendance_checkpoint, value=7),
+        ClearFactionOverrides(),
+        Call(Core_incrementTruce),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Infected Capitol Center,
+                invert=true,
+                sequence=(
+                    Call(Core_decrementTruce)
+                )
+            )
+        ),
+        FinishCameraPan(),
         FinishCutscene()
     )
 )
