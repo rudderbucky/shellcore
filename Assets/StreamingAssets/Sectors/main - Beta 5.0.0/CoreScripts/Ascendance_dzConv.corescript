@@ -2,19 +2,9 @@ Function(
     name=Ascendance_clearDeadZones_p1,
     sequence=(
         Call(Ascendance_clearDeadZones_p1_fight),
-        Call(Ascendance_clearDeadZones_p1_dialogue),
     )
 )
 
-
-Function(
-    name=Ascendance_clearDeadZones_p1_dialogue,
-    sequence=(
-        ConditionBlock(
-
-        )
-    )
-)
 
 
 Function(
@@ -29,6 +19,48 @@ Function(
             EnterSector(
                 sectorName=Danger Zone 1240-5040,
                 sequence=(
+                    SpawnEntity(
+                        entityID=heracles,
+                        faction=3,
+                        name=Heracles,
+                        blueprintJSON=heracles,
+                        flagName=Ascendance-dc1-reinf1
+                    ),
+                    SpawnEntity(
+                        entityID=sisyphos,
+                        faction=3,
+                        name=Sisyphos,
+                        blueprintJSON=sisyphos,
+                        flagName=Ascendance-dc1-reinf2
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd1,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc1-enemy1
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd2,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc1-enemy2
+                    ),
+                    FollowEntity(
+                        entityID=heracles,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=sisyphos,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd1,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd2,
+                        targetEntityID=player
+                    ),
                     SpawnEntity(
                         entityID=Ascendance_pylonTarget1,
                         assetID=air_weapon_station,
@@ -66,6 +98,8 @@ Function(
                                     name=$$$Ascendance_zonesConverted1,
                                     value=1
                                 ),
+                                SetInteraction(entityID=sisyphos, dialogueID=Ascendance_cs3_sisyphos_d),
+                                SetInteraction(entityID=heracles, dialogueID=Ascendance_cs3_heracles_d),
                                 Call(Ascendance_clearDeadZones_p2)
                             )
                         ),
@@ -86,19 +120,10 @@ Function(
 Function(
     name=Ascendance_clearDeadZones_p2,
     sequence=(
-        Call(Ascendance_clearDeadZones_p2_dialogue),
         Call(Ascendance_clearDeadZones_p2_fight)
     )
 )
 
-Function(
-    name=Ascendance_clearDeadZones_p2_dialogue,
-    sequence=(
-        ConditionBlock(
-
-        )
-    )
-)
 
 Function(
     name=Ascendance_clearDeadZones_p2_fight,
@@ -111,6 +136,56 @@ Function(
             EnterSector(
                 sectorName=Danger Zone 1360-4070,
                 sequence=(
+                    SpawnEntity(
+                        entityID=eleos,
+                        blueprintJSON=Slayer,
+                        flagName=Legend-cs7-flag12,
+                        name=Eleos,
+                        faction=1,
+                    ),
+                    SpawnEntity(
+                        entityID=the-architect,
+                        forceCharacterTeleport=true
+                        flagName=Ascendance-dc2-reinf2
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd3,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc2-enemy1
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd4,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc2-enemy2
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd5,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc2-enemy3
+                    ),
+                    FollowEntity(
+                        entityID=the-architect,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=eleos,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd3,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd4,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd5,
+                        targetEntityID=player
+                    ),
                     SpawnEntity(
                         entityID=Ascendance_pylonTarget2,
                         assetID=air_weapon_station,
@@ -145,6 +220,8 @@ Function(
                                     name=$$$Ascendance_zonesConverted2,
                                     value=1
                                 ),
+                                SetInteraction(entityID=the-architect, dialogueID=Ascendance_cs3_the_architect_d),
+                                SetInteraction(entityID=eleos, dialogueID=Ascendance_cs3_eleos_d),
                                 Call(Ascendance_clearDeadZones_p3)
                             )
                         ),
@@ -165,21 +242,9 @@ Function(
 Function(
     name=Ascendance_clearDeadZones_p3,
     sequence=(
-        Call(Ascendance_clearDeadZones_p3_dialogue),
         Call(Ascendance_clearDeadZones_p3_fight),
     )
 )
-
-
-Function(
-    name=Ascendance_clearDeadZones_p3_dialogue,
-    sequence=(
-        ConditionBlock(
-
-        )
-    )
-)
-
 
 Function(
     name=Ascendance_clearDeadZones_p3_fight,
@@ -192,6 +257,57 @@ Function(
             EnterSector(
                 sectorName=Danger Zone 1420-3280,
                 sequence=(
+                    SpawnEntity(
+                        entityID=prometheus,
+                        faction=5,
+                        name=Prometheus,
+                        blueprintJSON=Fatalizer,
+                        flagName=Ascendance-dc3-reinf1
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd6,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc3-enemy1
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd7,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc3-enemy2
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd8,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc3-enemy3
+                    ),
+                    SpawnEntity(
+                        entityID=Ascendance_dcd9,
+                        faction=2,
+                        blueprintJSON=Defected Ioniser,
+                        flagName=Ascendance-dc3-enemy4
+                    ),
+                    FollowEntity(
+                        entityID=prometheus,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd6,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd7,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd8,
+                        targetEntityID=player
+                    ),
+                    FollowEntity(
+                        entityID=Ascendance_dcd9,
+                        targetEntityID=player
+                    ),
                     SpawnEntity(
                         entityID=Ascendance_pylonTarget3,
                         assetID=air_weapon_station,
@@ -226,6 +342,7 @@ Function(
                                     name=$$$Ascendance_zonesConverted3,
                                     value=1
                                 ),
+                                SetInteraction(entityID=prometheus, dialogueID=prometheus),
                                 Call(Ascendance_cs3)
                             )
                         ),
