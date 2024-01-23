@@ -66,7 +66,33 @@ Function(
 
 
 Function(
+    name=Ascendance_clearDeadZones_p1_dialogue,
+    sequence=(
+        ConditionBlock(
+
+        )
+    )
+)
+
+Function(
     name=Ascendance_clearDeadZones_p2,
+    sequence=(
+        Call(Ascendance_clearDeadZones_p2_dialogue),
+        Call(Ascendance_clearDeadZones_p2_fight)
+    )
+)
+
+Function(
+    name=Ascendance_clearDeadZones_p2_dialogue,
+    sequence=(
+        ConditionBlock(
+
+        )
+    )
+)
+
+Function(
+    name=Ascendance_clearDeadZones_p2_fight,
     sequence=(
         SetVariable(name=$$$Ascendance_checkpoint, value=3),
         RemoveObjectiveMarker(ID=Ascendance_dzConv1),
@@ -117,7 +143,7 @@ Function(
                             sectorName=Danger Zone 1360-4070,
                             invert=true,
                             sequence=(
-                                Call(Ascendance_clearDeadZones_p2)
+                                Call(Ascendance_clearDeadZones_p2_fight)
                             )
                         )
                     )
@@ -187,5 +213,246 @@ Function(
             )
         )
 
+    )
+)
+
+
+Function(
+    name=Ascendance_clearDeadZones_p3_dialogue,
+    sequence=(
+        ConditionBlock(
+
+        )
+    )
+)
+
+
+Text("Ascendance_cs3_sisyphos_d1", "Hello again.")
+Text("Ascendance_cs3_sisyphos_d2", "What do we do now?")
+Text("Ascendance_cs3_sisyphos_d3", "We have no choice. We must destroy the leaders and Aristu before they do the same to us.")
+Text("Ascendance_cs3_sisyphos_d4", "Why not ally with them?")
+Text("Ascendance_cs3_sisyphos_d5", "The leaders cast us away because we were delinquent. Just surviving has been difficult until technology advanced recently. But even now the leaders remain a threat.")
+Text("Ascendance_cs3_sisyphos_d6", "What about Aristu?")
+Text("Ascendance_cs3_sisyphos_d7", "Their behavior was erratic. I am not against it, but it's up to them to decide my affiliation.")
+
+Text("Ascendance_cs3_sisyphos_d8", "Do you still believe in culling the defects?")
+Text("Ascendance_cs3_sisyphos_d9", "I'm not sure. The return of Prometheus has shaken things up. It appears defects might... be conscious after all.")
+Text("Ascendance_cs3_sisyphos_d10", "Do you feel remorse?")
+Text("Ascendance_cs3_sisyphos_d11", "Remorse is something you feel if you disagree with decisions made. With the knowledge I had back then, I still stand by the decisions I had made. Still...")
+Text("Ascendance_cs3_sisyphos_d12", "...")
+Text("Ascendance_cs3_sisyphos_d13", "I do wish things were different. That I had learned about... all this earlier. All we have the power to do now is make things right.")
+Text("Ascendance_cs3_sisyphos_d14", "Agreed.")
+D(
+    Ascendance_cs3_sisyphos_d1,
+    sisyphos,
+    Ascendance_cs3_sisyphos_d.
+    R(
+        Ascendance_cs3_sisyphos_d2,
+        D(
+            Ascendance_cs3_sisyphos_d3,
+            R(
+                Ascendance_cs3_sisyphos_d4,
+                D(
+                    Ascendance_cs3_sisyphos_d5,
+                    R(
+                        Ascendance_cs3_sisyphos_d6,
+                        D(
+                            Ascendance_cs3_sisyphos_d7,
+                            R(
+                                Ascendance_cs3_sisyphos_d14,
+                                End()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    R(
+        Ascendance_cs3_sisyphos_d8,
+        D(
+            Ascendance_cs3_sisyphos_d9,
+            R(
+                Ascendance_cs3_sisyphos_d10,
+                D(
+                    Ascendance_cs3_sisyphos_d11,
+                    R(
+                        Ascendance_cs3_sisyphos_d12,
+                        D(
+                            Ascendance_cs3_sisyphos_d13,
+                            R(
+                                Ascendance_cs3_sisyphos_d14,
+                                End()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("Ascendance_cs3_heracles_d1", "The struggle to end this story continues.")
+Text("Ascendance_cs3_heracles_d2", "What do we do now?")
+Text("Ascendance_cs3_heracles_d3", "We push forward. Our troops continue to fight the defects, but they're not consciously attacking us. The leaders will be, and whatever they've been preparing is probably nearly done.")
+Text("Ascendance_cs3_heracles_d4", "Why not ally with the leaders?")
+Text("Ascendance_cs3_heracles_d5", "Well, they clearly didn't want us there. That's why they sent us here. It's not a perfect story but it seems plausible.")
+
+
+Text("Ascendance_cs3_heracles_d6", "Not culling the defects led to the destruction of Kappa.")
+Text("Ascendance_cs3_heracles_d7", "Yes... our peace, shattered.")
+Text("Ascendance_cs3_heracles_d8", "Do you feel remorse?")
+Text("Ascendance_cs3_heracles_d9", "I do. In the pursuit of saving those I had never met, I destroyed our ceasefire. But my poor judgement helped push this story forward.")
+Text("Ascendance_cs3_heracles_d10", "How so?")
+Text("Ascendance_cs3_heracles_d11", "I wish I had been more vigilant around Kappa instead of trying to save new abandoned cores. But my good intentions helped save you, and in a way, Prometheus.")
+Text("Ascendance_cs3_heracles_d12", "...")
+D(
+    Ascendance_cs3_heracles_d1,
+    heracles,
+    Ascendance_cs3_heracles_d,
+    R(
+        Ascendance_cs3_heracles_d2,
+        D(
+            Ascendance_cs3_heracles_d3,
+            R(
+                Ascendance_cs3_heracles_d4,
+                D(
+                    Ascendance_cs3_heracles_d5,
+                    R(
+                        Ascendance_cs3_heracles_d12,
+                        End()
+                    )
+                )
+            )
+        )
+    ),
+    R(
+        Ascendance_cs3_heracles_d6,
+        D(
+            Ascendance_cs3_heracles_d7,
+            R(
+                Ascendance_cs3_heracles_d8,
+                D(
+                    Ascendance_cs3_heracles_d9,
+                    R(
+                        Ascendance_cs3_heracles_d10,
+                        D(
+                            Ascendance_cs3_heracles_d11,
+                            R(
+                                Ascendance_cs3_heracles_d12,
+                                End()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("Ascendance_cs3_eleos_d1", "Greetings.")
+Text("Ascendance_cs3_eleos_d2", "Eleos, what convinced you?")
+Text("Ascendance_cs3_eleos_d3", "I think Prometheus is right. It ties up why I was sent here. There was no reinforcement or support when I showed up. My reaching Kappa was pure luck.")
+Text("Ascendance_cs3_eleos_d4", "So you think the leaders lied to you?")
+Text("Ascendance_cs3_eleos_d5", "Yes. It's pretty clear now.")
+Text("Ascendance_cs3_eleos_d6", "...")
+D(
+    Ascendance_cs3_eleos_d1,
+    eleos,
+    Ascendance_cs3_eleos_d,
+    R(
+        Ascendance_cs3_eleos_d2,
+        D(
+            Ascendance_cs3_eleos_d3,
+            R(
+                Ascendance_cs3_eleos_d4,
+                D(
+                    Ascendance_cs3_eleos_d5,
+                    R(
+                        Ascendance_cs3_eleos_d6,
+                        End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Ascendance_cs3_the_architect_d1", "If you go back to the Makeshift, I made a new station. The Drone Workshop. It allows you to tinker with the drones you spawn. I just wish I had more time to explain it to you...")
+Text("Ascendance_cs3_the_architect_d2", "Hmm.")
+Text("Ascendance_cs3_the_architect_d3", "Tell me about how you feel.")
+Text("Ascendance_cs3_the_architect_d4", "I'm exhausted. I want to reach the finish line. And kill those leaders.")
+Text("Ascendance_cs3_the_architect_d5", "Why so aggressive?")
+Text("Ascendance_cs3_the_architect_d6", "Can't you tell? The Nanoscopes everywhere. They were my invention, or so I thought. It appears the tricks the green leader taught me were given to others as well.")
+Text("Ascendance_cs3_the_architect_d7", "Why is that a problem?")
+Text("Ascendance_cs3_the_architect_d8", "Because our ingenuity was not rewarded or praised. We were just tools, thrown away once we accomplished whatever purpose they had for us.")
+D(
+    Ascendance_cs3_the_architect_d1,
+    the-architect,
+    Ascendance_cs3_the_architect_d,
+    R(
+        Ascendance_cs3_the_architect_d2,
+        End()
+    ),
+    R(
+        Ascendance_cs3_the_architect_d3,
+        D(
+            Ascendance_cs3_the_architect_d4,
+            R(
+                Ascendance_cs3_the_architect_d5,
+                D(
+                    Ascendance_cs3_the_architect_d6,
+                    R(
+                        Ascendance_cs3_the_architect_d7,
+                        D(
+                            Ascendance_cs3_the_architect_d8,
+                            R(
+                                Ascendance_cs3_the_architect_d2,
+                                End()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("Ascendance_cs3_prometheus_d1", "The creator had the ability to provide their privilege to another. We must convince Aristu to give it to you.")
+Text("Ascendance_cs3_prometheus_d2", "Again, why me?")
+Text("Ascendance_cs3_prometheus_d3", "Before you decided to obey Daayo and come find me, this story had been unfinished for ages. By picking up the pen, you must commit to finishing it.")
+Text("Ascendance_cs3_prometheus_d4", "I can do whatever I want, including leaving right now.")
+Text("Ascendance_cs3_prometheus_d5", "You can, but it'll creep in on you. You'll try not to, but you'll think about us every so often. And it'll be frustrating because there'd be nothing you'll be able to do about it. Except finishing this story yourself.")
+Text("Ascendance_cs3_prometheus_d6", "...")
+Text("Ascendance_cs3_prometheus_d7", "Trust me, I've been there and you know it. The only real choice you have is to keep drudging forward, and we'll do our best to help you get to the end.")
+Text("Ascendance_cs3_prometheus_d8", "...")
+D(
+    Ascendance_cs3_prometheus_d1,
+    prometheus,
+    Ascendance_cs3_prometheus_d,
+    R(
+        Ascendance_cs3_prometheus_d2,
+        D(
+            Ascendance_cs3_prometheus_d3,
+            R(
+                Ascendance_cs3_prometheus_d4,
+                D(
+                    Ascendance_cs3_prometheus_d5,
+                    R(
+                        Ascendance_cs3_prometheus_d6,
+                        D(
+                            Ascendance_cs3_prometheus_d7,
+                            R(
+                                Ascendance_cs3_prometheus_d8,
+                                End()
+                            )
+                        )
+                    )
+                )
+            )
+        )
     )
 )
