@@ -98,6 +98,23 @@ Function(
                                     name=$$$Ascendance_zonesConverted1,
                                     value=1
                                 ),
+                                FollowEntity(
+                                    entityID=heracles,
+                                    stopFollowing=true
+                                ),
+                                FollowEntity(
+                                    entityID=sisyphos,
+                                    stopFollowing=true
+                                ),
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd1,
+                                    amount=999999
+                                ),
+
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd2,
+                                    amount=999999
+                                ),
                                 SetInteraction(entityID=sisyphos, dialogueID=Ascendance_cs3_sisyphos_d),
                                 SetInteraction(entityID=heracles, dialogueID=Ascendance_cs3_heracles_d),
                                 Call(Ascendance_clearDeadZones_p2)
@@ -219,6 +236,28 @@ Function(
                                 SetVariable(
                                     name=$$$Ascendance_zonesConverted2,
                                     value=1
+                                ),
+                                FollowEntity(
+                                    entityID=eleos,
+                                    stopFollowing=true
+                                ),
+                                FollowEntity(
+                                    entityID=the-architect,
+                                    stopFollowing=true
+                                ),
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd3,
+                                    amount=999999
+                                ),
+
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd4,
+                                    amount=999999
+                                ),
+
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd5,
+                                    amount=999999
                                 ),
                                 SetInteraction(entityID=the-architect, dialogueID=Ascendance_cs3_the_architect_d),
                                 SetInteraction(entityID=eleos, dialogueID=Ascendance_cs3_eleos_d),
@@ -342,7 +381,31 @@ Function(
                                     name=$$$Ascendance_zonesConverted3,
                                     value=1
                                 ),
-                                SetInteraction(entityID=prometheus, dialogueID=prometheus),
+                                FollowEntity(
+                                    entityID=prometheus,
+                                    stopFollowing=true
+                                ),
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd6,
+                                    amount=999999
+                                ),
+
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd7,
+                                    amount=999999
+                                ),
+
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd8,
+                                    amount=999999
+                                ),
+
+                                DealCoreDamage(
+                                    entityID=Ascendance_dcd9,
+                                    amount=999999
+                                ),
+
+                                SetInteraction(entityID=prometheus, dialogueID=Ascendance_cs3_prometheus_d),
                                 Call(Ascendance_cs3)
                             )
                         ),
@@ -379,7 +442,7 @@ Text("Ascendance_cs3_sisyphos_d14", "Agreed.")
 D(
     Ascendance_cs3_sisyphos_d1,
     sisyphos,
-    Ascendance_cs3_sisyphos_d.
+    Ascendance_cs3_sisyphos_d,
     R(
         Ascendance_cs3_sisyphos_d2,
         D(
