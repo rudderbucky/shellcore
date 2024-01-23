@@ -209,8 +209,8 @@ public class CoreScriptsCondition : MonoBehaviour
         bool nameMode, bool progressionFeedback, string targetID, EntityFaction targetFaction, int targetCount, int killCount)
     {
         if (((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
-            && (entity.faction.factionID == targetFaction.factionID || 
-            (targetFaction.overrideFaction != 0 && entity.faction.overrideFaction == targetFaction.overrideFaction)))
+            && (!nameMode || (entity.faction.factionID == targetFaction.factionID || 
+            (targetFaction.overrideFaction != 0 && entity.faction.overrideFaction == targetFaction.overrideFaction))))
         {
             killCount++;
 

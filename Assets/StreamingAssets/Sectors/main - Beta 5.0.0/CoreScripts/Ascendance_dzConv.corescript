@@ -156,13 +156,13 @@ Function(
                     SpawnEntity(
                         entityID=eleos,
                         blueprintJSON=Slayer,
-                        flagName=Legend-cs7-flag12,
+                        flagName=Ascendance-dc2-reinf1,
                         name=Eleos,
                         faction=1,
                     ),
                     SpawnEntity(
                         entityID=the-architect,
-                        forceCharacterTeleport=true
+                        forceCharacterTeleport=true,
                         flagName=Ascendance-dc2-reinf2
                     ),
                     SpawnEntity(
@@ -282,6 +282,43 @@ Function(
     name=Ascendance_clearDeadZones_p3,
     sequence=(
         Call(Ascendance_clearDeadZones_p3_fight),
+        Call(Ascendance_prometheus_invincibility)
+    )
+)
+
+Function(
+    name=Ascendance_prometheus_invincibility,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=prometheus,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    DeleteEntity(
+                        entityID=prometheus
+                    ),
+                    SpawnEntity(
+                        entityID=prometheus,
+                        faction=5,
+                        name=Prometheus,
+                        blueprintJSON=Fatalizer,
+                        flagName=Ascendance-dc3-reinf1
+                    ),
+                    WarpCore(
+                        entityID=prometheus,
+                        targetID=player
+                    ),
+                    Call(Ascendance_prometheus_invincibility)
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=5,
+                comp=Eq,
+                sequence=()
+            )
+        )
     )
 )
 
@@ -331,6 +368,7 @@ Function(
                         entityID=prometheus,
                         targetEntityID=player
                     ),
+                    
                     FollowEntity(
                         entityID=Ascendance_dcd6,
                         targetEntityID=player
@@ -413,11 +451,11 @@ Function(
                             sectorName=Danger Zone 1420-3280,
                             invert=true,
                             sequence=(
-                                Call(Ascendance_clearDeadZones_p3)
+                                Call(Ascendance_clearDeadZones_p3_fight)
                             )
                         )
                     )
-                )
+                ),
             )
         )
     )

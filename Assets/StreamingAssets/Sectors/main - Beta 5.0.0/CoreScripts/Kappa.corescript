@@ -143,22 +143,6 @@ SectorTrigger(
     sequence=(
         Call(Kappa_truce),
         ConditionBlock(
-            EnterSector(
-                sectorName=Kappa,
-                invert=true,
-                sequence=(
-                    SetFactionRelations(
-                        factionID=0,
-                        sum=57
-                    ),
-                    SetFactionRelations(
-                        factionID=1,
-                        sum=58
-                    ),
-                )
-            )
-        ),
-        ConditionBlock(
             Comparison(
                 val1=$$$Loyalty_Variable,
                 val2=1,

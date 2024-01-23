@@ -80,7 +80,6 @@ SectorTrigger(
                     SetSectorColor(
                         color=(103,103,103)
                     ),
-
                     DisableBackgroundSpawns(),
                     ConditionBlock(
                         EnterSector(
@@ -178,6 +177,16 @@ SectorTrigger(
 SectorTrigger(
     sectorName=Danger Zone 1360-4070,
     sequence=(
+        Call(Core_incrementTruce),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Danger Zone 1360-4070,
+                invert=true,
+                sequence=(
+                    Call(Core_decrementTruce),
+                )
+            )
+        ),
         ConditionBlock(
             Comparison(
                 val1=$$$Ascendance_zonesConverted2,
@@ -397,17 +406,6 @@ SectorTrigger(
                     SetSectorColor(
                         color=(103,103,103)
                     ),
-
-                    DisableBackgroundSpawns(),
-                    ConditionBlock(
-                        EnterSector(
-                            sectorName=Danger Zone 1500-2670,
-                            invert=true,
-                            sequence=(
-                                EnableBackgroundSpawns()
-                            )
-                        )
-                    )
                 )                
             ),
             EnterSector(

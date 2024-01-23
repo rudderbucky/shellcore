@@ -77,6 +77,7 @@ public class CoreScriptsSequence : MonoBehaviour
         DetachPart,
         EnableBackgroundSpawns,
         DisableBackgroundSpawns,
+        WarpCore,
     }
     public struct Instruction
     {
@@ -474,6 +475,30 @@ public class CoreScriptsSequence : MonoBehaviour
                     Mobility.WarpPlayer(GetArgument(inst.arguments, "sectorName"), 
                         GetArgument(inst.arguments, "entityID"),
                         GetArgument(inst.arguments, "flagName"));
+                    break;
+
+                case InstructionCommand.WarpCore:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    targetID = GetArgument(inst.arguments, "targetID");
+
+                    var vec = Vector3.zero;
+                    foreach (var ent in AIData.entities)
+                    {
+                        if (ent && ent.ID == targetID)
+                        {
+                            vec = ent.transform.position;
+                            break;
+                        }
+                    }
+
+                    foreach (var ent in AIData.entities)
+                    {
+                        if (ent && ent.ID == entityID && ent is ShellCore sc)
+                        {
+                            sc.Warp(vec);
+                        }
+                    }
+
                     break;
                 case InstructionCommand.StartCameraPan:
                     flagName = GetArgument(inst.arguments, "flagName");
