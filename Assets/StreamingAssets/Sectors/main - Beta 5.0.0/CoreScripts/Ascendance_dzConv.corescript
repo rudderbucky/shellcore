@@ -1,6 +1,25 @@
 Function(
     name=Ascendance_clearDeadZones_p1,
     sequence=(
+        Call(Ascendance_clearDeadZones_p1_fight),
+        Call(Ascendance_clearDeadZones_p1_dialogue),
+    )
+)
+
+
+Function(
+    name=Ascendance_clearDeadZones_p1_dialogue,
+    sequence=(
+        ConditionBlock(
+
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_clearDeadZones_p1_fight,
+    sequence=(
         SetVariable(name=$$$Ascendance_checkpoint, value=2),
         ClearInteraction(entityID=fake-daayo),
         RemoveObjectiveMarker(ID=Ascendance_dzConv1),
@@ -60,16 +79,6 @@ Function(
                     )
                 )
             )
-        )
-    )
-)
-
-
-Function(
-    name=Ascendance_clearDeadZones_p1_dialogue,
-    sequence=(
-        ConditionBlock(
-
         )
     )
 )
@@ -156,6 +165,25 @@ Function(
 Function(
     name=Ascendance_clearDeadZones_p3,
     sequence=(
+        Call(Ascendance_clearDeadZones_p3_dialogue),
+        Call(Ascendance_clearDeadZones_p3_fight),
+    )
+)
+
+
+Function(
+    name=Ascendance_clearDeadZones_p3_dialogue,
+    sequence=(
+        ConditionBlock(
+
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_clearDeadZones_p3_fight,
+    sequence=(
         SetVariable(name=$$$Ascendance_checkpoint, value=4),
         RemoveObjectiveMarker(ID=Ascendance_dzConv2),
         RemoveObjectiveMarker(ID=Ascendance_dzConv3),
@@ -211,17 +239,6 @@ Function(
                     )
                 )
             )
-        )
-
-    )
-)
-
-
-Function(
-    name=Ascendance_clearDeadZones_p3_dialogue,
-    sequence=(
-        ConditionBlock(
-
         )
     )
 )
