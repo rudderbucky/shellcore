@@ -372,16 +372,7 @@ SectorTrigger(
                         color=(103,103,103)
                     ),
 
-                    DisableBackgroundSpawns(),
-                    ConditionBlock(
-                        EnterSector(
-                            sectorName=Danger Zone 1490-3010,
-                            invert=true,
-                            sequence=(
-                                EnableBackgroundSpawns()
-                            )
-                        )
-                    )
+                   
                 )                
             ),
             EnterSector(
@@ -405,6 +396,16 @@ SectorTrigger(
                     SetSectorType(type=Neutral),
                     SetSectorColor(
                         color=(103,103,103)
+                    ),
+                    DisableBackgroundSpawns(),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Danger Zone 1500-2670,
+                            invert=true,
+                            sequence=(
+                                EnableBackgroundSpawns()
+                            )
+                        )
                     ),
                 )                
             ),
