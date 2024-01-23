@@ -21,6 +21,23 @@ SectorTrigger(
                     Call(Makeshift_spawnStage2)
                 )
             )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Makeshift_stage3,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                )
+            ),
+            Comparison(
+                val1=$$$Makeshift_stage3,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(Makeshift_spawnStage3)
+                )
+            )
         )
     )
 )
@@ -60,6 +77,42 @@ Function(
         ),
     )
 )
+
+Function(
+    name=Makeshift_spawnStage3,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Makeshift_stage3spawned,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                )
+            ),
+            Comparison(
+                val1=$$Makeshift_stage3spawned,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    SetVariable(name=$$Makeshift_stage3spawned, value=1),
+                    Call(Makeshift_spawnStage3Helper)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Makeshift_spawnStage3Helper,
+    sequence=(
+        SpawnEntity(
+            entityID=Makeshift_droneWorkshop,
+            assetID=droneworkshop_blueprint,
+            flagName=Abandonment_makeshiftWorkshopSpawn
+        ),
+    )
+)
+
 
 Function(
     name=Makeshift_spawnStage1,
@@ -116,14 +169,19 @@ Function(
                 sequence=(
                     SetVariable(name=$$Makeshift_stage1spawned, value=0),
                     SetVariable(name=$$Makeshift_stage2spawned, value=0),
+                    SetVariable(name=$$Makeshift_stage3spawned, value=0),
                 )
             )
         )
     )
 )
 
+
+
 Text("Makeshift_yard_d1", "Greetings. The Architect has managed to link your Standard Sectors inventory to me for easy access.")
 Text("Makeshift_upgrader_d1", "Greetings. The Architect has linked me to the Standard Sectors upgrade system.")
+Text("Makeshift_droneWorkshop_d1", "Greetings. I can configure your drone spawning parts to spawn custom drones.")
+Text("Makeshift_droneWorkshop_d2", "I want to customize my drones.")
 Text("Makeshift_yard_d2", "I would like to change my shell configuration.")
 Text("Makeshift_yard_d3", "On second thought, no thanks.")
 Text("Makeshift_upgrader_d2", "I want to upgrade my core.")
@@ -178,6 +236,22 @@ Dialogue(
     )
 )
 
+Dialogue(
+    dialogueID=Makeshift_droneWorkshop_d,
+    dialogueText=Makeshift_droneWorkshop_d1,
+    entityID=Makeshift_droneWorkshop,
+    responses=(
+        Response(
+            responseText=Makeshift_droneWorkshop_d2,
+            next=Workshop()
+        ),
+        Response(
+            responseText=Makeshift_yard_d3,
+            next=End()
+        )
+    )
+)
+
 Function(
     name=Makeshift_addStationDialogue,
     sequence=(
@@ -186,5 +260,6 @@ Function(
         SetInteraction(entityID=Makeshift_yard, dialogueID=Makeshift_yard_d),
         SetInteraction(entityID=Makeshift_upgrader, dialogueID=Makeshift_upgrader_d),
         SetInteraction(entityID=Makeshift_fusionStation, dialogueID=Makeshift_fusionStation_d),
+        SetInteraction(entityID=Makeshift_droneWorkshop, dialogueID=Makeshift_droneWorkshop_d),
     )
 )
