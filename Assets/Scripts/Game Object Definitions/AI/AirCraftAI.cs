@@ -109,7 +109,8 @@ public class AirCraftAI : MonoBehaviour
     {
         if (craft is Drone drone && drone.type == DroneType.Worker)
         {
-            (module as TractorAI).Follow(t);
+            if (module is TractorAI tai)
+                tai.Follow(t);
         }
         else
         {
