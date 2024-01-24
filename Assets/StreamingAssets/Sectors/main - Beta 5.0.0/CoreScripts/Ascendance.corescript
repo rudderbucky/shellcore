@@ -23,7 +23,7 @@ MissionTrigger(
         ),
         SetVariable(
             name=$$$Ascendance_checkpoint,
-            value=7
+            value=8
         ),
         SetVariable(name=$$$Ascendance_capitolJump, value=1),
         Call(Ascendance_start)
@@ -37,6 +37,13 @@ Function(
     name=Ascendance_start,
     sequence=(
         ConditionBlock(
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=8,
+                sequence=(
+                    Call(Ascendance_leadersFightShortcut)
+                )
+            ),
             Comparison(
                 val1=$$$Ascendance_checkpoint,
                 val2=7,

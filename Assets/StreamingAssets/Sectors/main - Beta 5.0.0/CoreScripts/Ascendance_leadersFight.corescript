@@ -1,7 +1,6 @@
 Function(
     name=Ascendance_cs5,
     sequence=(
-//        Ascendance-cs5-flag3
         StartCutscene(),
         SpawnEntity(
             entityID=InfectedLeader,
@@ -236,24 +235,163 @@ Function(
         DeleteEntity(entityID=UninfectedLeader),
         DeleteEntity(entityID=weapon),
         FinishCutscene(),
+        SetVariable(name=$$$Ascednance_checkpoint, value=8),
         Call(Ascendance_leadersFightStart)
     )
 )
 
+Function(
+    name=Ascendance_leadersFightShortcut,
+    sequence=(
+        RemoveObjectiveMarker(ID=Ascendance_tff),
+        AddObjectiveMarker(ID=Ascendance_tff, sectorName=The Final Fight),
+        SetVariable(name=$$$Ascendance_checkpoint, value=8),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Final Fight,
+                sequence=(     
+                    StartCutscene(),
+                    FadeIntoBlack(),
+                    Wait(time=1),
+                    WarpPlayer(flagName=Ascendance-cs5-flag3, sectorName=The Final Fight),
+                    Wait(time=1),
+                    FadeOutOfBlack(),
+                    Wait(time=2),
+                    FinishCutscene(),
+                    Call(Ascendance_leaderGrab_p1)
+                )
+            )
+        )    
+    )
+)
 
 Function(
     name=Ascendance_leadersFightStart,
     sequence=(
-        Call(Ascendance_leadersFight_w1)
+        Call(Ascendance_leadersFight_w1),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Final Fight,
+                invert=true,
+                sequence=(   
+                    Call(Ascendance_leadersFightShortcut)
+                )
+            ),
+            Comparison(
+                val1=$$$Ascendance_checkpoint,
+                val2=9,
+                comp=Eq,
+                sequence=()
+            )
+        )
     )
 )
 
 Function(
     name=Ascendance_leadersFight_w1,
     sequence=(
+        ConditionBlock(
+// Ascendance-final-flag13
+            DestroyEntities(
+                nameMode=true,
+                targetID=ShellCore,
+                targetOverrideFaction=2,
+                targetCount=5,
+                sequence=(
+                    Call(Ascendance_leaderGrab_p1)
+                )
+            )
+        ),
+        SpawnEntity(
+            entityID=Ascendance_w1c1,
+            blueprintJSON=Light Core,
+            name=ShellCore,
+            faction=1,
+            overrideFaction=2,
+            flagName=Ascendance-final-flag1
+        ),
+        SpawnEntity(
+            entityID=Ascendance_w1c2,
+            blueprintJSON=Light Core,
+            name=ShellCore,
+            faction=1,
+            overrideFaction=2,
+            flagName=Ascendance-final-flag10
+        ),
+        SpawnEntity(
+            entityID=Ascendance_w1c3,            
+            blueprintJSON=Light Core,
+            name=ShellCore,
+            faction=1,
+            overrideFaction=2,
+            flagName=Ascendance-final-flag5
+        ),
+        SpawnEntity(
+            entityID=Ascendance_w1c4,
+            blueprintJSON=Light Core,
+            name=ShellCore,
+            faction=1,
+            overrideFaction=2,
+            flagName=Ascendance-final-flag15
+        ),
+        SpawnEntity(
+            entityID=Ascendance_w1c5,
+            blueprintJSON=Light Core,
+            name=ShellCore,
+            faction=1,
+            overrideFaction=2,
+            flagName=Ascendance-final-flag2
+        ),
+        FollowEntity(
+            entityID=Ascendance_w1c1,
+            targetEntityID=player,
+        ),
+        FollowEntity(
+            entityID=Ascendance_w1c2,
+            targetEntityID=player,
+        ),
+        FollowEntity(
+            entityID=Ascendance_w1c3,
+            targetEntityID=player,
+        ),
 
+        FollowEntity(
+            entityID=Ascendance_w1c4,
+            targetEntityID=player,
+        ),
+        FollowEntity(
+            entityID=Ascendance_w1c5,
+            targetEntityID=player,
+        ),
     )
 )
+
+// Core blueprints wave 1
+//Light Core (red)
+//Block Core (red)
+//Fake Heavy (red)
+//Southern Missile (red)
+//Cruiser (red and green)
+//Beamer (green)
+//BattleCore1 (red)
+
+// Core blueprints wave 2
+//Beamer (green)
+//Attack Core (red)
+//Advanced Scout (red)
+//Heavy Scouter (green)
+//Frigate (green)
+//Shoot Things (green)
+//Defense Core (red)
+
+// Core blueprints wave 3
+//Patrol Core (red)
+//North Core (red)
+//South Core (red)
+//Greater Southeast Core (Red)
+//Greater Southwest Core (red)
+//Lesser Southwest Core (Red)
+//Uninfected Leader (green)
 
 
 Function(
@@ -324,6 +462,51 @@ Function(
         ForceTractor(
             entityID=InfectedLeader,
             targetEntityID=player
+        ),
+        ConditionBlock(
+            DestroyEntities(
+                targetID=InfectedLeader,
+                targetOverrideFaction=2,
+                targetCount=1,
+                sequence=(
+                    StartCutscene(),
+                    StartCameraPan(
+                        flagName=Ascendance_infected_leader_spawn2,
+                        velocityFactor=0.5,
+                        sequence=(
+                            Wait(time=1),
+                            DetachPart(
+                                entityID=weapon,
+                                index=12
+                            ),
+                            Wait(time=0.5),
+                            DetachPart(
+                                entityID=weapon,
+                                index=10
+                            ),
+                            Wait(time=2),
+                            SpawnEntity(
+                                entityID=Ascendance-weapontractor,
+                                assetID=carrier_blueprint,
+                                flagName=Ascendance-cs5-flag8,
+                            ),
+                            ForceTractor(
+                                entityID=Ascendance-weapontractor,
+                                targetEntityID=weapon
+                            ),
+                            Wait(time=2),
+                            DeleteEntity(
+                                entityID=Ascendance-weapontractor
+                            ),
+                            DeleteEntity(
+                                entityID=weapon
+                            ),
+                            FinishCameraPan(),
+                            FinishCutscene()
+                        )
+                    )
+                )
+            )
         ),
         SpawnEntity(
             entityID=weapon,
