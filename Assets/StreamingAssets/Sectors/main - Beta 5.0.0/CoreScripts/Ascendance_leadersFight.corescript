@@ -258,7 +258,7 @@ Function(
                     FadeOutOfBlack(),
                     Wait(time=2),
                     FinishCutscene(),
-                    Call(Ascendance_leaderGrab_p1)
+                    Call(Ascendance_leaderGrab_p2)
                 )
             )
         )    
@@ -305,6 +305,7 @@ Function(
                 )
             )
         ),
+        
         SpawnEntity(
             entityID=fake-daayo,
             flagName=Ascendance-cs5-flag2,
@@ -320,7 +321,6 @@ Function(
 
 
         SetVariable(name=$$Ascendance_flagCnt, value=0),
-
         SetVariable(name=$$Ascendance_IDcnt, value=0),
         SetVariable(name=$$Ascendance_bp, value=Light Core),
         SetVariable(name=$$Ascendance_faction, value=1),
@@ -406,33 +406,19 @@ Function(
                 )
             )
         ),
+
         SpawnEntity(
-            entityID=heracles,
-            faction=3,
-            name=Heracles,
-            blueprintJSON=heracles,
+            entityID=eleos,
+            blueprintJSON=Slayer,
             flagName=Ascendance-cs5-flag2,
+            name=Eleos,
+            faction=1,
             overrideFaction=1
         ),
         FollowEntity(
-            entityID=heracles,
+            entityID=eleos,
             targetEntityID=player
         ),
-
-        SpawnEntity(
-            entityID=sisyphos,
-            faction=3,
-            name=Sisyphos,
-            blueprintJSON=sisyphos,
-            flagName=Ascendance-cs5-flag2,
-            overrideFaction=1
-        ),
-
-        FollowEntity(
-            entityID=sisyphos,
-            targetEntityID=player
-        ),
-
 
         SetVariable(name=$$Ascendance_flagCnt, value=0),
         SetVariable(name=$$Ascendance_IDcnt, value=0),
@@ -507,7 +493,6 @@ Function(
     )
 )
 
-
 Function(
     name=Ascendance_leadersFight_w3,
     sequence=(
@@ -516,27 +501,139 @@ Function(
                 nameMode=true,
                 targetID=ShellCore,
                 targetOverrideFaction=2,
-                targetCount=42,
+                targetCount=48,
                 sequence=(
-                    Call(Ascendance_leaderGrab_p2)
+                    SpawnEntity(
+                        entityID=UninfectedLeader,
+                        flagName=Ascendance-cs5-flag5,
+                        faction=0,
+                        overrideFaction=2,
+                        name=Uninfected Leader,
+                        blueprintJSON=Uninfected Leader,
+                    ),
+                    ConditionBlock(
+                        DestroyEntities(
+                            nameMode=false,
+                            targetID=UninfectedLeader,
+                            targetCount=1,
+                            sequence=( 
+                                Call(Ascendance_leaderGrab_p3)
+                            )
+                        )
+                    )
                 )
             )
         ),
-
         SpawnEntity(
-            entityID=eleos,
-            blueprintJSON=Slayer,
+            entityID=heracles,
+            faction=3,
+            name=Heracles,
+            blueprintJSON=heracles,
             flagName=Ascendance-cs5-flag2,
-            name=Eleos,
-            faction=1,
             overrideFaction=1
         ),
         FollowEntity(
-            entityID=eleos,
+            entityID=heracles,
             targetEntityID=player
         ),
+
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Ascendance-cs5-flag2,
+            overrideFaction=1
+        ),
+
+        FollowEntity(
+            entityID=sisyphos,
+            targetEntityID=player
+        ),
+
+        SetVariable(name=$$Ascendance_flagCnt, value=0),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        SetVariable(name=$$Ascendance_bp, value=Basic Patrol),
+        SetVariable(name=$$Ascendance_IDcnt, value=0),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=15),
+        SetVariable(name=$$Ascendance_IDcnt, value=0),
+        SetVariable(name=$$Ascendance_bp, value=Hornet),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        SetVariable(name=$$Ascendance_bp, value=Brawler),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=15),
+
+        SetVariable(name=$$Ascendance_bp, value=Hellwing),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=15),
+
+        SetVariable(name=$$Ascendance_bp, value=Hulk),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=15),
+
+        SetVariable(name=$$Ascendance_bp, value=Tarantula),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
     )
 )
+
+
+
+// Core blueprints wave 3
+//Patrol Core (red)
+//North Core (red)
+//South Core (red)
+//Greater Southeast Core (Red)
+//Greater Southwest Core (red)
+//Lesser Southwest Core (Red)
+//Uninfected Leader (green)
 
 Function(
     name=Ascendance_spawnMinion,
@@ -582,6 +679,9 @@ Function(
     )
 )
 
+
+
+
 // Core blueprints wave 1
 //Light Core (red)
 //Block Core (red)
@@ -599,15 +699,6 @@ Function(
 //Frigate (green)
 //Shoot Things (green)
 //Defense Core (red)
-
-// Core blueprints wave 3
-//Patrol Core (red)
-//North Core (red)
-//South Core (red)
-//Greater Southeast Core (Red)
-//Greater Southwest Core (red)
-//Lesser Southwest Core (Red)
-//Uninfected Leader (green)
 
 
 Function(
