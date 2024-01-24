@@ -258,7 +258,7 @@ Function(
                     FadeOutOfBlack(),
                     Wait(time=2),
                     FinishCutscene(),
-                    Call(Ascendance_leaderGrab_p1)
+                    Call(Ascendance_leadersFight_w1)
                 )
             )
         )    
@@ -290,77 +290,193 @@ Function(
 Function(
     name=Ascendance_leadersFight_w1,
     sequence=(
+        SetOverrideFaction(
+            entityID=player,
+            overrideFaction=1
+        ),
         ConditionBlock(
-// Ascendance-final-flag13
             DestroyEntities(
                 nameMode=true,
                 targetID=ShellCore,
                 targetOverrideFaction=2,
-                targetCount=5,
+                targetCount=30,
                 sequence=(
                     Call(Ascendance_leaderGrab_p1)
                 )
             )
         ),
         SpawnEntity(
-            entityID=Ascendance_w1c1,
-            blueprintJSON=Light Core,
-            name=ShellCore,
+            entityID=fake-daayo,
+            flagName=Ascendance-cs5-flag2,
+            blueprintJSON=daayo_4,
             faction=1,
-            overrideFaction=2,
-            flagName=Ascendance-final-flag1
-        ),
-        SpawnEntity(
-            entityID=Ascendance_w1c2,
-            blueprintJSON=Light Core,
-            name=ShellCore,
-            faction=1,
-            overrideFaction=2,
-            flagName=Ascendance-final-flag10
-        ),
-        SpawnEntity(
-            entityID=Ascendance_w1c3,            
-            blueprintJSON=Light Core,
-            name=ShellCore,
-            faction=1,
-            overrideFaction=2,
-            flagName=Ascendance-final-flag5
-        ),
-        SpawnEntity(
-            entityID=Ascendance_w1c4,
-            blueprintJSON=Light Core,
-            name=ShellCore,
-            faction=1,
-            overrideFaction=2,
-            flagName=Ascendance-final-flag15
-        ),
-        SpawnEntity(
-            entityID=Ascendance_w1c5,
-            blueprintJSON=Light Core,
-            name=ShellCore,
-            faction=1,
-            overrideFaction=2,
-            flagName=Ascendance-final-flag2
+            name=Daayo,
+            overrideFaction=1,
         ),
         FollowEntity(
-            entityID=Ascendance_w1c1,
-            targetEntityID=player,
+            entityID=fake-daayo,
+            targetEntityID=player
+        ),
+
+
+        SetVariable(name=$$Ascendance_flagCnt, value=0),
+
+        SetVariable(name=$$Ascendance_IDcnt, value=0),
+        SetVariable(name=$$Ascendance_bp, value=Light Core),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=5),
+
+        SetVariable(name=$$Ascendance_bp, value=Block Core),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=15),
+
+        SetVariable(name=$$Ascendance_bp, value=Fake Heavy),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+
+        SetVariable(name=$$Ascendance_bp, value=Southern Missile),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=20),
+
+
+
+        SetVariable(name=$$Ascendance_bp, value=Cruiser),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+
+        SetVariable(name=$$Ascendance_faction, value=0),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        SetVariable(name=$$Ascendance_bp, value=Beamer),
+        SetVariable(name=$$Ascendance_faction, value=0),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=30),
+
+        SetVariable(name=$$Ascendance_bp, value=BattleCore1),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+    )
+)
+
+
+Function(
+    name=Ascendance_leadersFight_w2,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                nameMode=true,
+                targetID=ShellCore,
+                targetOverrideFaction=2,
+                targetCount=30,
+                sequence=(
+                    Call(Ascendance_leaderGrab_p1)
+                )
+            )
+        ),
+        SpawnEntity(
+            entityID=heracles,
+            faction=3,
+            name=Heracles,
+            blueprintJSON=heracles,
+            flagName=Ascendance-cs5-flag2
+        ),
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Ascendance-cs5-flag2
         ),
         FollowEntity(
-            entityID=Ascendance_w1c2,
-            targetEntityID=player,
-        ),
-        FollowEntity(
-            entityID=Ascendance_w1c3,
-            targetEntityID=player,
+            entityID=heracles,
+            targetEntityID=player
         ),
 
         FollowEntity(
-            entityID=Ascendance_w1c4,
-            targetEntityID=player,
+            entityID=sisyphos,
+            targetEntityID=player
+        ),
+
+
+        SetVariable(name=$$Ascendance_IDcnt, value=0),
+        SetVariable(name=$$Ascendance_bp, value=Beamer),
+        SetVariable(name=$$Ascendance_faction, value=0),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+    )
+)
+
+Function(
+    name=Ascendance_spawnMinion,
+    sequence=(
+        AddIntValues(name=$$Ascendance_IDcnt, val1=$$Ascendance_IDcnt, val2=1),
+        ConcatenateValues(name=$$Ascendance_ID, val1=Ascendance_, val2=$$Ascendance_IDcnt),
+
+        AddIntValues(name=$$Ascendance_flagCnt, val1=$$Ascendance_flagCnt, val2=1),
+        ConditionBlock(
+            Comparison(
+                val1=$$Ascendance_flagCnt,
+                val2=17,
+                comp=Gt,
+                sequence=(
+                    SetVariable(name=$$Ascendance_flagCnt, value=1)
+                )
+            ),
+            Comparison(
+                val1=$$Ascendance_flagCnt,
+                val2=18,
+                comp=Lt,
+                sequence=(
+
+                )
+            ),
+        ),
+
+
+        ConcatenateValues(name=$$Ascendance_flag, val1=Ascendance-final-flag, val2=$$Ascendance_flagCnt),
+
+        SpawnEntity(
+            entityID=$$Ascendance_ID,
+            blueprintJSON=$$Ascendance_bp,
+            name=ShellCore,
+            faction=$$Ascendance_faction,
+            overrideFaction=2,
+            flagName=$$Ascendance_flag
         ),
         FollowEntity(
-            entityID=Ascendance_w1c5,
+            entityID=$$Ascendance_ID,
             targetEntityID=player,
         ),
     )
