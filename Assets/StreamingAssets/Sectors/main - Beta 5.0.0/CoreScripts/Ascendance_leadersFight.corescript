@@ -117,6 +117,11 @@ Function(
     name=Ascendance_cs5_p2,
     sequence=(
         Wait(time=1),
+        SetPath(
+            entityID=prometheus,
+            flagName=Ascendance-cs5-flag6
+        ),
+        Wait(time=1),
         ForceTractor(
             entityID=InfectedLeader,
             targetEntityID=prometheus,
@@ -126,7 +131,7 @@ Function(
             color=(255,255,255),
             speedFactor=2,
         ),
-        Wait(time=3),
+        Wait(time=5),
         DeleteEntity(
             entityID=InfectedLeader
         ),
@@ -135,7 +140,7 @@ Function(
         ),
         SpawnEntity(
             entityID=weapon,
-            flagName=Ascendance_infected_leader_spawn2,
+            flagName=Ascendance-cs5-flag8,
             faction=5,
             assetID=carrier_blueprint,
             name=Weapon,
@@ -143,12 +148,11 @@ Function(
             overrideFaction=2,
         ),
         StartCameraPan(
-            flagName=Ascendance_infected_leader_spawn2,
+            flagName=Ascendance-cs5-flag8,
             instant=true
         ),
         FadeOutOfBlack(
             color=(255,255,255),
-            speedFactor=2,
         ),
         Wait(time=2),
         ForceStartDialogue(dialogueID=Ascendance_cs5_p2_d)
@@ -180,7 +184,7 @@ Function(
     name=Ascendance_cs5_p3,
     sequence=(
         StartCameraPan(
-            flagName=Ascendance-cs5-flag5,
+            flagName=Ascendance-cs5-flag9,
             instant=true
         ),
         Wait(time=1),
@@ -221,7 +225,16 @@ Function(
     name=Ascendance_cs5_end,
     sequence=(
         FinishCameraPan(),
+        Wait(time=1),
+        SetPath(
+            entityID=UninfectedLeader,
+            flagName=Ascendance-cs5-flag7,
+            rotateWhileMoving=false,
+            customMass=1
+        ),
         Wait(time=2),
+        DeleteEntity(entityID=UninfectedLeader),
+        DeleteEntity(entityID=weapon),
         FinishCutscene(),
         Call(Ascendance_leadersFightStart)
     )
