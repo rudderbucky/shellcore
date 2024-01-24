@@ -26,12 +26,52 @@ SectorTrigger(
         ConditionBlock(
             EnterSector(
                 sectorName=Infected Capitol Center,
+                invert=true,
                 sequence=(
                     SetPartDropRate(
                         default=true
                     )
                 )
             )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Ascendance_capitolJump,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        entityID=Ascendance_finalGate,
+                        assetID=core_gate,
+                        flagName=Ascendance-pytha-flag11,
+                        faction=0,
+                    ),
+                    SetFlagInteractibility(
+                        flagName=Ascendance-pytha-flag11,
+                        sequence=(
+                            WarpPlayer(flagName=Ascendance_leader_fight_gate, sectorName=Sector 4650-410),
+                        )
+                    ),
+                )
+            ),
+            EnterSector(
+                sectorName=Infected Capitol Center,
+                invert=true,
+                sequence=(
+                )
+            )
         )
+    )
+)
+
+SectorTrigger(
+    sectorName=Sector 4650-410,
+    sequence=(
+        SetFlagInteractibility(
+            flagName=Ascendance_leader_fight_gate,
+            sequence=(
+                WarpPlayer(flagName=Ascendance-pytha-flag11, sectorName=Infected Capitol Center),
+            )
+        ),
     )
 )

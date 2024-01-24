@@ -1144,22 +1144,10 @@ D(
     )
 )
 
-
 Function(
     name=Ascendance_cs4_p3,
     sequence=(
-        SpawnEntity(
-            entityID=Ascendance_finalGate,
-            assetID=core_gate,
-            flagName=Ascendance-pytha-flag11,
-            faction=0,
-        ),
-        SetFlagInteractibility(
-            flagName=Ascendance-pytha-flag11,
-            sequence=(
-                WarpPlayer(flagName=Ascendance_leader_fight_gate, sectorName=Sector 4650-410),
-            )
-        ),
+        SetVariable(name=$$$Ascendance_capitolJump, value=1),
         StartCameraPan(
             flagName=Ascendance-pytha-flag11,
             sequence=(
