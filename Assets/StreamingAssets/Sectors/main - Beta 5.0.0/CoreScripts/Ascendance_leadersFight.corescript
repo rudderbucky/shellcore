@@ -258,7 +258,7 @@ Function(
                     FadeOutOfBlack(),
                     Wait(time=2),
                     FinishCutscene(),
-                    Call(Ascendance_leadersFight_w1)
+                    Call(Ascendance_leaderGrab_p1)
                 )
             )
         )    
@@ -373,12 +373,16 @@ Function(
 
         Wait(time=30),
 
+
+        SetVariable(name=$$Ascendance_flagCnt, value=0),
         SetVariable(name=$$Ascendance_bp, value=BattleCore1),
         SetVariable(name=$$Ascendance_faction, value=1),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
+
+        SetVariable(name=$$Ascendance_flagCnt, value=10),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
@@ -396,9 +400,9 @@ Function(
                 nameMode=true,
                 targetID=ShellCore,
                 targetOverrideFaction=2,
-                targetCount=30,
+                targetCount=42,
                 sequence=(
-                    Call(Ascendance_leaderGrab_p1)
+                    Call(Ascendance_leaderGrab_p2)
                 )
             )
         ),
@@ -408,27 +412,29 @@ Function(
             name=Heracles,
             blueprintJSON=heracles,
             flagName=Ascendance-cs5-flag2,
-            overrideFaction=2
-        ),
-        SpawnEntity(
-            entityID=sisyphos,
-            faction=3,
-            name=Sisyphos,
-            blueprintJSON=sisyphos,
-            flagName=Ascendance-cs5-flag2,
-            overrideFaction=2
+            overrideFaction=1
         ),
         FollowEntity(
             entityID=heracles,
             targetEntityID=player
         ),
 
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Ascendance-cs5-flag2,
+            overrideFaction=1
+        ),
+
         FollowEntity(
             entityID=sisyphos,
             targetEntityID=player
         ),
 
 
+        SetVariable(name=$$Ascendance_flagCnt, value=0),
         SetVariable(name=$$Ascendance_IDcnt, value=0),
         SetVariable(name=$$Ascendance_bp, value=Beamer),
         SetVariable(name=$$Ascendance_faction, value=0),
@@ -437,6 +443,98 @@ Function(
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
+
+
+        SetVariable(name=$$Ascendance_flagCnt, value=10),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=15),
+
+        SetVariable(name=$$Ascendance_bp, value=Advanced Scout),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=45),
+
+        SetVariable(name=$$Ascendance_bp, value=Heavy Scouter),
+        SetVariable(name=$$Ascendance_faction, value=0),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        Wait(time=30),
+
+        SetVariable(name=$$Ascendance_bp, value=Frigate),
+        SetVariable(name=$$Ascendance_faction, value=0),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+
+        SetVariable(name=$$Ascendance_bp, value=Shoot Things),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+        Call(Ascendance_spawnMinion),
+
+        SetVariable(name=$$Ascendance_bp, value=Defense Core),
+        SetVariable(name=$$Ascendance_faction, value=1),
+        Call(Ascendance_spawnMinion),
+    )
+)
+
+
+Function(
+    name=Ascendance_leadersFight_w3,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                nameMode=true,
+                targetID=ShellCore,
+                targetOverrideFaction=2,
+                targetCount=42,
+                sequence=(
+                    Call(Ascendance_leaderGrab_p2)
+                )
+            )
+        ),
+
+        SpawnEntity(
+            entityID=eleos,
+            blueprintJSON=Slayer,
+            flagName=Ascendance-cs5-flag2,
+            name=Eleos,
+            faction=1,
+            overrideFaction=1
+        ),
+        FollowEntity(
+            entityID=eleos,
+            targetEntityID=player
+        ),
     )
 )
 
