@@ -1201,6 +1201,16 @@ Function(
             )
         ),
         FinishCameraPan(),
-        FinishCutscene()
+        FinishCutscene(),
+        RemoveObjectiveMarker(ID=Ascendance_tff),
+        AddObjectiveMarker(ID=Ascendance_tff, sectorName=The Final Fight),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Final Fight,
+                sequence=(
+                    Call(Ascendance_cs5)
+                )
+            )
+        )
     )
 )

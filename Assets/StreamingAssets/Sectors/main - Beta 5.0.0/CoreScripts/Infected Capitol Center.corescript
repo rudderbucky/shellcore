@@ -40,6 +40,7 @@ SectorTrigger(
                 val2=1,
                 comp=Eq,
                 sequence=(
+                    DeleteEntity(entityID=InfectedLeader),
                     SpawnEntity(
                         entityID=Ascendance_finalGate,
                         assetID=core_gate,

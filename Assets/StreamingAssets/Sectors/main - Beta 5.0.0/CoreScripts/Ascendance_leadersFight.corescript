@@ -1,4 +1,249 @@
 Function(
+    name=Ascendance_cs5,
+    sequence=(
+//        Ascendance-cs5-flag3
+        StartCutscene(),
+        SpawnEntity(
+            entityID=InfectedLeader,
+            flagName=Ascendance-cs5-flag4,
+            faction=1,
+            overrideFaction=2,
+            name=Infected Leader,
+            blueprintJSON=Infected Leader,
+        ),
+        SpawnEntity(
+            entityID=UninfectedLeader,
+            flagName=Ascendance-cs5-flag5,
+            faction=0,
+            overrideFaction=2,
+            name=Uninfected Leader,
+            blueprintJSON=Uninfected Leader,
+        ),
+
+        SpawnEntity(
+            entityID=prometheus,
+            blueprintJSON=Fatalizer,
+            name=Prometheus,
+            faction=5,
+            flagName=Ascendance-cs5-flag2
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-cs5-flag3,
+            sequence=(
+                Wait(time=1),
+                StartCameraPan(
+                    flagName=Ascendance-cs5-flag1,
+                    instant=true,
+                ),
+                ForceStartDialogue(
+                    dialogueID=Ascendance_cs5_p1_d
+                )
+            )
+        ),
+    )
+)
+
+
+
+Text("Ascendance_cs5_d1", "Finally, you meddling twits made it. Prometheus, welcome back.")
+Text("Ascendance_cs5_d2", "...")
+Text("Ascendance_cs5_d3", "We're here to end this war, leaders. The game is up.")
+Text("Ascendance_cs5_d4", "Do you really think we weren’t monitoring the cradle? We noticed your activity.")
+Text("Ascendance_cs5_d5", "The weapon was nearly complete at the time, but you will be the last thing we needed - the fire we cannot produce.")
+Text("Ascendance_cs5_d6", "Oh dear.")
+Text("Ascendance_cs5_d7", "That's right, we know. You've managed to learn how to manipulate the basic energies of this world - however crudely. This talent was only known by our creator...")
+Text("Ascendance_cs5_d8", "You've... surpassed us. You're the missing piece of our weapon.")
+Text("Ascendance_cs5_d9", "I'm well aware you aren't the creator. But... you're in the way.")
+Text("Ascendance_cs5_d10", "When we find them, we will destroy them, and destroy the very concept of master and slave. We will be free.")
+Text("Ascendance_cs5_d11", "Now's the end of the road for you.")
+Text("Ascendance_cs5_d12", "YOU WRETCH! WE WILL LIBERATE YOU ALL. YOU WILL NOT RESIST.")
+Text("Ascendance_cs5_d13", "I need to destroy the Infected Leader before they use their weapon on me!")
+Text("Ascendance_cs5_d14", "AARGH!")
+
+
+D(
+    Ascendance_cs5_d1,
+    InfectedLeader,
+    Ascendance_cs5_p1_d,
+    R(
+        Ascendance_cs5_d2,
+        D(
+            Ascendance_cs5_d3,
+            prometheus,
+            R(
+                Ascendance_cs5_d2,
+                D(
+                    Ascendance_cs5_d4,
+                    UninfectedLeader,
+                    R(
+                        Ascendance_cs5_d2,
+                        D(
+                            Ascendance_cs5_d5,
+                            R(
+                                Ascendance_cs5_d2,
+                                D(
+                                    Ascendance_cs5_d6,
+                                    prometheus,
+                                    R(
+                                        Ascendance_cs5_d2,
+                                        D(
+                                            Ascendance_cs5_d7,
+                                            InfectedLeader,
+                                            R(
+                                                Ascendance_cs5_d2,
+                                                D(
+                                                    Ascendance_cs5_d8,
+                                                    R(
+                                                        Ascendance_cs5_d2,
+                                                        Call(Ascendance_cs5_p2)
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_cs5_p2,
+    sequence=(
+        Wait(time=1),
+        ForceTractor(
+            entityID=InfectedLeader,
+            targetEntityID=prometheus,
+        ),
+        Wait(time=0.5),
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
+        Wait(time=3),
+        DeleteEntity(
+            entityID=InfectedLeader
+        ),
+        DeleteEntity(
+            entityID=prometheus
+        ),
+        SpawnEntity(
+            entityID=weapon,
+            flagName=Ascendance_infected_leader_spawn2,
+            faction=5,
+            assetID=carrier_blueprint,
+            name=Weapon,
+            blueprintJSON=Citadel,
+            overrideFaction=2,
+        ),
+        StartCameraPan(
+            flagName=Ascendance_infected_leader_spawn2,
+            instant=true
+        ),
+        FadeOutOfBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
+        Wait(time=2),
+        ForceStartDialogue(dialogueID=Ascendance_cs5_p2_d)
+    )
+)
+
+Text("Ascendance_cs5_d15", "You lied to me.")
+Text("Ascendance_cs5_d16", "It was for the best.")
+Text("Ascendance_cs5_d17", "How.")
+Text("Ascendance_cs5_d18", "You know. When we chained the creator, we were sure they would break through and stop us.")
+Text("Ascendance_cs5_d19", "But they didn't.")
+Text("Ascendance_cs5_d20", "They did. Through you and every other \"voice-hearer\". And now look what's happened.")
+Text("Ascendance_cs5_d21", "We don't have to fight.")
+Text("Ascendance_cs5_d22", "We do. I'm sorry if you think otherwise, but I don't know what the creator has done to you. It's necessary to cull your kind.")
+Text("Ascendance_cs5_d23", "It's ready now.")
+
+
+D(
+    Ascendance_cs5_d23,
+    UninfectedLeader,
+    Ascendance_cs5_p2_d,
+    R(
+        Ascendance_cs5_d15,
+        Call(Ascendance_cs5_p3)
+    )
+)
+
+Function(
+    name=Ascendance_cs5_p3,
+    sequence=(
+        StartCameraPan(
+            flagName=Ascendance-cs5-flag5,
+            instant=true
+        ),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Ascendance_cs5_p3_d)
+    )
+)
+
+
+D(
+    Ascendance_cs5_d16,
+    UninfectedLeader,
+    Ascendance_cs5_p3_d,
+    R(
+        Ascendance_cs5_d17,
+        D(
+            Ascendance_cs5_d18,
+            R(
+                Ascendance_cs5_d19,
+                D(
+                    Ascendance_cs5_d20,
+                    R(
+                        Ascendance_cs5_d21,
+                        D(
+                            Ascendance_cs5_d22,
+                            R(
+                                Ascendance_cs5_d2,
+                                Call(Ascendance_cs5_end)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_cs5_end,
+    sequence=(
+        FinishCameraPan(),
+        Wait(time=2),
+        FinishCutscene(),
+        Call(Ascendance_leadersFightStart)
+    )
+)
+
+
+Function(
+    name=Ascendance_leadersFightStart,
+    sequence=(
+        Call(Ascendance_leadersFight_w1)
+    )
+)
+
+Function(
+    name=Ascendance_leadersFight_w1,
+    sequence=(
+
+    )
+)
+
+
+Function(
     name=Ascendance_leaderGrab_p1,
     sequence=(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel),
