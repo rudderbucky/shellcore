@@ -189,7 +189,7 @@ SectorTrigger(
 Text("Kappa_jump1", "JUMP TO: LAMBDA OUTSKIRTS")
 Text("WO_jump", "JUMP TO: WESTERN OUTSKIRTS")
 Text("EO_jump", "JUMP TO: EASTERN OUTSKIRTS")
-
+Text("JS_jump", "JUMP TO: JUMP SECTOR")
 
 Function(
     name=Kappa_setJumpGates,
@@ -226,6 +226,32 @@ Function(
                 WarpPlayer(flagName=kappa-eastern-outskirts-jump, sectorName=Sector 2410-5750),
             )
         ),
+
+
+        ConditionBlock(
+            Comparison(
+                val1=$$$Ascendance_jumpToKappa,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    AddTextToFlag(
+                        text=JS_jump,
+                        flagName=kappa-jump-flag3
+                    ),
+                    SetFlagInteractibility(
+                        flagName=kappa-jump-flag3,
+                        sequence=(
+                            WarpPlayer(flagName=entrance-jump-gate-flag, sectorName=Jump Sector)
+                        )
+                    ),
+                )
+            ),
+            EnterSector(
+                sectorName=Kappa,
+                invert=true,
+                sequence=()
+            )
+        )
     )
 )
 

@@ -268,6 +268,37 @@ D(
     )
 )
 
+
+SectorTrigger(
+    sectorName=Jump Sector,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Ascendance_jumpToKappa,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    AddTextToFlag(
+                        text=LO_jump,
+                        flagName=entrance-jump-gate-flag
+                    ),
+                    SetFlagInteractibility(
+                        flagName=entrance-jump-gate-flag,
+                        sequence=(
+                            WarpPlayer(flagName=kappa-jump-flag3, sectorName=Kappa)
+                        )
+                    ),
+                )
+            ),
+            EnterSector(
+                sectorName=Jump Sector,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
 Task(
     taskID=Ascendance_reachJumpGate,
     objectives=Ascendance_reachJumpGate_objectives
@@ -365,6 +396,7 @@ Function(
                                 entityID=fake-daayo,
                                 flagName=Ascendance-cs3-flag14
                             ),
+                            SetVariable(name=$$$Ascendance_jumpToKappa, value=1),
                             Wait(time=3),
                             ForceStartDialogue(
                                 dialogueID=Ascendance_cs3_p1_d
