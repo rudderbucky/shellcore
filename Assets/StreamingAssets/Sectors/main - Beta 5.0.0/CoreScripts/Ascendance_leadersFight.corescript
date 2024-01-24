@@ -407,14 +407,16 @@ Function(
             faction=3,
             name=Heracles,
             blueprintJSON=heracles,
-            flagName=Ascendance-cs5-flag2
+            flagName=Ascendance-cs5-flag2,
+            overrideFaction=2
         ),
         SpawnEntity(
             entityID=sisyphos,
             faction=3,
             name=Sisyphos,
             blueprintJSON=sisyphos,
-            flagName=Ascendance-cs5-flag2
+            flagName=Ascendance-cs5-flag2,
+            overrideFaction=2
         ),
         FollowEntity(
             entityID=heracles,
@@ -515,6 +517,7 @@ Function(
     sequence=(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel),
         SetVariable(name=$$Ascendance_citadelTimer, value=15),
+        SetVariable(name=$$Ascendance_callback, value=Ascendance_leadersFight_w2),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -524,6 +527,7 @@ Function(
     sequence=(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel Damaged),
         SetVariable(name=$$Ascendance_citadelTimer, value=10),
+        SetVariable(name=$$Ascendance_callback, value=Ascendance_leadersFight_w3),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -533,6 +537,7 @@ Function(
     sequence=(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel Very Damaged),
         SetVariable(name=$$Ascendance_citadelTimer, value=5),
+        SetVariable(name=$$Ascendance_callback, value=Ascendance_epilogue),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -618,7 +623,8 @@ Function(
                                 entityID=weapon
                             ),
                             FinishCameraPan(),
-                            FinishCutscene()
+                            FinishCutscene(),
+                            Call($$Ascendance_callback)
                         )
                     )
                 )
