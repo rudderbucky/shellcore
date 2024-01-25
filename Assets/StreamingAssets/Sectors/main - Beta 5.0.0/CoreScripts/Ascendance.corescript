@@ -840,10 +840,6 @@ Function(
             entityID=aristu,
             flagName=Ascendance-cs5-flag5,
             sequence=(
-                StartCameraPan(
-                    flagName=Ascendance-cs5-flag9,
-                    instant=true,
-                ),
                 Wait(time=2),
                 ForceStartDialogue(
                     dialogueID=Ascendance_epilogue_p5_d
@@ -854,7 +850,9 @@ Function(
         Rotate(
             entityID=prometheus,
             targetID=player
-        )
+        ),
+        Wait(time=2),
+        FinishCameraPan(),
     )
 )
 
@@ -1028,11 +1026,15 @@ Function(
     name=Ascendance_epilogue_p8,
     sequence=(
         FadeIntoBlack(),
-        PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d30),
-        Wait(time=5),
+        Wait(time=3),
+        WarpPlayer(flagName=Ascendance-epilogue-p8-flag3, sectorName=Capitol Advanced Trade Sector),
+        StopMusic(),
+        FinishCameraPan(),
+        Wait(time=2),
         FadeOutOfBlack(),
         Wait(time=1),
-        
+        PassiveDialogue(entityID=player, text=Ascendance_epilogue_d30),
+        Wait(time=5),
         ForceStartDialogue(dialogueID=Ascendance_epilogue_p8_d)
     )
 )
@@ -1095,7 +1097,7 @@ Function(
         ),
         SetPath(
             entityID=sukrat,
-            flagName=Ascendance-epilogue-p8-flag3,
+            flagName=Ascendance-epilogue-p8-flag1,
             sequence=(
                 Wait(time=1),
                 ForceStartDialogue(dialogueID=Ascendance_epilogue_p9_d)
@@ -1110,9 +1112,10 @@ Function(
     name=Ascendance_epilogue_p10,
     sequence=(
         FadeIntoBlack(),
-        PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d36),
-        Wait(time=2),
+        Wait(time=1),
         WarpPlayer(flagName=Ascendance-epilogue-p10-flag3, sectorName=Sector 2220-6460),
+        StopMusic(),
+        Wait(time=1),
         SpawnEntity(
             entityID=heracles,
             faction=3,
@@ -1153,13 +1156,14 @@ Function(
         ),
         Wait(time=3),
         FadeOutOfBlack(),
-        Wait(time=2),
+        PassiveDialogue(entityID=player, text=Ascendance_epilogue_d36),
+        Wait(time=5),
         ForceStartDialogue(dialogueID=Ascendance_epilogue_p10_d)
     )
 )
 
 Text("Ascendance_epilogue_d37", "Are you able to fix them?")
-Text("Ascendance_epilogue_d38", "I'm trying... but I still don't understand what the leaders did to them.")
+Text("Ascendance_epilogue_d38", "I'm trying...")
 Text("Ascendance_epilogue_d39", "Well try harder because who knows when they're going to attack us again.")
 Text("Ascendance_epilogue_d40", "This time they could even get to the Standard Sectors. That'd be the end of us.")
 Text("Ascendance_epilogue_d41", "Sisyphos, we've sent guards to the bypass to prevent just that.")
@@ -1181,6 +1185,7 @@ D(
                         Ascendance_epilogue_d22,
                         D(
                             Ascendance_epilogue_d41,
+                            heracles,
                             R(
                                 Ascendance_epilogue_d22,
                                 Call(Ascendance_epilogue_p11)
@@ -1199,12 +1204,12 @@ Function(
     name=Ascendance_epilogue_p11,
     sequence=(
         FadeIntoBlack(),
-        PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d43),
         Wait(time=2),
         WarpPlayer(
             flagName=Ascendance-epilogue-p11-flag4,
             sectorName=Haven 1,
         ),
+        StopMusic(),
         SpawnEntity(
             entityID=sukrat,
             flagName=Ascendance-epilogue-p11-flag4,
@@ -1216,6 +1221,8 @@ Function(
         ),
         Wait(time=3),
         FadeOutOfBlack(),
+        PassiveDialogue(entityID=player, text=Ascendance_epilogue_d43),
+        Wait(time=5),
         SetPath(
             entityID=sukrat,
             flagName=Ascendance-epilogue-p11-flag2,
@@ -1258,12 +1265,12 @@ Function(
             flagName=Ascendance-epilogue-p11-flag1,
         ),
         FadeIntoBlack(),
-        PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d46),
         Wait(time=2),
         WarpPlayer(
             flagName=Ascendance-epilogue-p12-flag1,
             sectorName=Spawning Grounds,
         ),
+        StopMusic(),
         SpawnEntity(
             entityID=sukrat,
             flagName=Ascendance-epilogue-p12-flag2,
@@ -1278,6 +1285,8 @@ Function(
         ),
         Wait(time=3),
         FadeOutOfBlack(),
+        PassiveDialogue(entityID=player, text=Ascendance_epilogue_d46),
+        Wait(time=5),
         ForceStartDialogue(dialogueID=Ascendance_epilogue_p12_d)
         
     )
@@ -1310,7 +1319,7 @@ Function(
     sequence=(
         FinishMission(),
         FadeIntoBlack(
-            speedFactor=8
+            speedFactor=32
         ),
         Wait(time=3),
         RollCredits()
