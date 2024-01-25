@@ -88,7 +88,7 @@ public class CameraScript : MonoBehaviour
             {
                 Pan();
             }
-            else if (core.IsMoving()) // lock camera
+            else if (core.IsMoving() && !CameraScript.coreScriptsPanning) // lock camera
             {
                 Focus(core.transform.position);
             }

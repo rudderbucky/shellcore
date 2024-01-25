@@ -854,6 +854,10 @@ Function(
         ),
         Wait(time=2),
         FinishCameraPan(),
+        StartCameraPan(
+            flagName=Ascendance-cs5-flag9,
+            instant=true
+        )
     )
 )
 
@@ -965,6 +969,7 @@ Function(
                             entityID=player,
                             type=PinDown,
                         ),
+                        FinishCameraPan(),
                         Wait(time=2),
                         ForceStartDialogue(dialogueID=Ascendance_epilogue_p6_d)
 
@@ -998,7 +1003,13 @@ Function(
     name=Ascendance_epilogue_p7,
     sequence=(
         Wait(time=1),
-        ForceStartDialogue(dialogueID=Ascendance_epilogue_p7_d)
+        SetPath(
+            entityID=prometheus,
+            flagName=Ascendance-cs5-flag3,
+            sequence=(
+                ForceStartDialogue(dialogueID=Ascendance_epilogue_p7_d)
+            )
+        )
     )
 )
 
@@ -1072,7 +1083,7 @@ Function(
 Text("Ascendance_epilogue_d31", "A creator? What?")
 Text("Ascendance_epilogue_d32", "This can't be right. You're lying! You're colluding with the infected!")
 Text("Ascendance_epilogue_d33", "There is no infection. That was another myth.")
-Text("Ascendance_epilogue_d34", "Sukrat? You're back too? You can speak to these cores too?")
+Text("Ascendance_epilogue_d34", "Sukrat? You're back too? You can also speak to these cores?")
 Text("Ascendance_epilogue_d35", "Yes. It's pretty easy. You just have to let me teach you.")
 D(
     Ascendance_epilogue_d31,
@@ -1339,6 +1350,19 @@ Function(
             name=Prometheus,
             blueprintJSON=Fatalizer,
             flagName=Ascendance-epilogue-p12-flag3
+        ),
+        Rotate(
+            entityID=player,
+            targetID=prometheus
+        ),
+        Rotate(
+            entityID=sukrat,
+            targetID=prometheus
+        ),
+
+        Rotate(
+            entityID=prometheus,
+            targetID=player
         ),
         Wait(time=3),
         FadeOutOfBlack(),
