@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// TODO: fix escape menu during credits
 public class RollCredits : MonoBehaviour
 {
     [SerializeField]

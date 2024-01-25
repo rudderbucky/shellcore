@@ -516,11 +516,13 @@ public class CoreScriptsSequence : MonoBehaviour
                                 break;
                             }
                         }
+                        CameraScript.coreScriptsPanning = true;
                         CameraScript.instance.Focus(flagPos);
                     }
                     else Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
                     break;
                 case InstructionCommand.FinishCameraPan:
+                    CameraScript.coreScriptsPanning = false;
                     Cutscene.EndCameraPan();
                     break;
                 case InstructionCommand.RegisterPartyMember:

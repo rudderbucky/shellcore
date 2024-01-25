@@ -12,6 +12,7 @@ public class CameraScript : MonoBehaviour
     private bool initialized;
 
     public static bool panning;
+    public static bool coreScriptsPanning;
     public static Vector3 target;
     public static float velocityFactor;
 

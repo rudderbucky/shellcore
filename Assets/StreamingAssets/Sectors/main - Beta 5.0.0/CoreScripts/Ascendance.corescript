@@ -26,6 +26,7 @@ MissionTrigger(
         ),
         SetVariable(name=$$$Ascendance_capitolJump, value=1),
         Call(Ascendance_start),
+//        DevConsole(command=marco)
         DevConsole(command=poor),
         WarpPlayer(sectorName=The Final Fight, flagName=Ascendance-cs5-flag8)
     )
@@ -938,28 +939,39 @@ Function(
         ),
         SetPath(
             entityID=player,
-            flagName=Ascendance-cs5-flag6,
+            flagName=Ascendance-epilogue-p6-flag1,
+            sequence=(
+                StartInflictionCosmetic(
+                    entityID=player,
+                    type=PinDown
+                ),
+                SetPath(
+                    entityID=aristu,
+                    flagName=Ascendance-epilogue-p6-flag1,
+                    sequence=(
+                        FadeIntoBlack(
+                            color=(255,255,255),
+                            speedFactor=8,
+                        ),
+                        Wait(time=3),
+                        DeleteEntity(
+                            entityID=aristu
+                        ),
+                        Wait(time=2),
+                        FadeOutOfBlack(
+                            color=(255,255,255),
+                        ),
+                        FinishInflictionCosmetic(
+                            entityID=player,
+                            type=PinDown,
+                        ),
+                        Wait(time=2),
+                        ForceStartDialogue(dialogueID=Ascendance_epilogue_p6_d)
+
+                    )
+                )
+            )
         ),
-        Wait(time=2),
-        WarpCore(
-            entityID=aristu,
-            targetID=player,
-        ),
-        Wait(time=0.2),
-        FadeIntoBlack(
-            color=(255,255,255),
-            speedFactor=8,
-        ),
-        Wait(time=3),
-        DeleteEntity(
-            entityID=aristu
-        ),
-        Wait(time=2),
-        FadeOutOfBlack(
-            color=(255,255,255),
-        ),
-        Wait(time=2),
-        ForceStartDialogue(dialogueID=Ascendance_epilogue_p6_d)
     )
 )
 
@@ -1030,6 +1042,21 @@ Function(
         WarpPlayer(flagName=Ascendance-epilogue-p8-flag3, sectorName=Capitol Advanced Trade Sector),
         StopMusic(),
         FinishCameraPan(),
+        SpawnEntity(
+            entityID=fake-daayo,
+            name=Daayo,
+            blueprintJSON=daayo_4,
+            faction=1,
+            flagName=Ascendance-epilogue-p8-flag2
+        ),
+        Rotate(
+            entityID=fake-daayo,
+            targetID=advanced-trader-explainer
+        ),
+        Rotate(
+            entityID=player,
+            targetID=advanced-trader-explainer
+        ),
         Wait(time=2),
         FadeOutOfBlack(),
         Wait(time=1),
@@ -1099,6 +1126,7 @@ Function(
             entityID=sukrat,
             flagName=Ascendance-epilogue-p8-flag1,
             sequence=(
+                Rotate(entityID=sukrat, targetID=advanced-trader-explainer),
                 Wait(time=1),
                 ForceStartDialogue(dialogueID=Ascendance_epilogue_p9_d)
             )
@@ -1154,7 +1182,36 @@ Function(
             entityID=Abandonment_nanoscope_3,
             targetEntityID=Ascendance_defect
         ),
-        Wait(time=3),
+        Wait(time=1),
+        Rotate(
+            entityID=Abandonment_nanoscope,
+            targetID=Ascendance_defect,
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_1,
+            targetID=Ascendance_defect,
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_2,
+            targetID=Ascendance_defect,
+        ),
+        Rotate(
+            entityID=Abandonment_nanoscope_3,
+            targetID=Ascendance_defect,
+        ),
+        Rotate(
+            entityID=player,
+            targetID=Ascendance_defect,
+        ),
+        Rotate(
+            entityID=heracles,
+            targetID=player,
+        ),
+        Rotate(
+            entityID=sisyphos,
+            targetID=player,
+        ),
+        Wait(time=2),
         FadeOutOfBlack(),
         PassiveDialogue(entityID=player, text=Ascendance_epilogue_d36),
         Wait(time=5),

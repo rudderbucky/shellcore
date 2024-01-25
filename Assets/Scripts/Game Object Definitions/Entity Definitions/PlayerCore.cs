@@ -440,7 +440,7 @@ public class PlayerCore : ShellCore
     {
         base.CraftMover(directionVector);
 
-        if (directionVector != Vector2.zero && (!MasterNetworkAdapter.lettingServerDecide))
+        if (directionVector != Vector2.zero && (!MasterNetworkAdapter.lettingServerDecide) && !CameraScript.coreScriptsPanning)
         {
             CameraScript.instance.Focus(transform.position);
         }
