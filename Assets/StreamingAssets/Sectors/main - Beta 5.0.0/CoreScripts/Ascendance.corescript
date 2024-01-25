@@ -8,27 +8,7 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
-        SetVariable(
-            name=$$$Ascendance_zonesConverted1,
-            value=1
-        ),
-        SetVariable(
-            name=$$$Ascendance_zonesConverted2,
-            value=1
-        ),
-        SetVariable(
-            name=$$$Ascendance_zonesConverted3,
-            value=1
-        ),
-        SetVariable(
-            name=$$$Ascendance_checkpoint,
-            value=8
-        ),
-        SetVariable(name=$$$Ascendance_capitolJump, value=1),
-        Call(Ascendance_start),
-//        DevConsole(command=marco)
-        DevConsole(command=poor),
-        WarpPlayer(sectorName=The Final Fight, flagName=Ascendance-cs5-flag8)
+        Call(Ascendance_start)
     )
 )
 
@@ -39,6 +19,12 @@ Function(
     name=Ascendance_start,
     sequence=(
         ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Ascendance_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=()
+            ),
             Comparison(
                 val1=$$$Ascendance_checkpoint,
                 val2=8,
