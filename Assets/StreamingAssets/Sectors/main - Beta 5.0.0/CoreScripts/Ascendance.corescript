@@ -1147,9 +1147,37 @@ Function(
     sequence=(
         FadeIntoBlack(),
         PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d43),
-        Wait(time=5),
+        Wait(time=2),
+        WarpPlayer(
+            flagName=Ascendance-epilogue-p11-flag4,
+            sectorName=Haven 1,
+        ),
+        SpawnEntity(
+            entityID=sukrat,
+            flagName=Ascendance-epilogue-p11-flag4,
+            forceCharacterTeleport=true
+        ),
+        StartCameraPan(
+            flagName=Ascendance-epilogue-p11-flag3,
+            instant=true
+        ),
+        Wait(time=3),
         FadeOutOfBlack(),
-        ForceStartDialogue(dialogueID=Ascendance_epilogue_p11_d)
+        SetPath(
+            entityID=sukrat,
+            flagName=Ascendance-epilogue-p11-flag2,
+            sequence=(
+                Rotate(entityID=sukrat, targetID=player),
+                SetPath(
+                    entityID=player,
+                    flagName=Ascendance-epilogue-p11-flag3,
+                    sequence=(
+                        Wait(time=1),
+                        ForceStartDialogue(dialogueID=Ascendance_epilogue_p11_d)
+                    )
+                )
+            )
+        ),
     )
 )
 
@@ -1168,8 +1196,17 @@ D(
 Function(
     name=Ascendance_epilogue_p12,
     sequence=(
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-epilogue-p11-flag1,
+        ),
+        SetPath(
+            entityID=sukrat,
+            flagName=Ascendance-epilogue-p11-flag1,
+        ),
         FadeIntoBlack(),
         PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d46),
+        Wait(time=2),
         WarpPlayer(
             flagName=Ascendance-epilogue-p12-flag1,
             sectorName=Spawning Grounds,
@@ -1186,7 +1223,7 @@ Function(
             blueprintJSON=Fatalizer,
             flagName=Ascendance-epilogue-p12-flag3
         ),
-        Wait(time=5),
+        Wait(time=3),
         FadeOutOfBlack(),
         ForceStartDialogue(dialogueID=Ascendance_epilogue_p12_d)
         
