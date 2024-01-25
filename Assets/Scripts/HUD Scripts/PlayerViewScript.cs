@@ -65,7 +65,7 @@ public class PlayerViewScript : MonoBehaviour
             }
         }
 
-        if (InputManager.GetKeyUp(KeyName.Exit))
+        if (InputManager.GetKeyUp(KeyName.Exit) && !RollCredits.instance.init)
         {
             // for some reason this is escape
             while (currentWindow.Count > 0)
