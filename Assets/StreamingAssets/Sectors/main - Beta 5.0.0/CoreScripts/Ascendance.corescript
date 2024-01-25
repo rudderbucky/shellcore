@@ -2,7 +2,6 @@ Text("Ascendance_missionName", "Ascendance")
 Text("Ascendance_entryPoint", "Speak to Daayo in The Core.")
 
 // TODO: fix architect will be visible in makeshift + green capitol during pytha fight
-// TODO: fix warp back to kappa after reaching jump sector
 MissionTrigger(
     name=Ascendance_missionName,
     entryPoint=Ascendance_entryPoint,
@@ -1150,16 +1149,81 @@ Function(
         PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d43),
         Wait(time=5),
         FadeOutOfBlack(),
-
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p11_d)
     )
 )
 
 Text("Ascendance_epilogue_d44", "Hurry up! Prometheus said they'll help us with the spawning gate reverse-engineering.")
 Text("Ascendance_epilogue_d45", "I'm ready, let's go.")
+D(
+    Ascendance_epilogue_d44,
+    sukrat,
+    Ascendance_epilogue_p11_d,
+    R(
+        Ascendance_epilogue_d45,
+        Call(Ascendance_epilogue_p12)
+    )
+)
 
+Function(
+    name=Ascendance_epilogue_p12,
+    sequence=(
+        FadeIntoBlack(),
+        PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d46),
+        WarpPlayer(
+            flagName=Ascendance-epilogue-p12-flag1,
+            sectorName=Spawning Grounds,
+        ),
+        SpawnEntity(
+            entityID=sukrat,
+            flagName=Ascendance-epilogue-p12-flag2,
+            forceCharacterTeleport=true
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            faction=5,
+            name=Prometheus,
+            blueprintJSON=Fatalizer,
+            flagName=Ascendance-epilogue-p12-flag3
+        ),
+        Wait(time=5),
+        FadeOutOfBlack(),
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p12_d)
+        
+    )
+)
 
 Text("Ascendance_epilogue_d46", "But stories must be finished... and guilt must be set aside.")
 
 Text("Ascendance_epilogue_d48", "You chose to finish this story and we supported you along the way. What awaits us now? Only you can decide. This is the consequence of authority — you weren’t the owner of this power, but we trusted you anyway to push the rock forward.")
 Text("Ascendance_epilogue_d49", "You are a god who stole your power from god. You made your own ending to this story that wasn’t yours - that may not have been given to you willingly. Was that the right thing for you to do? For us to support? So what is next, god?")
 Text("Ascendance_epilogue_d50", "...")
+Text("Ascendance_epilogue_d50", "We'll see.")
+
+D(
+    Ascendance_epilogue_d48,
+    prometheus,
+    Ascendance_epilogue_p12_d,
+    R(
+        Ascendance_epilogue_d22,
+        D(
+            Ascendance_epilogue_d49,
+            R(
+                Ascendance_epilogue_d50,
+                Call(Ascendance_epilogue_p13)
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_epilogue_p13,
+    sequence=(
+        FinishMission(),
+        FadeIntoBlack(
+            speedFactor=8
+        ),
+        Wait(time=3),
+        RollCredits()
+    )
+)
