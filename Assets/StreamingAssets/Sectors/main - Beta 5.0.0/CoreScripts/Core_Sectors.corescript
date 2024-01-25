@@ -535,6 +535,7 @@ SectorTrigger(
                 val2=0,
                 comp=Eq,
                 sequence=(
+                    PassiveDialogue(entityID=player, text=Legend_bz_d1),
                     SetSectorType(type=BattleZone),
                     ConditionBlock(
                         EnterSector(
@@ -551,7 +552,12 @@ SectorTrigger(
                         )
                     )
                 )
-            )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            ),
         ),
     )
 )
@@ -584,6 +590,7 @@ SectorTrigger(
                 val2=0,
                 comp=Eq,
                 sequence=(
+                    PassiveDialogue(entityID=player, text=Legend_bz_d1),
                     SetSectorType(type=BattleZone),
                     ConditionBlock(
                         EnterSector(
@@ -600,7 +607,13 @@ SectorTrigger(
                         )
                     )
                 )
-            )
+            ),
+
+            EnterSector(
+                sectorName=BattleZone Omicron,
+                invert=true,
+                sequence=()
+            ),
         ),
     )
 )
