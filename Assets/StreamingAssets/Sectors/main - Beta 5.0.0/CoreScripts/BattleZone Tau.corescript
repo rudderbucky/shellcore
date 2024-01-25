@@ -1,6 +1,7 @@
 SectorTrigger(
     sectorName=BattleZone Tau,
     sequence=(
+        Call(Tau_check),
         ConditionBlock(
             Comparison(
                 val1=$$$BattleZoneTauComplete,
@@ -31,6 +32,31 @@ SectorTrigger(
                 invert=true,
                 sequence=()
             )
+        ),
+    )
+)
+
+Function(
+    name=Tau_check,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=0, onlyIfNull=true),
+        ConditionBlock(
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=8,
+                comp=Lt,
+                sequence=(
+                    PassiveDialogue(entityID=player, text=Legend_bz_d2)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=7,
+                comp=Gt,
+                sequence=(
+
+                )
+            ),
         )
     )
 )
