@@ -258,7 +258,7 @@ Function(
                     FadeOutOfBlack(),
                     Wait(time=2),
                     FinishCutscene(),
-                    Call(Ascendance_leaderGrab_p2)
+                    Call(Ascendance_leaderGrab_p3)
                 )
             )
         )    
@@ -567,7 +567,7 @@ Function(
         Call(Ascendance_spawnMinion),
 
         Wait(time=15),
-        SetVariable(name=$$Ascendance_IDcnt, value=0),
+        SetVariable(name=$$Ascendance_flagCnt, value=0),
         SetVariable(name=$$Ascendance_bp, value=Hornet),
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
@@ -706,7 +706,8 @@ Function(
     sequence=(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel),
         SetVariable(name=$$Ascendance_citadelTimer, value=15),
-        SetVariable(name=$$Ascendance_callback, value=Ascendance_leadersFight_w2),
+        SetVariable(name=$$Ascendance_callback, value=Ascendance_leaderGrabSuccess),
+        SetVariable(name=$$Ascendance_postWeaponCallback, value=Ascendance_leadersFight_w2),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -716,7 +717,8 @@ Function(
     sequence=(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel Damaged),
         SetVariable(name=$$Ascendance_citadelTimer, value=10),
-        SetVariable(name=$$Ascendance_callback, value=Ascendance_leadersFight_w3),
+        SetVariable(name=$$Ascendance_callback, value=Ascendance_leaderGrabSuccess),
+        SetVariable(name=$$Ascendance_postWeaponCallback, value=Ascendance_leadersFight_w3),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -741,6 +743,50 @@ Function(
                 sequence=(
                     Call(Ascendance_leaderGrab_p3)
                 )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_leaderGrabSuccess,
+    sequence=(
+        StartCutscene(),
+        StartCameraPan(
+            flagName=Ascendance_infected_leader_spawn2,
+            velocityFactor=0.5,
+            sequence=(
+                Wait(time=1),
+                DetachPart(
+                    entityID=weapon,
+                    index=12
+                ),
+                Wait(time=0.5),
+                DetachPart(
+                    entityID=weapon,
+                    index=10
+                ),
+                Wait(time=2),
+                SpawnEntity(
+                    entityID=Ascendance-weapontractor,
+                    assetID=carrier_blueprint,
+                    flagName=Ascendance-cs5-flag8,
+                ),
+                ForceTractor(
+                    entityID=Ascendance-weapontractor,
+                    targetEntityID=weapon
+                ),
+                Wait(time=2),
+                DeleteEntity(
+                    entityID=Ascendance-weapontractor
+                ),
+                DeleteEntity(
+                    entityID=weapon
+                ),
+                FinishCameraPan(),
+                FinishCutscene(),
+                Call($$Ascendance_postWeaponCallback)
             )
         )
     )
@@ -779,43 +825,7 @@ Function(
                 targetOverrideFaction=2,
                 targetCount=1,
                 sequence=(
-                    StartCutscene(),
-                    StartCameraPan(
-                        flagName=Ascendance_infected_leader_spawn2,
-                        velocityFactor=0.5,
-                        sequence=(
-                            Wait(time=1),
-                            DetachPart(
-                                entityID=weapon,
-                                index=12
-                            ),
-                            Wait(time=0.5),
-                            DetachPart(
-                                entityID=weapon,
-                                index=10
-                            ),
-                            Wait(time=2),
-                            SpawnEntity(
-                                entityID=Ascendance-weapontractor,
-                                assetID=carrier_blueprint,
-                                flagName=Ascendance-cs5-flag8,
-                            ),
-                            ForceTractor(
-                                entityID=Ascendance-weapontractor,
-                                targetEntityID=weapon
-                            ),
-                            Wait(time=2),
-                            DeleteEntity(
-                                entityID=Ascendance-weapontractor
-                            ),
-                            DeleteEntity(
-                                entityID=weapon
-                            ),
-                            FinishCameraPan(),
-                            FinishCutscene(),
-                            Call($$Ascendance_callback)
-                        )
-                    )
+                    Call($$Ascendance_callback),
                 )
             )
         ),
@@ -840,6 +850,113 @@ Function(
         SetAbilitiesUsable(
             entityID=weapon,
             usable=true,
+        ),
+    )
+)
+
+Function(
+    name=Ascendance_epilogue,
+    sequence=(
+        StartCutscene(),
+        StartCameraPan(
+            flagName=Ascendance_infected_leader_spawn2,
+            velocityFactor=0.5,
+            sequence=(
+                Wait(time=1),
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=0.2),
+
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=0.2),
+
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=0.2),
+
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=0.2),
+
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=0.2),
+
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=0.2),
+
+                DetachPart(
+                    entityID=weapon,
+                    index=1
+                ),
+                Wait(time=2),
+                DealCoreDamage(
+                    entityID=weapon,
+                    amount=9999999
+                ),
+                Wait(time=2),
+                Call(Ascendance_epilogue_p2)
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Ascendance_epilogue_p2,
+    sequence=(
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
+        Wait(time=3),
+        SpawnEntity(
+            entityID=InfectedLeader,
+            flagName=Ascendance-epilogue-flag1,
+            faction=1,
+            overrideFaction=2,
+            name=Infected Leader,
+            blueprintJSON=Infected Leader,
+        ),
+        SpawnEntity(
+            entityID=UninfectedLeader,
+            flagName=Ascendance-cs5-flag7,
+            faction=0,
+            overrideFaction=2,
+            name=Uninfected Leader,
+            blueprintJSON=Uninfected Leader,
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            blueprintJSON=Fatalizer,
+            name=Prometheus,
+            faction=5,
+            flagName=Ascendance-cs5-flag8
+        ),
+        ForceTractor(
+            entityID=InfectedLeader,
+            targetEntityID=prometheus
+        ),
+        StartCameraPan(
+            flagName=Ascendance-cs5-flag8,
+            instant=true
+        ),
+        FadeOutOfBlack(
+            color=(255,255,255),
         ),
     )
 )

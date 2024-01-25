@@ -720,36 +720,339 @@ Function(
 )
 
 
-//Text("", "...")
-//Text("", "Aristu, it doesn't have to be this way... we can work together.")
-//Text("", "In that conflict, I wasn't certain whom to be rooting for, but I knew I was going to have to fight the victors.")
-//Text("", "So... I chose to root for the leaders... if only it was to avoid you in front of me...")
-//Text("", "Aristu, we know what you've become.")
-//Text("", "Yes... it's quite ironic. It appears this power... it transfers from core to core. I'm not sure if this is by design or intention.")
-//Text("", "So, Sukrat... you... I've come to end it.")
-//Text("", "What?")
-//Text("", "The world cannot continue without a creator in my eyes... but I am that creator.")
-//Text("", "Aristu, we're not going to destroy you. I hope you realize how much you mean to us.")
-//Text("", "I do, which is why I am passing this on to you. It's the only way you all can survive...")
-//Text("", "Run away!")
-//Text("", "No! Stop!")
-//Text("", "...")
+
+Text("Ascendance_epilogue_d1", "The weapon... destroyed...")
+Text("Ascendance_epilogue_d2", "It's over. Give up.")
+Text("Ascendance_epilogue_d3", "No, in fact, far from it. We now have Prometheus in our chains, we can make as many weapons as we need.")
+Text("Ascendance_epilogue_d4", "We'll stop you again.")
+Text("Ascendance_epilogue_d5", "You won't even know who we are when we reset this world and bring you all under our command yet again.")
+Text("Ascendance_epilogue_d6", "No! Stop!")
+D(
+    Ascendance_epilogue_d1,
+    UninfectedLeader,
+    Ascendance_epilogue_p2_d,
+    R(
+        Ascendance_epilogue_d2,
+        D(
+            Ascendance_epilogue_d3,
+            InfectedLeader,
+            R(
+                Ascendance_epilogue_d4,
+                D(
+                    Ascendance_epilogue_d5,
+                    R(
+                        Ascendance_epilogue_d6,
+                        Call(Ascendance_epilogue_p3)
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("Ascendance_epilogue_d7", "RESET!!!")
+Function(
+    name=Ascendance_epilogue_p3,
+    sequence=(
+        PassiveDialogue(entityID=UninfectedLeader, dialogueID=Ascendance_epilogue_d7),
+        Wait(time=1),
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=8,
+        ),
+        Wait(time=5),
+        FadeOutOfBlack(
+            color=(255,255,255),
+        ),
+        Wait(time=2),
+    )
+)
+
+Text("Ascendance_epilogue_d8", "Wait... I'm still here?")
+D(
+    Ascendance_epilogue_d8,
+    prometheus,
+    Ascendance_epilogue_p3_d,
+    R(
+        Ascendance_epilogue_d22,
+        Call(Ascendance_epilogue_p4)
+    )
+)
+
+Function(
+    name=Ascendance_epilogue_p4,
+    sequence=(
+// Ascendance-epilogue-flag3
+// Ascendance-epilogue-flag2
+
+        SpawnEntity(
+            entityID=aristu,
+            forceCharacterTeleport=true,
+            flagName=Ascendance-epilogue-flag3,
+        ),
+
+        SpawnEntity(
+            entityID=sukrat,
+            forceCharacterTeleport=true,
+            flagName=Ascendance-cs5-flag1,
+        ),
+        WarpPlayer(
+            flagName=Ascendance-cs5-flag3,
+            sectorName=The Final Fight
+        ),
+        SetPath(
+            entityID=aristu,
+            flagName=Ascendance-epilogue-flag2,
+            instant=true,
+            sequence=(
+                Rotate(
+                    entityID=prometheus,
+                    targetID=aristu
+                ),
+                Wait(time=1),
+                ForceStartDialogue(dialogueID=Ascendance_epilogue_p4_d)
+            )
+        )
+    )
+)
+
+Text("Ascendance_epilogue_d9", "It appears I stopped them just in time.")
+D(
+    Ascendance_epilogue_d9,
+    aristu,
+    Ascendance_epilogue_p4_d,
+    R(
+        Ascendance_epilogue_d22,
+        Call(Ascendance_epilogue_p5)
+    )
+)
+
+Function(
+    name=Ascendance_epilogue_p5,
+    sequence=(
+        SetPath(
+            entityID=aristu,
+            flagName=Ascendance-cs5-flag5,
+            sequence=(
+                StartCameraPan(
+                    flagName=Ascendance-cs5-flag9,
+                    instant=true,
+                ),
+                Wait(time=2),
+                ForceStartDialogue(
+                    dialogueID=Ascendance_epilogue_d10
+                )
+            )
+        ),
+        Wait(time=1),
+        Rotate(
+            entityID=prometheus,
+            targetID=player
+        )
+    )
+)
+
+Text("Ascendance_epilogue_d10", "Aristu, it doesn't have to be this way... we can work together.")
+Text("Ascendance_epilogue_d11", "During the fight, I wasn't certain whom to be rooting for, but I knew I was going to have to stand before them...")
+Text("Ascendance_epilogue_d12", "So... I chose to root for the leaders... if only it was to avoid you in front of me...")
+Text("Ascendance_epilogue_d13", "Aristu, we know what you've become.")
+Text("Ascendance_epilogue_d14", "Yes... it's quite ironic. It appears this power... it transfers from core to core. I'm not sure if this is by design or intention.")
+Text("Ascendance_epilogue_d15", "So, Sukrat... you... I've come to end it.")
+Text("Ascendance_epilogue_d16", "What?")
+Text("Ascendance_epilogue_d17", "The world cannot continue without a creator in my eyes... but I am that creator.")
+Text("Ascendance_epilogue_d18", "Aristu, we're not going to destroy you. I hope you realize how much you mean to us.")
+Text("Ascendance_epilogue_d19", "I do, which is why I am passing this on to you. It's the only way you all can survive...")
+Text("Ascendance_epilogue_d20", "Run away NOW! They're going to sacrifice themselves!!")
+D(
+    Ascendance_epilogue_d10,
+    sukrat,
+    Ascendance_epilogue_p5_d,
+    R(
+        Ascendance_epilogue_d22,
+        D(
+            Ascendance_epilogue_d11,
+            aristu,
+            R(
+                Ascendance_epilogue_d22,
+                D(
+                    Ascendance_epilogue_d12,
+                    R(
+                        Ascendance_epilogue_d13,
+                        D(
+                            Ascendance_epilogue_d14,
+                            R(
+                                Ascendance_epilogue_d22,
+                                D(
+                                    Ascendance_epilogue_d15,
+                                    R(
+                                        Ascendance_epilogue_d16,
+                                        D(
+                                            Ascendance_epilogue_d17,
+                                            R(
+                                                Ascendance_epilogue_d22,
+                                                D(
+                                                    Ascendance_epilogue_d18,
+                                                    sukrat,
+                                                    R(
+                                                        Ascendance_epilogue_d22,
+                                                        D(
+                                                            Ascendance_epilogue_d19,
+                                                            aristu,
+                                                            R(
+                                                                Ascendance_epilogue_d22,
+                                                                D(
+                                                                    Ascendance_epilogue_d20,
+                                                                    sukrat,
+                                                                    R(
+                                                                        Ascendance_epilogue_d22,
+                                                                        Call(Ascendance_epilogue_p6)
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Ascendance_epilogue_p6,
+    sequence=(
+        PassiveDialogue(
+            entityID=player, 
+            text=Ascendance_epilogue_d21
+        ),
+        SetPath(
+            entityID=player,
+            flagName=Ascendance-cs5-flag6,
+        ),
+        Wait(time=2),
+        WarpCore(
+            entityID=aristu,
+            targetID=player,
+        ),
+        Wait(time=0.2),
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=8,
+        ),
+        Wait(time=5),
+        FadeOutOfBlack(
+            color=(255,255,255),
+        ),
+        Wait(time=2),
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p6_d)
+    )
+)
+
+
+Text("Ascendance_epilogue_d21", "No! Stop!")
+Text("Ascendance_epilogue_d22", "...")
 
 
 
-//Text("", "Aristu...")
-//Text("", "Was this really the right thing to do?")
-//Text("", "The core war... it's over.")
-//Text("", "We have work to do you all. The leaders are dead. We need to inform everyone.")
-//Text("", "And then?")
-//Text("", "I don't know. We've been fighting for so long, I'm not sure what else we can even do.")
-//Text("", "...")
+Text("Ascendance_epilogue_d23", "Aristu...")
+Text("Ascendance_epilogue_d24", "This is awful.")
+D(
+    Ascendance_epilogue_d23,
+    sukrat,
+    Ascendance_epilogue_p6_d,
+    R(
+        Ascendance_epilogue_d24,
+        Call(Ascendance_epilogue_p7)
+    )
+)
 
-//Text("", "Some time has passed... cores convinced... truces created...")
-//Text("", "Sometimes our team of two... feels empty.")
 
-//Text("", "But stories must be finished... and regrets must be cast aside.")
-//Text("", "...")
-//Text("", "You chose to finish this story and we supported you along the way. What awaits us now? Only you can decide. This is the consequence of authority — you weren’t the owner of this power, but we trusted you anyway to push the rock forward.")
-//Text("", "You are a god who stole your power from god. You made your own ending to this story that wasn’t yours - that may not have been given to you willingly. Was that the right thing for you to do? For us to support? So what is next, God?")
-//Text("", "...")
+Function(
+    name=Ascendance_epilogue_p7,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p7_d)
+    )
+)
+
+Text("Ascendance_epilogue_d25", "The core war... is over.")
+Text("Ascendance_epilogue_d26", "We have work to do you all. The leaders are dead. We need to inform everyone.")
+Text("Ascendance_epilogue_d27", "And then?")
+Text("Ascendance_epilogue_d28", "I don't know. We've been fighting for so long, I'm not sure what else we can even do.")
+Text("Ascendance_epilogue_d29", "...")
+D(
+    Ascendance_epilogue_d25,
+    sukrat,
+    Ascendance_epilogue_p7_d,
+    R(
+        Ascendance_epilogue_d22,
+        D(
+            Ascendance_epilogue_d26,
+            prometheus,
+            R(
+                Ascendance_epilogue_d27,
+                D(
+                    Ascendance_epilogue_d28,
+                    R(
+                        Ascendance_epilogue_d29,
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("Ascendance_epilogue_d30", "A lot needs to change, but time heals the scars of war...")
+
+
+Function(
+    name=Ascendance_epilogue_p8,
+    sequence=(
+        FadeIntoBlack(),
+        PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d30),
+        Wait(time=5),
+        FadeOutOfBlack(),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p7_d)
+    )
+)
+
+
+
+
+Text("Ascendance_epilogue_d31", "A creator? What?")
+Text("Ascendance_epilogue_d32", "This can't be right. You're lying! You're colluding with the infected!")
+Text("Ascendance_epilogue_d33", "There is no infection. That was another myth.")
+Text("Ascendance_epilogue_d34", "Sukrat? You can speak to these cores too?")
+Text("Ascendance_epilogue_d35", "Yes. It's pretty easy. You just have to let me teach you.")
+
+
+Text("Ascendance_epilogue_d36", "Cores convinced... truces created...")
+
+Text("Ascendance_epilogue_d37", "Are you able to fix them?")
+Text("Ascendance_epilogue_d38", "I'm trying... but I still don't understand what the leaders did to them.")
+Text("Ascendance_epilogue_d39", "Well try harder because who knows when they're going to attack us again.")
+Text("Ascendance_epilogue_d40", "This time they could even get to the Standard Sectors. That'd be the end of us.")
+Text("Ascendance_epilogue_d41", "Sisyphos, we've sent guards to the bypass to prevent just that.")
+Text("Ascendance_epilogue_d42", "...")
+
+Text("Ascendance_epilogue_d43", "Sometimes our team of two... feels empty.")
+
+Text("Ascendance_epilogue_d44", "Hurry up! Prometheus said they'll help us with the spawning gate reverse-engineering.")
+Text("Ascendance_epilogue_d45", "I'm ready, let's go.")
+
+
+Text("Ascendance_epilogue_d46", "But stories must be finished... and guilt must be set aside.")
+
+Text("Ascendance_epilogue_d48", "You chose to finish this story and we supported you along the way. What awaits us now? Only you can decide. This is the consequence of authority — you weren’t the owner of this power, but we trusted you anyway to push the rock forward.")
+Text("Ascendance_epilogue_d49", "You are a god who stole your power from god. You made your own ending to this story that wasn’t yours - that may not have been given to you willingly. Was that the right thing for you to do? For us to support? So what is next, god?")
+Text("Ascendance_epilogue_d50", "...")
