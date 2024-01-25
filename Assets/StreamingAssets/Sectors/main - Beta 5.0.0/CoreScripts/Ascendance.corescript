@@ -1232,8 +1232,7 @@ Function(
 
 Text("Ascendance_epilogue_d37", "Are you able to fix them?")
 Text("Ascendance_epilogue_d38", "I'm trying...")
-Text("Ascendance_epilogue_d39", "Well try harder because who knows when they're going to attack us again.")
-Text("Ascendance_epilogue_d40", "This time they could even get to the Standard Sectors. That'd be the end of us.")
+Text("Ascendance_epilogue_d39", "Well try harder because who knows when they're going to attack us again. This time they could even get to the Standard Sectors. That'd really be the end of us.")
 Text("Ascendance_epilogue_d41", "Sisyphos, we've sent guards to the bypass to prevent just that.")
 Text("Ascendance_epilogue_d42", "...")
 D(
@@ -1248,17 +1247,11 @@ D(
             R(
                 Ascendance_epilogue_d22,
                 D(
-                    Ascendance_epilogue_d40,
+                    Ascendance_epilogue_d41,
+                    heracles,
                     R(
                         Ascendance_epilogue_d22,
-                        D(
-                            Ascendance_epilogue_d41,
-                            heracles,
-                            R(
-                                Ascendance_epilogue_d22,
-                                Call(Ascendance_epilogue_p11)
-                            )
-                        )
+                        Call(Ascendance_epilogue_p11)
                     )
                 )
             )

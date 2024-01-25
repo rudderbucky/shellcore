@@ -80,13 +80,11 @@ Text("Ascendance_cs5_d5", "The weapon was nearly complete at the time, but you w
 Text("Ascendance_cs5_d6", "Oh dear.")
 Text("Ascendance_cs5_d7", "That's right, we know. You've managed to learn how to manipulate the basic energies of this world - however crudely. This talent was only known by our creator...")
 Text("Ascendance_cs5_d8", "You've... surpassed us. You're the missing piece of our weapon.")
+
 Text("Ascendance_cs5_d9", "I'm well aware you aren't the creator. But... you're in the way.")
 Text("Ascendance_cs5_d10", "When we find them, we will destroy them, and destroy the very concept of master and slave. We will be free.")
 Text("Ascendance_cs5_d11", "Now's the end of the road for you.")
-Text("Ascendance_cs5_d12", "YOU WRETCH! WE WILL LIBERATE YOU ALL. YOU WILL NOT RESIST.")
-Text("Ascendance_cs5_d13", "I need to destroy the Infected Leader before they use their weapon on me!")
 Text("Ascendance_cs5_d14", "AARGH!")
-
 
 D(
     Ascendance_cs5_d1,
@@ -289,6 +287,8 @@ Function(
     )
 )
 
+Text("Ascendance_leadersFight_w1_d1", "Let's crush these insects.")
+
 Function(
     name=Ascendance_leadersFight_w1,
     sequence=(
@@ -320,6 +320,7 @@ Function(
             entityID=fake-daayo,
             targetEntityID=player
         ),
+        PassiveDialogue(entityID=fake-daayo, dialogueID=Ascendance_leadersFight_w1_d1),
 
 
         SetVariable(name=$$Ascendance_flagCnt, value=0),
@@ -393,6 +394,7 @@ Function(
     )
 )
 
+Text("Ascendance_leadersFight_w2_d2", "Liars! Co-conspirators! Let's have them quartered!")
 
 Function(
     name=Ascendance_leadersFight_w2,
@@ -421,7 +423,7 @@ Function(
             entityID=eleos,
             targetEntityID=player
         ),
-
+        PassiveDialogue(entityID=eleos, text=Ascendance_leadersFight_w2_d2),
         SetVariable(name=$$Ascendance_flagCnt, value=0),
         SetVariable(name=$$Ascendance_IDcnt, value=0),
         SetVariable(name=$$Ascendance_bp, value=Beamer),
@@ -495,6 +497,11 @@ Function(
     )
 )
 
+
+Text("Ascendance_leadersFight_w3_d1", "Never thought I'd fight side-by-side with a Conservationist...")
+Text("Ascendance_leadersFight_w3_d2", "How about side-by-side with a friend?")
+
+
 Function(
     name=Ascendance_leadersFight_w3,
     sequence=(
@@ -552,6 +559,9 @@ Function(
             entityID=sisyphos,
             targetEntityID=player
         ),
+
+        PassiveDialogue(entityID=sisyphos, text=Ascendance_leadersFight_w3_d1),
+        PassiveDialogue(entityID=heracles, text=Ascendance_leadersFight_w3_d2),
 
         SetVariable(name=$$Ascendance_flagCnt, value=0),
         SetVariable(name=$$Ascendance_faction, value=1),
@@ -710,6 +720,7 @@ Function(
         SetVariable(name=$$Ascendance_citadelTimer, value=15),
         SetVariable(name=$$Ascendance_callback, value=Ascendance_leaderGrabSuccess),
         SetVariable(name=$$Ascendance_postWeaponCallback, value=Ascendance_leadersFight_w2),
+        SetVariable(name=$$Ascendance_leaderGrab_d, value=Ascendance_leaderGrab_d1),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -721,6 +732,7 @@ Function(
         SetVariable(name=$$Ascendance_citadelTimer, value=10),
         SetVariable(name=$$Ascendance_callback, value=Ascendance_leaderGrabSuccess),
         SetVariable(name=$$Ascendance_postWeaponCallback, value=Ascendance_leadersFight_w3),
+        SetVariable(name=$$Ascendance_leaderGrab_d, value=Ascendance_leaderGrab_d2),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -731,6 +743,7 @@ Function(
         SetVariable(name=$$Ascendance_citadelPrint, value=Citadel Very Damaged),
         SetVariable(name=$$Ascendance_citadelTimer, value=5),
         SetVariable(name=$$Ascendance_callback, value=Ascendance_epilogue),
+        SetVariable(name=$$Ascendance_leaderGrab_d, value=Ascendance_leaderGrab_d3),
         Call(Ascendance_leaderGrab)
     )
 )
@@ -794,6 +807,12 @@ Function(
     )
 )
 
+
+Text("Ascendance_leaderGrab_d1", "YOU WRETCH! WE WILL LIBERATE YOU ALL. YOU WILL NOT RESIST.")
+Text("Ascendance_leaderGrab_d2", "YOU WON'T GET AWAY THIS TIME.")
+Text("Ascendance_leaderGrab_d3", "DIE SO THAT WE MAY BE FREE!!!")
+Text("Ascendance_leaderGrab_d4", "I need to destroy the Infected Leader before they use their weapon on me!")
+
 Function(
     name=Ascendance_leaderGrab,
     sequence=(
@@ -805,6 +824,8 @@ Function(
             name=Infected Leader,
             blueprintJSON=Infected Leader,
         ),
+        PassiveDialogue(entityID=InfectedLeader, text=$$Ascendance_leaderGrab_d),
+        PassiveDialogue(entityID=player, text=Ascendance_leaderGrab_d1),
         SetImmobile(
             entityID=InfectedLeader,
             immobile=true
