@@ -1,4 +1,31 @@
 Function(
+    name=Ascendance_leadersFightShortcut,
+    sequence=(
+        RemoveObjectiveMarker(ID=Ascendance_tff),
+        AddObjectiveMarker(ID=Ascendance_tff, sectorName=The Final Fight),
+        SetVariable(name=$$$Ascendance_checkpoint, value=8),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Final Fight,
+                sequence=(     
+                    StartCutscene(),
+                    FadeIntoBlack(),
+                    Wait(time=1),
+                    WarpPlayer(flagName=Ascendance-cs5-flag3, sectorName=The Final Fight),
+                    Wait(time=1),
+                    FadeOutOfBlack(),
+                    Wait(time=2),
+                    FinishCutscene(),
+                    Call(Ascendance_leaderGrab_p3)
+                )
+            )
+        )    
+    )
+)
+
+
+
+Function(
     name=Ascendance_cs5,
     sequence=(
         StartCutscene(),
@@ -237,31 +264,6 @@ Function(
         FinishCutscene(),
         SetVariable(name=$$$Ascednance_checkpoint, value=8),
         Call(Ascendance_leadersFightStart)
-    )
-)
-
-Function(
-    name=Ascendance_leadersFightShortcut,
-    sequence=(
-        RemoveObjectiveMarker(ID=Ascendance_tff),
-        AddObjectiveMarker(ID=Ascendance_tff, sectorName=The Final Fight),
-        SetVariable(name=$$$Ascendance_checkpoint, value=8),
-        ConditionBlock(
-            EnterSector(
-                sectorName=The Final Fight,
-                sequence=(     
-                    StartCutscene(),
-                    FadeIntoBlack(),
-                    Wait(time=1),
-                    WarpPlayer(flagName=Ascendance-cs5-flag3, sectorName=The Final Fight),
-                    Wait(time=1),
-                    FadeOutOfBlack(),
-                    Wait(time=2),
-                    FinishCutscene(),
-                    Call(Ascendance_leaderGrab_p3)
-                )
-            )
-        )    
     )
 )
 
@@ -953,10 +955,14 @@ Function(
         ),
         StartCameraPan(
             flagName=Ascendance-cs5-flag8,
-            instant=true
-        ),
-        FadeOutOfBlack(
-            color=(255,255,255),
+            sequence=(
+                Wait(time=1),
+                FadeOutOfBlack(
+                    color=(255,255,255),
+                ),
+                Wait(time=2),
+                ForceStartDialogue(dialogueID=Ascendance_epilogue_p2_d)
+            )
         ),
     )
 )

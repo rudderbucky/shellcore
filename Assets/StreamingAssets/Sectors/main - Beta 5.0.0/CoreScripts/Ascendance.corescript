@@ -25,7 +25,9 @@ MissionTrigger(
             value=8
         ),
         SetVariable(name=$$$Ascendance_capitolJump, value=1),
-        Call(Ascendance_start)
+        Call(Ascendance_start),
+        DevConsole(command=poor),
+        WarpPlayer(sectorName=The Final Fight, flagName=Ascendance-cs5-flag8)
     )
 )
 
@@ -754,17 +756,29 @@ Text("Ascendance_epilogue_d7", "RESET!!!")
 Function(
     name=Ascendance_epilogue_p3,
     sequence=(
-        PassiveDialogue(entityID=UninfectedLeader, dialogueID=Ascendance_epilogue_d7),
+        PassiveDialogue(entityID=UninfectedLeader, text=Ascendance_epilogue_d7),
         Wait(time=1),
         FadeIntoBlack(
             color=(255,255,255),
             speedFactor=8,
         ),
-        Wait(time=5),
+        Wait(time=3),
+        WarpPlayer(
+            flagName=Ascendance-cs5-flag3,
+            sectorName=The Final Fight
+        ),
+        DeleteEntity(
+            entityID=InfectedLeader
+        ),
+        DeleteEntity(
+            entityID=UninfectedLeader
+        ),
+        Wait(time=2),
         FadeOutOfBlack(
             color=(255,255,255),
         ),
         Wait(time=2),
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p3_d)
     )
 )
 
@@ -782,23 +796,15 @@ D(
 Function(
     name=Ascendance_epilogue_p4,
     sequence=(
-// Ascendance-epilogue-flag3
-// Ascendance-epilogue-flag2
-
         SpawnEntity(
             entityID=aristu,
             forceCharacterTeleport=true,
             flagName=Ascendance-epilogue-flag3,
         ),
-
         SpawnEntity(
             entityID=sukrat,
             forceCharacterTeleport=true,
             flagName=Ascendance-cs5-flag1,
-        ),
-        WarpPlayer(
-            flagName=Ascendance-cs5-flag3,
-            sectorName=The Final Fight
         ),
         SetPath(
             entityID=aristu,
@@ -840,7 +846,7 @@ Function(
                 ),
                 Wait(time=2),
                 ForceStartDialogue(
-                    dialogueID=Ascendance_epilogue_d10
+                    dialogueID=Ascendance_epilogue_p5_d
                 )
             )
         ),
@@ -946,7 +952,11 @@ Function(
             color=(255,255,255),
             speedFactor=8,
         ),
-        Wait(time=5),
+        Wait(time=3),
+        DeleteEntity(
+            entityID=aristu
+        ),
+        Wait(time=2),
         FadeOutOfBlack(
             color=(255,255,255),
         ),
@@ -1002,6 +1012,7 @@ D(
                     Ascendance_epilogue_d28,
                     R(
                         Ascendance_epilogue_d29,
+                        Call(Ascendance_epilogue_p8)
                     )
                 )
             )
@@ -1093,16 +1104,57 @@ Function(
     )
 )
 
-Text("Ascendance_epilogue_d36", "Cores convinced... truces created...")
+Text("Ascendance_epilogue_d36", "ShellCores convinced... truces created...")
 
 Function(
     name=Ascendance_epilogue_p10,
     sequence=(
         FadeIntoBlack(),
         PassiveDialogue(entityID=player, dialogueID=Ascendance_epilogue_d36),
-        Wait(time=5),
+        Wait(time=2),
+        WarpPlayer(flagName=Ascendance-epilogue-p10-flag3, sectorName=Sector 2220-6460),
+        SpawnEntity(
+            entityID=heracles,
+            faction=3,
+            name=Heracles,
+            blueprintJSON=heracles,
+            flagName=Ascendance-epilogue-p10-flag1,
+            overrideFaction=1
+        ),
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Ascendance-epilogue-p10-flag2,
+            overrideFaction=1
+        ),
+        SpawnEntity(
+            entityID=Ascendance_defect,
+            faction=2,
+            blueprintJSON=Defected Elite Patrol,
+            flagName=Abandonment_heraclesKraken
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope,
+            targetEntityID=Ascendance_defect
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope_1,
+            targetEntityID=Ascendance_defect
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope_2,
+            targetEntityID=Ascendance_defect
+        ),
+        ForceTractor(
+            entityID=Abandonment_nanoscope_3,
+            targetEntityID=Ascendance_defect
+        ),
+        Wait(time=3),
         FadeOutOfBlack(),
-
+        Wait(time=2),
+        ForceStartDialogue(dialogueID=Ascendance_epilogue_p10_d)
     )
 )
 
@@ -1115,6 +1167,7 @@ Text("Ascendance_epilogue_d42", "...")
 D(
     Ascendance_epilogue_d37,
     heracles,
+    Ascendance_epilogue_p10_d,
     R(
         Ascendance_epilogue_d38,
         D(
@@ -1234,7 +1287,6 @@ Text("Ascendance_epilogue_d46", "But stories must be finished... and guilt must 
 
 Text("Ascendance_epilogue_d48", "You chose to finish this story and we supported you along the way. What awaits us now? Only you can decide. This is the consequence of authority — you weren’t the owner of this power, but we trusted you anyway to push the rock forward.")
 Text("Ascendance_epilogue_d49", "You are a god who stole your power from god. You made your own ending to this story that wasn’t yours - that may not have been given to you willingly. Was that the right thing for you to do? For us to support? So what is next, god?")
-Text("Ascendance_epilogue_d50", "...")
 Text("Ascendance_epilogue_d50", "We'll see.")
 
 D(
