@@ -104,6 +104,8 @@ Function(
                 val2=complete,
                 comp=Eq,
                 sequence=(
+                    RemoveObjectiveMarker(ID=Legend_start),
+                    AddObjectiveMarker(ID=Legend_start, sectorName=Unconvinced Lair),
                     SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs0_d),
                 )
             ),
@@ -225,6 +227,7 @@ Function(
     sequence=(
         SetVariable(name=$$$Legend_checkpoint, value=1),
         ClearInteraction(entityID=fake-daayo),
+        RemoveObjectiveMarker(ID=Legend_start),
         AddObjectiveMarker(ID=Legend_cradle, sectorName=The Cradle),
         ConditionBlock(
             EnterSector(
@@ -2094,7 +2097,6 @@ Function(
                                             Call(Legend_attemptDaayoDistance)
                                         )
                                     ),
-
                                     EnterSector(
                                         sectorName=BattleZone Tau,
                                         invert=true,
