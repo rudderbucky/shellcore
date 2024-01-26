@@ -2963,10 +2963,6 @@ D(
     )
 )
 
-
-Text("Legend_endOfStory", "End of EP3 and story as of Beta 5.0.0.
-Thank you for playing ShellCore Command Remastered!")
-
 Function(
     name=Legend_end,
     sequence=(
@@ -2978,6 +2974,5 @@ Function(
         ClearInteraction(entityID=eleos),
         ShowAlert(text=Abandonment_missionComplete),
         FinishMission(),
-        ShowPopup(text=Legend_endOfStory),
     )
 )
