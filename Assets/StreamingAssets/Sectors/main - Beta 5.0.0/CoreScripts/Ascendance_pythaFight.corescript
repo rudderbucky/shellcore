@@ -992,6 +992,15 @@ Function(
             speedFactor=2,
         ),
         Wait(time=3),
+        DeleteEntity(entityID=fake-daayo),
+        SpawnEntity(
+            entityID=fake-daayo,
+            flagName=Ascendance-pytha-flag3,
+            blueprintJSON=daayo_4,
+            faction=1,
+            name=Daayo,
+            overrideFaction=1,
+        ),
         FadeOutOfBlack(
             color=(255,255,255),
             speedFactor=2,
@@ -1101,10 +1110,20 @@ D(
     )
 )
 
+
+Task(
+    taskID=Ascendance_defeatLeaders,
+    objectives=Ascendance_defeatLeaders_objectives
+)
+
+Text("Ascendance_defeatLeaders_objectives", "- Head to The Final Fight via the Jump Gate in Infected Capitol Center.
+- End the Core War.")
+
 Function(
     name=Ascendance_cs4_p2,
     sequence=(
         Wait(time=1),
+        AddTask(taskID=Ascendance_defeatLeaders),
         ForceStartDialogue(dialogueID=Ascendance_cs4_p2_d)
     )
 )

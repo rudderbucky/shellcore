@@ -7,7 +7,8 @@ Function(
         ConditionBlock(
             EnterSector(
                 sectorName=The Final Fight,
-                sequence=(     
+                sequence=(
+                    Call(Ascendance_partsOff),
                     StartCutscene(),
                     FadeIntoBlack(),
                     Wait(time=1),
@@ -20,6 +21,22 @@ Function(
                 )
             )
         )    
+    )
+)
+
+Function(
+    name=Ascendance_partsOff,
+    sequence=(
+        SetPartDropRate(rate=0),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Final Fight,
+                invert=true,
+                sequence=(
+                    SetPartDropRate(default=true),
+                )
+            )
+        )
     )
 )
 
@@ -320,7 +337,7 @@ Function(
             entityID=fake-daayo,
             targetEntityID=player
         ),
-        PassiveDialogue(entityID=fake-daayo, dialogueID=Ascendance_leadersFight_w1_d1),
+        PassiveDialogue(entityID=fake-daayo, text=Ascendance_leadersFight_w1_d1),
 
 
         SetVariable(name=$$Ascendance_flagCnt, value=0),
@@ -825,7 +842,7 @@ Function(
             blueprintJSON=Infected Leader,
         ),
         PassiveDialogue(entityID=InfectedLeader, text=$$Ascendance_leaderGrab_d),
-        PassiveDialogue(entityID=player, text=Ascendance_leaderGrab_d1),
+        PassiveDialogue(entityID=player, text=Ascendance_leaderGrab_d2),
         SetImmobile(
             entityID=InfectedLeader,
             immobile=true

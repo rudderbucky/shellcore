@@ -8,6 +8,7 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
+        SetVariable(name=$$$Ascendance_checkpoint, value=6),
         Call(Ascendance_start)
     )
 )
@@ -412,6 +413,12 @@ Function(
     )
 )
 
+Task(
+    taskID=Ascendance_defeatPytha,
+    objectives=Ascendance_defeatPytha_objectives
+)
+Text("Ascendance_defeatPytha_objectives", "- Defeat Pytha.")
+
 
 Text("Ascendance_cs3_d1", "There... I just connected the gate to Kappa. You can use it to get back and forth now.")
 Text("Ascendance_cs3_d2", "Wait... what's going on here?")
@@ -639,6 +646,7 @@ Function(
             sequence=(
                 DisablePartyMember(entityID=the-architect),
                 Wait(time=2),
+                AddTask(taskID=Ascendance_defeatPytha),
                 FinishCutscene(),
                 DeleteEntity(
                     entityID=Ascendance_pytha_1,
