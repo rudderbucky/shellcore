@@ -8,6 +8,7 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
+        SetVariable(name=$$$Ascendance_checkpoint, value=6),
         Call(Ascendance_start)
     )
 )
@@ -707,6 +708,21 @@ Function(
             EnterSector(
                 sectorName=Infected Capitol Center,
                 sequence=(
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Infected Capitol Center,
+                            invert=true,
+                            sequence=(
+                                Call(Ascendance_pythaFightTrigger),
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Ascendance_checkpoint,
+                            val2=7,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    ),
                     Call(Ascendance_pythaFight)
                 )
             )

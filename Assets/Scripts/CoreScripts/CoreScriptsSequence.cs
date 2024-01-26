@@ -242,13 +242,13 @@ public class CoreScriptsSequence : MonoBehaviour
                     }
                     else
                     {
-                        var rate = float.Parse(GetArgument(inst.arguments, "rate"));
+                        var rate = float.Parse(GetArgument(inst.arguments, "rate"), CultureInfo.InvariantCulture);
                         Entity.partDropRate = rate;
                     }
                     break;
                 case InstructionCommand.DealCoreDamage:
                     var entityID = GetArgument(inst.arguments, "entityID");
-                    var amount = float.Parse(GetArgument(inst.arguments, "amount"));
+                    var amount = float.Parse(GetArgument(inst.arguments, "amount"), CultureInfo.InvariantCulture);
                     var e = AIData.entities.Find(e => e.ID == entityID);
                     if (e)
                     {
@@ -1006,14 +1006,22 @@ public class CoreScriptsSequence : MonoBehaviour
             }
         }
 
+        bool foundFlag = false;
         Vector2 coords = new Vector2();
         for (int i = 0; i < AIData.flags.Count; i++)
         {
             if (AIData.flags[i].name == flagName)
             {
                 coords = AIData.flags[i].transform.position;
+                foundFlag = true;
                 break;
             }
+        }
+
+        if (!foundFlag)
+        {
+            Debug.Log("<Spawn Entity> Flag not found. Returning.");
+            return;
         }
 
         if (!string.IsNullOrEmpty(assetID))
