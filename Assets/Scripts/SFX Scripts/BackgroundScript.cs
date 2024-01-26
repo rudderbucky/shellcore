@@ -218,6 +218,7 @@ public class BackgroundScript : MonoBehaviour
             bgCol = lastColor = color;
             foreach (GameObject tile in ingameTiles)
             {
+                if (!tile || !tile.GetComponent<SpriteRenderer>()) continue;
                 tile.GetComponent<SpriteRenderer>().color = color;
             }
 
@@ -228,6 +229,7 @@ public class BackgroundScript : MonoBehaviour
         {
             for (int i = 0; i < ingameTiles.Length; i++)
             {
+                if (!ingameTiles[i] || !ingameTiles[i].GetComponent<SpriteRenderer>()) continue;
                 var renderer = ingameTiles[i].GetComponent<SpriteRenderer>();
                 renderer.color = lastColor;
                 StartCoroutine(FadeColor(color, renderer));
