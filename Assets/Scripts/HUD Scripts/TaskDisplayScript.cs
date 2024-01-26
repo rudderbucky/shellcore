@@ -126,6 +126,11 @@ public class TaskDisplayScript : MonoBehaviour
                     CoreScriptsManager.OnVariableUpdate.Invoke("MissionStatus(");
                 }
             }
+
+            if (Input.GetKey(KeyCode.LeftControl) && EditMode)
+            {
+                PlayerCore.Instance.cursave.missions.Remove(mission);
+            }
         }));
     }
 
