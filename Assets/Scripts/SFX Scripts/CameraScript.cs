@@ -36,6 +36,7 @@ public class CameraScript : MonoBehaviour
     public void Start()
     {
         instance = this;
+        coreScriptsPanning = false;
         if (core)
         {
             Vector3 goalPos = core.transform.position; // update vector
