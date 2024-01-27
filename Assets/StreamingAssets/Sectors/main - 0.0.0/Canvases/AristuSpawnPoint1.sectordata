@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="2568.599,52.8" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="307474912" type="LoadSectorNode" pos="-3110,-300">
+			<Port ID="1007192268" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1427310898" />
+		</Node>
+		<Node name="Variable condition" ID="-1188923446" type="VariableConditionNode" pos="-2929.6,-112.4">
+			<Port ID="-1795170018" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-964502829" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Spawn Entity" ID="-478875750" type="SpawnEntityNode" pos="-2516.4,-237.2">
+			<Port ID="-1612322284" name="output" dynamic="False" />
+			<Port ID="-119717274" name="IDOut" dynamic="False" />
+			<Port ID="1372887736" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="entityName" refID="626421550" />
+			<int name="faction">0</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="290977340" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="626388750" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="2084397554" />
+			<Variable name="additionalCounts" refID="2097737314" />
+		</Node>
+		<Node name="Conditions" ID="180351364" type="ConditionGroupNode" pos="-2701.4,-289">
+			<Port ID="-1978017752" name="input" dynamic="False" />
+			<Port ID="-1582499146" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1402710874" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1007192268" port2ID="-1978017752" />
+		<Connection port1ID="-1795170018" port2ID="-1582499146" />
+		<Connection port1ID="1372887736" port2ID="1402710874" />
+	</Connections>
+	<Objects>
+		<Object refID="1427310898" type="System.String">
+			<string>Capitol Advanced Trade Sector</string>
+		</Object>
+		<Object refID="-964502829" type="System.String">
+			<string>AristuSpawn</string>
+		</Object>
+		<Object refID="626421550" type="System.String">
+			<string>Aristu</string>
+		</Object>
+		<Object refID="290977340" type="System.String">
+			<string>flag-capitolaristuspawn2</string>
+		</Object>
+		<Object refID="626388750" type="System.String">
+			<string>aristu</string>
+		</Object>
+		<Object refID="2084397554" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="2097737314" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+	</Objects>
+</NodeCanvas>

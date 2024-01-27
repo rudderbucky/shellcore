@@ -1,0 +1,363 @@
+SectorTrigger(
+    sectorName=Iota Hideout,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$SiegeZoneIotaComplete,
+                val2=0,
+                comp=Neq,
+                sequence=(
+                	ConditionBlock(
+                        Comparison(
+                            val1=$$$SiegeZoneIotaComplete,
+                            val2=1,
+                            comp=Neq,
+                            sequence=(
+                                Call(IotaHideoutRemoveDefenders),
+                                Call(IotaHideoutRemoveDefender1)
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$SiegeZoneIotaComplete,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    Call(IotaHideoutPicket),
+                    Call(IotaHideoutUnsafeDialogue)
+                )
+            )
+        ),
+		ConditionBlock(
+            Comparison(
+                val1=$$$SiegeZoneIotaComplete,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                	ConditionBlock(
+                        Comparison(
+                            val1=$$$BattlezoneWonTheta,
+                            val2=1,
+                            comp=Neq,
+                            sequence=(
+                                Call(IotaHideoutSafeDialogue),
+                                Call(IotaHideoutDefense)
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$BattlezoneWonTheta,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    Call(IotaHideoutGetYard)
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$$BattlezoneWonTheta,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(IotaHideoutGetYard),
+                    Call(IotaHideoutRemoveDefenders),
+                    Call(IotaHideoutComplete),
+                    Call(IotaHideoutCompleteDialogue),
+                    Call(IotaHideoutDefense)
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutPicket,
+    sequence=(
+		SpawnEntity(
+            entityID=IotaHideoutPicket1,
+            blueprintJSON=Basic Patrol,
+            flagName=IotaHideoutPicket1Spawn,
+            faction=1
+        ),
+		SpawnEntity(
+            entityID=IotaHideoutPicket2,
+            blueprintJSON=Basic Scout,
+            flagName=IotaHideoutPicket2Spawn,
+            faction=1
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutPicket3,
+            blueprintJSON=Basic Scout,
+            flagName=IotaHideoutPicket3Spawn,
+            faction=1
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutRemoveDefenders,
+    sequence=(
+        DeleteEntity(
+            entityID=IotaHideoutDefender2
+        ),
+        DeleteEntity(
+            entityID=IotaHideoutDefender3
+        ),
+        DeleteEntity(
+            entityID=IotaHideoutDefender4
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutRemoveDefender1,
+    sequence=(
+        DeleteEntity(
+            entityID=IotaHideoutDefender1
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutComplete,
+    sequence=(
+        SetSectorType(type=Haven),
+		SpawnEntity(
+            entityID=IotaHideout_MissionControl,
+            assetID=missioncontrol_blueprint,
+            flagName=IotaHideoutMissionControlSpawn,
+            name=Mission Control
+        ),
+        SpawnEntity(
+            entityID=IotaHideout_Trader,            
+            assetID=trader_blueprint,
+            flagName=IotaHideoutTraderSpawn
+        ),
+        SpawnEntity(
+            entityID=IotaHideout_GroundStation,        
+            assetID=groundcarrier_blueprint,
+            blueprintJSON=Ground Base NoSpawn,
+            flagName=IotaHideoutGroundStationSpawn,
+            name=Ground Base
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutDefense,
+    sequence=(
+        SpawnEntity(
+            entityID=IotaHideoutMS1,
+            assetID=missile_station,
+            flagName=IotaHideoutMS1Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMS2,
+            assetID=missile_station,
+            flagName=IotaHideoutMS2Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMS3,
+            assetID=missile_station,
+            flagName=IotaHideoutMS3Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMS4,
+            assetID=missile_station,
+            flagName=IotaHideoutMS4Spawn,
+            name=Missile Station
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutBunker1,
+            assetID=bunker_blueprint,
+            flagName=IotaHideoutBunker1Spawn,
+            name=Bunker
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutBunker2,
+            assetID=bunker_blueprint,
+            flagName=IotaHideoutBunker2Spawn,
+            name=Bunker
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMTank1,
+            assetID=missile_tank,
+            flagName=IotaHideoutMTank1Spawn,
+            name=Missile Tank
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMTank2,
+            assetID=missile_tank,
+            flagName=IotaHideoutMTank2Spawn,
+            name=Missile Tank
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMTank2,
+            assetID=missile_tank,
+            flagName=IotaHideoutMTank2Spawn,
+            name=Missile Tank
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutDT1,
+            assetID=defense_turret,
+            flagName=IotaHideoutDT1Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutDT2,
+            assetID=defense_turret,
+            flagName=IotaHideoutDT2Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutDT3,
+            assetID=defense_turret,
+            flagName=IotaHideoutDT3Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutDT4,
+            assetID=defense_turret,
+            flagName=IotaHideoutDT4Spawn,
+            name=Defense Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMT1,
+            assetID=missile_turret,
+            flagName=IotaHideoutMT1Spawn,
+            name=Missile Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMT2,
+            assetID=missile_turret,
+            flagName=IotaHideoutMT2Spawn,
+            name=Missile Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMT3,
+            assetID=missile_turret,
+            flagName=IotaHideoutMT3Spawn,
+            name=Missile Turret
+        ),
+        SpawnEntity(
+            entityID=IotaHideoutMT4,
+            assetID=missile_turret,
+            flagName=IotaHideoutMT4Spawn,
+            name=Missile Turret
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutGetYard,
+    sequence=(
+        SpawnEntity(
+            entityID=IotaHideout_Yard,
+            assetID=yard_blueprint,
+            name=Yard,
+            flagName=IotaHideoutYardSpawn
+        )
+    )
+)
+
+Text("IotaHideout_Trader_d1", "The hideout is admittedly very difficult to access, but our logistics division is ready to support the honorable commander. All parts ready for immediate use.")
+Text("IotaHideout_Trader_d2", "Thanks for your work. I'd like to trade parts.")
+Text("IotaHideout_Trader_d3", "On second thought, no thanks.")
+Text('IotaHideout_Trader_json', '{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"SmallWing4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":34,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"MediumCenter5","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false,"playerGivenName":""}]}')
+Text("IotaHideout_Defender1_d1", "The area is finally secure thanks to our commander. I will make sure this place will serve as a permanent base of operation.")
+Text("IotaHideout_Defender1_d2", "Keep up your good work.")
+
+Dialogue(
+    dialogueID=IotaHideout_Trader_d,
+    dialogueText=IotaHideout_Trader_d1,
+    entityID=IotaHideout_Trader,
+    responses=(
+        Response(
+            responseText=IotaHideout_Trader_d2,
+            next=Trader(IotaHideout_Trader_json)
+        ),
+        Response(
+            responseText=IotaHideout_Trader_d3,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=IotaHideout_Defender1_d,
+    dialogueText=IotaHideout_Defender1_d1,
+    entityID=IotaHideoutDefender1,
+    responses=(
+        Response(
+            responseText=IotaHideout_Defender1_d2,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutCompleteDialogue,
+    sequence=(
+        SetInteraction(dialogueID=IotaHideout_Defender1_d, entityID=IotaHideoutDefender1),
+        SetInteraction(dialogueID=IotaHideout_Trader_d, entityID=IotaHideout_Trader)
+    )
+)
+
+Text("IotaHideoutSafe_Defender1_d1", "Now that Iota is under control, we managed to build a more elaborate defense.")
+Text("IotaHideoutSafe_Defender1_d2", "It is good to see the area freed of opposition.")
+
+Dialogue(
+    dialogueID=IotaHideoutSafe_Defender1_d,
+    dialogueText=IotaHideoutSafe_Defender1_d1,
+    entityID=IotaHideoutDefender1,
+    responses=(
+        Response(
+            responseText=IotaHideoutSafe_Defender1_d2,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutSafeDialogue,
+    sequence=(
+        SetInteraction(dialogueID=IotaHideoutSafe_Defender1_d, entityID=IotaHideoutDefender1)
+    )
+)
+
+Text("IotaHideoutUnsafe_Defender1_d1", "Our forces at Iota is being pushed back, and enemy pickets are entering this sector. They need your help, commander!")
+Text("IotaHideoutUnsafe_Defender1_d2", "I am on it.")
+
+Dialogue(
+    dialogueID=IotaHideoutUnsafe_Defender1_d,
+    dialogueText=IotaHideoutUnsafe_Defender1_d1,
+    entityID=IotaHideoutDefender1,
+    responses=(
+        Response(
+            responseText=IotaHideoutUnsafe_Defender1_d2,
+            next=End()
+        )
+    )
+)
+
+Function(
+    name=IotaHideoutUnsafeDialogue,
+    sequence=(
+        SetInteraction(dialogueID=IotaHideoutUnsafe_Defender1_d, entityID=IotaHideoutDefender1)
+    )
+)
+
+
+

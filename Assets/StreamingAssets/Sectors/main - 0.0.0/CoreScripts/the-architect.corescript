@@ -1,0 +1,293 @@
+Text("the-architect_d1", "That gate near where I stay in the Capitol - do you know where it leads?")
+Text("the-architect_d2", "Where?")
+Text("the-architect_d3", "Not interested, sorry.")
+Text("the-architect_d4", "Nowhere! This thing has just been here forever, doing absolutely nothing! I can't stand it!")
+Text("the-architect_d5", "Oh yeah? What are you going to do?")
+Text("the-architect_d6", "There needs to be... a challenge. A challenge must be built and linked to this gate!")
+Text("the-architect_d7", "And where will you build this challenge?")
+Text("the-architect_d8", "Watch this space.")
+Text("the-architect_d9", "That sounds like an excuse to procrastinate.")
+Dialogue(
+    dialogueID=the-architect_initial_d1,
+    dialogueText=the-architect_d1,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d2,
+            next=Dialogue(
+                dialogueText=the-architect_d4,
+                responses=(
+                    Response(
+                        responseText=the-architect_d5,
+                        next=Dialogue(
+                            dialogueText=the-architect_d6,
+                            responses=(
+                                Response(
+                                    responseText=the-architect_d7,
+                                    next=Dialogue(
+                                        dialogueText-the-architect_d8,
+                                        responses=(
+                                            Response(
+                                                responseText=the-architect_d9,
+                                                next=Call(the-architect_helper)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=the-architect_d3,
+            next=Call(the-architect_helper)
+        )
+    )
+)
+
+
+Text("the-architect_d21", "Do you know what parts are made of?")
+Text("the-architect_d22", "No, why?")
+Text("the-architect_d23", "Despite having traders stocked to the brim with parts, nobody even knows what they are made of! All we know is that the material is similar to what our cores are made of.")
+Text("the-architect_d24", "Huh.")
+Text("the-architect_d25", "Then where do the parts come from?")
+Text("the-architect_d26", "I dunno, making parts isn't my job. Making stations is.")
+Text("the-architect_d27", "...")
+Dialogue(
+    dialogueID=the-architect_initial_d2,
+    dialogueText=the-architect_d21,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d22,
+            next=Dialogue(
+                dialogueText=the-architect_d23,
+                responses=(
+                    Response(
+                        responseText=the-architect_d24,
+                        next=Call(the-architect_helper)
+                    ),
+                    Response(
+                        responseText=the-architect_d25,
+                        next=Dialogue(
+                            dialogueText=the-architect_d26,
+                            responses=(
+                                Response(
+                                    responseText=the-architect_d27,
+                                    next=Call(the-architect_helper)
+                                )
+                            )
+                        )
+                    ),
+                )
+            )
+        )
+    )
+)
+
+Text("the-architect_d11", "Octagon... you give us our souls... octagon... octagon.... only octagons shall save us... octagon... you control our yards, and therefore all of us...")
+Dialogue(
+    dialogueID=the-architect_initial_d3,
+    dialogueText=the-architect_d11,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d27,
+            next=Call(the-architect_helper)
+        )
+    )
+)
+
+Text("the-architect_d12", "Have you ever looked really closely at the core of a drone?")
+Text("the-architect_d13", "What? Why?")
+Text("the-architect_d14", "Our cores are octagons, and their cores appear to be circles. I wonder why that is?")
+Dialogue(
+    dialogueID=the-architect_initial_d4,
+    dialogueText=the-architect_d12,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d13,
+            next=Dialogue(
+                dialogueText=the-architect_d14,
+                responses=(
+                    Response(
+                        responseText=the-architect_d27,
+                        next=Call(the-architect_helper)
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("the-architect_d10", "This can't be happening! All my stations... they're dying!")
+Dialogue(
+    dialogueID=the-architect_capitol_siege_d,
+    dialogueText=the-architect_d10,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d27,
+            next=End()
+        )
+    )
+)
+
+
+Text("the-architect_d28", "I've never seen a place this empty! It's a miracle we can survive here in the first place! A vacuum like this must be experimented on.")
+Text("the-architect_d29", "Always the optimist!")
+Dialogue(
+    dialogueID=the-architect_pre_abandonment_d,
+    dialogueText=the-architect_d28,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d29,
+            next=End()
+        )
+    )
+)
+
+Text("the-architect_d32", "There's a lot of science experimentation I'm cooking up just for you to run through. Just you wait.")
+Dialogue(
+    dialogueID=the-architect_post_abandonment_d,
+    dialogueText=the-architect_d32,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d27,
+            next=End()
+        )
+    )
+)
+
+
+Text("the-architect_d30", "I can certainly forgive what you did considering how cryptic everything is and has always been. Please feel free to use the amenities I have set up.")
+Text("the-architect_d31", "Thank you.")
+Dialogue(
+    dialogueID=the-architect_post_abandonment_traitor_d,
+    dialogueText=the-architect_d30,
+    entityID=the-architect,
+    responses=(
+        Response(
+            responseText=the-architect_d31,
+            next=End()
+        )
+    )
+)
+
+StartTrigger(
+    sequence=(
+        Call(the-architect_helper)
+    )
+)
+
+Function(
+    name=the-architect_helper,
+    sequence=(
+        SetVariable(name=$$dialogue_ID1, value=the-architect_initial_d1),
+        SetVariable(name=$$dialogue_ID2, value=the-architect_initial_d2),
+        SetVariable(name=$$dialogue_ID3, value=the-architect_initial_d3),
+        SetVariable(name=$$dialogue_ID4, value=the-architect_initial_d4),
+        SetVariable(name=$$dialogue_prob1, value=0.3),
+        SetVariable(name=$$dialogue_prob2, value=0.6),
+        SetVariable(name=$$dialogue_prob3, value=0.7),
+        SetVariable(name=$$dialogue_prob4, value=1.0),
+        Call(dialogue_randomEngine),
+
+
+        ConditionBlock(
+            Comparison(
+                val1=$$$FI_CapitolAttack_IsHappening,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetInteraction(entityID=the-architect, dialogueID=the-architect_capitol_siege_d)
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Abandonment_missionName),
+                val2=ongoing,
+                comp=Eq,
+                sequence=(
+                    SetInteraction(entityID=the-architect, dialogueID=the-architect_pre_abandonment_d)
+                )
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Abandonment_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(
+                                SetInteraction(entityID=the-architect, dialogueID=the-architect_post_abandonment_d)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Loyalty_Variable,
+                            val2=0,
+                            comp=Neq,
+                            sequence=(
+                                SetInteraction(entityID=the-architect, dialogueID=the-architect_post_abandonment_traitor_d)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=dialogue_randomEngine,
+    sequence=(
+        ClearInteraction(entityID=the-architect),
+        RandomFloat(name=$$dialogue_random),
+        ConditionBlock(
+            Comparison(
+                val1=$$dialogue_random,
+                val2=$$dialogue_prob1,
+                comp=Lt,
+                sequence=(
+                    SetInteraction(entityID=the-architect, dialogueID=$$dialogue_ID1)
+                )
+            ),
+            Comparison(
+                val1=$$dialogue_random,
+                val2=$$dialogue_prob2,
+                comp=Lt,
+                sequence=(
+                    SetInteraction(entityID=the-architect, dialogueID=$$dialogue_ID2)
+                )
+            ),
+            Comparison(
+                val1=$$dialogue_random,
+                val2=$$dialogue_prob3,
+                comp=Lt,
+                sequence=(
+                    SetInteraction(entityID=the-architect, dialogueID=$$dialogue_ID3)
+                )
+            ),
+            Comparison(
+                val1=$$dialogue_random,
+                val2=$$dialogue_prob4,
+                comp=Lt,
+                sequence=(
+                    SetInteraction(entityID=the-architect, dialogueID=$$dialogue_ID4)
+                )
+            ),
+        ),
+    )
+)

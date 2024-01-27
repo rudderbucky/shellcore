@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-327,87.8" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="-51938304" type="LoadSectorNode" pos="-370,-260">
+			<Port ID="1205752192" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-769021518" />
+		</Node>
+		<Node name="Conditions" ID="1687340800" type="ConditionGroupNode" pos="-58,-267.2">
+			<Port ID="-2051774976" name="input" dynamic="False" />
+			<Port ID="-869128064" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="168312064" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="AI Follow" ID="-659809024" type="AIFollowNode" pos="410,-280">
+			<Port ID="-1014334848" name="output" dynamic="False" />
+			<Port ID="-122101504" name="input" dynamic="False" />
+			<Variable name="followerID" refID="173262565" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="949710208" type="DestroyEntities" pos="-100,-70">
+			<Port ID="770131840" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">false</boolean>
+			<Variable name="targetID" refID="1817113746" />
+			<int name="targetCount">3</int>
+			<int name="targetFaction">1</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">true</boolean>
+		</Node>
+		<Node name="Spawn Entity" ID="-1779809536" type="SpawnEntityNode" pos="190,-280">
+			<Port ID="1952778752" name="output" dynamic="False" />
+			<Port ID="-1304748416" name="IDOut" dynamic="False" />
+			<Port ID="-267308288" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="-1788259062" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">1</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-1429594734" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="173262565" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="2020509056" />
+			<Variable name="additionalCounts" refID="-1462719616" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1205752192" port2ID="-2051774976" />
+		<Connection port1ID="-869128064" port2ID="770131840" />
+		<Connection port1ID="168312064" port2ID="-267308288" />
+		<Connection port1ID="-122101504" port2ID="1952778752" />
+	</Connections>
+	<Objects>
+		<Object refID="-769021518" type="System.String">
+			<string>Sector 690-2150</string>
+		</Object>
+		<Object refID="173262565" type="System.String">
+			<string>Shellcore</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="1817113746" type="System.String">
+			<string>Harvester Turret</string>
+		</Object>
+		<Object refID="-1788259062" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core2_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-1.2000000476837159,"y":-0.20000000298023225},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":1,"secondaryData":"","partID":"SmallWing4","shiny":false},{"location":{"x":1.2000000476837159,"y":-0.20000000298023225},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":1,"secondaryData":"","partID":"SmallWing4","shiny":false},{"location":{"x":0.5000004768371582,"y":-0.30000001192092898},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":-0.499999463558197,"y":-0.30000001192092898},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":9.91821252682712e-7,"y":-2.500000238418579},"rotation":-180.0,"mirrored":false,"abilityID":1,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":4.863738922722405e-7,"y":1.100000023841858},"rotation":-180.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"SmallCenter3","shiny":false},{"location":{"x":0.000002937316821771674,"y":0.5000000596046448},"rotation":0.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"SmallCenter4","shiny":false},{"location":{"x":-1.5,"y":1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":1.5,"y":1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":-0.4999995529651642,"y":1.7999999523162842},"rotation":180.0,"mirrored":true,"abilityID":2,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":0.5000004768371582,"y":1.799999713897705},"rotation":-180.0,"mirrored":false,"abilityID":12,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":0.800000011920929,"y":1.7999999523162842},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallSide1","shiny":false},{"location":{"x":-0.800000011920929,"y":1.7999999523162842},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallSide1","shiny":false},{"location":{"x":-0.7999990582466126,"y":1.100000023841858},"rotation":0.0,"mirrored":true,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false},{"location":{"x":0.800000011920929,"y":1.100000023841858},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false},{"location":{"x":0.8000000715255737,"y":-1.600000023841858},"rotation":165.0,"mirrored":false,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallWing2","shiny":false},{"location":{"x":-0.800000011920929,"y":-1.600000023841858},"rotation":-165.0,"mirrored":true,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallWing2","shiny":false},{"location":{"x":-0.5999990701675415,"y":-1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":9,"tier":1,"secondaryData":"","partID":"SmallSide1","shiny":false},{"location":{"x":0.6000003218650818,"y":-1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":2,"tier":1,"secondaryData":"","partID":"SmallSide1","shiny":false},{"location":{"x":0.000017662048776401207,"y":-1.2000001668930054},"rotation":180.0,"mirrored":false,"abilityID":7,"tier":2,"secondaryData":"","partID":"MediumCenter2","shiny":false},{"location":{"x":0.00000686645489622606,"y":-2.0},"rotation":-180.0,"mirrored":false,"abilityID":33,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-1049629115" type="System.String">
+			<string>ShellCore</string>
+		</Object>
+		<Object refID="-1429594734" type="System.String">
+			<string>AssassinSpawn</string>
+		</Object>
+		<Object refID="2020509056" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1462719616" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+	</Objects>
+</NodeCanvas>

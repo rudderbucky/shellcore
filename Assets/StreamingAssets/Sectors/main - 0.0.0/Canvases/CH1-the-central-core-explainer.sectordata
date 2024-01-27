@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="82.7999,310.3999" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="-616223972" type="EndDialogue" pos="116.6001,117.2001">
+			<Port ID="-1838592656" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<boolean name="openUpgrader">false</boolean>
+			<boolean name="openWorkshop">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-427790996" type="StartDialogueNode" pos="-70,-220">
+			<Port ID="-345987646" name="input" dynamic="False" />
+			<Port ID="1146617364" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1268450189" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Clear Pending Dialogue" ID="488545690" type="ClearDialogue" pos="-109.2,-390">
+			<Port ID="-1655744922" name="inputLeft" dynamic="False" />
+			<Port ID="-163139912" name="outputRight" dynamic="False" />
+			<Variable name="EntityID" refID="-1268450189" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Test Variable (DEPRECATED)" ID="115166964" type="TestVariableNode" pos="-359.2,-392">
+			<Port ID="1329465098" name="inputLeft" dynamic="False" />
+			<Port ID="-1472897188" name="outputTrue" dynamic="False" />
+			<Port ID="19707822" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1704267910" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Enter Sector" ID="-1329465016" type="LoadSectorNode" pos="-530,-400">
+			<Port ID="835821422" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1825709296" />
+		</Node>
+		<Node name="Set Part Drop Rate" ID="192692640" type="SetPartDropRate" pos="-337.8,-541.6">
+			<Port ID="-1495120182" name="output" dynamic="False" />
+			<Port ID="-2515172" name="input" dynamic="False" />
+			<float name="dropRate">0.125</float>
+			<Variable name="sectorName" refID="1825709296" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="921418208" type="DialogueNode" pos="120,-220">
+			<Port ID="1512312832" name="input" dynamic="False" />
+			<Port ID="-656783588" name="cancel" dynamic="False" />
+			<Port ID="963769630" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">225</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1346548544" />
+			<Variable name="answers" refID="945455542" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1838592656" port2ID="963769630" />
+		<Connection port1ID="-345987646" port2ID="-1472897188" />
+		<Connection port1ID="1146617364" port2ID="1512312832" />
+		<Connection port1ID="-1655744922" port2ID="19707822" />
+		<Connection port1ID="1329465098" port2ID="-1495120182" />
+		<Connection port1ID="835821422" port2ID="-2515172" />
+	</Connections>
+	<Objects>
+		<Object refID="-1268450189" type="System.String">
+			<string>CH1-the-central-core-explainer</string>
+		</Object>
+		<Object refID="-1704267910" type="System.String">
+			<string>UneasyAlliance</string>
+		</Object>
+		<Object refID="1825709296" type="System.String">
+			<string>Sector 360-5290</string>
+		</Object>
+		<Object refID="1346548544" type="System.String">
+			<string>The Core Sectors were not what I anticipated them to be. I thought I would see those followers of that Voice but it's now overrun by the Defected. I wonder if they still exist.</string>
+		</Object>
+		<Object refID="945455542" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

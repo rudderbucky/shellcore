@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="348.8001,-21.19996" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Variable condition" ID="1474366410" type="VariableConditionNode" pos="-832.8001,-25.60001">
+			<Port ID="-1225223456" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-1275627700" />
+			<int name="value">2</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Spawn Entity" ID="-1607345640" type="SpawnEntityNode" pos="-180,-190">
+			<Port ID="267381554" name="output" dynamic="False" />
+			<Port ID="1759986564" name="IDOut" dynamic="False" />
+			<Port ID="-1042375722" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="371857150" />
+			<Variable name="entityName" refID="-649856815" />
+			<int name="faction">0</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="1249850453" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-649889615" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="1038363194" />
+			<Variable name="additionalCounts" refID="-1533231800" />
+		</Node>
+		<Node name="Conditions" ID="1355143228" type="ConditionGroupNode" pos="-483.2,-27.80001">
+			<Port ID="450229288" name="input" dynamic="False" />
+			<Port ID="-1408071190" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="84533820" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Enter Sector" ID="-1485348256" type="LoadSectorNode" pos="-780,-140">
+			<Port ID="1577138830" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346905" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1225223456" port2ID="-1408071190" />
+		<Connection port1ID="-1042375722" port2ID="84533820" />
+		<Connection port1ID="450229288" port2ID="1577138830" />
+	</Connections>
+	<Objects>
+		<Object refID="-1275627700" type="System.String">
+			<string>NiveySpawn</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-649856815" type="System.String">
+			<string>Nivey</string>
+		</Object>
+		<Object refID="1249850453" type="System.String">
+			<string>nivey-hideout-3-flag</string>
+		</Object>
+		<Object refID="-649889615" type="System.String">
+			<string>nivey</string>
+		</Object>
+		<Object refID="1038363194" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1533231800" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-7346905" type="System.String">
+			<string>Ancient Ruins Center</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

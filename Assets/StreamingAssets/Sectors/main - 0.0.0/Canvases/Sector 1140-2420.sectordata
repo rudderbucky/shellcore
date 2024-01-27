@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="308.2043,151.3149" zoom="0.72" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="-2783826" type="LoadSectorNode" pos="-960,-340">
+			<Port ID="-2783828" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="28646701" />
+		</Node>
+		<Node name="Rotate Craft" ID="-2783840" type="RotateCraftNode" pos="-670,-340">
+			<Port ID="-2783842" name="output" dynamic="False" />
+			<Port ID="-2783844" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">false</boolean>
+			<Variable name="entityID" refID="-725273098" />
+			<Variable name="targetEntityID" refID="320643783" />
+			<boolean name="useNumericalAngle">false</boolean>
+		</Node>
+		<Node name="Rotate Craft" ID="-2837264" type="RotateCraftNode" pos="-420,-340">
+			<Port ID="-2837266" name="output" dynamic="False" />
+			<Port ID="-2837268" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">false</boolean>
+			<Variable name="entityID" refID="-725273097" />
+			<Variable name="targetEntityID" refID="320643783" />
+			<boolean name="useNumericalAngle">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-2783828" port2ID="-2783844" />
+		<Connection port1ID="-2783842" port2ID="-2837268" />
+	</Connections>
+	<Objects>
+		<Object refID="28646701" type="System.String">
+			<string>Sector 1140-2420</string>
+		</Object>
+		<Object refID="-725273098" type="System.String">
+			<string>nanoscope-1</string>
+		</Object>
+		<Object refID="320643783" type="System.String">
+			<string>the-nanoscope-center-flag</string>
+		</Object>
+		<Object refID="-725273097" type="System.String">
+			<string>nanoscope-2</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class VersionNumberScript : MonoBehaviour
 {
-    public static string version = "Beta 5.0.0";
-    public static string mapVersion = "Beta 5.0.0";
+    public static string version = "0.0.0";
+    public static string mapVersion = "0.0.0";
     public static string rdbMap = "rudderbucky server - 1";
     static VersionNumberScript instance;
     public Text episodeText;

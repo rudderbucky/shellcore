@@ -1,0 +1,93 @@
+Text("Exterminator_Guardian1_d1", "You seem like a nice enough core. Feel free to buy some wares from us by our leader.")
+Text("Exterminator_Guardian1_d2", "Thanks!")
+Text("Exterminator_Guardian2_d1", "Ave, fellow abandoned. Join our cause and we will free our lands of the defects once and for all.")
+Text("Exterminator_Guardian2_d2", "I'll think about it...")
+Text("Exterminator_Guardian3_d1", "You should speak to our leader. They do the talking...")
+Text("Exterminator_Guardian3_d2", "And you just shoot things, got it, got it.")
+Text("Exterminator_Trader_d1", "Kappa Outskirts vending key I86A-5F. Exchange credits for parts.")
+Text("Exterminator_Trader_d2", "Uhh... SELECT * FROM Parts.")
+Text("Exterminator_Trader_d3", "On second thought, no thanks.")
+Text('Exterminator_Trader_json', '{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":38,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigSide6","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":26,"tier":2,"secondaryData":"","partID":"MediumCenter1","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":32,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":30,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":9,"tier":1,"secondaryData":"","partID":"SmallCenter5","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":8,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false,"playerGivenName":""},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":1,"secondaryData":"","partID":"SmallCenter6","shiny":false,"playerGivenName":""}]}')
+
+Dialogue(
+    dialogueID=Exterminator_Guardian1_d,
+    dialogueText=Exterminator_Guardian1_d1,
+    entityID=Exterminator_Guardian1,
+    responses=(
+        Response(
+            responseText=Exterminator_Guardian1_d2,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=Exterminator_Guardian2_d,
+    dialogueText=Exterminator_Guardian2_d1,
+    entityID=Exterminator_Guardian2,
+    responses=(
+        Response(
+            responseText=Exterminator_Guardian2_d2,
+            next=End()
+        )
+    )
+)
+Dialogue(
+    dialogueID=Exterminator_Guardian3_d,
+    dialogueText=Exterminator_Guardian3_d1,
+    entityID=Exterminator_Guardian3,
+    responses=(
+        Response(
+            responseText=Exterminator_Guardian3_d2,
+            next=End()
+        )
+    )
+)
+
+Dialogue(
+    dialogueID=Exterminator_Trader_d,
+    dialogueText=Exterminator_Trader_d1,
+    entityID=Exterminator_Trader,
+    responses=(
+        Response(
+            responseText=Exterminator_Trader_d2,
+            next=Trader(Exterminator_Trader_json)
+        ),
+        Response(
+            responseText=Exterminator_Trader_d3,
+            next=End()
+        )
+    )
+)
+
+StartTrigger(
+    sequence=(
+        SetInteraction(dialogueID=Exterminator_Guardian2_d, entityID=Exterminator_Guardian2),
+        SetInteraction(dialogueID=Exterminator_Guardian1_d, entityID=Exterminator_Guardian1),
+        SetInteraction(dialogueID=Exterminator_Guardian3_d, entityID=Exterminator_Guardian3),
+        SetInteraction(dialogueID=Exterminator_Trader_d, entityID=Exterminator_Trader)
+    )
+)
+
+SectorTrigger(
+    sectorName=Exterminator Lair,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Truth_deleteEntities,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(Truth_delete_lair_entities)
+                )
+            ),
+            Comparison(
+                val1=$$$Truth_deleteEntities,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                )
+            ),
+        )
+    )
+)

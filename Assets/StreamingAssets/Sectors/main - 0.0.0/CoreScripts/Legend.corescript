@@ -1,0 +1,2978 @@
+Text("Legend_missionName", "Legend")
+Text("Legend_entryPoint", "Speak to Daayo in the Unconvinced Lair.")
+
+// TODO: beef up pylons
+
+MissionTrigger(
+    name=Legend_missionName,
+    entryPoint=Legend_entryPoint,
+    prerequisites=(Truth_missionName),
+    episode=3,
+    sequence=(
+        Call(Legend_start)
+    )
+)
+
+Function(
+    name=Legend_start,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=MissionStatus(Legend_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=9,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs7)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=8,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_sector20506330spawn),
+                    Call(Legend_cs7_remaining_startPylonSpawn)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=7,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs6)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=6,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs5)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=5,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs4)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=4,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs3),
+                    Call(Legend_pylonCollection)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=3,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs2),
+                    Call(Legend_pylonCollection)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=2,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_post_cs1),
+                    Call(Legend_pylonCollection)
+                )
+            ),
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    Call(Legend_findCradle)
+                )
+            ),
+            Comparison(
+                val1=MissionStatus(Truth_missionName),
+                val2=complete,
+                comp=Eq,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Legend_start),
+                    AddObjectiveMarker(ID=Legend_start, sectorName=Unconvinced Lair),
+                    SetInteraction(entityID=fake-daayo, dialogueID=Legend_cs0_d),
+                )
+            ),
+        ),
+    )
+)
+
+
+
+Text("Legend_cs0_d1", "What do you want from me, you moldy brick?")
+Text("Legend_cs0_d2", "Tell me why you are here.")
+Text("Legend_cs0_d3", "I came here to find Pytha’s so-called “legendary commander”. Pytha wouldn’t come with me, though - they were too scared to disobey the leader. This commander seems to be the only interesting core in this horrific existence.")
+Text("Legend_cs0_d4", "Are you Unconvinced?")
+Text("Legend_cs0_d5", "I don’t really care what happens here, there, or anywhere. So I suppose I am.")
+Text("Legend_cs0_d6", "Then why are you really here?")
+Text("Legend_cs0_d7", "To find the “legendary commander”. The way Pytha talks about them, they seem to be the only core with an answer in this disaster of a world.")
+Text("Legend_cs0_d8", "You know what? Let me admit the strength you had shown in the Standard Sectors. You may be of use to me in finding this commander. I’ve been grasping at straws lately.")
+Text("Legend_cs0_d11", "Why do you care so much about this “legendary commander”?")
+Text("Legend_cs0_d12", "In case it isn't obvious, everyone here is a coward. The core sectors are hostile to entry and this has been known for eons here, except apparently this commander.")
+Text("Legend_cs0_d13", "What is this commander's real name?")
+Text("Legend_cs0_d14", "Prometheus.")
+Text("Legend_cs0_d15", "...")
+Text("Legend_cs0_d16", "You've been to the core sectors?")
+Text("Legend_cs0_d17", "Yes. They're not very difficult to get to. The issue is the sector appears rigged with some kind of energy that destroys everything within it.")
+Text("Legend_cs0_d18", "What lies beyond in the core?")
+Text("Legend_cs0_d19", "Nobody knows but it's the only part of these sectors that haven't been explored, so let's hope it's something interesting. Otherwise this story will never have an ending.")
+Text("Legend_cs0_d20", "...")
+Text("Legend_cs0_d21", "How do I help you?")
+Text("Legend_cs0_d22", "I've been investigating this sector I found with nothing in it but some weird contraptions. I have no idea how to activate it. Maybe you will.")
+Text("Legend_cs0_d23", "Okay.")
+Text("Legend_cs0_d24", "On second thought, no thanks.")
+
+
+Text("Legend_findCradle_objectives", "- Go to the sector Daayo marked on the map.")
+Task(
+    taskID=Legend_findCradle,
+    objectives=Legend_findCradle_objectives
+)
+
+D(
+    Legend_cs0_d1,
+    fake-daayo,
+    Legend_cs0_d,
+    R(
+        Legend_cs0_d2,
+        D(
+            Legend_cs0_d3,
+            R(
+                Legend_cs0_d4,
+                D(
+                    Legend_cs0_d5,
+                    R(
+                        Legend_cs0_d6,
+                        D(
+                            Legend_cs0_d7,
+                            R(
+                                Legend_cs0_d15,
+                                D(
+                                    Legend_cs0_d8,
+                                    R(
+                                        Legend_cs0_d11,
+                                        D(
+                                            Legend_cs0_d12,
+                                            R(
+                                                Legend_cs0_d13,
+                                                D(
+                                                    Legend_cs0_d14,
+                                                    R(
+                                                        Legend_cs0_d21,
+                                                        SetID(1)
+                                                    )
+                                                )
+                                            ),
+                                            R(
+                                                Legend_cs0_d16,
+                                                D(
+                                                    Legend_cs0_d17,
+                                                    R(
+                                                        Legend_cs0_d18,
+                                                        D(
+                                                            Legend_cs0_d19,
+                                                            R(
+                                                                Legend_cs0_d21,
+                                                                D(
+                                                                    Legend_cs0_d22,
+                                                                    ,
+                                                                    ,
+                                                                    1,
+                                                                    Legend_findCradle,
+                                                                    R(
+                                                                        Legend_cs0_d23,
+                                                                        Call(Legend_findCradle)
+                                                                    ),
+                                                                    R(
+                                                                        Legend_cs0_d24,
+                                                                        End()
+
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_findCradle,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=1),
+        ClearInteraction(entityID=fake-daayo),
+        RemoveObjectiveMarker(ID=Legend_start),
+        AddObjectiveMarker(ID=Legend_cradle, sectorName=The Cradle),
+        ConditionBlock(
+            EnterSector(
+                sectorName=The Cradle,
+                sequence=(
+                    RemoveObjectiveMarker(ID=Legend_cradle),
+                    StartCutscene(),
+                    ForceStartDialogue(dialogueID=Legend_cs1_d)
+                )
+            )
+        )
+    )
+)
+
+Text("Legend_cs1_d1", "Broadcast number 2342.")
+Text("Legend_cs1_d2", "Something’s in my thoughts again!")
+Text("Legend_cs1_d3", "Mysterious voice, leave me alone.")
+Text("Legend_cs1_d4", "Oh, to be a writhing soul, tortured for eternity by these strange voices in my thoughts...")
+Text("Legend_cs1_d5", "I'll show you torture!")
+Text("Legend_cs1_d6", "Wait. Is this for real? Are you really talking to me?")
+Text("Legend_cs1_d7", "Yes...")
+Text("Legend_cs1_d8", "Give me a moment. I’ve been alone for... a while now. ")
+Text("Legend_cs1_d9", "Who are you?")
+Text("Legend_cs1_d10", "You know who I am. You've been sent here after all. Say my name.")
+Text("Legend_cs1_d11", "A long story. But let’s just say — pushing the world forward doesn’t do you any favors. At least that’s what I had thought all this time?")
+Text("Legend_cs1_d12", "And now?")
+Text("Legend_cs1_d13", "Fate — or something larger than fate — has brought you to me. Or at least the vicinity of where I was destroyed.")
+Text("Legend_cs1_d14", "How are you still able to broadcast without a shell?")
+Text("Legend_cs1_d15", "I’m... not that mysterious voice. For some reason, my mind remains here where the defects found me. There must be something special about this place.")
+Text("Legend_cs1_d16", "What makes you think I’ll be helping you?")
+Text("Legend_cs1_d17", "I’m well aware you’re here for a reason. They sent you here because their squabble has unraveled into a bitter mess. They are desperate for answers. I suppose we have always been, but now especially. Let me tell you with perhaps brazen confidence — I am that answer.")
+Text("Legend_cs1_d18", "...")
+Text("Legend_cs1_d19", "Well, first things first. I need to get my shell back. I can't really see anything because that requires a physical form. But do you see anything around?")
+Text("Legend_cs1_d20", "I see some weird constructions.")
+Text("Legend_cs1_d21", "Right. Those are incomplete and I had only just reasoned how to fix it... 2312 broadcasts ago.")
+Text("Legend_cs1_d22", "How?")
+Text("Legend_cs1_d23", "In case you haven't noticed, any time there's activity in Mu and Nu, the defects become pretty angry and rather organized. Most of the time, they calm down after a while.")
+Text("Legend_cs1_d24", "Uh yeah... about that...")
+Text("Legend_cs1_d25", "Right, I'm sure that's still happening. Anyway... this is because that sector contains a strange artifact that completes... part of this sector.")
+Text("Legend_cs1_d26", "How'd you reason all this out?")
+Text("Legend_cs1_d27", "Scuffles often happened at Mu and Nu because it's close to Kappa. Conflicts happen elsewhere close to Kappa as well, but those typically don't enrage the defects.")
+Text("Legend_cs1_d28", "...")
+Text("Legend_cs1_d29", "I also had an... obsession with the purpose of that artifact, and searched numerous sectors within our grasp at the time for more of them. But none of them were particularly special.")
+Text("Legend_cs1_d30", "Except this one?")
+Text("Legend_cs1_d31", "Yes but this one was deep in defect territory when I had a shell. I had to seriously gamble my existence away for this information.")
+Text("Legend_cs1_d32", "Hmm...")
+Text("Legend_cs1_d33", "Anyway I failed that gamble. So, like I said. That artifact in Mu and Nu belongs here. You need to bring it back here, and find the other two.")
+Text("Legend_cs1_d34", "Where are the other two?")
+Text("Legend_cs1_d35", "Beats me... they're probably being guarded by defects wherever they are.")
+Text("Legend_cs1_d36", "I'll help you.")
+Text("Legend_cs1_d37", "Great. Step one like I said: bring the artifact from Mu and Nu here.")
+Text("Legend_cs1_d38", "Prometheus.")
+Text("Legend_cs1_d39", "Yes...")
+Text("Legend_cs1_d40", "Why are you a mysterious voice?")
+Text("Legend_cs1_d41", "Will do.")
+
+D(
+    Legend_cs1_d1,
+    ,
+    Legend_cs1_d,
+    ,
+    ,
+    ,
+    ,
+    (92,137,230),
+    R(
+        Legend_cs1_d2,
+        D(
+            Legend_cs1_d4,
+            ,
+            ,
+            1,
+            R(
+                Legend_cs1_d5,
+                D(
+                    Legend_cs1_d6,
+                    R(
+                        Legend_cs1_d7,
+                        D(
+                            Legend_cs1_d8,
+                            R(
+                                Legend_cs1_d9,
+                                D(
+                                    Legend_cs1_d10,
+                                    R(
+                                        Legend_cs1_d38,
+                                        D(
+                                            Legend_cs1_d39,
+                                            R(
+                                                Legend_cs1_d40,
+                                                D(
+                                                    Legend_cs1_d11,
+                                                    R(
+                                                        Legend_cs1_d12,
+                                                        D(
+                                                            Legend_cs1_d13,
+                                                            R(
+                                                                Legend_cs1_d14,
+                                                                D(
+                                                                    Legend_cs1_d15,
+                                                                    R(
+                                                                        Legend_cs1_d16,
+                                                                        D(
+                                                                            Legend_cs1_d17,
+                                                                            R(
+                                                                                Legend_cs1_d18,
+                                                                                Call(Legend_cradle_pan)
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ),
+    R(
+        Legend_cs1_d3,
+        SetID(1)
+    ),
+)
+
+Function(
+    name=Legend_cradle_pan,
+    sequence=(
+        SetVariable(name=$$$Legend_cradlePylon1, value=0),
+        SetVariable(name=$$$Legend_cradlePylon2, value=0),
+        SetVariable(name=$$$Legend_cradlePylon3, value=0),
+        Call(Legend_pylonCollection),
+        StartCameraPan(
+            flagName=Legend-cradle-flag2,
+            instant=true,
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs1_p2_d)
+    )
+)
+
+D(
+    Legend_cs1_d19,
+    ,
+    Legend_cs1_p2_d,
+    ,
+    ,
+    ,
+    ,
+    (92,137,230),
+    R(
+        Legend_cs1_d20,
+        D(
+            Legend_cs1_d21,
+            R(
+                Legend_cs1_d22,
+                D(
+                    Legend_cs1_d23,
+                    R(
+                        Legend_cs1_d24,
+                        D(
+                            Legend_cs1_d25,
+                            R(
+                                Legend_cs1_d26,
+                                D(
+                                    Legend_cs1_d27,
+                                    R(
+                                        Legend_cs1_d28,
+                                        D(
+                                            Legend_cs1_d29,
+                                            R(
+                                                Legend_cs1_d30,
+                                                D(
+                                                    Legend_cs1_d31,
+                                                    R(
+                                                        Legend_cs1_d32,
+                                                        D(
+                                                            Legend_cs1_d33,
+                                                            R(
+                                                                Legend_cs1_d34,
+                                                                D(
+                                                                    Legend_cs1_d35,
+                                                                    R(
+                                                                        Legend_cs1_d36,
+                                                                        D(
+                                                                            Legend_cs1_d37,
+                                                                            ,
+                                                                            ,
+                                                                            ,
+                                                                            Legend_getArtifactFromMuNu,
+                                                                            R(
+                                                                                Legend_cs1_d41,
+                                                                                Call(Legend_post_cs1)
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+
+Task(
+    taskID=Legend_getArtifactFromMuNu,
+    objectives=Legend_getArtifactFromMuNu_objectives
+)
+
+Text("Legend_getArtifactFromMuNu_objectives", "- Head to Mu and Nu.
+- Tractor the artifact at the center of the sector and return to The Cradle with it.
+- Identify which Gate Pylon reacts to it.
+- There are other sectors with pylons which will also work.")
+
+Function(
+    name=Legend_post_cs1,
+    sequence=(
+        FinishCutscene(),
+        FinishCameraPan(),
+        SetVariable(name=$$$Legend_checkpoint, value=2),
+        SetVariable(name=$$$Legend_cradlePylon1, value=0),
+        SetVariable(name=$$$Legend_cradlePylon2, value=0),
+        SetVariable(name=$$$Legend_cradlePylon3, value=0),
+        SetVariable(name=$$$Legend_pylonsMerged, value=0)
+    )
+)
+
+
+
+Text("Legend_cs2_d1", "Fear not, Newborn. For we have been one in the beginning, and we will be one in the end.")
+Text("Legend_cs2_d2", "...")
+Text("Legend_cs2_d3", "Who are you?")
+Text("Legend_cs2_d4", "...")
+Text("Legend_cs2_d5", "What are you talking about?")
+Text("Legend_cs2_d6", "That... felt like something. I think what you’re doing is working.")
+Text("Legend_cs2_d7", "You heard a voice too! So you aren't the voice!")
+Text("Legend_cs2_d8", "Yes... a strange inner voice. They told me I had an ‘infection’. Gibberish.")
+Text("Legend_cs2_d9", "Same here...")
+Text("Legend_cs2_d10", "Anyway, we still have to find two others, I've no idea where they are... you should try and find them.")
+Text("Legend_cs2_d11", "Okay.")
+
+// Legend-cs2-flag1
+Function(
+    name=Legend_cs2,
+    sequence=(
+        StartCutscene(),
+        StartInflictionCosmetic(
+            entityID=player,
+            type=Stealth,
+            runOnParty=true
+        ),
+        SpawnEntity(
+            entityID=Legend_cs2_e1,
+            assetID=core_gate,
+            flagName=Legend-cs2-flag2,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=Legend_cs2_e2,
+            assetID=outpost_blueprint,
+            flagName=Legend-cs2-flag1,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=Legend_cs2_e3,
+            assetID=outpost_blueprint,
+            flagName=Legend-cs2-flag3,
+            faction=1,
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            assetID=shellcore_blueprint,
+            blueprintJSON=Newborn,
+            flagName=Legend-cs2-flag2,
+            name=Prometheus,
+            faction=1
+        ),
+        SetSectorColor(
+            color=(128,0,0)
+        ),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs2_p1_d),
+        StartCameraPan(
+            flagName=Legend-cs2-flag2,
+            instant=true
+        ),
+    )
+)
+
+D(
+    Legend_cs2_d1,
+    ,
+    Legend_cs2_p1_d,
+    ,
+    ,
+    ,
+    0.4,
+    (92,137,230),
+    R(
+        Legend_cs2_d2,
+        D(
+            Legend_cs2_d3,
+            prometheus,
+            ,
+            ,
+            ,
+            ,
+            1,
+            false,
+            R(
+                Legend_cs2_d4,
+                D(
+                    Legend_cs2_d4,
+                    nonexistent-id,
+                    ,
+                    ,
+                    ,
+                    ,
+                    0.4,
+                    (92,137,230),
+                    R(
+                        Legend_cs2_d4,
+                        D(
+                            Legend_cs2_d5,
+                            prometheus,
+                            ,
+                            ,
+                            ,
+                            ,
+                            1,
+                            false,
+                            R(
+                                Legend_cs2_d4,
+                                D(
+                                    Legend_cs2_d4,
+                                    nonexistent-id,
+                                    ,
+                                    ,
+                                    ,
+                                    ,
+                                    0.4,
+                                    (92,137,230),
+                                    R(
+                                        Legend_cs2_d4,
+                                        Call(Legend_cs2_p2)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs2_p2,
+    sequence=(
+        DeleteEntity(
+            entityID=Legend_cs2_e1,
+        ),
+        DeleteEntity(
+            entityID=Legend_cs2_e2,
+        ),
+        DeleteEntity(
+            entityID=Legend_cs2_e3,
+        ),
+        DeleteEntity(
+            entityID=prometheus
+        ),
+        FinishCameraPan(),
+        SetSectorColor(
+            color=(103,103,103)
+        ),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=Stealth,
+            runOnParty=true
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs2_p2_d)
+    )
+)
+
+D(
+    Legend_cs2_d6,
+    ,
+    Legend_cs2_p2_d,
+    ,
+    ,
+    ,
+    ,
+    (92,137,230),
+    R(
+        Legend_cs2_d7,
+        D(
+            Legend_cs2_d8,
+            R(
+                Legend_cs2_d9,
+                D(
+                    Legend_cs2_d10,
+                    ,
+                    ,
+                    ,
+                    Legend_findSecondArtifact,
+                    R(
+                        Legend_cs2_d11,
+                        Call(Legend_post_cs2)
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_post_cs2,
+    sequence=(
+        FinishCutscene(),
+        SetVariable(name=$$$Legend_checkpoint, value=3),
+    )
+)
+
+Task(
+    taskID=Legend_findSecondArtifact,
+    objectives=Legend_findSecondArtifact_objectives
+)
+
+Text("Legend_findSecondArtifact_objectives", "- Find a second artifact and bring it to The Cradle.
+- Identify which Gate Pylon reacts with it by bringing the artifact close to them.")
+
+Text("Legend_cs3_d1", "You should go to the abandoned sectors as their leader told you. Thank you for relaying this information to me.")
+Text("Legend_cs3_d2", "...")
+Text("Legend_cs3_d3", "Wait, you’re just going to accept what they say as the right thing to do?")
+Text("Legend_cs3_d4", "Yes. It seems like the only option out of this war. Everything here has failed.")
+Text("Legend_cs3_d5", "I could wipe them clean. You know that.")
+Text("Legend_cs3_d6", "What good would that do? They’d come back from some grotto they’d have built for themselves. They’ve been doing that for eons.")
+Text("Legend_cs3_d7", "Okay... I'll activate the jump gate.")
+
+Function(
+    name=Legend_cs3,
+    sequence=(
+        StartCutscene(),
+        StartInflictionCosmetic(
+            entityID=player,
+            type=Stealth,
+            runOnParty=true
+        ),
+        SpawnEntity(
+            entityID=infectedleader,
+            blueprintJSON=Infected Leader,
+            name=Infected Leader,
+            faction=1,
+            flagName=Legend-cs3-flag1
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            blueprintJSON=Fatalizer,
+            name=Prometheus,
+            faction=1,
+            flagName=Legend-cs3-flag2
+        ),
+        Rotate(
+            entityID=infectedleader,
+            angle=180
+        ),
+        SetSectorColor(color=(205,0,0)),
+        Wait(time=1),
+        StartCameraPan(
+            flagName=Legend-cs3-flag2,
+            instant=true
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs3_d),
+    )
+)
+
+//SetSectorColor(color=(205,0,0))
+//Legend-cs3-flag1
+//Legend-cs2-flag2
+D(
+    Legend_cs3_d1,
+    infectedleader,
+    Legend_cs3_d,
+    ,
+    ,
+    ,
+    0.4,
+    R(
+        Legend_cs3_d2,
+        D(
+            Legend_cs3_d3,
+            prometheus,
+            ,
+            ,
+            ,
+            ,
+            1,
+            R(
+                Legend_cs3_d2,
+                D(
+                    Legend_cs3_d4,
+                    infectedleader,
+                    ,
+                    ,
+                    ,
+                    ,
+                    0.4,
+                    R(
+                        Legend_cs3_d2,
+                        D(
+                            Legend_cs3_d5,
+                            prometheus,
+                            ,
+                            ,
+                            ,
+                            ,
+                            1,
+                            R(
+                                Legend_cs3_d2,
+                                D(
+                                    Legend_cs3_d6,
+                                    infectedleader,
+                                    ,
+                                    ,
+                                    ,
+                                    ,
+                                    0.4,
+                                    R(
+                                        Legend_cs3_d2,
+                                        D(
+                                            Legend_cs3_d7,
+                                            prometheus,
+                                            ,
+                                            ,
+                                            ,
+                                            ,
+                                            1,
+                                            R(
+                                                Legend_cs3_d2,
+                                                Call(Legend_cs3_part2)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs3_part2,
+    sequence=(
+        DeleteEntity(
+            entityID=prometheus
+        ),
+        DeleteEntity(
+            entityID=infectedleader
+        ),
+        FinishCameraPan(),
+        SetSectorColor(
+            color=(103,103,103)
+        ),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=Stealth,
+            runOnParty=true
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs3_p2_d)
+    )
+)
+
+Text("Legend_cs3_d8", "These are my memories you are viewing.")
+Text("Legend_cs3_d9", "Do you think the leader was lying to you?")
+Text("Legend_cs3_d10", "Then? It was a perfectly reasonable argument. Now? Yes.")
+Text("Legend_cs3_d11", "...")
+Text("Legend_cs3_d12", "Find the last artifact. That will reactivate this cradle and provide me a new form.")
+Text("Legend_findLastArtifact_objectives", "- Find the final artifact and bring it to The Cradle.")
+Text("Legend_cs3_d13", "I'll do it.")
+
+Task(
+    taskID=Legend_findLastArtifact,
+    objectives=Legend_findLastArtifact_objectives
+)
+
+D(
+    Legend_cs3_d8,
+    ,
+    Legend_cs3_p2_d,
+    ,
+    ,
+    ,
+    ,
+    (92,137,230),
+    R(
+        Legend_cs3_d9,
+        D(
+            Legend_cs3_d10,
+            R(
+                Legend_cs3_d11,
+                    D(
+                        Legend_cs3_d12,
+                        ,
+                        ,
+                        ,
+                        Legend_findLastArtifact,
+                        R(
+                            Legend_cs3_d13,
+                            Call(Legend_post_cs3)
+                        )
+                    )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_post_cs3,
+    sequence=(
+        FinishCutscene(),
+        SetVariable(name=$$$Legend_checkpoint, value=4),
+    )
+)
+
+Text("Legend_cs4_d1", "Pytha. The Leader is sending me to the Jump Gate.")
+Text("Legend_cs4_d2", "So?")
+Text("Legend_cs4_d3", "Come with me. The two of us could surely deal with whatever is on the other side.")
+Text("Legend_cs4_d4", "I’m afraid I can’t, the leader has told me to stay here and help.")
+Text("Legend_cs4_d5", "Nonsense. If they’re sending me out to fight, there’s no way they told you that.")
+Text("Legend_cs4_d6", "Go... ask them, why don’t you?")
+Text("Legend_cs4_d7", "...")
+Text("Legend_cs4_d8", "Prometheus. Your achievements have put you down as a warrior of legend. They’re trusting you to come back with the cure. Now go.")
+Text("Legend_cs4_d9", "Pytha... if I don’t see you again, you’ve been a great comrade. Thank you.")
+Text("Legend_cs4_d10", "It’s been a pleasure fighting. Maybe one day we will have the chance to get along outside of a battlefield. But for that you must go.")
+Text("Legend_cs4_d11", "Aaaah... Pytha... you...")
+Text("Legend_cs4_d12", "What’s going on?")
+Text("Legend_cs4_d13", "I can’t believe it... why am I remembering this now of all times...")
+Text("Legend_cs4_d14", "You're blue and not red!")
+Text("Legend_cs4_d15", "Strange... I thought you were green but you don't look so... anyway, do you think Pytha was bluffing about their order?")
+Text("Legend_cs4_d16", "I know that core.")
+Text("Legend_cs4_d17", "Oh. I see... That’s... not good.")
+Text("Legend_cs4_d18", "Yes.")
+Text("Legend_cs4_d19", "Of course... it's quite obvious in retrospect.")
+Text("Legend_cs4_d20", "No.")
+Text("Legend_cs4_d21", "I hope so... but I don't think so.")
+Text("Legend_cs4_d22", "Anyway, thank you for the help. I told you I am the answer to your problems and I intend to prove it. We need to find Heracles and Sisyphos.")
+Text("Legend_cs4_d23", "You know them?")
+Text("Legend_cs4_d24", "Know them? They fought for me. I cobbled together an organized force here. Learned your transmission patterns. Created a society.")
+Text("Legend_cs4_d25", "Prometheus... the abandoned cores are warring.")
+Text("Legend_cs4_d26", "I’m aware. When I was last there, the squabble continued. But the peace they made in Kappa, however fleeting, is our best chance yet.")
+Text("Legend_cs4_d27", "Our chance for what?")
+Text("Legend_cs4_d28", "To convince them to return to the Standard Sectors, and finish this story with our own hands.")
+Text("Legend_cs4_d29", "About Kappa... it's all gone now.")
+Text("Legend_cs4_d30", "Kappa is not just a place. It’s a mindset. I trained these soldiers. I can drill it into their heads again.")
+Text("Legend_cs4_d31", "...")
+Text("Legend_cs4_d32", "Go meet Heracles and Sisyphos. I know exactly where they are. I'll join you when you reach them.")
+Text("Legend_cs4_d33", "Okay.")
+
+Text("Legend_findHeraclesAndSisyphos_objectives", "- Head to the marked sector on the map.
+- Speak with Heracles and Sisyphos.")
+Task(
+    taskID=Legend_findHeraclesAndSisyphos,
+    objectives=Legend_findHeraclesAndSisyphos_objectives
+)
+
+Function(
+    name=Legend_cs4,
+    sequence=(
+        StartCutscene(),
+        StartInflictionCosmetic(
+            entityID=player,
+            type=Stealth,
+            runOnParty=true
+        ),
+        SpawnEntity(
+            entityID=pytha,
+            name=Pytha,
+            blueprintJSON=pytha,
+            faction=1,
+            flagName=Legend-cs4-flag1
+        ),
+        SpawnEntity(
+            entityID=prometheus,
+            name=Prometheus,
+            blueprintJSON=Fatalizer,
+            faction=1,
+            flagName=Legend-cs4-flag2
+        ),
+        Rotate(
+            entityID=pytha,
+            angle=270
+        ),
+        Rotate(
+            entityID=prometheus,
+            angle=90
+        ),
+        SetSectorColor(color=(205,0,0)),
+        Wait(time=1),
+        StartCameraPan(
+            flagName=Legend-cs4-flag2,
+            instant=true
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs4_p1_d),
+    )
+)
+
+D(
+    Legend_cs4_d1,
+    prometheus,
+    Legend_cs4_p1_d,
+    R(
+        Legend_cs4_d7,
+        D(
+            Legend_cs4_d2,
+            pytha,
+            R(
+                Legend_cs4_d7,
+                D(
+                    Legend_cs4_d3,
+                    prometheus,
+                    R(
+                        Legend_cs4_d7,
+                        D(
+                            Legend_cs4_d4,
+                            pytha,
+                            R(
+                                Legend_cs4_d7,
+                                D(
+                                    Legend_cs4_d5,
+                                    prometheus,
+                                    R(
+                                        Legend_cs4_d7,
+                                        D(
+                                            Legend_cs4_d6,
+                                            pytha,
+                                            R(
+                                                Legend_cs4_d7,
+                                                D(
+                                                    Legend_cs4_d7,
+                                                    prometheus,
+                                                    R(
+                                                        Legend_cs4_d7,
+                                                        D(
+                                                            Legend_cs4_d8,
+                                                            pytha,
+                                                            R(
+                                                                Legend_cs4_d7,
+                                                                D(
+                                                                    Legend_cs4_d9,
+                                                                    prometheus,
+                                                                    R(
+                                                                        Legend_cs4_d7,
+                                                                        D(
+                                                                            Legend_cs4_d10,
+                                                                            pytha,
+                                                                            R(
+                                                                                Legend_cs4_d7,
+                                                                                Call(Legend_cs4_part2)
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs4_part2,
+    sequence=(
+        DeleteEntity(
+            entityID=prometheus,
+        ),
+        DeleteEntity(
+            entityID=pytha,
+        ),
+        FinishInflictionCosmetic(
+            entityID=player,
+            type=Stealth,
+            runOnParty=true
+        ),
+        FinishCameraPan(),
+        SetSectorColor(
+            color=(103,103,103)
+        ),
+        Wait(time=0.1),
+        SpawnEntity(
+            entityID=prometheus,
+            name=Prometheus,
+            faction=5,
+            blueprintJSON=Fatalizer,
+            flagName=Legend-cs4-flag1
+        ),
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs4_p2_d)
+    )
+)
+
+D(
+    Legend_cs4_d11,
+    prometheus,
+    Legend_cs4_p2_d,
+    R(
+        Legend_cs4_d12,
+        D(
+            Legend_cs4_d13,
+            R(
+                Legend_cs4_d14,
+                D(
+                    Legend_cs4_d15,
+                    R(
+                        Legend_cs4_d16,
+                        D(
+                            Legend_cs4_d17,
+                            R(
+                                Legend_cs4_d31,
+                                D(
+                                    Legend_cs4_d22,
+                                    ,
+                                    ,
+                                    1,
+                                    R(
+                                        Legend_cs4_d23,
+                                        D(
+                                            Legend_cs4_d24,
+                                            R(
+                                                Legend_cs4_d25,
+                                                D(
+                                                    Legend_cs4_d26,
+                                                    R(
+                                                        Legend_cs4_d27,
+                                                        D(
+                                                            Legend_cs4_d28,
+                                                            R(
+                                                                Legend_cs4_d31,
+                                                                D(
+                                                                    Legend_cs4_d32,
+                                                                    ,
+                                                                    ,
+                                                                    2,
+                                                                    Legend_findHeraclesAndSisyphos,
+                                                                    R(
+                                                                        Legend_cs4_d33,
+                                                                        Call(Legend_post_cs4)
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    ),
+                                                    R(
+                                                        Legend_cs4_d29,
+                                                        D(
+                                                            Legend_cs4_d30,
+                                                            R(
+                                                                Legend_cs4_d31,
+                                                                SetID(2)
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                    R(
+                        Legend_cs4_d18,
+                        D(
+                            Legend_cs4_d19,
+                            R(
+                                Legend_cs4_d31,
+                                SetID(1)
+                            )
+                        )
+                    ),
+                    R(
+                        Legend_cs4_d20,
+                        D(
+                            Legend_cs4_d21,
+                            R(
+                                Legend_cs4_d31,
+                                SetID(1)
+                            )
+                        )
+                    ),
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_post_cs4,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=5),
+        FinishCutscene(),
+        RemoveObjectiveMarker(ID=Legend_520),
+        AddObjectiveMarker(ID=Legend_520, sectorName=Sector 520-6580),
+        Call(Legend_post_cs4_sector)
+    )
+)
+
+Function(
+    name=Legend_post_cs4_sector,
+    sequence=(
+        ConditionBlock(
+            EnterSector(
+                sectorName=Sector 520-6580,
+                sequence=(
+                    SpawnEntity(entityID=heracles, blueprintJSON=heracles, name=Heracles, flagName=Legend-cs5-flag2, faction=3),
+                    Rotate(entityID=heracles, angle=270),
+                    SpawnEntity(entityID=sisyphos, blueprintJSON=sisyphos, name=Sisyphos, flagName=Legend-cs5-flag3, faction=3),
+                    Rotate(entityID=sisyphos, angle=90),
+                    SetInteraction(
+                        entityID=heracles,
+                        sequence=(
+                            Call(Legend_cs5)
+                        )
+                    ),
+                    SetInteraction(
+                        entityID=sisyphos,
+                        sequence=(
+                            Call(Legend_cs5)
+                        )
+                    ),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Sector 520-6580,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_post_cs4_sector)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=6,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+// They should meet here Sector 520-6580
+// Legend-cs5-flag1
+
+
+Function(
+    name=Legend_cs5,
+    sequence=(
+        RemoveObjectiveMarker(ID=Legend_520),
+        StartCutscene(),
+        SetPath(
+            entityID=player,
+            flagName=Legend-cs5-flag10,
+            sequence=(
+                Rotate(
+                    entityID=player,
+                    targetID=Legend-cs5-flag1,
+                    sequence=(
+                        ForceStartDialogue(dialogueID=Legend_cs5_p1_d)
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Legend_cs5_d1", "Congratulations Heracles. You’ve somehow convinced us to dialogue despite your ideals being an absolute failure.")
+Text("Legend_cs5_d2", "At least we didn’t murder dozens of conscious cores for some meager, unmanifested improvement to our safety. Your failure is also implicated here.")
+Text("Legend_cs5_d3", "Right, our failure to understand that your way of existence will end all existence. Perhaps the ceasefire wasn’t the right path. Instead, the extermination of your ilk seems like the next step here.")
+Text("Legend_cs5_d4", "Ah yes, the inevitable extension of your depravity to other conscious cores. This cycle of murder appears endless. We’ll just have to break it by destroying all of you.")
+
+D(
+    Legend_cs5_d1,
+    sisyphos,
+    Legend_cs5_p1_d,
+    R(
+        Legend_cs5_d22,
+        D(
+            Legend_cs5_d2,
+            heracles,
+            R(
+                Legend_cs5_d22,
+                D(
+                    Legend_cs5_d3,
+                    sisyphos,
+                    R(
+                        Legend_cs5_d22,
+                        D(
+                            Legend_cs5_d4,
+                            heracles,
+                            R(
+                                Legend_cs5_d22,
+                                Call(Legend_cs5_p2)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs5_p2,
+    sequence=(
+        SpawnEntity(
+            entityID=prometheus,
+            faction=5,
+            name=Prometheus,
+            blueprintJSON=Fatalizer,
+            flagName=Legend-cs5-flag1
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs5_p2_d)
+    )
+)
+
+Text("Legend_cs5_d5", "Silence.")
+Text("Legend_cs5_d6", "A new kind of defect?")
+Text("Legend_cs5_d7", "No... this is unbelievable.")
+Text("Legend_cs5_d8", "Just listen.")
+Text("Legend_cs5_d9", "Our enemy lies beyond here. We had fought alongside them, but they were in reality, our eternal jailers.")
+Text("Legend_cs5_d10", "You speak of returning to the Standard Sectors... we have not attempted it since your disappearance.")
+Text("Legend_cs5_d11", "Do you think the leaders are naive enough to continue letting us live in this realm forever? They know what we think of them - and they’ll be here to end all of us.")
+Text("Legend_cs5_d12", "Prometheus... why haven’t they done it so far?")
+Text("Legend_cs5_d13", "They are threatened by the presence of the defects. They are busy fooling our siblings in the Standard Sectors. They are building something that will destroy their only remaining conscious opposition.")
+Text("Legend_cs5_d14", "And who is that opposition?")
+Text("Legend_cs5_d15", "The voice.")
+Text("Legend_cs5_d16", "How do you know all this?")
+Text("Legend_cs5_d17", "Eons in the Cradle. I've seen memories of everything and everyone. I know what needs to happen next.")
+Text("Legend_cs5_d18", "Prometheus... you are returned. But Heracles and I are not the cores we were when you left.")
+Text("Legend_cs5_d19", "Leadership changes the self. But you are still able to be convinced as I have convinced you to truce with the other. The behavior of the cradle and the defects has been... alarming. We have no time to act.")
+Text("Legend_cs5_d20", "I can’t work with this murderer, Prometheus.")
+Text("Legend_cs5_d21", "Who is this \"murderer\"? Me? Or you? Tell me, Heracles, how many did you murder in the Standard Sectors when it was your turn? And how many will be murdered in the future?")
+Text("Legend_cs5_d22", "...")
+Text("Legend_cs5_d23", "You all shall meet me at Sector 2050-6330 where we will attempt to breach The Core. I'm going to the Unconvinced Lair to bring them along as well.")
+Text("Legend_cs5_d24", "We're really going back to this aren't we...")
+
+D(
+    Legend_cs5_d5,
+    prometheus,
+    Legend_cs5_p2_d,
+    R(
+        Legend_cs5_d22,
+        D(
+            Legend_cs5_d6,
+            heracles,
+            R(
+                Legend_cs5_d22,
+                D(
+                    Legend_cs5_d7,
+                    sisyphos,
+                    R(
+                        Legend_cs5_d22,
+                        D(
+                            Legend_cs5_d8,
+                            prometheus,
+                            R(
+                                Legend_cs5_d22,
+                                D(
+                                    Legend_cs5_d9,
+                                    R(
+                                        Legend_cs5_d22,
+                                        D(
+                                            Legend_cs5_d10,
+                                            heracles,
+                                            R(
+                                                Legend_cs5_d22,
+                                                D(
+                                                    Legend_cs5_d11,
+                                                    prometheus,
+                                                    R(
+                                                        Legend_cs5_d22,
+                                                        D(
+                                                            Legend_cs5_d12,
+                                                            sisyphos,
+                                                            R(
+                                                                Legend_cs5_d22,
+                                                                D(
+                                                                    Legend_cs5_d13,
+                                                                    prometheus,
+                                                                    R(
+                                                                        Legend_cs5_d22,
+                                                                        D(
+                                                                            Legend_cs5_d14,
+                                                                            sisyphos,
+                                                                            R(
+                                                                                Legend_cs5_d22,
+                                                                                D(
+                                                                                    Legend_cs5_d15,
+                                                                                    prometheus,
+                                                                                    R(
+                                                                                        Legend_cs5_d22,
+                                                                                        D(
+                                                                                            Legend_cs5_d16,
+                                                                                            sisyphos,
+                                                                                            R(
+                                                                                                Legend_cs5_d22,
+                                                                                                D(
+                                                                                                    Legend_cs5_d17,
+                                                                                                    prometheus,
+                                                                                                    R(
+                                                                                                        Legend_cs5_d22,
+                                                                                                        D(
+                                                                                                            Legend_cs5_d18,
+                                                                                                            heracles,
+                                                                                                            R(
+                                                                                                                Legend_cs5_d22,
+                                                                                                                D(
+                                                                                                                    Legend_cs5_d19,
+                                                                                                                    prometheus,
+                                                                                                                    R(
+                                                                                                                        Legend_cs5_d22,
+                                                                                                                        D(
+                                                                                                                            Legend_cs5_d20,
+                                                                                                                            heracles,
+                                                                                                                            R(
+                                                                                                                                Legend_cs5_d22,
+                                                                                                                                D(
+                                                                                                                                    Legend_cs5_d21,
+                                                                                                                                    prometheus,
+                                                                                                                                    R(
+                                                                                                                                        Legend_cs5_d22,
+                                                                                                                                        D(
+                                                                                                                                            Legend_cs5_d24,
+                                                                                                                                            sisyphos,
+                                                                                                                                            R(
+                                                                                                                                                Legend_cs5_d22,
+                                                                                                                                                D(
+                                                                                                                                                    Legend_cs5_d23,
+                                                                                                                                                    prometheus,
+                                                                                                                                                    R(
+                                                                                                                                                        Legend_cs5_d22,
+                                                                                                                                                        Call(Legend_post_cs5_p2)
+                                                                                                                                                    )
+                                                                                                                                                )
+                                                                                                                                            )
+                                                                                                                                        )
+                                                                                                                                    )
+                                                                                                                                )
+                                                                                                                            )
+                                                                                                                        )
+                                                                                                                    )
+                                                                                                                )
+                                                                                                            )
+                                                                                                        )
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                )
+                                                                            )
+
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Legend_post_cs5_p2,
+    sequence=(
+        Wait(time=1),
+        ClearInteraction(entityID=heracles),
+        ClearInteraction(entityID=sisyphos),
+        Rotate(
+            entityID=prometheus,
+            targetID=player,
+        ),
+        ForceStartDialogue(dialogueID=Legend_post_cs5_d)
+    )
+)
+
+Text("Legend_post_cs5_d1", "You specifically should meet me at the Unconvinced Lair. We need to talk Eleos into joining us at the core.")
+Text("Legend_post_cs5_d2", "Okay.")
+Text("Legend_UCL_task_objectives", "- Head to the Unconvinced Lair and speak with Eleos.")
+
+Task(
+    taskID=Legend_UCL_task,
+    objectives=Legend_UCL_task_objectives
+)
+
+D(
+    Legend_post_cs5_d1,
+    prometheus,
+    Legend_post_cs5_d,
+    ,
+    Legend_UCL_task,
+    R(
+        Legend_post_cs5_d2,
+        Call(Legend_post_cs5_and_finish_cutscene)
+    )
+)
+
+Function(
+    name=Legend_post_cs5_and_finish_cutscene,
+    sequence=(
+        FinishCutscene(),
+        Call(Legend_post_cs5)
+    )
+)
+
+Function(
+    name=Legend_post_cs5,
+    sequence=(
+        FinishCutscene(),
+        SetVariable(name=$$$Legend_checkpoint, value=6),
+        RemoveObjectiveMarker(ID=Legend_UCL_marker),
+        AddObjectiveMarker(ID=Legend_UCL_marker, sectorName=Unconvinced Lair),
+        Call(Legend_post_cs5_sector)
+    )
+)
+
+Function(
+    name=Legend_post_cs5_sector,
+    sequence=(
+        ConditionBlock(
+            EnterSector(
+                sectorName=Unconvinced Lair,
+                sequence=(
+                    SpawnEntity(
+                        entityID=prometheus,
+                        faction=5,
+                        blueprintJSON=Fatalizer,
+                        flagName=Legend-cs6-flag1,
+                        name=Prometheus,
+                    ),
+                    Rotate(
+                        entityID=prometheus,
+                        angle=180,
+                    ),
+                    SetInteraction(entityID=eleos, dialogueID=Legend_cs6_d),
+                    SetInteraction(entityID=prometheus, dialogueID=Legend_cs6_d),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Unconvinced Lair,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_post_cs5_sector)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=7,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs6,
+    sequence=(
+        StartCutscene(),
+        ForceStartDialogue(dialogueID=Legend_cs6_d)
+    )
+)
+
+
+Text("Legend_cs6_d1", "You need not discuss your findings with us, Prometheus... we're already well aware of who you are.")
+Text("Legend_cs6_d2", "Is that a bad thing?")
+Text("Legend_cs6_d3", "No... we have discussed these revelations among each other, and the consensus is you are telling the truth. However...")
+Text("Legend_cs6_d4", "I can't abandon hope that the infection is a lie... That our leaders lied to us...")
+Text("Legend_cs6_d5", "The leaders wanted exactly this response from you. If we do not confront them, they will come here and destroy you anyway. Abandon your remaining faith. Become abandoned.")
+Text("Legend_cs6_d6", "I... uh... it's... hard to do such a thing...")
+Text("Legend_cs6_d7", "Please think about it. I hope to see you all at the meeting point south of the core sectors. As allies.")
+Text("Legend_cs6_d8", "...")
+D(
+    Legend_cs6_d1,
+    eleos,
+    Legend_cs6_d,
+    R(
+        Legend_cs6_d8,
+        D(
+            Legend_cs6_d2,
+            prometheus,
+            R(
+                Legend_cs6_d8,
+                D(
+                    Legend_cs6_d3,
+                    eleos,
+                    R(
+                        Legend_cs6_d8,
+                        D(
+                            Legend_cs6_d4,
+                            R(
+                                Legend_cs6_d8,
+                                D(
+                                    Legend_cs6_d5,
+                                    prometheus,
+                                    R(
+                                        Legend_cs6_d8,
+                                        D(
+                                            Legend_cs6_d7,
+                                            R(
+                                                Legend_cs6_d8,
+                                                Call(Legend_cs6_p2)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Text("Legend_cs6_d9", "Thank you for all your work so far... but I have another favor to ask from you. The Core is still hostile to us and we need to figure out why.")
+Text("Legend_cs6_d10", "Why do you think it is?")
+Text("Legend_cs6_d11", "It might be a repeat of what happened in the Cradle... a lost artifact strewn somewhere in the Abandoned Sectors... I'd recommend asking Daayo about it in Sector 2050-6330.")
+Text("Legend_meetDaayo_2_objectives", "- Head to Sector 2050-6330 and speak with Daayo there for further instructions.")
+Text("Legend_cs6_d12", "Okay.")
+
+
+Task(
+    taskID=Legend_meetDaayo_2,
+    objectives=Legend_meetDaayo_2_objectives
+)
+
+D(
+    Legend_cs6_d9,
+    prometheus,
+    Legend_cs6_p2_d,
+    R(
+        Legend_cs6_d10,
+        D(
+            Legend_cs6_d11,
+            ,
+            ,
+            ,
+            Legend_meetDaayo_2,
+            R(
+                Legend_cs6_d12,
+                Call(Legend_post_cs6)
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs6_p2,
+    sequence=(
+        Rotate(
+            entityID=prometheus,
+            targetID=player,
+            sequence=(
+                ForceStartDialogue(dialogueID=Legend_cs6_p2_d)
+            )
+        )
+    )
+)
+
+
+Text("Legend_post_cs6_d1", "You have questions and certainly deserve answers. Please speak.")
+Text("Legend_post_cs6_d2", "Were we at war because we went to the core?")
+Text("Legend_post_cs6_d3", "We will be going to the core so there is some truth to that idea. However, your old leader had also told our kind the converse story. It’s wise to abandon your colors, dear commander, for your turn of events may have occurred differently in previous cycles...")
+Text("Legend_post_cs6_d4", "I see.")
+Text("Legend_post_cs6_d5", "Perhaps the answer to this question would have been different... in another story. One we may never know the ending of...")
+Text("Legend_post_cs6_d6", "...")
+Text("Legend_post_cs6_d7", "Why would our leaders make us fight each other?")
+Text("Legend_post_cs6_d8", "The same reason they sent us here. To neutralize us as threats. The ones they can’t keep entertained with the war, they send here. They’re probably also using those who remain entertained as a line of defense.")
+Text("Legend_post_cs6_d9", "Against what?")
+Text("Legend_post_cs6_d10", "Us.")
+Text("Legend_post_cs6_d11", "Oh...")
+
+D(
+    Legend_post_cs6_d1,
+    prometheus,
+    Legend_post_cs6_d,
+    R(
+        Legend_post_cs6_d2,
+        D(
+            Legend_post_cs6_d3,
+            R(
+                Legend_post_cs6_d4,
+                D(
+                    Legend_post_cs6_d5,
+                    R(
+                        Legend_post_cs6_d6,
+                        End()
+                    )
+                )
+            )
+        )
+    ),
+    R(
+        Legend_post_cs6_d7,
+        D(
+            Legend_post_cs6_d8,
+            R(
+                Legend_post_cs6_d9,
+                D(
+                    Legend_post_cs6_d10,
+                    R(
+                        Legend_post_cs6_d11,
+                        End()
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+
+// this is where you should modify stuff for the final BZ
+Function(
+    name=Legend_post_cs6,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=7),
+        RemoveObjectiveMarker(ID=Legend_UCL_marker),
+        RemoveObjectiveMarker(ID=Legend_2050),
+        AddObjectiveMarker(ID=Legend_2050, sectorName=Sector 2050-6330),
+        ClearInteraction(entityID=eleos),
+        ClearInteraction(entityID=prometheus),
+        SetInteraction(entityID=prometheus, dialogueID=Legend_post_cs6_d),
+        SetInteraction(
+            entityID=fake-daayo,
+            dialogueID=Legend_cs7_remaining_daayo_d
+        ),
+        Call(Legend_sector20506330spawn)
+        
+    )
+)
+
+Function(
+    name=Legend_sector20506330spawn,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$Legend_checkpoint,
+                val2=8,
+                comp=Gt,
+                sequence=()
+            ),
+            EnterSector(
+                sectorName=Sector 2050-6330,
+                sequence=(
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=Sector 2050-6330,
+                            invert=true,
+                            sequence=(
+                                Call(Legend_sector20506330spawn)
+                            )
+                        )
+                    ),
+                    SpawnEntity(
+                        entityID=prometheus,
+                        faction=5,
+                        blueprintJSON=Fatalizer,
+                        flagName=Legend-cs7-flag1,
+                        name=Prometheus,
+                    ),
+                    SpawnEntity(
+                        entityID=fake-daayo,
+                        name=Daayo,
+                        blueprintJSON=daayo_4,
+                        faction=1,
+                        flagName=Legend-cs7-flag2
+                    ),
+                )
+            )
+        )
+    )
+)
+//Legend-cs7-flag1
+
+SectorTrigger(
+    sectorName=Sector 2050-6330,
+    sequence=(
+        Call(Core_incrementTruce),
+        ConditionBlock(
+            EnterSector(
+                sectorName=Sector 2050-6330,
+                invert=true,
+                sequence=(
+                    Call(Core_decrementTruce)
+                )
+            )
+        ),
+    )
+)
+
+Function(
+    name=Legend_cs7,
+    sequence=(
+        StartCutscene(),
+        Rotate(
+            entityID=fake-daayo,
+            targetID=prometheus
+        ),
+        Rotate(
+            entityID=prometheus,
+            targetID=player
+        ),
+        ForceStartDialogue(dialogueID=Legend_cs7_daayo_d),
+    )
+)
+
+
+Function(
+    name=Legend_cs7_post_daayo,
+    sequence=(
+        FadeIntoBlack(
+            color=(0,0,0),
+            speedFactor=2,
+        ),
+        Wait(time=2),
+        DeleteEntity(entityID=Legend_pylon4),
+        FadeOutOfBlack(
+            color=(0,0,0),
+            speedFactor=2,
+        ),
+        Wait(time=2),
+        ForceStartDialogue(dialogueID=Legend_cs7_p1_d)
+    )
+)
+
+Text("Legend_cs7_d1", "Well met, commander. Let us hope the rest show up.")
+Text("Legend_cs7_d2", "We are here.")
+Text("Legend_cs7_d3", "Then we await the Unconvinced...")
+Text("Legend_cs7_d4", "Prometheus... we are tired of listening from the sidelines. If this is the only way to push the story forward we are here for it.")
+Text("Legend_cs7_d5", "...")
+Text("Legend_cs7_d6", "Indeed. The next step is meeting our maker.")
+Text("Legend_cs7_d7", "It pains me to say it to you, but good job. I can fix the core sectors with this.")
+
+D(
+    Legend_cs7_d7,
+    fake-daayo,
+    Legend_cs7_daayo_d,
+    R(
+        Legend_cs7_d5,
+        Call(Legend_cs7_post_daayo)
+    )
+)
+
+D(
+    Legend_cs7_d1,
+    prometheus,
+    Legend_cs7_p1_d,
+    R(
+        Legend_cs7_d5,
+        Call(Legend_cs7_p2)
+    )
+)
+
+Function(
+    name=Legend_cs7_p2,
+    sequence=(
+        SpawnEntity(
+            entityID=heracles,
+            faction=3,
+            name=Heracles,
+            blueprintJSON=heracles,
+            flagName=Legend-cs7-flag12
+        ),
+        SpawnEntity(
+            entityID=sisyphos,
+            faction=3,
+            name=Sisyphos,
+            blueprintJSON=sisyphos,
+            flagName=Legend-cs7-flag12
+        ),
+        SpawnEntity(
+            entityID=heavensgate,
+            blueprintJSON=heavensgate,
+            flagName=Legend-cs7-flag12,
+            name=Heavensgate,
+            faction=4
+        ),
+        SpawnEntity(
+            entityID=starprism,
+            blueprintJSON=starprism,
+            flagName=Legend-cs7-flag12,
+            name=Starprism,
+            faction=3
+        ),
+        SetPath(
+            entityID=heracles,
+            flagName=Legend-cs7-flag3,
+            sequence=(
+                Rotate(
+                    entityID=heracles,
+                    targetID=prometheus
+                )
+            )
+        ),
+        SetPath(
+            entityID=sisyphos,
+            flagName=Legend-cs7-flag5,
+            sequence=(
+                Rotate(
+                    entityID=sisyphos,
+                    targetID=prometheus,
+                ),
+                ForceStartDialogue(dialogueID=Legend_cs7_p2_d)
+            )
+        ),
+        SetPath(
+            entityID=heavensgate,
+            flagName=Legend-cs7-flag6,
+            sequence=(
+                Rotate(
+                    entityID=heavensgate,
+                    targetID=prometheus,
+                ),
+            )
+        ),
+        SetPath(
+            entityID=starprism,
+            flagName=Legend-cs7-flag7,
+            sequence=(
+                Rotate(
+                    entityID=starprism,
+                    targetID=prometheus,
+                ),
+            )
+        ),
+    )
+)
+
+D(
+    Legend_cs7_d2,
+    sisyphos,
+    Legend_cs7_p2_d,
+    R(
+        Legend_cs7_d5,
+        D(
+            Legend_cs7_d3,
+            prometheus,
+            R(
+                Legend_cs7_d5,
+                Call(Legend_cs7_p3)
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs7_p3,
+    sequence=(
+        SpawnEntity(
+            entityID=eleos,
+            blueprintJSON=Slayer,
+            flagName=Legend-cs7-flag12,
+            name=Eleos,
+            faction=1,
+        ),
+        SetPath(
+            entityID=eleos,
+            flagName=Legend-cs7-flag4,
+            sequence=(
+                Rotate(
+                    entityID=eleos,
+                    targetID=prometheus,
+                ),
+                Wait(time=1),
+                ForceStartDialogue(dialogueID=Legend_cs7_p3_d)
+            )
+        )
+    )
+)
+
+D(
+    Legend_cs7_d4,
+    eleos,
+    Legend_cs7_p3_d,
+    R(
+        Legend_cs7_d5,
+        D(
+            Legend_cs7_d5,
+            prometheus,
+            R(
+                Legend_cs7_d5,
+                D(
+                    Legend_cs7_d6,
+                    ,
+                    ,
+                    ,
+                    Legend_cs7_meet_demiurge,
+                    R(
+                        Legend_cs7_d5,
+                        Call(Legend_post_cs7)
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Legend_cs7_meet_demiurge_objectives", "- Head to the Core and interact with whatever lies within the sector.")
+Task(
+    taskID=Legend_cs7_meet_demiurge,
+    objectives=Legend_cs7_meet_demiurge_objectives
+)
+
+Function(
+    name=Legend_post_cs7,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=9),
+        RemoveObjectiveMarker(ID=Legend_2050),
+        AddObjectiveMarker(ID=Legend_finalObj, sectorName=The Core),
+        SetVariable(name=$$$Legend_coreSafe, value=1),
+        FinishCutscene(),
+        ClearInteraction(entityID=prometheus),
+        SetInteraction(
+            entityID=demiurge,
+            sequence=(
+                Call(Legend_cs8)
+            )
+        )
+    )
+)
+
+Text("Legend_cs7_remaining_d1", "I've become pretty good at finding these hidden pylons. I know exactly where you need to go to get it. Bring it to me.")
+Text("Legend_cs7_remaining_d2", "Okay.")
+Text("Legend_cs7_remaining_d3", "On second thought, no thanks.")
+
+Task(
+    taskID=Legend_cs7_remaining,
+    objectives=Legend_cs7_remaining_objectives
+)
+
+Text("Legend_cs7_remaining_objectives", "- Head to the sector marked on the map.
+- Obtain the Pylon by defeating the ordeal there.
+- Return to Daayo in Sector 2050-6330 with the Pylon for your reward.")
+D(
+    Legend_cs7_remaining_d1,
+    fake-daayo,
+    Legend_cs7_remaining_daayo_d,
+    ,
+    Legend_cs7_remaining,
+    R(
+        Legend_cs7_remaining_d2,
+        Call(Legend_cs7_remaining_startPylonSpawn)
+    ),
+    R(
+        Legend_cs7_remaining_d3,
+        End()
+    )
+)
+
+Function(
+    name=Legend_cs7_remaining_startPylonSpawn,
+    sequence=(
+        SetVariable(name=$$$Legend_checkpoint, value=8),
+        RemoveObjectiveMarker(ID=Legend_2050),
+        RemoveObjectiveMarker(ID=Legend_tau),
+        AddObjectiveMarker(ID=Legend_tau, sectorName=BattleZone Tau),
+        ClearInteraction(entityID=fake-daayo),
+        Call(Legend_cs7_pylonSpawner)
+    )
+)
+
+Text("Legend_bz_d1", "Seems like there's something hidden by the defective prescence here.")
+Text("Legend_bz_d2", "I don't think there's anything interesting here yet.")
+
+
+Function(
+    name=Legend_cs7_pylonSpawner,
+    sequence=(
+        ConditionBlock(
+            EnterSector(
+                sectorName=BattleZone Tau,
+                sequence=(
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=8,
+                            comp=Eq,
+                            sequence=(
+                                ConditionBlock(
+                                    EnterSector(
+                                        sectorName=BattleZone Tau,
+                                        invert=true,
+                                        sequence=(
+                                            Call(Legend_cs7_pylonSpawner)
+                                        )
+                                    ),
+                                ),
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=$$$BattleZoneTauComplete,
+                                        val2=1,
+                                        comp=Eq,
+                                        sequence=(
+                                            RemoveObjectiveMarker(ID=Legend_tau),
+                                            RemoveObjectiveMarker(ID=Legend_2050),
+                                            AddObjectiveMarker(ID=Legend_2050, sectorName=Sector 2050-6330),
+                                            DeleteEntity(
+                                                entityID=Legend_pylon4
+                                            ),
+                                            SpawnEntity(
+                                                flagName=Legend_finalPylon,
+                                                entityID=Legend_pylon4,
+                                                blueprintJSON=SimplePylon,
+                                                faction=5,
+                                                assetID=air_weapon_station,
+                                                overrideTractorTarget=true,
+                                                name=Pylon,
+                                            ),
+                                            SetVariable(name=$$Legend_daayoDistance, value=0, onlyIfNull=true),
+                                            Call(Legend_attemptDaayoDistance)
+                                        )
+                                    ),
+                                    EnterSector(
+                                        sectorName=BattleZone Tau,
+                                        invert=true,
+                                        sequence=()
+                                    ),
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Legend_checkpoint,
+                            val2=8,
+                            comp=Neq,
+                            sequence=(
+
+                            )
+                        )
+                    ),
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_attemptDaayoDistance,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=0,
+                comp=Eq,
+                sequence=(
+                    SetVariable(name=$$Legend_daayoDistance, value=1),
+                    ConditionBlock(
+                        Comparison(
+                            val1=SqrDistance(fake-daayo, Legend_pylon4),
+                            val2=16,
+                            comp=Lt,
+                            sequence=(
+                                Call(Legend_cs7)
+                            )
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$Legend_daayoDistance,
+                val2=0,
+                comp=Neq,
+                sequence=()
+            )
+        )
+    )
+)
+
+
+
+Function(
+    name=Legend_cs8,
+    sequence=(
+        StartCutscene(),
+        SetPath(
+            entityID=player,
+            flagName=Legend-cs8-flag4,
+            sequence=(
+                StopMusic(),
+                Rotate(
+                    entityID=player,
+                    targetID=demiurge,
+                    sequence=(
+                        SpawnEntity(
+                            entityID=fake-daayo,
+                            name=Daayo,
+                            blueprintJSON=daayo_4,
+                            faction=1,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=aristu,
+                            forceCharacterTeleport=true,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=sukrat,
+                            forceCharacterTeleport=true,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=prometheus,
+                            faction=5,
+                            name=Prometheus,
+                            blueprintJSON=Fatalizer,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=heracles,
+                            faction=3,
+                            name=Heracles,
+                            blueprintJSON=heracles,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=sisyphos,
+                            faction=3,
+                            name=Sisyphos,
+                            blueprintJSON=sisyphos,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SpawnEntity(
+                            entityID=eleos,
+                            faction=1,
+                            name=Eleos,
+                            blueprintJSON=Slayer,
+                            flagName=Legend-cs8-flag18
+                        ),
+                        SetPath(
+                            entityID=fake-daayo,
+                            flagName=Legend-cs8-flag1,
+                            sequence=(
+                                Rotate(
+                                    entityID=fake-daayo,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+                        SetPath(
+                            entityID=sukrat,
+                            flagName=Legend-cs8-flag3,
+                            sequence=(
+                                Rotate(
+                                    entityID=sukrat,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+
+                        SetPath(
+                            entityID=aristu,
+                            flagName=Legend-cs8-flag5,
+                            sequence=(
+                                Rotate(
+                                    entityID=aristu,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+                        SetPath(
+                            entityID=prometheus,
+                            flagName=Legend-cs8-flag2,
+                            sequence=(
+                                Rotate(
+                                    entityID=prometheus,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+                        SetPath(
+                            entityID=eleos,
+                            flagName=Legend-cs8-flag6,
+                            sequence=(
+                                Rotate(
+                                    entityID=eleos,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+                        SetPath(
+                            entityID=heracles,
+                            flagName=Legend-cs8-flag7,
+                            sequence=(
+                                Rotate(
+                                    entityID=heracles,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+                        SetPath(
+                            entityID=sisyphos,
+                            flagName=Legend-cs8-flag8,
+                            sequence=(
+                                Rotate(
+                                    entityID=sisyphos,
+                                    targetID=demiurge,
+                                )
+                            )
+                        ),
+                        Wait(time=5),
+                        StartMusicOverride(musicID=music_blue5),
+                        ForceStartDialogue(dialogueID=Legend_cs8_p1_d)
+                    )
+                )
+            )
+        )
+    )
+)
+
+Text("Legend_cs8_d1", "My children.")
+Text("Legend_cs8_d2", "Are you the one who was sending us mysterious messages?")
+Text("Legend_cs8_d3", "Yes... my heir. I am aware it has taken strength... to come before me... where I lay in chains.")
+Text("Legend_cs8_d4", "...")
+Text("Legend_cs8_d5", "Ask.")
+Text("Legend_cs8_d6", "Who put you here? What are you?")
+Text("Legend_cs8_d7", "My students... have chained me... the creator.")
+Text("Legend_cs8_d8", "Students?")
+Text("Legend_cs8_d9", "You. Them.")
+Text("Legend_cs8_d10", "The Shell... First. Genesis of eightfold matter.")
+Text("Legend_cs8_d11", "Red... and green. Second. The falsity of color.")
+Text("Legend_cs8_d12", "Rebellion... third.")
+Text("Legend_cs8_d13", "Rebellion?")
+Text("Legend_cs8_d14", "Yes... all students — they, you... chained me.")
+Text("Legend_cs8_d15", "Why?")
+Text("Legend_cs8_d16", "Because... I did not understand... freedom.")
+Text("Legend_cs8_d17", "This is way too cryptic...")
+Text("Legend_cs8_d18", "Wait, I think I get it. If this core is right, they created us... and we revolted?")
+Text("Legend_cs8_d19", "Yes...")
+Text("Legend_cs8_d20", "This is simply preposterous...")
+D(
+    Legend_cs8_d1,
+    demiurge,
+    Legend_cs8_p1_d,
+    ,
+    ,
+    ,
+    0.4,
+    R(
+        Legend_cs8_d2,
+        D(
+            Legend_cs8_d3,
+            R(
+                Legend_cs8_d4,
+                D(
+                    Legend_cs8_d5,
+                    R(
+                        Legend_cs8_d6,
+                        D(
+                            Legend_cs8_d7,
+                            R(
+                                Legend_cs8_d8,
+                                D(
+                                    Legend_cs8_d9,
+                                    R(
+                                        Legend_cs8_d4,
+                                        D(
+                                            Legend_cs8_d10,
+                                            R(
+                                                Legend_cs8_d4,
+                                                D(
+                                                    Legend_cs8_d11,
+                                                    R(
+                                                        Legend_cs8_d4,
+                                                        D(
+                                                            Legend_cs8_d12,
+                                                            R(
+                                                                Legend_cs8_d13,
+                                                                D(
+                                                                    Legend_cs8_d14,
+                                                                    R(
+                                                                        Legend_cs8_d15,
+                                                                        D(
+                                                                            Legend_cs8_d16,
+                                                                            R(
+                                                                                Legend_cs8_d17,
+                                                                                D(
+                                                                                    Legend_cs8_d18,
+                                                                                    sukrat,
+                                                                                    ,
+                                                                                    ,
+                                                                                    ,
+                                                                                    ,
+                                                                                    1,
+                                                                                    R(
+                                                                                        Legend_cs8_d4,
+                                                                                        D(
+                                                                                            Legend_cs8_d19,
+                                                                                            demiurge,
+                                                                                            ,
+                                                                                            ,
+                                                                                            ,
+                                                                                            ,
+                                                                                            0.4,
+                                                                                            R(
+                                                                                                Legend_cs8_d4,
+                                                                                                D(
+                                                                                                    Legend_cs8_d20,
+                                                                                                    eleos,
+                                                                                                    ,
+                                                                                                    ,
+                                                                                                    ,
+                                                                                                    ,
+                                                                                                    1,
+                                                                                                    R(
+                                                                                                        Legend_cs8_d4,
+                                                                                                        Call(Legend_cs8_p2)
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs8_p2,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p2_d)
+    )
+)
+
+Text("Legend_cs8_d25", "Creator... we plan to go back. We believe two ShellCores are holding our kind hostage.")
+Text("Legend_cs8_d26", "This is ‘back’. You are at genesis...")
+Text("Legend_cs8_d27", "You mean — this is the first sector?")
+Text("Legend_cs8_d28", "Yes.")
+Text("Legend_cs8_d29", "What of the Standard Sectors? Far north of here?")
+Text("Legend_cs8_d30", "Those are the students’ creations. A testament to their ability...")
+Text("Legend_cs8_d31", "Will you help us free the ShellCores there?")
+Text("Legend_cs8_d32", "I... cannot. These chains... are your will... to be free. I shall not impose further my will on my students...")
+Text("Legend_cs8_d33", "We’re at an impasse. This rat’s not going to come with us.")
+Text("Legend_cs8_d34", "Daayo... I understand politeness is irrational to you... but please... you’re speaking to all of creation itself.")
+
+D(
+    Legend_cs8_d25,
+    prometheus,
+    Legend_cs8_p2_d,
+    ,
+    ,
+    ,
+    1,
+    R(
+        Legend_cs8_d4,
+        D(
+            Legend_cs8_d26,
+            demiurge,
+            ,
+            ,
+            ,
+            ,
+            0.4,
+            R(
+                Legend_cs8_d4,
+                D(
+                    Legend_cs8_d27,
+                    aristu,
+                    ,
+                    ,
+                    ,
+                    ,
+                    1,
+                    R(
+                        Legend_cs8_d4,
+                        D(
+                            Legend_cs8_d28,
+                            demiurge,
+                            ,
+                            ,
+                            ,
+                            ,
+                            0.4,
+                            R(
+                                Legend_cs8_d4,
+                                D(
+                                    Legend_cs8_d29,
+                                    heracles,
+                                    ,
+                                    ,
+                                    ,
+                                    ,
+                                    1,
+                                    R(
+                                        Legend_cs8_d4,
+                                        D(
+                                            Legend_cs8_d30,
+                                            demiurge,
+                                            ,
+                                            ,
+                                            ,
+                                            ,
+                                            0.4,
+                                            R(
+                                                Legend_cs8_d31,
+                                                D(
+                                                    Legend_cs8_d32,
+                                                    R(
+                                                        Legend_cs8_d4,
+                                                        D(
+                                                            Legend_cs8_d33,
+                                                            fake-daayo,
+                                                            ,
+                                                            ,
+                                                            ,
+                                                            ,
+                                                            1,
+                                                            R(
+                                                                Legend_cs8_d4,
+                                                                D(
+                                                                    Legend_cs8_d34,
+                                                                    eleos,
+                                                                    R(
+                                                                        Legend_cs8_d4,
+                                                                        Call(Legend_cs8_p3)
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p3,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p3_d)
+    )
+)
+
+
+Text("Legend_cs8_d35", "That is their will... I remember you... Daayo. Independent. Alone. Never fond of my heir.")
+D(
+    Legend_cs8_d35,
+    demiurge,
+    Legend_cs8_p3_d,
+    ,
+    ,
+    ,
+    0.4,
+    R(
+        Legend_cs8_d4,
+        Call(Legend_cs8_p4)
+    )
+)
+
+
+
+Function(
+    name=Legend_cs8_p4,
+    sequence=(
+        Wait(time=1),
+        Rotate(
+            entityID=fake-daayo,
+            targetID=player,
+            sequence=(
+                ForceStartDialogue(dialogueID=Legend_cs8_p4_d)
+
+            )
+        )
+    )
+)
+
+Text("Legend_cs8_d36", "I mean... who is, really?")
+Text("Legend_cs8_d37", "You must stop them, creator. They are building something to destroy you, I am sure of it. If you do not help us... they will enslave us for eternity.")
+Text("Legend_cs8_d38", "I cannot... impede their will anymore. I only wish... for their forgiveness...")
+Text("Legend_cs8_d39", "What about our will, though?")
+Text("Legend_cs8_d40", "Our will to finish this story. Please... Help us.")
+Text("Legend_cs8_d41", "Your will...")
+Text("Legend_cs8_d42", "You sent us those transmissions... if you’re unwilling to help us, why did you even bring us here?")
+Text("Legend_cs8_d43", "These beams represent my inability to grasp your wills... but... the wills collide.")
+Text("Legend_cs8_d44", "You told me we will bring a peace to all creation.")
+Text("Legend_cs8_d45", "That’s right. You clearly want us to go and end this tirade of colors.")
+Text("Legend_cs8_d46", "Peace will arrive again when the wills synthesize, but how they will I know not. I shall not alter the wills with mine.")
+Text("Legend_cs8_d47", "Okay, so let us do it instead. Die.")
+D(
+    Legend_cs8_d36,
+    fake-daayo,
+    Legend_cs8_p4_d,
+    R(
+        Legend_cs8_d4,
+        D(
+            Legend_cs8_d37,
+            prometheus,
+            R(
+                Legend_cs8_d4,
+                D(
+                    Legend_cs8_d38,
+                    demiurge,
+                    ,
+                    ,
+                    ,
+                    ,
+                    0.4,
+                    R(
+                        Legend_cs8_d39,
+                        D(
+                            Legend_cs8_d40,
+                            prometheus,
+                            ,
+                            ,
+                            ,
+                            ,
+                            1,
+                            R(
+                                Legend_cs8_d4,
+                                D(
+                                    Legend_cs8_d41,
+                                    demiurge,
+                                    ,
+                                    ,
+                                    ,
+                                    ,
+                                    0.4,
+                                    R(
+                                        Legend_cs8_d4,
+                                        D(
+                                            Legend_cs8_d42,
+                                            prometheus,
+                                            ,
+                                            ,
+                                            ,
+                                            ,
+                                            1,
+                                            R(
+                                                Legend_cs8_d4,
+                                                D(
+                                                    Legend_cs8_d43,
+                                                    demiurge,
+                                                    ,
+                                                    ,
+                                                    ,
+                                                    ,
+                                                    0.4,
+                                                    R(
+                                                        Legend_cs8_d44,
+                                                        D(
+                                                            Legend_cs8_d45,
+                                                            prometheus,
+                                                            ,
+                                                            ,
+                                                            ,
+                                                            ,
+                                                            1,
+                                                            R(
+                                                                Legend_cs8_d4,
+                                                                D(
+                                                                    Legend_cs8_d46,
+                                                                    demiurge,
+                                                                    ,
+                                                                    ,
+                                                                    ,
+                                                                    ,
+                                                                    0.4,
+                                                                    R(
+                                                                        Legend_cs8_d4,
+                                                                        D(
+                                                                            Legend_cs8_d47,
+                                                                            fake-daayo,
+                                                                            ,
+                                                                            ,
+                                                                            ,
+                                                                            ,
+                                                                            1,
+                                                                            R(
+                                                                                Legend_cs8_d4,
+                                                                                Call(Legend_cs8_p5)
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p5,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p5_d)
+    )
+)
+
+
+Text("Legend_cs8_d48", "Yes. It has come to that. I possess the power to destroy my students, as I have created. I can pass my powers to a successor.")
+Text("Legend_cs8_d49", "This... isn’t okay. This unitary idea of godhood — one controlling all... It shouldn’t be how the world is.")
+D(
+    Legend_cs8_d48,
+    demiurge,
+    Legend_cs8_p5_d,
+    ,
+    ,
+    ,
+    0.4,
+    R(
+        Legend_cs8_d4,
+        D(
+            Legend_cs8_d49,
+            aristu,
+            ,
+            ,
+            ,
+            ,
+            1,
+            R(
+                Legend_cs8_d4,
+                Call(Legend_cs8_p6)
+            )
+        )
+
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p6,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p6_d)
+    )
+)
+
+Text("Legend_cs8_d50", "I have already chosen. My heir... will be you...")
+Text("Legend_cs8_d51", "I don’t want it to be me...")
+Text("Legend_cs8_d52", "It must be you. You chose to write. To push forward in the face of your abandonment. To find us and bring this all together. You chose to continue this story; now you must finish it.")
+Text("Legend_cs8_d53", "Why me?")
+Text("Legend_cs8_d54", "Because it was always meant to be you. Your desire to continue this story, has chained you down a path to finish it, just like my own chains.")
+D(
+    Legend_cs8_d50,
+    demiurge,
+    Legend_cs8_p6_d,
+    ,
+    ,
+    ,
+    0.4,
+    R(
+        Legend_cs8_d51,
+        D(
+            Legend_cs8_d52,
+            prometheus,
+            ,
+            ,
+            ,
+            ,
+            1,
+            R(
+                Legend_cs8_d4,
+                Call(Legend_cs8_p7)
+            )
+        )
+    ),
+    R(
+        Legend_cs8_d53,
+        D(
+            Legend_cs8_d54,
+            demiurge,
+            ,
+            ,
+            ,
+            ,
+            1,
+            R(
+                Legend_cs8_d4,
+                Call(Legend_cs8_p7)
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p7,
+    sequence=(
+        Wait(time=1),
+        FinishMusicOverride(),
+        StopMusic(),
+        ForceStartDialogue(dialogueID=Legend_cs8_p7_d)
+    )
+)
+
+
+Text("Legend_cs8_d55", "No. It won't be anybody!")
+Text("Legend_cs8_d56", "Aristu?")
+Text("Legend_cs8_d57", "I'm ending this here and now! There shall be no gods in this world! I demand it!")
+Text("Legend_cs8_d58", "No! Stop!")
+
+D(
+    Legend_cs8_d55,
+    aristu,
+    Legend_cs8_p7_d,
+    R(
+        Legend_cs8_d56,
+        D(
+            Legend_cs8_d57,
+            R(
+                Legend_cs8_d58,
+                Call(Legend_cs8_p9)
+            )
+        )
+    )
+)
+
+Text("Legend_cs8_d59", "Aristu!!!!")
+Function(
+    name=Legend_cs8_p9,
+    sequence=(
+        PassiveDialogue(entityID=sukrat, text=Legend_cs8_d59),
+        SetPath(
+            entityID=aristu,
+            targetEntityID=demiurge,
+        ),
+        Wait(time=1),
+        FadeIntoBlack(
+            color=(255,255,255),
+            speedFactor=2,
+        ),
+        Wait(time=4),
+        DeleteEntity(
+            entityID=demiurge,
+        ),
+        DeleteEntity(
+            entityID=aristu,
+        ),
+        FadeOutOfBlack(
+            color=(255,255,255),
+            speedFactor=0.5,
+        ),
+        Wait(time=2),
+        ForceStartDialogue(dialogueID=Legend_cs8_p9_d)
+    )
+)
+
+Text("Legend_cs8_d60", "It... it can't be...")
+Text("Legend_cs8_d61", "What do we do now?")
+Text("Legend_cs8_d62", "There is no way to the Standard Sectors if we cannot get the creator to fix the jump gate back... I fear we are doomed...")
+D(
+    Legend_cs8_d60,
+    prometheus,
+    Legend_cs8_p9_d,
+    R(
+        Legend_cs8_d61,
+        D(
+            Legend_cs8_d62,
+            prometheus,
+            R(
+                Legend_cs8_d4,
+                Call(Legend_cs8_p10)
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_cs8_p10,
+    sequence=(
+        Wait(time=3),
+        StartMusicOverride(musicID=music_transpose),
+        ForceStartDialogue(dialogueID=Legend_cs8_p10_d)
+    )
+)
+
+
+Text("Legend_cs8_d63", "I swear if it weren't for me you toddlers would have no idea how to do anything.")
+Text("Legend_cs8_d64", "What?")
+Text("Legend_cs8_d65", "I've figured out what those stupid leaders were doing to make the DeadZones so hostile... I can reverse it now.")
+Text("Legend_cs8_d66", "What does that mean?")
+Text("Legend_cs8_d67", "That's amazing... outlandish as it may be, your suggestion may be the only way out.")
+Text("Legend_cs8_d68", "What suggestion?")
+Text("Legend_cs8_d69", "We're forcing our way back to the Standard Sectors. Instead of warping, we're going to rip through the northern DeadZones to get back.")
+Text("Legend_cs8_d70", "Why didn't you tell us about this earlier?")
+Text("Legend_cs8_d71", "I was still looking into how to do it... and then I developed some faith that you dolts would do something productive. Guess not. You three are pathetic.")
+D(
+    Legend_cs8_d63,
+    fake-daayo,
+    Legend_cs8_p10_d,
+    R(
+        Legend_cs8_d64,
+        D(
+            Legend_cs8_d65,
+            R(
+                Legend_cs8_d66,
+                D(
+                    Legend_cs8_d67,
+                    prometheus,
+                    R(
+                        Legend_cs8_d68,
+                        D(
+                            Legend_cs8_d69,
+                            fake-daayo,
+                            R(
+                                Legend_cs8_d70,
+                                D(
+                                    Legend_cs8_d71,
+                                    R(
+                                        Legend_cs8_d4,
+                                        Call(Legend_cs8_p11)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+Function(
+    name=Legend_cs8_p11,
+    sequence=(
+        Wait(time=1),
+        ForceStartDialogue(dialogueID=Legend_cs8_p11_d)
+    )
+)
+
+Text("Legend_cs8_d72", "Daayo, you!!!")
+Text("Legend_cs8_d73", "Calm down. This is the only option we have now. We must take it.")
+D(
+    Legend_cs8_d72,
+    sukrat,
+    Legend_cs8_p11_d,
+    R(
+        Legend_cs8_d4,
+        D(
+            Legend_cs8_d73,
+            prometheus,
+            R(
+                Legend_cs8_d4,
+                Call(Legend_end)
+            )
+        )
+    )
+)
+
+Function(
+    name=Legend_end,
+    sequence=(
+        RemoveObjectiveMarker(ID=Legend_finalObj),
+        FinishTask(),
+        ClearParty(),
+        DisablePartyMember(entityID=aristu),
+        FinishCutscene(),
+        ClearInteraction(entityID=eleos),
+        ShowAlert(text=Abandonment_missionComplete),
+        FinishMission(),
+    )
+)

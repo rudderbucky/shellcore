@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="2681.399,95.99999" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Variable condition" ID="-1341335636" type="VariableConditionNode" pos="-2929.6,-112.4">
+			<Port ID="-1097235150" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-964502829" />
+			<int name="value">2</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Mission Condition" ID="-1637188686" type="MissionCondition" pos="-3146.999,-187.2">
+			<Port ID="395369860" name="output" dynamic="False" />
+			<Variable name="missionName" refID="1461254635" />
+			<int name="missionStatus">2</int>
+		</Node>
+		<Node name="Conditions" ID="989447760" type="ConditionGroupNode" pos="-2701.4,-289">
+			<Port ID="1887974870" name="input" dynamic="False" />
+			<Port ID="212522126" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1705127136" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Spawn Entity" ID="88845446" type="SpawnEntityNode" pos="-2454,-217.2">
+			<Port ID="578217594" name="output" dynamic="False" />
+			<Port ID="2070822604" name="IDOut" dynamic="False" />
+			<Port ID="-731539682" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="entityName" refID="626421550" />
+			<int name="faction">0</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-1175131915" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="626388750" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="-2075840812" />
+			<Variable name="additionalCounts" refID="444008184" />
+		</Node>
+		<Node name="Enter Sector" ID="655465512" type="LoadSectorNode" pos="-3110,-300">
+			<Port ID="-914387416" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346904" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1097235150" port2ID="212522126" />
+		<Connection port1ID="395369860" port2ID="212522126" />
+		<Connection port1ID="1887974870" port2ID="-914387416" />
+		<Connection port1ID="1705127136" port2ID="-731539682" />
+	</Connections>
+	<Objects>
+		<Object refID="-964502829" type="System.String">
+			<string>AristuSpawn</string>
+		</Object>
+		<Object refID="1461254635" type="System.String">
+			<string>Derelict Vanquish</string>
+		</Object>
+		<Object refID="626421550" type="System.String">
+			<string>Aristu</string>
+		</Object>
+		<Object refID="-1175131915" type="System.String">
+			<string>flag-aristuspawn3</string>
+		</Object>
+		<Object refID="626388750" type="System.String">
+			<string>aristu</string>
+		</Object>
+		<Object refID="-2075840812" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="444008184" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-7346904" type="System.String">
+			<string>Haven 6</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
