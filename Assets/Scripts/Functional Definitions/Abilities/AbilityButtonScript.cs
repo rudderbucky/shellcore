@@ -355,7 +355,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
         {
-            bool autoCast = !abilities[0].AutoCast;
+            bool autoCast = !abilities.Exists(a => a.AutoCast);
             foreach (var ab in abilities)
             {
                 ab.AutoCast = autoCast;
