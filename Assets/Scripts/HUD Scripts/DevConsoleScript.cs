@@ -369,6 +369,10 @@ public class DevConsoleScript : MonoBehaviour
                 updateLog = true;
                 textBox.text += "\n<color=lime>You're probably not gonna be able to see this.</color>";
             }
+            else if (command.Equals("savepath", StringComparison.CurrentCultureIgnoreCase))
+            {
+                textBox.text += $"\n{Application.streamingAssetsPath}";
+            }
             else if (command.Equals("killp", StringComparison.CurrentCultureIgnoreCase))
             {
                 foreach (ShellCore partyMember in PartyManager.instance.partyMembers)
