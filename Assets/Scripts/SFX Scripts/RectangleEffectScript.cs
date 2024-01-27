@@ -115,7 +115,7 @@ public class RectangleEffectScript : MonoBehaviour
     /// <param name="dimension">the dimension (0 is x, 1 is y)</param>
     private void ParticleWrapper(ref ParticleSystem.Particle particle, int dimension, int index)
     {
-        if (!PlayerCore.Instance || PlayerCore.Instance.IsMoving())
+        if (PlayerCore.Instance && PlayerCore.Instance.IsMoving())
         {
             timesByParticle[index] = 0;
         }
