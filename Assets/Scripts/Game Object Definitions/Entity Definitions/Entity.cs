@@ -1124,8 +1124,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             parts.ForEach(p =>
             {
-                var spriteRenderer = p?.transform.Find("Shooter")?.GetComponent<SpriteRenderer>();
-                if (spriteRenderer)
+                if (!p || !p.transform || !p.transform.Find("Shooter")) return;
+                var spriteRenderer = p.transform.Find("Shooter").GetComponent<SpriteRenderer>();
+                if (spriteRenderer && shellRenderer)
                 {
                     spriteRenderer.sortingOrder = shellRenderer.sortingOrder + 1;
                 }
