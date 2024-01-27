@@ -7,9 +7,9 @@ using static CoreScriptsSequence;
 public class TaskFlow : MonoBehaviour
 {
 
-    public static void FinishTask(Context context)
+    public static void FinishTask(Context context, bool playSound)
     {
-        SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
+        if (playSound) SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
         RewardPlayer(context.missionName);
         context.taskHash++;
     }

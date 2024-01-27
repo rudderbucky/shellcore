@@ -214,7 +214,6 @@ Function(
 Task(
     taskID=Ascendance_kappa,
     objectives=Ascendance_kappa_objectives,
-    reputationReward=10000,
 )
 Text("Ascendance_kappa_objectives", "- Meet Daayo at Kappa to begin converting DeadZones.")
 
@@ -234,9 +233,6 @@ D(
     Ascendance_cs2_d1,
     fake-daayo,
     Ascendance_cs2_d,
-    ,
-    ,
-    true,
     R(
         Ascendance_cs2_d2,
         D(
@@ -308,7 +304,8 @@ SectorTrigger(
 
 Task(
     taskID=Ascendance_reachJumpGate,
-    objectives=Ascendance_reachJumpGate_objectives
+    objectives=Ascendance_reachJumpGate_objectives,
+    reputationReward=10000,
 )
 Text("Ascendance_reachJumpGate_objectives", "- Head to the sectors marked on the map.
 - Find a Pylon in the sector and bring it to a Gate Pylon to clear the sector.
@@ -649,6 +646,7 @@ Function(
             sequence=(
                 DisablePartyMember(entityID=the-architect),
                 Wait(time=2),
+                FinishTask(playSound=false),
                 AddTask(taskID=Ascendance_defeatPytha),
                 FinishCutscene(),
                 DeleteEntity(

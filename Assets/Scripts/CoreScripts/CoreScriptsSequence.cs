@@ -598,7 +598,8 @@ public class CoreScriptsSequence : MonoBehaviour
 
                     break;
                 case InstructionCommand.FinishTask:
-                    TaskFlow.FinishTask(context);
+                    var playSound = GetArgument(inst.arguments, "playSound") != "false",
+                    TaskFlow.FinishTask(context, playSound);
                     break;
                 case InstructionCommand.FailTask:
                     break;
