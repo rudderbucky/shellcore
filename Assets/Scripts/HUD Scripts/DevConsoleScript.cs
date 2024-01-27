@@ -371,7 +371,7 @@ public class DevConsoleScript : MonoBehaviour
             }
             else if (command.Equals("savepath", StringComparison.CurrentCultureIgnoreCase))
             {
-                textBox.text += $"\n{Application.streamingAssetsPath}";
+                textBox.text += $"\n{Application.persistentDataPath}";
             }
             else if (command.Equals("killp", StringComparison.CurrentCultureIgnoreCase))
             {
