@@ -51,7 +51,7 @@ public class RollCredits : MonoBehaviour
 
     IEnumerator Wait()
     {
-        yield return new WaitForSeconds(60 * 4 + 17);
+        yield return new WaitForSeconds(60 * 4 + 16);
         AudioManager.PlayMusic("music_overworld_old");
     }
 
