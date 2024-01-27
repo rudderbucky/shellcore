@@ -78,6 +78,7 @@ public class CoreScriptsSequence : MonoBehaviour
         EnableBackgroundSpawns,
         DisableBackgroundSpawns,
         WarpCore,
+        Reconstruct
     }
     public struct Instruction
     {
@@ -311,6 +312,10 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.StopMusic:
                     AudioManager.StopMusic();
+                    break;
+                case InstructionCommand.Reconstruct:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    if (entityID == "player") PlayerCore.Instance.Rebuild();
                     break;
                 case InstructionCommand.FinishMusicOverride:
                     AudioManager.musicOverrideID = null;

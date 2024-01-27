@@ -1077,6 +1077,7 @@ Function(
             entityID=player,
             targetID=advanced-trader-explainer
         ),
+        Reconstruct(entityID=player),
         Wait(time=2),
         FadeOutOfBlack(),
         Wait(time=1),
@@ -1137,6 +1138,7 @@ D(
 Function(
     name=Ascendance_epilogue_p9,
     sequence=(
+        DeleteEntity(entityID=sukrat),
         SpawnEntity(
             entityID=sukrat,
             forceCharacterTeleport=true,
