@@ -29,6 +29,7 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 6946815620817538112}
+  - {fileID: 5727571550445215700}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0
@@ -51,10 +52,16 @@ AudioMixerController:
   m_ExposedParameters:
   - guid: fdc1740a594de7741a439a28e44636be
     name: MasterVolume
+  - guid: aa8b8eafc89cc314292315c457686f68
+    name: Pitch1
   - guid: 1140772499a29ca409a490ef94b7cc6a
     name: MusicVolume
+  - guid: ad5f73debb42aed49b87594646483c63
+    name: Pitch2
   - guid: 7404c79c7c9d26147968ca628ba74e17
     name: SFXVolume
+  - guid: 686f8d47c4a1c0041a847d93940a93d5
+    name: MyExposedParam 1
   m_AudioMixerGroupViews:
   - guids:
     - f1bb8810ffe7efd4abb4875fcdf717f2
@@ -109,8 +116,10 @@ AudioMixerSnapshotController:
   m_SnapshotID: 16e987aba9c1e2545bc337fa6f2b9a81
   m_FloatValues:
     1140772499a29ca409a490ef94b7cc6a: -80
+    c7c1a899df8824c0abce463dc521bafc: 1
     fdc1740a594de7741a439a28e44636be: -80
     7404c79c7c9d26147968ca628ba74e17: -80
+    ad5f73debb42aed49b87594646483c63: 1
   m_TransitionOverrides: {}
 --- !u!243 &4744353398127179092
 AudioMixerGroupController:
@@ -131,6 +140,28 @@ AudioMixerGroupController:
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0
+--- !u!244 &5727571550445215700
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: bf2fbfba34124438189b5ade3d8bc139
+  m_EffectName: Pitch Shifter
+  m_MixLevel: a4b25f070dbc3489c81fb96e853116ba
+  m_Parameters:
+  - m_ParameterName: Pitch
+    m_GUID: c7c1a899df8824c0abce463dc521bafc
+  - m_ParameterName: FFT size
+    m_GUID: d96258c122e0b447c92a03aa4ca018bb
+  - m_ParameterName: Overlap
+    m_GUID: 9e328f4489f6c4e0791744a0ac52eed0
+  - m_ParameterName: Max channels
+    m_GUID: e29c5a1cb1b554c7086bc44188530177
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &6946815620817538112
 AudioMixerEffectController:
   m_ObjectHideFlags: 3

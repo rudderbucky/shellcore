@@ -32,26 +32,38 @@ public class RollCredits : MonoBehaviour
     RectTransform ty;
 
     public static RollCredits instance;
-
-    void Start()
+    void Awake()
     {
         instance = this;
     }
 
     public bool init;
+    private float ext = 1;
     public void Init()
     {
         GetComponent<Image>().enabled = true;
         container.gameObject.SetActive(true);
         DevConsoleScript.Instance.SetInactive();
         AudioManager.PlayMusic("music_whimper", false);
+#if UNITY_EDITOR
+        Time.timeScale = ext;
+        var x = 0f;
+        AudioManager.instance.music.audioMixer.GetFloat("Pitch2", out x);
+        Debug.LogWarning(x);
+        AudioManager.instance.music.audioMixer.SetFloat("Pitch2", ext);
+#endif
         StartCoroutine(Wait());
         init = true;
     }
 
     IEnumerator Wait()
     {
-        yield return new WaitForSeconds(60 * 4 + 16);
+        yield return new WaitForSeconds(60 * 4 + 4);
+#if UNITY_EDITOR
+        Time.timeScale = 1;
+        AudioManager.instance.music.audioMixer.SetFloat("Pitch2", 1);
+#endif
+        yield return new WaitForSeconds(12);
         AudioManager.PlayMusic("music_overworld_old");
     }
 
@@ -102,7 +114,7 @@ public class RollCredits : MonoBehaviour
         }
         if (timer > finalRoll)
         {
-            var cst = 35;
+            var cst = 25;
             if (Input.GetKey(KeyCode.Space)) cst *= 20;
             container.transform.position = container.transform.position + Vector3.up * Time.deltaTime * cst;
         }
