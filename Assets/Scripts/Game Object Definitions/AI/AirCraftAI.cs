@@ -280,13 +280,14 @@ public class AirCraftAI : MonoBehaviour
             Entity target = getNearestEntity<Entity>(craft, true);
             craft.GetTargetingSystem().SetTarget(target ? target.transform : null);
 
-            foreach (Ability a in craft.GetAbilities())
-            {
-                if (a)
+            if (craft.canUseAbilities)
+                foreach (Ability a in craft.GetAbilities())
                 {
-                    a.Tick();
+                    if (a)
+                    {
+                        a.Tick();
+                    }
                 }
-            }
 
             // shouldn't tick if dead or in cutscene, give control to the cutscene
             if (aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time && !DialogueSystem.isInCutscene)

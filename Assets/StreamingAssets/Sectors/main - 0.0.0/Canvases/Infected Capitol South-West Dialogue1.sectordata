@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-318.8,-152.2" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Test Variable" ID="1711202560" type="TestVariableNode" pos="-150,-50">
+			<Port ID="-583182720" name="inputLeft" dynamic="False" />
+			<Port ID="454257408" name="outputTrue" dynamic="False" />
+			<Port ID="1491697536" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1222592864" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="End Dialogue" ID="1275582208" type="EndDialogue" pos="550,-150">
+			<Port ID="-728389504" name="input" dynamic="False" />
+			<Port ID="1782111104" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="599464192" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1636904320" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-687166080" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Enter Sector" ID="526950912" type="LoadSectorNode" pos="-350,-50">
+			<Port ID="-1911036416" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="540299495" />
+		</Node>
+		<Node name="Dialogue" ID="-592296192" type="DialogueNode" pos="300,-150">
+			<Port ID="-541959296" name="input" dynamic="False" />
+			<Port ID="1532920960" name="cancel" dynamic="False" />
+			<Port ID="-1620622848" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">216</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1131505101" />
+			<Variable name="answers" refID="-1096537216" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-1619673600" type="StartDialogueNode" pos="100,-150">
+			<Port ID="163843840" name="input" dynamic="False" />
+			<Port ID="-1018803072" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-284189844" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Clear Pending Dialogue" ID="-1799687936" type="ClearDialogue" pos="100,150">
+			<Port ID="1287138816" name="inputLeft" dynamic="False" />
+			<Port ID="-1970388352" name="outputRight" dynamic="False" />
+			<Variable name="EntityID" refID="-284189844" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-583182720" port2ID="-1911036416" />
+		<Connection port1ID="454257408" port2ID="163843840" />
+		<Connection port1ID="1491697536" port2ID="1287138816" />
+		<Connection port1ID="-728389504" port2ID="-1620622848" />
+		<Connection port1ID="1782111104" port2ID="163843840" />
+		<Connection port1ID="-541959296" port2ID="-1018803072" />
+		<Connection port1ID="1532920960" port2ID="163843840" />
+	</Connections>
+	<Objects>
+		<Object refID="-1222592864" type="System.String">
+			<string>InfectedTruceVar</string>
+		</Object>
+		<Object refID="540299495" type="System.String">
+			<string>Infected Capitol South-West</string>
+		</Object>
+		<Object refID="-1131505101" type="System.String">
+			<string>Believe it or not, but a long time ago, I was a part of your fleet. Just like you, I was able to communicate with the 'Infected'. Soon, I decided that they are more trustworthy than our own kind. I started to become one of them.</string>
+		</Object>
+		<Object refID="-1096537216" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-284189844" type="System.String">
+			<string>inf-cap-sw1</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

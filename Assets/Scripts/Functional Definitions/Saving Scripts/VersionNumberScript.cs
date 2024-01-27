@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class VersionNumberScript : MonoBehaviour
 {
-    public static string version = "Beta 5.0.0";
-    public static string mapVersion = "Beta 5.0.0";
+    public static string version = "0.0.0";
+    public static string mapVersion = "0.0.0";
     public static string rdbMap = "rudderbucky server - 1";
     static VersionNumberScript instance;
     public Text episodeText;
@@ -37,6 +37,9 @@ public class VersionNumberScript : MonoBehaviour
             string trc = "TACTICAL RETRO COMBAT.\n";
             switch (episode)
             {
+                case 3:
+                    instance.episodeText.text = $"{trc}<color=#5C89E6>THE FINAL EPISODE</color>";
+                    break;
                 case 2:
                     instance.episodeText.text = $"{trc}<color=#daa620>EPISODE 3: ABANDONED</color>";
                     break;

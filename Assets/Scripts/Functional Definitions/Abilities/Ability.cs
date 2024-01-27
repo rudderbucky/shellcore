@@ -384,6 +384,7 @@ public abstract class Ability : MonoBehaviour
 
     private void AutoCastTick()
     {
+        if (DialogueSystem.isInCutscene) return;
         if (!(Core is PlayerCore playerCore) ||
             State != AbilityState.Ready ||
             playerCore.GetHealth()[2] < energyCost)

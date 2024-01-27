@@ -12,6 +12,7 @@ public class CameraScript : MonoBehaviour
     private bool initialized;
 
     public static bool panning;
+    public static bool coreScriptsPanning;
     public static Vector3 target;
     public static float velocityFactor;
 
@@ -35,6 +36,7 @@ public class CameraScript : MonoBehaviour
     public void Start()
     {
         instance = this;
+        coreScriptsPanning = false;
         if (core)
         {
             Vector3 goalPos = core.transform.position; // update vector
@@ -87,7 +89,7 @@ public class CameraScript : MonoBehaviour
             {
                 Pan();
             }
-            else if (core.IsMoving()) // lock camera
+            else if (core.IsMoving() && !CameraScript.coreScriptsPanning) // lock camera
             {
                 Focus(core.transform.position);
             }

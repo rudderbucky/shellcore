@@ -204,6 +204,7 @@ public class PartyManager : MonoBehaviour
         }
 
         PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
+        core.faction.overrideFaction = PlayerCore.Instance.faction.overrideFaction;
         partyMembers.Add(core);
         Debug.Log($"<Party Management> Character {charID} added");
         if (!partyIndicators.ContainsKey(core))

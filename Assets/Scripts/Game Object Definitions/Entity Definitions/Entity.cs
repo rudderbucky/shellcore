@@ -338,6 +338,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     [HideInInspector]
     public int absorptions = 0;
 
+    public bool canUseAbilities = true;
+
     public bool isAbsorbing // if true, all incoming damage is converted to energy
     {
         get { return absorptions > 0; }
@@ -1122,8 +1124,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             parts.ForEach(p =>
             {
-                var spriteRenderer = p?.transform.Find("Shooter")?.GetComponent<SpriteRenderer>();
-                if (spriteRenderer)
+                if (!p || !p.transform || !p.transform.Find("Shooter")) return;
+                var spriteRenderer = p.transform.Find("Shooter").GetComponent<SpriteRenderer>();
+                if (spriteRenderer && shellRenderer)
                 {
                     spriteRenderer.sortingOrder = shellRenderer.sortingOrder + 1;
                 }
@@ -1740,6 +1743,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public virtual void TakeCoreDamage(float amount)
     {
         if (DialogueSystem.isInCutscene) return;
+        CoreDamageWrapper(amount);
+    }
+
+    public void CoreDamageWrapper(float amount)
+    {
         if (isAbsorbing && amount > 0f)
         {
             TakeEnergy(-amount);
@@ -1905,6 +1913,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected void TickAbilitiesAsStation()
     {
         if (MasterNetworkAdapter.mode == NetworkMode.Client) return;
+        if (!canUseAbilities) return;
 
         var enemyTargetFound = SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone;
         if (!enemyTargetFound && BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)

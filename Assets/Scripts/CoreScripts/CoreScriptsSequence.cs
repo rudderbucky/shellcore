@@ -68,7 +68,17 @@ public class CoreScriptsSequence : MonoBehaviour
         ChangeCharacterBlueprint,
         ClearFactionOverrides,
         SetSectorColor,
-        StopMusic
+        StopMusic,
+        RollCredits,
+        DealCoreDamage,
+        SetPartDropRate,
+        SetImmobile,
+        SetAbilitiesUsable,
+        DetachPart,
+        EnableBackgroundSpawns,
+        DisableBackgroundSpawns,
+        WarpCore,
+        Reconstruct
     }
     public struct Instruction
     {
@@ -208,6 +218,12 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.EnableBackgroundSpawns:
+                    SectorManager.backgroundSpawnsEnabled = true;
+                    break;
+                case InstructionCommand.DisableBackgroundSpawns:
+                    SectorManager.backgroundSpawnsEnabled = false;
+                    break;
                 case InstructionCommand.ClearFactionOverrides:
                     foreach (var ent in AIData.entities)
                     {
@@ -219,12 +235,62 @@ public class CoreScriptsSequence : MonoBehaviour
                     var flagName = GetArgument(inst.arguments, "flagName");
                     ProximityInteractScript.AddTextToFlag(text, AIData.flags.Find(f => f.name == flagName));
                     break;
+                case InstructionCommand.SetPartDropRate:
+                    var restore = GetArgument(inst.arguments, "default") == "true";
+                    if (restore)
+                    {
+                        Entity.partDropRate = Entity.DefaultPartRate;
+                    }
+                    else
+                    {
+                        var rate = float.Parse(GetArgument(inst.arguments, "rate"), CultureInfo.InvariantCulture);
+                        Entity.partDropRate = rate;
+                    }
+                    break;
+                case InstructionCommand.DealCoreDamage:
+                    var entityID = GetArgument(inst.arguments, "entityID");
+                    var amount = float.Parse(GetArgument(inst.arguments, "amount"), CultureInfo.InvariantCulture);
+                    var e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.CoreDamageWrapper(amount);
+                    }
+                    else Debug.Log("<DealCoreDamage> Could not find entity!");
+                    break;
+
+                case InstructionCommand.SetImmobile:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var immobile = GetArgument(inst.arguments, "immobile") == "true";
+                    e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e is Craft c)
+                    {
+                        c.SetImmobile(immobile);
+                    }
+                    break;
+                case InstructionCommand.SetAbilitiesUsable:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var usable = GetArgument(inst.arguments, "usable") == "true";
+                    e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.canUseAbilities = usable;
+                    }
+                    break;
+                case InstructionCommand.DetachPart:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    int index = int.Parse(GetArgument(inst.arguments, "index"));
+                    e = AIData.entities.Find(e => e.ID == entityID);
+                    if (e)
+                    {
+                        e.RemovePart(e.parts[index]);
+                    }
+                    break;
                 case InstructionCommand.SetOverrideFaction:
                     var overrideFstr = GetArgument(inst.arguments, "overrideFaction");
-                    var entityID = GetArgument(inst.arguments, "entityID");
+                    entityID = GetArgument(inst.arguments, "entityID");
                     var overrideFac = 0;
                     if (!string.IsNullOrEmpty(overrideFstr)) overrideFac = int.Parse(overrideFstr);
-                    var e = AIData.entities.Find(e => e.ID == entityID);
+                    e = AIData.entities.Find(e => e.ID == entityID);
                     if (e)
                     {
                         e.SetOverrideFaction(overrideFac);
@@ -246,6 +312,10 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.StopMusic:
                     AudioManager.StopMusic();
+                    break;
+                case InstructionCommand.Reconstruct:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    if (entityID == "player") PlayerCore.Instance.Rebuild();
                     break;
                 case InstructionCommand.FinishMusicOverride:
                     AudioManager.musicOverrideID = null;
@@ -411,6 +481,30 @@ public class CoreScriptsSequence : MonoBehaviour
                         GetArgument(inst.arguments, "entityID"),
                         GetArgument(inst.arguments, "flagName"));
                     break;
+
+                case InstructionCommand.WarpCore:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    targetID = GetArgument(inst.arguments, "targetID");
+
+                    var vec = Vector3.zero;
+                    foreach (var ent in AIData.entities)
+                    {
+                        if (ent && ent.ID == targetID)
+                        {
+                            vec = ent.transform.position;
+                            break;
+                        }
+                    }
+
+                    foreach (var ent in AIData.entities)
+                    {
+                        if (ent && ent.ID == entityID && ent is ShellCore sc)
+                        {
+                            sc.Warp(vec);
+                        }
+                    }
+
+                    break;
                 case InstructionCommand.StartCameraPan:
                     flagName = GetArgument(inst.arguments, "flagName");
                     var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"), CultureInfo.InvariantCulture);
@@ -427,11 +521,13 @@ public class CoreScriptsSequence : MonoBehaviour
                                 break;
                             }
                         }
+                        CameraScript.coreScriptsPanning = true;
                         CameraScript.instance.Focus(flagPos);
                     }
                     else Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
                     break;
                 case InstructionCommand.FinishCameraPan:
+                    CameraScript.coreScriptsPanning = false;
                     Cutscene.EndCameraPan();
                     break;
                 case InstructionCommand.RegisterPartyMember:
@@ -502,7 +598,8 @@ public class CoreScriptsSequence : MonoBehaviour
 
                     break;
                 case InstructionCommand.FinishTask:
-                    TaskFlow.FinishTask(context);
+                    var playSound = GetArgument(inst.arguments, "playSound") != "false";
+                    TaskFlow.FinishTask(context, playSound);
                     break;
                 case InstructionCommand.FailTask:
                     break;
@@ -616,6 +713,9 @@ public class CoreScriptsSequence : MonoBehaviour
                         GetArgument(inst.arguments, "blueprintJSON"),
                         GetArgument(inst.arguments, "forceReconstruct") != "false"
                     );
+                    break;
+                case InstructionCommand.RollCredits:
+                    RollCredits.instance.Init();
                     break;
             }
         }
@@ -912,14 +1012,22 @@ public class CoreScriptsSequence : MonoBehaviour
             }
         }
 
+        bool foundFlag = false;
         Vector2 coords = new Vector2();
         for (int i = 0; i < AIData.flags.Count; i++)
         {
             if (AIData.flags[i].name == flagName)
             {
                 coords = AIData.flags[i].transform.position;
+                foundFlag = true;
                 break;
             }
+        }
+
+        if (!foundFlag)
+        {
+            Debug.Log("<Spawn Entity> Flag not found. Returning.");
+            return;
         }
 
         if (!string.IsNullOrEmpty(assetID))

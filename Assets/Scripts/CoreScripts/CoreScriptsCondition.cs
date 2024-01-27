@@ -133,8 +133,10 @@ public class CoreScriptsCondition : MonoBehaviour
                 var nameMode = CoreScriptsSequence.GetArgument(c.arguments, "nameMode") == "true";
                 var progressionFeedback = CoreScriptsSequence.GetArgument(c.arguments, "progressionFeedback") == "true";
                 var targetID = CoreScriptsSequence.GetArgument(c.arguments, "targetID");
-                var targetFactionInt = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetFaction"));
-                var targetOverrideFaction = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetOverrideFaction"));
+                var fStr = CoreScriptsSequence.GetArgument(c.arguments, "targetFaction");
+                var overrideFstr = CoreScriptsSequence.GetArgument(c.arguments, "targetOverrideFaction");
+                var targetFactionInt = string.IsNullOrEmpty(fStr) ? -1 : int.Parse(fStr);
+                var targetOverrideFaction = string.IsNullOrEmpty(overrideFstr) ? 0 : int.Parse(overrideFstr);
                 var targetCount = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetCount"));
                 int killCount = 0;
                 EntityFaction targetFaction = new();
@@ -206,10 +208,9 @@ public class CoreScriptsCondition : MonoBehaviour
     private static int EntityCheck(Entity entity, Condition c, ConditionBlock cb,
         bool nameMode, bool progressionFeedback, string targetID, EntityFaction targetFaction, int targetCount, int killCount)
     {
-
         if (((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
-            && (entity.faction.factionID == targetFaction.factionID || 
-            (targetFaction.overrideFaction != 0 && entity.faction.overrideFaction == targetFaction.overrideFaction)))
+            && (!nameMode || (entity.faction.factionID == targetFaction.factionID || 
+            (targetFaction.overrideFaction != 0 && entity.faction.overrideFaction == targetFaction.overrideFaction))))
         {
             killCount++;
 
