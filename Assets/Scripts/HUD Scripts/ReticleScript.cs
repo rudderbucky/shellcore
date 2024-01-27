@@ -299,11 +299,10 @@ public class ReticleScript : MonoBehaviour
                 if (targSys.GetTarget())
                 {
                     Draggable draggable = targSys.GetTarget().GetComponent<Draggable>();
-
                     // it's draggable if it's not an entity or it's a draggable entity with the same faction
                     if (draggable && (targSys.GetTarget().position - craft.transform.position).sqrMagnitude <= 400
                                   && (!targSys.GetTarget().GetComponent<Entity>()
-                                      || FactionManager.IsAllied(targSys.GetTarget().GetComponent<Entity>().faction.factionID, craft.faction.factionID) || craft.tractorSwitched))
+                                      || FactionManager.IsAllied(targSys.GetTarget().GetComponent<Entity>().faction, craft.faction) || craft.tractorSwitched))
                     {
                         craft.SetTractorTarget((craft.GetTractorTarget() == draggable) ? null : draggable);
                     }

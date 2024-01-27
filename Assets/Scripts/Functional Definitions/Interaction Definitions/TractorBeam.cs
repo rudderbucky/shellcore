@@ -314,7 +314,7 @@ public class TractorBeam : MonoBehaviour
     public static bool InvertTractorCheck(Entity owner, Draggable newTarget)
     {
         Entity requestedTarget = newTarget.gameObject.GetComponent<Entity>();
-        if (owner.tractorSwitched || !requestedTarget || (FactionManager.IsAllied(requestedTarget.faction.factionID, owner.faction.factionID) && (requestedTarget.isStandardTractorTarget)))
+        if (owner.tractorSwitched || !requestedTarget || (FactionManager.IsAllied(requestedTarget.faction, owner.faction) && (requestedTarget.isStandardTractorTarget)))
         {
             return true;
         }

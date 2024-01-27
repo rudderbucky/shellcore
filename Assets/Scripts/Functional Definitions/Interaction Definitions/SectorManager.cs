@@ -1182,7 +1182,8 @@ public class SectorManager : MonoBehaviour
         entity.faction.overrideFaction = data.overrideFaction;
         entity.spawnPoint = entity.transform.position = data.position;
         entity.blueprint = blueprint;
-        entity.isStandardTractorTarget = data.isStandardTractorTarget;
+        if (data.isStandardTractorTarget)
+            entity.isStandardTractorTarget = data.isStandardTractorTarget;
 
         if (entity is AirCraft airCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)
         {
