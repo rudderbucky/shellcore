@@ -10,6 +10,12 @@ SectorTrigger(
                     Call(Makeshift_spawnStage1),
                     Call(Makeshift_addStationDialogue)
                 )
+            ),
+            Comparison(
+                val1=$$$Makeshift_stage1,
+                val2=1,
+                comp=Neq,
+                sequence=()
             )
         ),
         ConditionBlock(
@@ -20,16 +26,15 @@ SectorTrigger(
                 sequence=(
                     Call(Makeshift_spawnStage2)
                 )
+            ),
+            Comparison(
+                val1=$$$Makeshift_stage2,
+                val2=1,
+                comp=Neq,
+                sequence=()
             )
         ),
         ConditionBlock(
-            Comparison(
-                val1=$$$Makeshift_stage3,
-                val2=1,
-                comp=Neq,
-                sequence=(
-                )
-            ),
             Comparison(
                 val1=$$$Makeshift_stage3,
                 val2=1,
@@ -37,7 +42,13 @@ SectorTrigger(
                 sequence=(
                     Call(Makeshift_spawnStage3)
                 )
-            )
+            ),
+            Comparison(
+                val1=$$$Makeshift_stage3,
+                val2=1,
+                comp=Neq,
+                sequence=()
+            ),
         )
     )
 )
