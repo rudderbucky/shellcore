@@ -40,7 +40,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         }
 
         var dwNotSelectionPhase = mode == BuilderMode.Workshop && !ShipBuilder.instance.GetDroneWorkshopSelectPhase();
-        var minCount = dwNotSelectionPhase ? -1 : ShipBuilder.instance.GetDronePartCount();
+        var minCount = dwNotSelectionPhase ? 0 : ShipBuilder.instance.GetDronePartCount();
         if (count > minCount)
         {
             if (mode == BuilderMode.Workshop)
