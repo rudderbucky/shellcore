@@ -87,6 +87,13 @@ D(
     )
 )
 
+Function(
+    name=Ascendance_leavePytha,
+    sequence=(
+        ClearFactionOverrides(),
+        FinishMusicOverride(),
+    )
+)
 
 Function(
     name=Ascendance_pythaFight,
@@ -188,6 +195,7 @@ Function(
             entityID=Ascendance_pytha_3,
             targetID=player,
         ),
+        StartMusicOverride(musicID=music_fast_5),
         ForceStartDialogue(dialogueID=Ascendance_cs0_p0_d)
     )
 )
@@ -226,7 +234,7 @@ Function(
                 sectorName=Infected Capitol Center,
                 invert=true,
                 sequence=(
-                    ClearFactionOverrides(),
+                    Call(Ascendance_leavePytha)
                 )
             )
         ),
@@ -379,7 +387,7 @@ Function(
                 sectorName=Infected Capitol Center,
                 invert=true,
                 sequence=(
-                    ClearFactionOverrides(),
+                    Call(Ascendance_leavePytha)
                 )
             )
         ),
@@ -580,7 +588,7 @@ Function(
                 sectorName=Infected Capitol Center,
                 invert=true,
                 sequence=(
-                    ClearFactionOverrides(),
+                    Call(Ascendance_leavePytha)
                 )
             )
         ),
@@ -1008,6 +1016,8 @@ Function(
         DeleteEntity(
             entityID=InfectedLeader
         ),
+        FinishMusicOverride(),
+        StopMusic(),
         FadeIntoBlack(
             color=(255,255,255),
             speedFactor=2,
@@ -1084,6 +1094,7 @@ Function(
             flagName=Ascendance-pytha-flag16
         ),
         Wait(time=2),
+        FinishMusicOverride(),
         ForceStartDialogue(
             dialogueID=Ascendance_cs4_p1_d
         )

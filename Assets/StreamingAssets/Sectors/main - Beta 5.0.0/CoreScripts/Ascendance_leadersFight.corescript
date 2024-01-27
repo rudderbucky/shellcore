@@ -8,6 +8,7 @@ Function(
             EnterSector(
                 sectorName=The Final Fight,
                 sequence=(
+                    StopMusic(),
                     Call(Ascendance_partsOff),
                     StartCutscene(),
                     FadeIntoBlack(),
@@ -16,11 +17,27 @@ Function(
                     Wait(time=1),
                     FadeOutOfBlack(),
                     Wait(time=2),
+                    StartMusicOverride(musicID=music_fast_6),
                     FinishCutscene(),
-                    Call(Ascendance_leadersFight_w1)
+                    Call(Ascendance_leadersFight_w1),
+                    ConditionBlock(
+                        EnterSector(
+                            sectorName=The Final Fight,
+                            invert=true,
+                            sequence=(   
+                                Call(Ascendance_leadersFightShortcut)
+                            )
+                        ),
+                        Comparison(
+                            val1=$$$Ascendance_checkpoint,
+                            val2=9,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )  
                 )
             )
-        )    
+        ),
     )
 )
 
@@ -33,6 +50,8 @@ Function(
                 sectorName=The Final Fight,
                 invert=true,
                 sequence=(
+                    ClearFactionOverrides(),
+                    FinishMusicOverride(),
                     SetPartDropRate(default=true),
                 )
             )
@@ -70,6 +89,7 @@ Function(
             faction=5,
             flagName=Ascendance-cs5-flag2
         ),
+        StopMusic(),
         SetPath(
             entityID=player,
             flagName=Ascendance-cs5-flag3,
@@ -286,7 +306,8 @@ Function(
     name=Ascendance_leadersFightStart,
     sequence=(
         Call(Ascendance_partsOff),
-        Call(Ascendance_leadersFight_w1),
+        StartMusicOverride(musicID=music_fast_6),
+        Call(Ascendance_leaderGrab_p3),
         ConditionBlock(
             EnterSector(
                 sectorName=The Final Fight,
@@ -1015,6 +1036,7 @@ Function(
     name=Ascendance_epilogue,
     sequence=(
         StartCutscene(),
+        FinishMusicOverride(),
         StopMusic(),
         StartCameraPan(
             flagName=Ascendance_infected_leader_spawn2,
