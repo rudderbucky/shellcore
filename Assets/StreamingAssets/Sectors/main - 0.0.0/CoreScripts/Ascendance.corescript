@@ -526,10 +526,6 @@ Function(
             targetEntityID=eleos
         ),
         ForceTractor(
-            entityID=Ascendance_nanoscope2,
-            targetEntityID=the-architect
-        ),
-        ForceTractor(
             entityID=Ascendance_nanoscope4,
             targetEntityID=prometheus
         ),
@@ -611,10 +607,6 @@ Function(
         ),
 
         DeleteEntity(
-            entityID=the-architect,
-        ),
-
-        DeleteEntity(
             entityID=prometheus,
         ),
 
@@ -644,7 +636,6 @@ Function(
             entityID=Ascendance_pytha_1,
             flagName=Ascendance-cs3-flag10,
             sequence=(
-                DisablePartyMember(entityID=the-architect),
                 Wait(time=2),
                 FinishTask(playSound=false),
                 AddTask(taskID=Ascendance_defeatPytha),
