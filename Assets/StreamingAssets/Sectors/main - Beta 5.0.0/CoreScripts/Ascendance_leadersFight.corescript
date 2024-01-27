@@ -17,7 +17,7 @@ Function(
                     FadeOutOfBlack(),
                     Wait(time=2),
                     FinishCutscene(),
-                    Call(Ascendance_leaderGrab_p3)
+                    Call(Ascendance_leadersFight_w1)
                 )
             )
         )    
@@ -285,6 +285,7 @@ Function(
 Function(
     name=Ascendance_leadersFightStart,
     sequence=(
+        Call(Ascendance_partsOff),
         Call(Ascendance_leadersFight_w1),
         ConditionBlock(
             EnterSector(
@@ -355,64 +356,101 @@ Function(
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
 
-        Wait(time=5),
+        ConditionBlock(
+            Time(
+                time=5,
+                sequence=(
 
-        SetVariable(name=$$Ascendance_bp, value=Block Core),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+                    SetVariable(name=$$Ascendance_bp, value=Block Core),
+                    SetVariable(name=$$Ascendance_faction, value=1),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
 
-        Wait(time=15),
+                    ConditionBlock(
+                        Time(
+                            time=15,
+                            sequence=(
+                                SetVariable(name=$$Ascendance_bp, value=Fake Heavy),
+                                SetVariable(name=$$Ascendance_faction, value=1),
+                                Call(Ascendance_spawnMinion),
 
-        SetVariable(name=$$Ascendance_bp, value=Fake Heavy),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
+                                SetVariable(name=$$Ascendance_bp, value=Southern Missile),
+                                SetVariable(name=$$Ascendance_faction, value=1),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                ConditionBlock(
+                                    Time(
+                                        time=20,
+                                        sequence=(
+                                            SetVariable(name=$$Ascendance_bp, value=Cruiser),
+                                            SetVariable(name=$$Ascendance_faction, value=1),
+                                            Call(Ascendance_spawnMinion),
 
-        SetVariable(name=$$Ascendance_bp, value=Southern Missile),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+                                            SetVariable(name=$$Ascendance_faction, value=0),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
 
-        Wait(time=20),
+                                            SetVariable(name=$$Ascendance_bp, value=Beamer),
+                                            SetVariable(name=$$Ascendance_faction, value=0),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
 
+                                            ConditionBlock(
+                                                Time(
+                                                    time=30,
+                                                    sequence=(
+                                                        SetVariable(name=$$Ascendance_flagCnt, value=0),
+                                                        SetVariable(name=$$Ascendance_bp, value=BattleCore1),
+                                                        SetVariable(name=$$Ascendance_faction, value=1),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
 
-
-        SetVariable(name=$$Ascendance_bp, value=Cruiser),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
-
-        SetVariable(name=$$Ascendance_faction, value=0),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        SetVariable(name=$$Ascendance_bp, value=Beamer),
-        SetVariable(name=$$Ascendance_faction, value=0),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        Wait(time=30),
-
-
-        SetVariable(name=$$Ascendance_flagCnt, value=0),
-        SetVariable(name=$$Ascendance_bp, value=BattleCore1),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        SetVariable(name=$$Ascendance_flagCnt, value=10),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+                                                        SetVariable(name=$$Ascendance_flagCnt, value=10),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                    )
+                                                ),
+                                                EnterSector(
+                                                    sectorName=The Final Fight,
+                                                    invert=true,
+                                                    sequence=()
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    EnterSector(
+                                        sectorName=The Final Fight,
+                                        invert=true,
+                                        sequence=()
+                                    )
+                                )
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=The Final Fight,
+                            invert=true,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            EnterSector(
+                sectorName=The Final Fight,
+                invert=true,
+                sequence=()
+            )
+        )
     )
 )
 
@@ -474,53 +512,83 @@ Function(
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
 
-        Wait(time=15),
-
-        SetVariable(name=$$Ascendance_bp, value=Advanced Scout),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        Wait(time=45),
-
-        SetVariable(name=$$Ascendance_bp, value=Heavy Scouter),
-        SetVariable(name=$$Ascendance_faction, value=0),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        Wait(time=30),
-
-        SetVariable(name=$$Ascendance_bp, value=Frigate),
-        SetVariable(name=$$Ascendance_faction, value=0),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+        ConditionBlock(
+            Time(
+                time=15,
+                sequence=(
+                    SetVariable(name=$$Ascendance_bp, value=Advanced Scout),
+                    SetVariable(name=$$Ascendance_faction, value=1),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    ConditionBlock(
+                        Time(
+                            time=45,
+                            sequence=(
 
 
-        SetVariable(name=$$Ascendance_bp, value=Shoot Things),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+                                SetVariable(name=$$Ascendance_bp, value=Heavy Scouter),
+                                SetVariable(name=$$Ascendance_faction, value=0),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                ConditionBlock(
+                                    Time(
+                                        time=30,
+                                        sequence=(
+                                            SetVariable(name=$$Ascendance_bp, value=Frigate),
+                                            SetVariable(name=$$Ascendance_faction, value=0),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
 
-        SetVariable(name=$$Ascendance_bp, value=Defense Core),
-        SetVariable(name=$$Ascendance_faction, value=1),
-        Call(Ascendance_spawnMinion),
+
+                                            SetVariable(name=$$Ascendance_bp, value=Shoot Things),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+
+                                            SetVariable(name=$$Ascendance_bp, value=Defense Core),
+                                            SetVariable(name=$$Ascendance_faction, value=1),
+                                            Call(Ascendance_spawnMinion),
+                                        )
+                                    ),
+                                    EnterSector(
+                                        sectorName=The Final Fight,
+                                        invert=true,
+                                        sequence=()
+                                    )
+                                )
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=The Final Fight,
+                            invert=true,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            EnterSector(
+                sectorName=The Final Fight,
+                invert=true,
+                sequence=()
+            )
+        )
     )
 )
 
@@ -615,61 +683,101 @@ Function(
         Call(Ascendance_spawnMinion),
         Call(Ascendance_spawnMinion),
 
-        Wait(time=15),
-        SetVariable(name=$$Ascendance_flagCnt, value=0),
-        SetVariable(name=$$Ascendance_bp, value=Hornet),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+        ConditionBlock(
+            Time(
+                time=15,
+                sequence=(
+                    SetVariable(name=$$Ascendance_flagCnt, value=0),
+                    SetVariable(name=$$Ascendance_bp, value=Hornet),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
 
-        SetVariable(name=$$Ascendance_bp, value=Brawler),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+                    SetVariable(name=$$Ascendance_bp, value=Brawler),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    Call(Ascendance_spawnMinion),
+                    ConditionBlock(
+                        Time(
+                            time=15,
+                            sequence=(
 
-        Wait(time=15),
+                                SetVariable(name=$$Ascendance_bp, value=Hellwing),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                Call(Ascendance_spawnMinion),
+                                ConditionBlock(
+                                    Time(
+                                        time=15,
+                                        sequence=(
 
-        SetVariable(name=$$Ascendance_bp, value=Hellwing),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        Wait(time=15),
-
-        SetVariable(name=$$Ascendance_bp, value=Hulk),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-
-        Wait(time=15),
-
-        SetVariable(name=$$Ascendance_bp, value=Tarantula),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
-        Call(Ascendance_spawnMinion),
+                                            SetVariable(name=$$Ascendance_bp, value=Hulk),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            Call(Ascendance_spawnMinion),
+                                            ConditionBlock(
+                                                Time(
+                                                    time=15,
+                                                    sequence=(
+                                                        SetVariable(name=$$Ascendance_bp, value=Tarantula),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                        Call(Ascendance_spawnMinion),
+                                                    )
+                                                ),
+                                                EnterSector(
+                                                    sectorName=The Final Fight,
+                                                    invert=true,
+                                                    sequence=()
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    EnterSector(
+                                        sectorName=The Final Fight,
+                                        invert=true,
+                                        sequence=()
+                                    )
+                                ) 
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=The Final Fight,
+                            invert=true,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            EnterSector(
+                sectorName=The Final Fight,
+                invert=true,
+                sequence=()
+            )
+        )
     )
 )
 
@@ -831,7 +939,7 @@ Function(
 
 Text("Ascendance_leaderGrab_d1", "YOU WRETCH! WE WILL LIBERATE YOU ALL. YOU WILL NOT RESIST.")
 Text("Ascendance_leaderGrab_d2", "YOU WON'T GET AWAY THIS TIME.")
-Text("Ascendance_leaderGrab_d3", "DIE SO THAT WE MAY BE FREE!!!")
+Text("Ascendance_leaderGrab_d3", "DIE SO THAT WE MAY BE FREE!")
 Text("Ascendance_leaderGrab_d4", "I need to destroy the Infected Leader before they use their weapon on me!")
 
 Function(
@@ -846,7 +954,7 @@ Function(
             blueprintJSON=Infected Leader,
         ),
         PassiveDialogue(entityID=InfectedLeader, text=$$Ascendance_leaderGrab_d),
-        PassiveDialogue(entityID=player, text=Ascendance_leaderGrab_d2),
+        PassiveDialogue(entityID=player, text=Ascendance_leaderGrab_d4),
         SetImmobile(
             entityID=InfectedLeader,
             immobile=true

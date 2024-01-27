@@ -8,7 +8,7 @@ MissionTrigger(
     prerequisites=(Legend_missionName),
     episode=4,
     sequence=(
-        SetVariable(name=$$$Ascendance_checkpoint, value=6),
+        SetVariable(name=$$$Ascendance_checkpoint, value=7),
         Call(Ascendance_start)
     )
 )
@@ -214,7 +214,8 @@ Function(
 
 Task(
     taskID=Ascendance_kappa,
-    objectives=Ascendance_kappa_objectives
+    objectives=Ascendance_kappa_objectives,
+    reputationReward=10000,
 )
 Text("Ascendance_kappa_objectives", "- Meet Daayo at Kappa to begin converting DeadZones.")
 
