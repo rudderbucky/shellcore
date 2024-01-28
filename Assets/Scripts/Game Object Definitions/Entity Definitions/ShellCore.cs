@@ -120,6 +120,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         ActivatePassives();
         HealToMax();
         UpdateColliders();
+        CalculatePhysicsConstants();
+
         isYardRepairing = false;
     }
 
