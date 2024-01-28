@@ -665,6 +665,10 @@ Function(
             entityID=fake-daayo,
             overrideFaction=1,
         ),
+        SetOverrideFaction(
+            entityID=the-architect,
+            overrideFaction=1,
+        ),
         ConditionBlock(
             EnterSector(
                 sectorName=Jump Sector,
@@ -682,6 +686,11 @@ Function(
                         entityID=fake-daayo,
                         overrideFaction=0,
                     ),
+                    SetOverrideFaction(
+                        entityID=the-architect,
+                        overrideFaction=0,
+                    ),
+
 
                 )
             )
