@@ -39,8 +39,8 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 #endif
         }
 
-        var dwNotSelectionPhase = mode == BuilderMode.Workshop && !ShipBuilder.instance.GetDroneWorkshopSelectPhase();
-        var minCount = dwNotSelectionPhase ? 1 : ShipBuilder.instance.GetDronePartCount();
+        var onlyNeedOne = mode != BuilderMode.Workshop || ShipBuilder.instance.GetDroneWorkshopSelectPhase();
+        var minCount = onlyNeedOne ? 1 : ShipBuilder.instance.GetDronePartCount();
         if (count < minCount)
         {
             return;
@@ -54,7 +54,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
 
         var builderPart = InstantiatePart();
-        DecrementCount(false, dwNotSelectionPhase);
+        DecrementCount(false, !onlyNeedOne);
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader)
@@ -70,7 +70,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
             }
         }
 
-        SymmetryGrabPart(minCount * 2, builderPart, dwNotSelectionPhase);
+        SymmetryGrabPart(minCount * 2, builderPart, !onlyNeedOne);
     }
 
     private void DroneWorkshopStartBuildPhase()
@@ -110,7 +110,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         }
     }
 
-    private void SymmetryGrabPart(int minCount, ShipBuilderPart builderPart, bool dwNotSelectionPhase)
+    private void SymmetryGrabPart(int minCount, ShipBuilderPart builderPart, bool onlyNeedOne)
     {
         ShipBuilderPart symmetryPart = count > minCount && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
         if (symmetryPart)
@@ -126,7 +126,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         cursor.GrabPart(builderPart, symmetryPart);
         if (symmetryPart)
         {
-            DecrementCount(false, dwNotSelectionPhase);
+            DecrementCount(false, onlyNeedOne);
         }
 
         cursor.buildValue += EntityBlueprint.GetPartValue(part);
