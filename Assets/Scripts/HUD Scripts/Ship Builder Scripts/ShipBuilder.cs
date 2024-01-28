@@ -1726,7 +1726,7 @@ public class ShipBuilder : GUIWindowScripts
             if (partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "")
             {
                 if (displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)] && 
-                    (mode != BuilderMode.Workshop || ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size == 0))
+                    (mode != BuilderMode.Workshop || GetDroneWorkshopSelectPhase() || ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size == 0))
                 {
                     inv.gameObject.SetActive(true);
                     contentTexts[ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size].SetActive(true);
