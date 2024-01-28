@@ -70,7 +70,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
             }
         }
 
-        SymmetryGrabPart(minCount * 2, builderPart, !onlyNeedOne);
+        SymmetryGrabPart(minCount, builderPart, !onlyNeedOne);
     }
 
     private void DroneWorkshopStartBuildPhase()
@@ -112,7 +112,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
     private void SymmetryGrabPart(int minCount, ShipBuilderPart builderPart, bool onlyNeedOne)
     {
-        ShipBuilderPart symmetryPart = count > minCount && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
+        ShipBuilderPart symmetryPart = count >= minCount && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
         if (symmetryPart)
         {
             //if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
