@@ -787,6 +787,10 @@ public class ShipBuilder : GUIWindowScripts
             AddPart(part);
         }
         LoadBlueprint(DroneUtilities.GetDroneSpawnDataByShorthand(info.secondaryData).drone);
+        foreach (var part in cursorScript.parts)
+        {
+            part.mode = BuilderMode.Workshop;
+        }
     }
 
     private string blueprintCoreShellSpriteId;
