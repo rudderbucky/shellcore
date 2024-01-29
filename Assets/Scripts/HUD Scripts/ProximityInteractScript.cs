@@ -69,6 +69,7 @@ public class ProximityInteractScript : MonoBehaviour
             if (!Input.GetKeyDown((1 + i).ToString())) continue;
             vendorUI.SetVendor(vendor, player);
             vendorUI.onButtonPressed(i);
+            break;
         }
     }
 
