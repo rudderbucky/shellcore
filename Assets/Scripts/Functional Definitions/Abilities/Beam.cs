@@ -89,7 +89,7 @@ public class Beam : WeaponAbility
 
     protected virtual void Update()
     {
-        if (DialogueSystem.isInCutscene)
+        if (DialogueSystem.isInCutscene || (Core && Core.IsInvisible))
         {
             line.startWidth = line.endWidth = 0;
             firing = false;
