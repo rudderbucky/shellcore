@@ -532,17 +532,21 @@ public class ShellPart : MonoBehaviour
             partSysColorMod.color = new ParticleSystem.MinMaxGradient(color);
         }
 
+        SetPartShader(color);
+    }
 
+    private void SetPartShader(Color color)
+    {
         if (block == null)
         {
             block = new();
-            if (spriteRenderer && spriteRenderer.sprite)
+            if (spriteRenderer && spriteRenderer.sprite && spriteRenderer.sprite.texture)
                 block.SetTexture("_MainTex", spriteRenderer.sprite.texture);
         }
         if (block != null)
         {
             block.SetColor("_PerRendColor", color);
-            if (craft.blueprint.coreShellSpriteID.Contains("station_sprite"))
+            if (craft && craft.blueprint && !string.IsNullOrEmpty(craft.blueprint.coreShellSpriteID) && craft.blueprint.coreShellSpriteID.Contains("station_sprite"))
             {
                 block.SetFloat("_Min", 0.07F);
             }
@@ -550,6 +554,9 @@ public class ShellPart : MonoBehaviour
                 block.SetFloat("_Symmetry", 0);
             else block.SetFloat("_Symmetry", 1);
         }
-        if (shaderMaterials != null && shaderMaterials.Count > 0 && block != null) spriteRenderer.SetPropertyBlock(block);
+        if (shaderMaterials != null
+            && shaderMaterials.Count > 0
+            && block != null
+            && spriteRenderer) spriteRenderer.SetPropertyBlock(block);
     }
 }
