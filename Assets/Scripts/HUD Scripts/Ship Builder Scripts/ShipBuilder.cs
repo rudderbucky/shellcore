@@ -64,6 +64,8 @@ public class ShipBuilder : GUIWindowScripts
     private ShpBuilderSearch searchBar;
     [SerializeField]
     private ShipBuilderPartDisplay partDisplay;
+    [SerializeField]
+    private RectTransform partsListScrollViewRectTransform;
 
     public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
     {
@@ -1686,12 +1688,15 @@ public class ShipBuilder : GUIWindowScripts
 
     public EntityBlueprint.PartInfo? GetInfoForHoveredPart()
     {
-        foreach (ShipBuilderInventoryScript inv in partDict.Values)
+        if (RectTransformUtility.RectangleContainsScreenPoint(partsListScrollViewRectTransform, Input.mousePosition))
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition)
-                && inv.gameObject.activeSelf)
+            foreach (ShipBuilderInventoryScript inv in partDict.Values)
             {
-                return inv.part;
+                if (RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition)
+                    && inv.gameObject.activeSelf)
+                {
+                    return inv.part;
+                }
             }
         }
 
