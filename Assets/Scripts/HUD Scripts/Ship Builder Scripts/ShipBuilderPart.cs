@@ -94,35 +94,32 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
         {
             image.color = (info.isInChain && info.validPos ? mainColor : mainColor - new Color(0, 0, 0, 0.5F));
 
-            if (ShipBuilderCursorScript.isMouseOnGrid)
+            switch (cursorScript.symmetryMode)
             {
-                switch (cursorScript.symmetryMode)
-                {
-                    case ShipBuilderCursorScript.SymmetryMode.X:
-                    case ShipBuilderCursorScript.SymmetryMode.Y:
-                        var symVec = cursorScript.GetSymmetrizedVector(rectTransform.anchoredPosition, cursorScript.symmetryMode);
-                        var symmetryPart = cursorScript.FindPart(symVec, this);
-                        var onAxis = false;
-                        if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
-                        {
-                            onAxis = Mathf.Abs(rectTransform.anchoredPosition.y) < ShipBuilderCursorScript.stepSize;
-                        }
+                case ShipBuilderCursorScript.SymmetryMode.X:
+                case ShipBuilderCursorScript.SymmetryMode.Y:
+                    var symVec = cursorScript.GetSymmetrizedVector(rectTransform.anchoredPosition, cursorScript.symmetryMode);
+                    var symmetryPart = cursorScript.FindPart(symVec, this);
+                    var onAxis = false;
+                    if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
+                    {
+                        onAxis = Mathf.Abs(rectTransform.anchoredPosition.y) < ShipBuilderCursorScript.stepSize;
+                    }
 
-                        if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
-                        {
-                            onAxis = Mathf.Abs(rectTransform.anchoredPosition.x) < ShipBuilderCursorScript.stepSize;
-                        }
+                    if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
+                    {
+                        onAxis = Mathf.Abs(rectTransform.anchoredPosition.x) < ShipBuilderCursorScript.stepSize;
+                    }
 
-                        if ((!symmetryPart || (symmetryPart.rectTransform.anchoredPosition - symVec).sqrMagnitude >
-                            ShipBuilderCursorScript.stepSize) && !onAxis)
-                        {
-                            image.color = FactionManager.GetFactionColor(1);
-                        }
+                    if ((!symmetryPart || (symmetryPart.rectTransform.anchoredPosition - symVec).sqrMagnitude >
+                        ShipBuilderCursorScript.stepSize) && !onAxis)
+                    {
+                        image.color = FactionManager.GetFactionColor(1);
+                    }
 
-                        break;
-                    default:
-                        break;
-                }
+                    break;
+                default:
+                    break;
             }
 
             image.material = null;

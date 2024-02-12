@@ -34,7 +34,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     bool clickedOnce;
     float timer;
 
-    public static bool isMouseOnGrid = false;
+    public bool IsMouseOnGrid => RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
 
     private float zoomMax = 2.5f;
     private float zoomMin = 0.5f;
@@ -274,19 +274,17 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
     }
 
-    public EntityBlueprint.PartInfo? GetPartCursorIsOn()
+    public EntityBlueprint.PartInfo? GetInfoForHoveredPartInGrid()
     {
-        foreach (ShipBuilderPart part in parts)
+        if (IsMouseOnGrid)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition))
+            foreach (ShipBuilderPart part in parts)
             {
-                return part.info;
+                if (RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition))
+                {
+                    return part.info;
+                }
             }
-        }
-
-        if (builder is ShipBuilder shipBuilder)
-        {
-            return shipBuilder.RequestInventoryMouseOverInfo();
         }
 
         return null;
@@ -417,8 +415,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     void Update()
     {
         UpdateCompact();
-
-        isMouseOnGrid = RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
 
         if (clickedOnce)
         {
@@ -572,11 +568,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     // symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
     public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart, bool useBounds = false)
     {
-        if (!isMouseOnGrid)
-        {
-            return null;
-        }
-
         for (int i = parts.Count - 1; i >= 0; i--)
         {
             var origPos = transform.position;
@@ -678,7 +669,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     private void HandleZooming()
     {
-        if (Input.mouseScrollDelta.y == 0 || !isMouseOnGrid || !PointerOverDetector.isPointerOver)
+        if (Input.mouseScrollDelta.y == 0 || !IsMouseOnGrid || !PointerOverDetector.isPointerOver)
         {
             return;
         }
