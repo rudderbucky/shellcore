@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -426,14 +427,12 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
         int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 
+        // Would make more sense in ShipBuilder.cs alongside the other shortcut checks in Update
         if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.activeSelf && !WCWorldIO.active))
         {
-            if (builder as ShipBuilder == null || !(builder as ShipBuilder).Equals(null))
+            if (!builder.GetComponentsInChildren<InputField>().ToArray().Any(field => field.isFocused))
             {
-                if (!(new List<InputField>((builder as ShipBuilder).GetComponentsInChildren<InputField>())).Exists(f => f.isFocused))
-                {
-                    ClearAllParts();
-                }
+                builder.RequestClearParts();
             }
         }
 

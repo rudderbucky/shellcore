@@ -66,6 +66,8 @@ public class ShipBuilder : GUIWindowScripts
     private ShipBuilderPartDisplay partDisplay;
     [SerializeField]
     private RectTransform partsListScrollViewRectTransform;
+    [SerializeField]
+    private GameObject clearConfirmerBox;
 
     public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
     {
@@ -1600,6 +1602,19 @@ public class ShipBuilder : GUIWindowScripts
 #endif
 
         NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();
+    }
+
+    public void RequestClearParts()
+    {
+        if (clearConfirmerBox.activeSelf)
+        {
+            clearConfirmerBox.SetActive(false);
+            cursorScript.ClearAllParts();
+        }
+        else
+        {
+            clearConfirmerBox.SetActive(true);
+        }
     }
 
     protected override void Update()
