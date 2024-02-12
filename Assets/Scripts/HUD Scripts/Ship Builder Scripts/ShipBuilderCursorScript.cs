@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 {
+    private const float ZoomMax = 2.5f;
+    private const float ZoomMin = 0.5f;
+    private const float ZoomStep = 0.1f;
+    
     public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
     public Canvas canvas;
     public RectTransform grid;
@@ -36,18 +40,10 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     public bool IsMouseOnGrid => RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
 
-    private float zoomMax = 2.5f;
-    private float zoomMin = 0.5f;
-    private float zoomStep = 0.1f;
-    private float zoom;
     private float Zoom
     {
-        get { return zoom; }
-        set
-        {
-            zoom = value;
-            grid.localScale = new Vector3(1, 1, 0) * value;
-        }
+        get => grid.localScale.x;
+        set => grid.localScale = new Vector3(1, 1, 0) * value;
     }
 
     public void SetMode(BuilderMode mode)
@@ -160,7 +156,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                     ? ShipBuilder.TransferMode.Return
                     : ShipBuilder.TransferMode.Buy);
             }
-            else if (!isMouseOnGrid)
+            else if (!IsMouseOnGrid)
             {
                 dispatch = true;
                 mode = ShipBuilder.TransferMode.Return;
@@ -676,7 +672,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
         float oldZoom = Zoom;
 
-        Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * zoomStep * Zoom, zoomMin, zoomMax);
+        Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * ZoomStep * Zoom, ZoomMin, ZoomMax);
 
         // Move grid to keep mouse at the same position after zooming
         Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - grid.position) / oldZoom;
