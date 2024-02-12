@@ -62,6 +62,8 @@ public class ShipBuilder : GUIWindowScripts
     private GameObject jsonButtonHolder;
     [SerializeField]
     private ShpBuilderSearch searchBar;
+    [SerializeField]
+    private GameObject clearConfirmerBox;
 
     public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
     {
@@ -1599,6 +1601,20 @@ public class ShipBuilder : GUIWindowScripts
 
         NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();
     }
+
+    public void RequestClearParts()
+    {
+        if (clearConfirmerBox.activeSelf)
+        {
+            clearConfirmerBox.SetActive(false);
+            cursorScript.ClearAllParts();
+        }
+        else
+        {
+            clearConfirmerBox.SetActive(true);
+        }
+    }
+
 
     protected override void Update()
     {

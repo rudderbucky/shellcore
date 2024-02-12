@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -436,12 +437,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
         if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.activeSelf && !WCWorldIO.active))
         {
-            if (builder as ShipBuilder == null || !(builder as ShipBuilder).Equals(null))
+            if (!builder.GetComponentsInChildren<InputField>().ToArray().Any(inputField => inputField.isFocused))
             {
-                if (!(new List<InputField>((builder as ShipBuilder).GetComponentsInChildren<InputField>())).Exists(f => f.isFocused))
-                {
-                    ClearAllParts();
-                }
+                builder.RequestClearParts();
             }
         }
 
