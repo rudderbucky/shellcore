@@ -1606,8 +1606,7 @@ public class ShipBuilder : GUIWindowScripts
     {
         base.Update();
 
-        if (Time.frameCount % 2 == 0) // UpdatePartInfo() can be pretty expensive.
-            UpdatePartInfo();
+        UpdatePartInfo();
         
         if (!editorMode)
         {
