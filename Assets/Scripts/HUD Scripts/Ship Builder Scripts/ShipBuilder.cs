@@ -63,6 +63,10 @@ public class ShipBuilder : GUIWindowScripts
     [SerializeField]
     private ShpBuilderSearch searchBar;
     [SerializeField]
+    private ShipBuilderPartDisplay partDisplay;
+    [SerializeField]
+    private RectTransform partsListScrollViewRectTransform;
+    [SerializeField]
     private GameObject clearConfirmerBox;
 
     public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
@@ -823,8 +827,6 @@ public class ShipBuilder : GUIWindowScripts
         Activate();
         cursorScript.gameObject.SetActive(false);
         cursorScript.SetBuilder(this, droneWorkshopPhaseHider);
-
-        GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
 
         // set up actual stats
         this.mode = mode;
@@ -1619,6 +1621,9 @@ public class ShipBuilder : GUIWindowScripts
     protected override void Update()
     {
         base.Update();
+
+        UpdatePartInfo();
+        
         if (!editorMode)
         {
             if ((player.transform.position - yardPosition).sqrMagnitude > 200 || player.GetIsDead())
@@ -1696,14 +1701,17 @@ public class ShipBuilder : GUIWindowScripts
         public List<EntityBlueprint.PartInfo> parts;
     }
 
-    public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn()
+    public EntityBlueprint.PartInfo? GetInfoForHoveredPart()
     {
-        foreach (ShipBuilderInventoryScript inv in partDict.Values)
+        if (RectTransformUtility.RectangleContainsScreenPoint(partsListScrollViewRectTransform, Input.mousePosition))
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition)
-                && inv.gameObject.activeSelf)
+            foreach (ShipBuilderInventoryScript inv in partDict.Values)
             {
-                return inv.part;
+                if (RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition)
+                    && inv.gameObject.activeSelf)
+                {
+                    return inv.part;
+                }
             }
         }
 
@@ -1716,7 +1724,7 @@ public class ShipBuilder : GUIWindowScripts
             }
         }
 
-        return null;
+        return cursorScript.GetInfoForHoveredPartInGrid();
     }
 
     public void ChangeDisplayFactors()
@@ -1835,6 +1843,20 @@ public class ShipBuilder : GUIWindowScripts
         ChangeDisplayFactors();
     }
 
+    private void UpdatePartInfo()
+    {
+        EntityBlueprint.PartInfo? part = GetInfoForHoveredPart();
+
+        if (part != null)
+        {
+            partDisplay.DisplayPartInfo((EntityBlueprint.PartInfo)part);
+        }
+        else
+        {
+            partDisplay.SetInactive();
+        }
+    }
+
     public override bool GetActive()
     {
         return gameObject.activeSelf;
@@ -1849,31 +1871,5 @@ public class ShipBuilder : GUIWindowScripts
         }
 
         base.OnPointerDown(eventData);
-    }
-
-    public EntityBlueprint.PartInfo? RequestInventoryMouseOverInfo()
-    {
-        foreach (var part in partDict)
-        {
-            if (RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition) &&
-                part.Value.gameObject.activeSelf)
-            {
-                return part.Key;
-            }
-        }
-
-        if (traderPartDict != null)
-        {
-            foreach (var part in traderPartDict)
-            {
-                if (RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition) &&
-                    part.Value.gameObject.activeSelf)
-                {
-                    return part.Key;
-                }
-            }
-        }
-
-        return null;
     }
 }
