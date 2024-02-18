@@ -1,0 +1,2712 @@
+SectorTrigger(
+    sectorName=BattleZone Xi,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$$BZXiVictoryBool,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SetSectorColor(
+                        color=(0,103,0)
+                    ),
+                    Call(BZXiRemoveAllCarrierAndGroundBaseAndGS),
+                    Call(BZXiDefectedCarrier1DeathHelper),
+                    Call(BZXiDefectedBase1DeathHelper),
+                    Call(BZXiPostVictoryDialogue),
+                    ConditionBlock(
+                        DestroyEntities(
+                            targetID=BZXiDefectedCommander1,
+                            progressionFeedback=false,
+                            targetCount=1,
+                            sequence=(
+                                Call(BZXiDefectedBase2DeathHelper)
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=BattleZone Xi,
+                            invert=true,
+                            sequence=()
+                        )
+                    ),
+                    ConditionBlock(
+                        DestroyEntities(
+                            targetID=BZXiDefectedCommander2,
+                            progressionFeedback=false,
+                            targetCount=1,
+                            sequence=(
+                                Call(BZXiDefectedBase3DeathHelper)
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=BattleZone Xi,
+                            invert=true,
+                            sequence=()
+                        )
+                    ),
+                    ConditionBlock(
+                        DestroyEntities(
+                            targetID=BZXiDefectedCommander3,
+                            progressionFeedback=false,
+                            targetCount=1,
+                            sequence=(
+                                Call(BZXiDefectedBase4DeathHelper)
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=BattleZone Xi,
+                            invert=true,
+                            sequence=()
+                        )
+                    ),
+                    ConditionBlock(
+                        DestroyEntities(
+                            targetID=BZXiDefectedCommander4,
+                            progressionFeedback=false,
+                            targetCount=1,
+                            sequence=(
+                                Call(BZXiDefectedBase5DeathHelper)
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=BattleZone Xi,
+                            invert=true,
+                            sequence=()
+                        )
+                    ),
+                    ConditionBlock(
+                        DestroyEntities(
+                            targetID=BZXiDefectedCommander5,
+                            progressionFeedback=false,
+                            targetCount=1,
+                            sequence=(
+                                Call(BZXiDefectedBase6DeathHelper)
+                            )
+                        ),
+                        EnterSector(
+                            sectorName=BattleZone Xi,
+                            invert=true,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$$BZXiVictoryBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedBaseMaster),
+                    Call(BZXiCarrierMaster),
+                    Call(BZXiTankSpawnMaster),
+                    Call(BZXiDefectedGSMaster),
+                    Call(BZXiDialogueMaster)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        ),
+        ConditionBlock(
+            WinBattleZone(
+                sectorName=BattleZone Xi,
+                sequence=(
+                    SetVariable(name=$$$BZXiVictoryBool, value=1),
+                    SetSectorColor(
+                        color=(0,103,0)
+                    ),
+                    Wait(time=0.01),
+                    SetSectorType(type=Neutral),
+                    DeleteEntity(
+                        entityID=BZXiBatteryCarrier1
+                    ),
+                    SpawnEntity(
+                        assetID=yard_blueprint,
+                        entityID=BZXiBatteryCarrier2,
+                        blueprintJSON=XiBatteryCarrierNoSpawn,
+                        flagName=BZXiDefectedCarrierF1,
+                        name=Battery Station,
+                        faction=0
+                    ),
+                    Wait(time=0.01),
+                    Call(BZXiPostVictoryDialogue),
+                    Call(BZXiPostVictoryDialogue2)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+// TODO: add afterVictory mechanic, and dialogue
+// TANKSPAWN MECHANIC MASTERFUNCTION
+Function(
+    name=BZXiTankSpawnMaster,
+    sequence=(
+        SetVariable(name=$$BZXiBaseDeathCount, value=0),
+        SetVariable(name=$$BZXiAllyBaseDeathBool, value=0),
+        SetVariable(name=$$BZXiDialogueHelper1, value=BZXiBase1),
+        Call(BZXiAlliedTankWaveBegin),
+        Call(BZXiDefectedTankWaveBegin),
+        Call(BZXiAlliedBaseDeathCheck),
+        Call(BZXiAlliedBaseDeathCheck2)
+    )
+)
+
+// Allied tank cycle
+Function(
+    name=BZXiAlliedTankWaveBegin,
+    sequence=(
+        Call(BZXiAlliedTankWaveMono),
+        Call(BZXiAlliedBaseSwitchChecker),
+        Call(BZXiAlliedTankWaveRecursive)
+    )
+)
+
+// detect when your base dies, and maybe do some more stuff
+Function(
+    name=BZXiAlliedBaseDeathCheck,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiBase1,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    SetVariable(name=$$BZXiAllyBaseDeathBool, value=1),
+                    Call(BZXiPunisher)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+// detect when your 2nd base dies, and maybe do some more stuff
+Function(
+    name=BZXiAlliedBaseDeathCheck2,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiBase2,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    SetVariable(name=$$BZXiAllyBaseDeathBool, value=1),
+                    Call(BZXiPunisher)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+// Supposed to END you when you fail to protect your base
+Function(
+    name=BZXiPunisher,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase1DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(Call(BZXiDefectedBase1DeathHelper))
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase2DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(Call(BZXiDefectedBase2DeathHelper))
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase3DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(Call(BZXiDefectedBase3DeathHelper))
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase5DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(Call(BZXiDefectedBase5DeathHelper))
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase6DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(Call(BZXiDefectedBase6DeathHelper))
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+        
+    )
+)
+
+// detect when your base relocates
+Function(
+    name=BZXiAlliedBaseSwitchChecker,
+    sequence=(
+        SetVariable(name=$$BZXiBaseSwitchBool, value=0),
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase4,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    SetVariable(name=$$BZXiDialogueHelper1, value=BZXiBase2),
+                    SetVariable(name=$$BZXiBaseSwitchBool, value=1)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+// when the game detects your base's death, or when the map loses all defected bases, the wave ends
+Function(
+    name=BZXiAlliedTankWaveRecursive,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiAllyBaseDeathBool,
+                val2=0,
+                comp=Gt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=6,
+                comp=Eq,
+                sequence=()
+            ),
+            Time(
+                time=20,
+                sequence=(
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseSwitchBool,
+                            val2=0,
+                            comp=Eq,
+                            sequence=(Call(BZXiAlliedTankWaveMono))
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseSwitchBool,
+                            val2=1,
+                            comp=Eq,
+                            sequence=(Call(BZXiAlliedTankWaveDi))
+                        )
+                    ),
+                    Call(BZXiAlliedTankWaveRecursive)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiAlliedTankWaveMono,
+    sequence=(
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiTankSpawn1,
+            faction=0
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiTankSpawn1,
+            faction=0
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=beam_tank,
+            flagName=BZXiTankSpawn1,
+            faction=0
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=siege_tank,
+            flagName=BZXiTankSpawn1,
+            faction=0
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=siege_tank,
+                        flagName=BZXiTankSpawn1,
+                        faction=0
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=rocket_tank,
+                        flagName=BZXiTankSpawn1,
+                        faction=0
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=rocket_tank,
+                        flagName=BZXiTankSpawn1,
+                        faction=0
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiTankSpawn1,
+                                    faction=0
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=beam_tank,
+                                    flagName=BZXiTankSpawn1,
+                                    faction=0
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=laser_tank,
+                                    flagName=BZXiTankSpawn1,
+                                    faction=0
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiAlliedTankWaveDi,
+    sequence=(
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiTankSpawn2,
+            faction=0
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiTankSpawn2,
+            faction=0
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=beam_tank,
+            flagName=BZXiTankSpawn2,
+            faction=0
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=siege_tank,
+            flagName=BZXiTankSpawn2,
+            faction=0
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=siege_tank,
+                        flagName=BZXiTankSpawn2,
+                        faction=0
+                    ),
+                    Wait(time=0.2),
+                    Call(BZXiAlliedTankWaveRocketSpawn2),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiTankSpawn2,
+                                    faction=0
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=beam_tank,
+                                    flagName=BZXiTankSpawn2,
+                                    faction=0
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=laser_tank,
+                                    flagName=BZXiTankSpawn2,
+                                    faction=0
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiAlliedTankWaveRocketSpawn2,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiCarriersEliminatedBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    SpawnEntity(
+                        assetID=rocket_tank,
+                        flagName=BZXiTankSpawn2,
+                        faction=0
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=rocket_tank,
+                        flagName=BZXiTankSpawn2,
+                        faction=0
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiCarriersEliminatedBool,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    SpawnEntity(
+                        assetID=beam_tank,
+                        flagName=BZXiTankSpawn2,
+                        faction=0
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=bullet_tank,
+                        flagName=BZXiTankSpawn2,
+                        faction=0
+                    )
+                )
+            )
+        )
+    )
+)
+
+// Defected tank cycle
+Function(
+    name=BZXiDefectedTankWaveBegin,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier1,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedTankWaveBundle),
+                    Call(BZXiDefectedTankWaveRecursive)
+                )
+            ),
+            DestroyEntities(
+                targetID=BZXiDefectedGS1,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedTankWaveBundle),
+                    Call(BZXiDefectedTankWaveRecursive)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWaveRecursive,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiAllyBaseDeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            ),
+            Time(
+                time=20,
+                sequence=(
+                    Call(BZXiDefectedTankWaveBundle),
+                    Call(BZXiDefectedTankWaveRecursive)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWaveBundle,
+    sequence=(
+        Call(BZXiDefectedTankWave1),
+        Call(BZXiDefectedTankWave2),
+        Call(BZXiDefectedTankWave3),
+        Call(BZXiDefectedTankWave4),
+        Call(BZXiDefectedTankWave5),
+        Call(BZXiDefectedTankWave6)
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave1,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase1DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedTankWave1Mono)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBase1DeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave1Mono,
+    sequence=(
+        SpawnEntity(
+            assetID=beam_tank,
+            flagName=BZXiDefectedTankSpawn1,
+            faction=2
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiDefectedTankSpawn1,
+            faction=2
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiDefectedTankSpawn1,
+            faction=2
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=siege_tank,
+                        flagName=BZXiDefectedTankSpawn1,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=missile_tank,
+                        flagName=BZXiDefectedTankSpawn1,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=laser_tank,
+                        flagName=BZXiDefectedTankSpawn1,
+                        faction=2
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn1,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn1,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=rocket_tank,
+                                    flagName=BZXiDefectedTankSpawn1,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn1,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn1,
+                                    faction=2
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave2,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase2DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedTankWave2Mono)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBase2DeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave2Mono,
+    sequence=(
+        SpawnEntity(
+            assetID=beam_tank,
+            flagName=BZXiDefectedTankSpawn2,
+            faction=2
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiDefectedTankSpawn2,
+            faction=2
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=siege_tank,
+            flagName=BZXiDefectedTankSpawn2,
+            faction=2
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=0,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=siege_tank,
+                        flagName=BZXiDefectedTankSpawn2,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=beam_tank,
+                        flagName=BZXiDefectedTankSpawn2,
+                        faction=2
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn2,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn2,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=rocket_tank,
+                                    flagName=BZXiDefectedTankSpawn2,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn2,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn2,
+                                    faction=2
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=0,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=0,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave3,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase3DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedTankWave3Mono)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBase3DeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave3Mono,
+    sequence=(
+        SpawnEntity(
+            assetID=bullet_tank,
+            flagName=BZXiDefectedTankSpawn3,
+            faction=2
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=beam_tank,
+            flagName=BZXiDefectedTankSpawn3,
+            faction=2
+        ),
+        Wait(time=0.2),
+        SpawnEntity(
+            assetID=siege_tank,
+            flagName=BZXiDefectedTankSpawn3,
+            faction=2
+        ),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=siege_tank,
+                        flagName=BZXiDefectedTankSpawn3,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=missile_tank,
+                        flagName=BZXiDefectedTankSpawn3,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=beam_tank,
+                        flagName=BZXiDefectedTankSpawn3,
+                        faction=2
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=beam_tank,
+                                    flagName=BZXiDefectedTankSpawn3,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn3,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=rocket_tank,
+                                    flagName=BZXiDefectedTankSpawn3,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn3,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn3,
+                                    faction=2
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=4,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave4,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase4DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedTankWave4Mono)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBase4DeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave4Mono,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=beam_tank,
+                        flagName=BZXiDefectedTankSpawn4,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=beam_tank,
+                        flagName=BZXiDefectedTankSpawn4,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=bullet_tank,
+                        flagName=BZXiDefectedTankSpawn4,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=missile_tank,
+                        flagName=BZXiDefectedTankSpawn4,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=bullet_tank,
+                        flagName=BZXiDefectedTankSpawn4,
+                        faction=2
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=2,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn4,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn4,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=rocket_tank,
+                                    flagName=BZXiDefectedTankSpawn4,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=beam_tank,
+                                    flagName=BZXiDefectedTankSpawn4,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn4,
+                                    faction=2
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=2,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=2,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave5,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase5DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedTankWave5Mono)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBase5DeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave5Mono,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=siege_tank,
+                        flagName=BZXiDefectedTankSpawn5,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=laser_tank,
+                        flagName=BZXiDefectedTankSpawn5,
+                        faction=2
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=laser_tank,
+                                    flagName=BZXiDefectedTankSpawn5,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=missile_tank,
+                                    flagName=BZXiDefectedTankSpawn5,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=bullet_tank,
+                                    flagName=BZXiDefectedTankSpawn5,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=rocket_tank,
+                                    flagName=BZXiDefectedTankSpawn5,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=bullet_tank,
+                                    flagName=BZXiDefectedTankSpawn5,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=beam_tank,
+                                    flagName=BZXiDefectedTankSpawn5,
+                                    faction=2
+                                )
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave6,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBase6DeathBool,
+                val2=1,
+                comp=Neq,
+                sequence=(
+                    Call(BZXiDefectedTankWave6Mono)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBase6DeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedTankWave6Mono,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Gt,
+                sequence=(
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=beam_tank,
+                        flagName=BZXiDefectedTankSpawn6,
+                        faction=2
+                    ),
+                    Wait(time=0.2),
+                    SpawnEntity(
+                        assetID=laser_tank,
+                        flagName=BZXiDefectedTankSpawn6,
+                        faction=2
+                    ),
+                    ConditionBlock(
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Gt,
+                            sequence=(
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=bullet_tank,
+                                    flagName=BZXiDefectedTankSpawn6,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=laser_tank,
+                                    flagName=BZXiDefectedTankSpawn6,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=bullet_tank,
+                                    flagName=BZXiDefectedTankSpawn6,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=beam_tank,
+                                    flagName=BZXiDefectedTankSpawn6,
+                                    faction=2
+                                ),
+                                Wait(time=0.2),
+                                SpawnEntity(
+                                    assetID=siege_tank,
+                                    flagName=BZXiDefectedTankSpawn6,
+                                    faction=2
+                                ),
+                                ConditionBlock(
+                                    Comparison(
+                                        val1=$$BZXiBaseDeathCount,
+                                        val2=4,
+                                        comp=Gt,
+                                        sequence=(
+                                            Wait(time=0.2),
+                                            SpawnEntity(
+                                                assetID=missile_tank,
+                                                flagName=BZXiDefectedTankSpawn6,
+                                                faction=2
+                                            ),
+                                            Wait(time=0.2),
+                                            SpawnEntity(
+                                                assetID=laser_tank,
+                                                flagName=BZXiDefectedTankSpawn6,
+                                                faction=2
+                                            ),
+                                            Wait(time=0.2),
+                                            SpawnEntity(
+                                                assetID=bullet_tank,
+                                                flagName=BZXiDefectedTankSpawn6,
+                                                faction=2
+                                            ),
+                                            Wait(time=0.2),
+                                            SpawnEntity(
+                                                assetID=beam_tank,
+                                                flagName=BZXiDefectedTankSpawn6,
+                                                faction=2
+                                            )
+                                        )
+                                    ),
+                                    Comparison(
+                                        val1=$$BZXiBaseDeathCount,
+                                        val2=4,
+                                        comp=Lt,
+                                        sequence=()
+                                    ),
+                                    Comparison(
+                                        val1=$$BZXiBaseDeathCount,
+                                        val2=4,
+                                        comp=Eq,
+                                        sequence=()
+                                    )
+                                )    
+                            )
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Lt,
+                            sequence=()
+                        ),
+                        Comparison(
+                            val1=$$BZXiBaseDeathCount,
+                            val2=3,
+                            comp=Eq,
+                            sequence=()
+                        )
+                    )
+                )
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Lt,
+                sequence=()
+            ),
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=2,
+                comp=Eq,
+                sequence=()
+            )
+        )
+    )
+)
+
+// GROUND BASE MECHANIC MASTERFUNCTION
+Function(
+    name=BZXiDefectedBaseMaster,
+    sequence=(
+        Call(BZXiDefectedBaseDeathIncrement),
+        Call(BZXiDefectedBase1Death),
+        Call(BZXiDefectedBase2Death),
+        Call(BZXiDefectedBase3Death),
+        Call(BZXiDefectedBase4Death),
+        Call(BZXiDefectedBase5Death),
+        Call(BZXiDefectedBase6Death)
+    )
+)
+
+Function(
+    name=BZXiDefectedBaseDeathIncrement,
+    sequence=(
+        SetVariable(
+            name=$$BZXiBaseDeathCount,
+            value=0,
+            onlyIfNull=true
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBaseDeathAddition,
+    sequence=(
+        AddIntValues(
+            val1=$$BZXiBaseDeathCount,
+            val2=1,
+            name=$$BZXiBaseDeathCount
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase1Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase1,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedBase1DeathHelper),
+                    Call(BZXiDefectedBaseDeathAddition)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase1DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiDefectedCommander1,
+            blueprintJSON=Defected XiAct1,
+            flagName=BZXiDefectedBaseF1,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedBaseF1,
+            entityID=BZXiDefectedDrone1,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF1,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF1,
+            faction=2
+        ),
+        Wait(time=0.001),
+        WarpCore(
+            entityID=BZXiDefectedCommander1,
+            targetID=BZXiDefectedDrone1
+        ),
+        SetVariable(
+            name=$$BZXiBase1DeathBool,
+            value=1
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase2Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase2,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedBase2DeathHelper),
+                    Call(BZXiDefectedBaseDeathAddition)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase2DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiDefectedCommander2,
+            blueprintJSON=Defected XiAct2,
+            flagName=BZXiDefectedBaseF2,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedBaseF2,
+            entityID=BZXiDefectedDrone2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF2,
+            faction=2
+        ),
+        Wait(time=0.001),
+        WarpCore(
+            entityID=BZXiDefectedCommander2,
+            targetID=BZXiDefectedDrone2
+        ),
+        SetVariable(
+            name=$$BZXiBase2DeathBool,
+            value=1
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase3Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase3,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedBase3DeathHelper),
+                    Call(BZXiDefectedBaseDeathAddition)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase3DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiDefectedCommander3,
+            blueprintJSON=Defected XiAct3,
+            flagName=BZXiDefectedBaseF3,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedBaseF3,
+            entityID=BZXiDefectedDrone3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF3,
+            faction=2
+        ),
+        Wait(time=0.001),
+        WarpCore(
+            entityID=BZXiDefectedCommander3,
+            targetID=BZXiDefectedDrone3
+        ),
+        SetVariable(
+            name=$$BZXiBase3DeathBool,
+            value=1
+        ),
+        DeleteEntity(
+            entityID=BZXiPowerRock1
+        ),
+        DeleteEntity(
+            entityID=BZXiPowerRock2
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase4Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase4,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedBase4DeathHelper),
+                    Call(BZXiDefectedBaseDeathAddition)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase4DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiDefectedCommander4,
+            blueprintJSON=Defected XiAct4,
+            flagName=BZXiDefectedBaseF4,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedBaseF4,
+            entityID=BZXiDefectedDrone4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF4,
+            faction=2
+        ),
+        Wait(time=0.001),
+        WarpCore(
+            entityID=BZXiDefectedCommander4,
+            targetID=BZXiDefectedDrone4
+        ),
+        SetVariable(
+            name=$$BZXiBase4DeathBool,
+            value=1
+        ),
+        SpawnEntity(
+            assetID=groundcarrier_blueprint,
+            blueprintJSON=XiTankSpawnBase,
+            flagName=BZXiBaseSpawn2,
+            entityID=BZXiBase2,
+            name=Main Fabricator,
+            faction=0
+        ),
+        DeleteEntity(
+            entityID=BZXiBase1
+        ),
+        SpawnEntity(
+            assetID=bunker_blueprint,
+            blueprintJSON=BunkerHeavy,
+            flagName=BZXiAlliedBunkerSpawn2,
+            name=Outpost,
+            faction=0
+        ),
+        DeleteEntity(
+            entityID=BZXiPowerRock1
+        ),
+        DeleteEntity(
+            entityID=BZXiPowerRock2
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase5Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase5,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedBase5DeathHelper),
+                    Call(BZXiDefectedBaseDeathAddition)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase5DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiDefectedCommander5,
+            blueprintJSON=Defected XiAct5,
+            flagName=BZXiDefectedBaseF5,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedBaseF5,
+            entityID=BZXiDefectedDrone5,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF5,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF5,
+            faction=2
+        ),
+        Wait(time=0.001),
+        WarpCore(
+            entityID=BZXiDefectedCommander5,
+            targetID=BZXiDefectedDrone5
+        ),
+        SetVariable(
+            name=$$BZXiBase5DeathBool,
+            value=1
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase6Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedBase6,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedBase6DeathHelper),
+                    Call(BZXiDefectedBaseDeathAddition)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedBase6DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiDefectedCommander6,
+            blueprintJSON=Defected XiAct6,
+            flagName=BZXiDefectedBaseF6,
+            name=ShellCore,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedBaseF6,
+            entityID=BZXiDefectedDrone6,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF6,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedBaseF6,
+            faction=2
+        ),
+        Wait(time=0.001),
+        WarpCore(
+            entityID=BZXiDefectedCommander6,
+            targetID=BZXiDefectedDrone6
+        ),
+        SetVariable(
+            name=$$BZXiBase6DeathBool,
+            value=1
+        )
+    )
+)
+
+// CARRIER MECHANIC MASTERFUNCTION
+Function(
+    name=BZXiCarrierMaster,
+    sequence=(
+        Call(BZXiDefectedCarrier1Death),
+        Call(BZXiDefectedCarrier2Death),
+        Call(BZXiDefectedCarrier3Death),
+        Call(BZXiDefectedCarrier4Death),
+        Call(BZXiDefectedCarrier5Death)
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier1Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier1,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedCarrier1DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier1DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiRock1,        
+            assetID=energy_rock,
+            flagName=BZXiDefectedCarrierF1
+        ),
+        SpawnEntity(
+            entityID=BZXiRockAllied1,        
+            assetID=energy_rock,
+            flagName=BZXiAlliedRockSpawn1
+        ),
+        SpawnEntity(
+            entityID=BZXiRockAllied3,        
+            assetID=energy_rock,
+            flagName=BZXiAlliedRockSpawn1
+        ),
+        SpawnEntity(
+            entityID=BZXiRockAllied2,        
+            assetID=energy_rock,
+            flagName=BZXiAlliedRockSpawn2
+        ),
+        SpawnEntity(
+            entityID=BZXiRockAllied4,        
+            assetID=energy_rock,
+            flagName=BZXiAlliedRockSpawn2
+        ),
+        SpawnEntity(
+            assetID=carrier_blueprint,
+            entityID=BZXiBatteryCarrier1,
+            blueprintJSON=XiBatteryCarrier,
+            flagName=BZXiDefectedCarrierF1,
+            name=Battery Station,
+            faction=0
+        ),
+        SpawnEntity(
+            assetID=outpost_blueprint,
+            blueprintJSON=OutpostHeavy,
+            flagName=BZXiAlliedOutpostSpawn1,
+            name=Outpost,
+            faction=0
+        ),
+        SpawnEntity(
+            assetID=bunker_blueprint,
+            blueprintJSON=BunkerHeavy,
+            flagName=BZXiAlliedBunkerSpawn1,
+            name=Outpost,
+            faction=0
+        ),
+        DeleteEntity(
+            entityID=BZXiBunker1
+        ),
+        DeleteEntity(
+            entityID=BZXiBunker2
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier2Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier2,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedCarrier2DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier2DeathHelper,
+    sequence=(
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneHeavy,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF2,
+            faction=2
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier3Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier3,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedCarrier3DeathHelper),
+                    SetVariable(name=$$BZXiCarriersEliminatedBool, value=1)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier3DeathHelper,
+    sequence=(
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneHeavy,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneHeavy,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF3,
+            faction=2
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier4Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier4,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedCarrier4DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier4DeathHelper,
+    sequence=(
+        SpawnEntity(
+            entityID=BZXiRock4,        
+            assetID=energy_rock,
+            flagName=BZXiDefectedCarrierF4
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneHeavy,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneHeavy,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF4,
+            faction=2
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier5Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier5,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedCarrier5DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedCarrier5DeathHelper,
+    sequence=(
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF5,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneCounter,
+            flagName=BZXiDefectedCarrierF5,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneHeavy,
+            flagName=BZXiDefectedCarrierF5,
+            faction=2
+        ),
+        SpawnEntity(
+            blueprintJSON=Defected DroneGunLaser,
+            flagName=BZXiDefectedCarrierF5,
+            faction=2
+        )
+    )
+)
+
+// GROUND WEAPON STATION MECHANIC MASTERFUNCTION
+Function(
+    name=BZXiDefectedGSMaster,
+    sequence=(
+        Call(BZXiDefectedGS3Death),
+        Call(BZXiDefectedGS4Death),
+        Call(BZXiDefectedGS5Death)
+    )
+)
+
+Function(
+    name=BZXiDefectedGS3Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedGS3,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedGS3DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedGS3DeathHelper,
+    sequence=(
+        SpawnEntity(
+            assetID=tower_base,
+            flagName=BZXiDefectedGSF3,
+            entityID=BZXiTowerBase3,
+            faction=0
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedGS4Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedGS4,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedGS4DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedGS4DeathHelper,
+    sequence=(
+        SpawnEntity(
+            assetID=tower_base,
+            flagName=BZXiDefectedGSF4,
+            entityID=BZXiTowerBase4,
+            faction=0
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedGS5Death,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedGS5,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    Call(BZXiDefectedGS5DeathHelper)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDefectedGS5DeathHelper,
+    sequence=(
+        SpawnEntity(
+            assetID=tower_base,
+            flagName=BZXiDefectedGSF5,
+            entityID=BZXiTowerBase5,
+            faction=0
+        )
+    )
+)
+
+// DIALOGUE MECHANIC MASTERFUNCTION
+Function(
+    name=BZXiDialogueMaster,
+    sequence=(
+        Call(BZXiDialogueBattle)
+    )
+)
+
+Text("BZXi_AlliedBase_d1", "New user detected. Fabrication protocol activated.")
+Text("BZXi_AlliedBase_d2", "Warning. Power supply at 9.012573%. Main fabricator offline.")
+Text("BZXi_AlliedBase_d3", "Power supply at 27.476313%. Fabrication protocol updated.")
+Text("BZXi_AlliedBase_d4", "Power supply at 45.635895%. Fabrication protocol updated.")
+Text("BZXi_AlliedBase_d5", "Main fabricator connection reestablished. Emergency activation.")
+Text("BZXi_AlliedBase_d6", "Power supply at 100.000000%. Fabricator set to standby.")
+Text("BZXi_AlliedBase_d7", "Fabricator not responding. Session terminated.")
+Text("BZXi_AlliedBase_d8", "File corruption detected on userdata. Fabrication system resetting. Running diagnostics....")
+Text("BZXi_AlliedBase_d9", "Old userdata deleted. Sector Xi is set to safemode.")
+Text("BZXi_AlliedBase_d10", "Battery station resetting. Generating power orbs.")
+Text("BZXi_Player_d1", "Where is the enemy commanders? Are they hiding?")
+Text("BZXi_Player_d2", "Ah! There they are. You should have come out before I blew that base up.")
+Text("BZXi_Player_d3", "Station secured. Continuing the assault!")
+Text("BZXi_Player_d4", "Woah, the station just moved!")
+Text("BZXi_Player_d5", "There goes battlezone Xi! Those commanders sure were persistent...")
+Text("BZXi_Player_d6", "Oh... I have a bad feeling about this.")
+Text("BZXi_DefectedBase_d1", "Wa---n-. ---un- st-t--n d--tr-y-d. D---oy--g c--n-e--ea-u--s.")
+Text("BZXi_DefectedBase_d2", "--rn--g. --w-r st--io- o-fl---. R--uest b--k-p to -i---e-.")
+
+Function(
+    name=BZXiDialogueBattle,
+    sequence=(
+        PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d1),
+        PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d2),
+        PassiveDialogue(entityID=player, text=BZXi_Player_d1),
+        Call(BZXiDialogueBattleAlly2),
+        Call(BZXiDialogueBattleAlly6),
+        Call(BZXiDialogueBattleAlly7),
+        Call(BZXiDialogueBattleDefected1),
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=1,
+                comp=Gt,
+                sequence=(
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d3),
+                    Call(BZXiDialogueBattleAlly3)
+                )
+            ),
+            Comparison(
+                val1=$$BZXiAllyBaseDeathBool,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d7),
+                    PassiveDialogue(entityID=player, text=BZXi_Player_d6)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleAlly2,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseSwitchBool,
+                val2=1,
+                comp=Eq,
+                sequence=(
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d5),
+                    PassiveDialogue(entityID=player, text=BZXi_Player_d4)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleAlly3,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=3,
+                comp=Gt,
+                sequence=(
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d4),
+                    Call(BZXiDialogueBattleAlly4)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleAlly4,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=5,
+                comp=Gt,
+                sequence=(
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d6),
+                    Call(BZXiDialogueBattleAlly5)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleAlly5,
+    sequence=(
+        ConditionBlock(
+            WinBattleZone(
+                sectorName=BattleZone Xi,
+                sequence(
+                    PassiveDialogue(entityID=player, text=BZXi_Player_d5),
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d8),
+                    Wait(time=2.0),
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d9)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleAlly6,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedCarrier1,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    PassiveDialogue(entityID=$$BZXiDialogueHelper1, text=BZXi_AlliedBase_d10),
+                    PassiveDialogue(entityID=player, text=BZXi_Player_d3),
+                    PassiveDialogue(entityID=BZXiDefectedBase6, text=BZXi_DefectedBase_d2)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleAlly7,
+    sequence=(
+        ConditionBlock(
+            Comparison(
+                val1=$$BZXiBaseDeathCount,
+                val2=0,
+                comp=Gt,
+                sequence=(
+                    PassiveDialogue(entityID=player, text=BZXi_Player_d2)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiDialogueBattleDefected1,
+    sequence=(
+        ConditionBlock(
+            DestroyEntities(
+                targetID=BZXiDefectedGS1,
+                progressionFeedback=false,
+                targetCount=1,
+                sequence=(
+                    PassiveDialogue(entityID=BZXiDefectedBase6, text=BZXi_DefectedBase_d1)
+                )
+            ),
+            EnterSector(
+                sectorName=BattleZone Xi,
+                invert=true,
+                sequence=()
+            )
+        )
+    )
+)
+
+// POSTVICTORY FUNCTIONS
+
+Function(
+    name=BZXiRemoveAllCarrierAndGroundBaseAndGS,
+    sequence=(
+        DeleteEntity(
+            entityID=BZXiDefectedBase2
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedBase3
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedBase4
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedBase5
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedBase6
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS1
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS2
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS3
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS4
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS5
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS6
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedGS7
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedCarrier1
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedCarrier2
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedCarrier3
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedCarrier4
+        ),
+        DeleteEntity(
+            entityID=BZXiDefectedCarrier5
+        )
+    )
+)
+
+Text("BZXi_PostVictory_d1", "Hello user. Sector Xi is under your jurisdiction. Battery station is fully operational.")
+Text("BZXi_PostVictory_d2", "I want to do the fight again.")
+Text("BZXi_PostVictory_d3", "I want to reconfigure my core.")
+Text("BZXi_PostVictory_d4", "Are you really sure? This is not reversible.")
+Text("BZXi_PostVictory_d5", "Yes, I absolutely want to.")
+Text("BZXi_PostVictory_d6", "No.")
+Text("BZXi_PostVictory_d7", "Hello user. Please drop by to the station at southeast for restocking and repair.")
+Text("BZXi_PostVictory_d8", "Sector resetting. Please leave the sector.")
+
+Dialogue(
+    dialogueID=BZXi_PostVictory_d,
+    dialogueText=BZXi_PostVictory_d1,
+    entityID=BZXiBatteryCarrier2,
+    responses=(
+        Response(
+            responseText=BZXi_PostVictory_d2,
+            next=Dialogue(
+                dialogueText=BZXi_PostVictory_d4,
+                responses=(
+                    Response(
+                        responseText=BZXi_PostVictory_d5,
+                        next=Call(BZXiOneMoreTime)
+                    ),
+                    Response(
+                        responseText=BZXi_PostVictory_d6,
+                        next=End()
+                    )
+                )
+            )
+        ),
+        Response(
+            responseText=BZXi_PostVictory_d3,
+            next=Yard()
+            )
+        )
+    )
+)
+
+Function(
+    name=BZXiPostVictoryDialogue,
+    sequence=(
+        SetInteraction(dialogueID=BZXi_PostVictory_d, entityID=BZXiBatteryCarrier2)
+    )
+)
+
+Function(
+    name=BZXiPostVictoryDialogue2,
+    sequence=(
+        PassiveDialogue(entityID=BZXiBatteryCarrier2, text=BZXi_PostVictory_d7)
+    )
+)
+
+Function(
+    name=BZXiOneMoreTime,
+    sequence=(
+        SetVariable(name=$$$BZXiVictoryBool, value=0),
+        PassiveDialogue(entityID=BZXiBatteryCarrier2, text=BZXi_PostVictory_d8)
+    )
+)
