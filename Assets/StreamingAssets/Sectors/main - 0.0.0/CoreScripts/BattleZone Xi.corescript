@@ -123,13 +123,16 @@ SectorTrigger(
                         entityID=BZXiBatteryCarrier1
                     ),
                     SpawnEntity(
-                        assetID=carrier_blueprint,
+                        assetID=yard_blueprint,
                         entityID=BZXiBatteryCarrier2,
                         blueprintJSON=XiBatteryCarrierNoSpawn,
                         flagName=BZXiDefectedCarrierF1,
-                        name=Air Carrier,
+                        name=Battery Station,
                         faction=0
-                    )
+                    ),
+                    Wait(time=0.01),
+                    Call(BZXiPostVictoryDialogue),
+                    Call(BZXiPostVictoryDialogue2)
                 )
             ),
             EnterSector(
@@ -1759,7 +1762,7 @@ Function(
             blueprintJSON=XiTankSpawnBase,
             flagName=BZXiBaseSpawn2,
             entityID=BZXiBase2,
-            name=Ground Base,
+            name=Main Fabricator,
             faction=0
         ),
         DeleteEntity(
@@ -1771,6 +1774,12 @@ Function(
             flagName=BZXiAlliedBunkerSpawn2,
             name=Outpost,
             faction=0
+        ),
+        DeleteEntity(
+            entityID=BZXiPowerRock1
+        ),
+        DeleteEntity(
+            entityID=BZXiPowerRock2
         )
     )
 )
@@ -1961,7 +1970,7 @@ Function(
             entityID=BZXiBatteryCarrier1,
             blueprintJSON=XiBatteryCarrier,
             flagName=BZXiDefectedCarrierF1,
-            name=Air Carrier,
+            name=Battery Station,
             faction=0
         ),
         SpawnEntity(
@@ -2642,13 +2651,14 @@ Function(
     )
 )
 
-Text("BZXi_PostVictory_d1", "By pressing YES, you are able to reset Xi completely and start the fight over. This will take effect after you reenter the sector. WARNING: YOU CANNOT UNDO THIS!!!!")
-Text("BZXi_PostVictory_d2", "Yes, I want to.")
-Text("BZXi_PostVictory_d3", "No.")
-Text("BZXi_PostVictory_d4", "Are you really sure? You do not have to go through this again.")
+Text("BZXi_PostVictory_d1", "Hello user. Sector Xi is under your jurisdiction. Battery station is fully operational.")
+Text("BZXi_PostVictory_d2", "I want to do the fight again.")
+Text("BZXi_PostVictory_d3", "I want to reconfigure my core.")
+Text("BZXi_PostVictory_d4", "Are you really sure? This is not reversible.")
 Text("BZXi_PostVictory_d5", "Yes, I absolutely want to.")
 Text("BZXi_PostVictory_d6", "No.")
-Text("BZXi_PostVictory_d7", "Hello user. Please drop by to the station at southeast.")
+Text("BZXi_PostVictory_d7", "Hello user. Please drop by to the station at southeast for restocking and repair.")
+Text("BZXi_PostVictory_d8", "Sector resetting. Please leave the sector.")
 
 Dialogue(
     dialogueID=BZXi_PostVictory_d,
@@ -2673,7 +2683,7 @@ Dialogue(
         ),
         Response(
             responseText=BZXi_PostVictory_d3,
-            next=End()
+            next=Yard()
             )
         )
     )
@@ -2682,14 +2692,21 @@ Dialogue(
 Function(
     name=BZXiPostVictoryDialogue,
     sequence=(
-        SetInteraction(dialogueID=BZXi_PostVictory_d, entityID=BZXiBatteryCarrier2),
-        PassiveDialogue(entityID=BZXiBatteryCarrier2, text=BZXi_PostVictory_d7),
+        SetInteraction(dialogueID=BZXi_PostVictory_d, entityID=BZXiBatteryCarrier2)
     )
-),
+)
+
+Function(
+    name=BZXiPostVictoryDialogue2,
+    sequence=(
+        PassiveDialogue(entityID=BZXiBatteryCarrier2, text=BZXi_PostVictory_d7)
+    )
+)
 
 Function(
     name=BZXiOneMoreTime,
     sequence=(
-        SetVariable(name=$$$BZXiVictoryBool, value=0)
+        SetVariable(name=$$$BZXiVictoryBool, value=0),
+        PassiveDialogue(entityID=BZXiBatteryCarrier2, text=BZXi_PostVictory_d8)
     )
 )
