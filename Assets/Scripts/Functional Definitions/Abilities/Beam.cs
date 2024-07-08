@@ -114,27 +114,38 @@ public class Beam : WeaponAbility
         if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
         {
             var vec = numShots == 0 ? transform.position : line.GetPosition(numShots);
-            var ents = GetClosestTargets(MAX_BOUNCES, vec);
-            Transform closestEntity = null;
-            foreach (var ent in ents)
-            {
-                if (targetArray.Contains(ent))
-                {
-                    continue;
-                }
-                closestEntity = ent;
-                break;
-            }
+            var closestEntity = targetingSystem.GetTarget();
 
-            if (!closestEntity)
-            {
-                numShots = 0;
-            }
-            else
+            if (closestEntity && !targetArray.Contains(closestEntity) && numShots == 0)
             {
                 targetArray.Add(closestEntity);
                 FireBeam(closestEntity.position);
                 numShots++;
+            }
+            else
+            {
+                var ents = GetClosestTargets(MAX_BOUNCES, vec);
+                closestEntity = null;
+                foreach (var ent in ents)
+                {
+                    if (targetArray.Contains(ent))
+                    {
+                        continue;
+                    }
+                    closestEntity = ent;
+                    break;
+                }
+
+                if (!closestEntity)
+                {
+                    numShots = 0;
+                }
+                else
+                {
+                    targetArray.Add(closestEntity);
+                    FireBeam(closestEntity.position);
+                    numShots++;
+                }
             }
         }
 
