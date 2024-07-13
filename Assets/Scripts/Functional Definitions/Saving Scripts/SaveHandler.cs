@@ -92,6 +92,18 @@ public class SaveHandler : MonoBehaviour
             }
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 StartCoroutine(Autobackup());
+
+            /*if (save.currentPartyMembers.Count != 0) // Currently broken, I do not know why this is null
+            {
+                foreach (var charID in save.currentPartyMembers)
+                {
+                    PartyManager.instance.AssignBackend(charID);
+                }
+                save.currentPartyMembers.Clear();
+            }*/
+
+            if (save.partyLock)
+                PartyManager.instance.SetOverrideLock(save.partyLock);
         }
         else
         {
@@ -195,6 +207,13 @@ public class SaveHandler : MonoBehaviour
         playerSave.taskVariableNames = keys;
         playerSave.taskVariableValues = values;
         playerSave.reputation = player.reputation;
+
+        playerSave.currentPartyMembers.Clear();
+        foreach (var member in PartyManager.instance.partyMembers)
+        {
+            playerSave.currentPartyMembers.Add(member.ID);
+        }
+        playerSave.partyLock = PartyManager.instance.GetOverrideLock();
     }
 
     public void Save()
