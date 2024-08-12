@@ -63,7 +63,7 @@ public class PlayerSave
     // As well as for side missions to not change the episode number.
     public int episode;
 
-    public bool partyLock;
+    //public bool partyLock;
     // The three lists contain IDs of unlocked, locked, and current party members
     public List<string> unlockedPartyIDs;
     public List<string> disabledPartyIDs;

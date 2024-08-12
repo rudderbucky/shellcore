@@ -102,8 +102,8 @@ public class SaveHandler : MonoBehaviour
                 save.currentPartyMembers.Clear();
             }*/
 
-            if (save.partyLock)
-                PartyManager.instance.SetOverrideLock(save.partyLock);
+            //if (save.partyLock)
+                //PartyManager.instance.SetOverrideLock(save.partyLock);
         }
         else
         {
@@ -213,7 +213,7 @@ public class SaveHandler : MonoBehaviour
         {
             playerSave.currentPartyMembers.Add(member.ID);
         }
-        playerSave.partyLock = PartyManager.instance.GetOverrideLock();
+        //playerSave.partyLock = PartyManager.instance.GetOverrideLock();
     }
 
     public void Save()
