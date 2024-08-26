@@ -233,9 +233,9 @@ public class Beam : WeaponAbility
         ActivationCosmetic(victimPos);
     }
 
-    protected override Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
+    protected Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
     {
-        var list = base.GetClosestTargets(num, pos);
+        var list = targetingSystem.GetClosestTargets(num, pos);
         if (list.Length > 0)
         {
             foreach (var ent in list)

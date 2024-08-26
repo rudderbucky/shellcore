@@ -75,7 +75,7 @@ public class Flak : WeaponAbility
         }
         else
         {
-            targets = GetClosestTargets(BULLET_COUNT, true);
+            targets = targetingSystem.GetClosestTargets(BULLET_COUNT, true);
         }
 
 
