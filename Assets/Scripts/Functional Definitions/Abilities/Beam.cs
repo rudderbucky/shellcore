@@ -224,7 +224,7 @@ public class Beam : WeaponAbility
         var residue = targetToAttack.GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
         // deal instant damage
 
-        if (nextTargetPart.craft.GetIsDead())
+        if (nextTargetPart.craft != targetToAttack.gameObject)
         {
             nextTargetPart = null;
         }
