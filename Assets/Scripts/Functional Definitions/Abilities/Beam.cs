@@ -111,7 +111,7 @@ public class Beam : WeaponAbility
         if (firing)
             timer += Time.deltaTime;
 
-        if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
+        if (timer > 0.1f * numShots && numShots < MAX_BOUNCES)
         {
             var vec = numShots == 0 ? transform.position : line.GetPosition(numShots);
             var closestEntity = targetingSystem.GetTarget();
@@ -138,7 +138,7 @@ public class Beam : WeaponAbility
 
                 if (!closestEntity)
                 {
-                    numShots = 0;
+                    //numShots = 0;
                 }
                 else
                 {
@@ -196,7 +196,6 @@ public class Beam : WeaponAbility
             GetClosestPart(targetingSystem.GetTarget().GetComponentInParent<Entity>().NetworkGetParts().ToArray());
             targetPos = nextTargetPart.transform.position;
         }
-
 
         if (line.positionCount == 0) 
         {
