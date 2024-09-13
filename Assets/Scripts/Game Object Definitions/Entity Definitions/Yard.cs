@@ -38,8 +38,8 @@ public class Yard : AirConstruct, IShipBuilder
     }
 
     public static readonly int YardProximitySquared = 75;
-    private static float lastPartTakenTime = 0, shardsTakenCombo = 0;
-    private static int partsTakenCombo = 0;
+    private static float lastPartTakenTime = 0;
+    private static int partsTakenCombo = 0, shardsTakenCombo = 0;
     public static string entityID;
 
     protected override void Update()
