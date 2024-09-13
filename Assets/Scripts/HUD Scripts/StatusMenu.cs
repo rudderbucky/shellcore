@@ -78,7 +78,19 @@ public class StatusMenu : GUIWindowScripts
             return;
         }
 
-        if (Time.timeScale > 0 && InputManager.GetKeyDown(KeyName.StatusMenu) && !player.GetIsInteracting() && !DialogueSystem.isInCutscene && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        // Not paused & key pressed
+        if (Time.timeScale > 0 && InputManager.GetKeyDown(KeyName.StatusMenu))
+        {
+            Open();
+        }
+
+        base.Update();
+    }
+
+    public void Open()
+    {
+        // Player doesn't need to pay attention to something else
+        if (!player.GetIsInteracting() && !DialogueSystem.isInCutscene && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             toggle = !toggle;
             if (toggle)
@@ -95,8 +107,6 @@ public class StatusMenu : GUIWindowScripts
                 transform.GetChild(i).gameObject.SetActive(toggle);
             }
         }
-
-        base.Update();
     }
 
     public override bool GetActive()

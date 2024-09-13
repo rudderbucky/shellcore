@@ -15,6 +15,7 @@ public class SaveMenuHandler : GUIWindowScripts
     List<Button> worldButtons;
     List<SaveMenuIcon> icons;
     public InputField inputField;
+    public Text inputFeedback;
     int indexToDelete;
     int indexToMigrate;
     public GUIWindowScripts deletePrompt;
@@ -442,13 +443,29 @@ public class SaveMenuHandler : GUIWindowScripts
     public void AddSave()
     {
         string name = inputField.text.Trim();
-        string path = System.IO.Path.Combine(Application.persistentDataPath, "Saves", name);
-        inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
-        if (name == "" || name == "TestSave" ||
-            paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1)
+        if (name == "") 
         {
+            inputFeedback.text = "The save name can't be empty.";
             return;
         }
+        if (name == "TestSave")
+        {
+            inputFeedback.text = "The name \"TestSave\" is reserved for world creator functionality.";
+            return;
+        }
+        if (name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1)
+        {
+            inputFeedback.text = "The save name contains invalid characters.";
+            return;
+        }
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "Saves", name);
+        if (paths.Contains(path))
+        {
+            inputFeedback.text = "The save name already exists.";
+            return;
+        }
+
+        inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
 
         var save = CreateSave(name, null, this.resourcePath);
 
