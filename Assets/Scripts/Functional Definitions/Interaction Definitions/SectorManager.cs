@@ -1653,9 +1653,9 @@ public class SectorManager : MonoBehaviour
             if (shard && (shard.dragging || Vector3.SqrMagnitude(shard.transform.position - player.transform.position)
                 < objectDespawnDistance))
             {
-                Destroy(shard.gameObject);
+                remainingRocks.Add(shard);
             }
-            else remainingRocks.Add(shard);
+            else Destroy(shard.gameObject);
 
         }
         AIData.rockFragments = remainingRocks;
