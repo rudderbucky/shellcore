@@ -40,7 +40,7 @@ public class Yard : AirConstruct, IShipBuilder
     public static readonly int YardProximitySquared = 75;
     private static float lastPartTakenTime = 0;
     private static int partsTakenCombo = 0, shardsTakenCombo = 0;
-    public static string entityID;
+    public static string collectingYardID;
 
     protected override void Update()
     {
@@ -208,7 +208,7 @@ public class Yard : AirConstruct, IShipBuilder
             Yard.lastPartTakenTime = Time.time;
             Yard.partsTakenCombo++;
         }
-        entityID = entity.ID;
+        collectingYardID = entity.ID;
         var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
         var info = shellPart.info;
         info = ShipBuilder.CullSpatialValues(info);
@@ -225,7 +225,7 @@ public class Yard : AirConstruct, IShipBuilder
 
     public static void TakeShard(Entity entity, TractorBeam tractor)
     {
-        entityID = entity.ID;
+        collectingYardID = entity.ID;
 
         var shard = tractor.GetTractorTarget().GetComponent<Shard>();
         var tiers = new int[] { 1, 5, 20 };
@@ -245,11 +245,11 @@ public class Yard : AirConstruct, IShipBuilder
         if (Yard.partsTakenCombo > 1)
         {
             string message = string.Format("Your {0} parts have been added into your inventory.", Yard.partsTakenCombo);
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(entityID, message, 4, true);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, message, 4, true);
         }
         else
         {
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(entityID, "Your part has been added into your inventory.", 4, true);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, "Your part has been added into your inventory.", 4, true);
         }
         Yard.partsTakenCombo = 0;
     }
@@ -259,11 +259,11 @@ public class Yard : AirConstruct, IShipBuilder
         if (Yard.shardsTakenCombo > 1)
         {
             string message = string.Format("Your {0} shards have been added into your stash.", Yard.shardsTakenCombo);
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(entityID, message, 4, true);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, message, 4, true);
         }
         else
         {
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(entityID, "Your shard has been added into your stash.", 4, true);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, "Your shard has been added into your stash.", 4, true);
         }
         Yard.shardsTakenCombo = 0;
     }

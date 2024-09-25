@@ -157,10 +157,7 @@ public class QuantityDisplayScript : MonoBehaviour
             if (PartIndexScript.CheckPartObtained(info))
             {
                 targetName.text = info.partID;
-                if (info.abilityID == 10)
-                    targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, info.secondaryData);
-                else
-                    targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null);
+                targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, info.secondaryData);
                 if (info.tier != 0)
                     targetDesc.text += " " + info.tier;
                 targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
