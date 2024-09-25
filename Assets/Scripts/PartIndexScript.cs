@@ -34,9 +34,10 @@ public class PartIndexScript : MonoBehaviour
         Obtained
     }
 
-    public static int GetNumberOfPartsObtained()
+    public static int GetNumberOfPartsObtained(bool percentEnabled)
     {
         int count = 0;
+        int total = 0;
         foreach (var part in index)
         {
             var part2 = CullToPartIndexValues(part.part);
@@ -44,24 +45,33 @@ public class PartIndexScript : MonoBehaviour
             {
                 count++;
             }
+            total++;
         }
 
-        return count;
+        if (percentEnabled)
+            return (int)((count / (double)total) * 100);
+        else
+            return count;
     }
 
-    public static int GetNumberOfPartsSeen()
+    public static int GetNumberOfPartsSeen(bool percentEnabled)
     {
         int count = 0;
+        int total = 0;
         foreach (var part in index)
         {
             var part2 = CullToPartIndexValues(part.part);
-            if (CheckPartObtained(part2))
+            if (CheckPartSeen(part2))
             {
                 count++;
             }
+            total++;
         }
 
-        return count;
+        if (percentEnabled)
+            return (int)((count / (double)total) * 100);
+        else
+            return count;
     }
 
     public void SetPartAsSeen(EntityBlueprint.PartInfo part)

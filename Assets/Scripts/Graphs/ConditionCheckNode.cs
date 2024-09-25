@@ -249,10 +249,10 @@ namespace NodeEditorFramework.Standard
                         variableToCompare = PlayerCore.Instance.reputation;
                         break;
                     case 3:
-                        variableToCompare = PartIndexScript.GetNumberOfPartsSeen();
+                        variableToCompare = PartIndexScript.GetNumberOfPartsSeen(inPercentage);
                         break;
                     case 4:
-                        variableToCompare = PartIndexScript.GetNumberOfPartsObtained();
+                        variableToCompare = PartIndexScript.GetNumberOfPartsObtained(inPercentage);
                         break;
                     case 5:
                         return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) &&
