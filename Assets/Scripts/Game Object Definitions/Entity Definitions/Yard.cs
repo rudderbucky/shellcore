@@ -236,7 +236,7 @@ public class Yard : AirConstruct, IShipBuilder
             Yard.shardsTakenCombo += tiers[shard.tier];
         }
         PlayerCore.Instance.cursave.shards += tiers[shard.tier];
-        ShardCountScript();
+    	ShardCountScript.DisplayCount();
         Destroy(shard.gameObject);
     }
 
