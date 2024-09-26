@@ -50,6 +50,9 @@ public class SkirmishMenu : GUIWindowScripts
             Destroy(child.gameObject);
         }
 
+        currentOption = null;
+        nameText.text = description.text = creditLimitText.text = "";
+
         foreach (var option in options)
         {
             var curOpt = option;
@@ -67,7 +70,7 @@ public class SkirmishMenu : GUIWindowScripts
                 }
                 else
                 {
-                    creditLimitText.text = $"SHIP CREDIT LIMIT: {currentOption.creditLimit} ";
+                    creditLimitText.text = $"SHIP CREDIT LIMIT: {currentOption.creditLimit}";
                 }
             });
         }
@@ -90,7 +93,7 @@ public class SkirmishMenu : GUIWindowScripts
     public void ActivateCurrentOption()
     {
         //Debug.LogError(PlayerCore.Instance.currentHealth[0]);
-        if (currentOption.creditLimit < PlayerCore.Instance.GetBuildValue())
+        if (currentOption == null || currentOption.creditLimit < PlayerCore.Instance.GetBuildValue())
         {
             return;
         }
