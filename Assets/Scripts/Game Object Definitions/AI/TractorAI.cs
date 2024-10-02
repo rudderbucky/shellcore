@@ -92,7 +92,7 @@ public class TractorAI : AIModule
                     continue;
                 }
 
-                if (d < dist && target && !target.dragging)
+                if (d < dist && target && !target.Dragging)
                 {
                     dist = d;
                     part = target;
@@ -108,7 +108,7 @@ public class TractorAI : AIModule
                     continue;
                 }
 
-                if (d < dist && target && !target.dragging)
+                if (d < dist && target && !target.Dragging)
                 {
                     dist = d;
                     part = target;

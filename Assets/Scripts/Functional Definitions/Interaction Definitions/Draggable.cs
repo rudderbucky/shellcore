@@ -2,5 +2,20 @@
 
 public class Draggable : MonoBehaviour
 {
-    public bool dragging = false;
+    int _drags = 0;
+
+    public bool Dragging
+    {
+        get => _drags > 0;
+    }
+
+    public void AddDrag()
+    {
+        _drags++;
+    }
+
+    public void RemoveDrag()
+    {
+        _drags--;
+    }
 }

@@ -687,7 +687,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private bool IsPriorityForUpdates()
     {
-        return isPlayer.Value || (huskEntity && huskEntity.GetComponent<Draggable>() && huskEntity.GetComponent<Draggable>().dragging);
+        return isPlayer.Value || (huskEntity && huskEntity.GetComponent<Draggable>() && huskEntity.GetComponent<Draggable>().Dragging);
     }
 
     private void AttemptCreateServerResponse()

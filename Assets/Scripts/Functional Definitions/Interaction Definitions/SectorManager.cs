@@ -1650,7 +1650,7 @@ public class SectorManager : MonoBehaviour
         var remainingRocks = new List<Draggable>();
         foreach (var shard in AIData.rockFragments)
         {
-            if (shard && (shard.dragging || Vector3.SqrMagnitude(shard.transform.position - player.transform.position)
+            if (shard && (shard.Dragging || Vector3.SqrMagnitude(shard.transform.position - player.transform.position)
                 < objectDespawnDistance))
             {
                 remainingRocks.Add(shard);

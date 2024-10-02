@@ -27,7 +27,7 @@ public class AirConstruct : Construct
         {
             return;
         }
-        if ((!draggable || !draggable.dragging) && entityBody.velocity == Vector2.zero)
+        if ((!draggable || !draggable.Dragging) && entityBody.velocity == Vector2.zero)
         {
             timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
             oscillatorVector = entityBody.position; // get the current aircraft position
