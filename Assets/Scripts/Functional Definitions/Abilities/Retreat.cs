@@ -27,9 +27,12 @@ public class Retreat : Ability
     {
         if (Core is Craft)
         {
-            if ((Core is ShellCore shellCore && shellCore.GetCarrier() == null) && !(Core is PlayerCore player && player.havenSpawnPoint != Vector2.zero))
+            if (Core is ShellCore shellCore && shellCore.GetCarrier() == null)
             {
-                return;
+                if (!(Core is PlayerCore))
+                    return;
+                else if (Core is PlayerCore && (DialogueSystem.isInCutscene || PlayerCore.Instance.GetIsInteracting() || DialogueSystem.Instance.IsWindowActive()))
+                    return;
             }
             if (Core && Core.networkAdapter && !MasterNetworkAdapter.lettingServerDecide)
             {
