@@ -105,7 +105,7 @@ public class Tank : GroundCraft, IOwnable
         if (isOnGround && !isDead)
         {
             TargetManager.Enqueue(targeter);
-            if (!isDead && !draggable.dragging)
+            if (!isDead && !draggable.Dragging)
             {
                 foreach (var weapon in Weapons)
                 {

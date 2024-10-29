@@ -196,7 +196,7 @@ public class Drone : AirCraft, IOwnable
     {
         if (Time.time > aiReenableTime && ai) ai.enabled = true;
         base.Update();
-        if (!draggable || !draggable.dragging)
+        if (!draggable || !draggable.Dragging)
         {
             if (lastMode.HasValue)
             {

@@ -133,6 +133,24 @@ public class SelectionBoxScript : MonoBehaviour
                 reticleScript.AddSecondaryTarget(part.transform);
             }
         }
+
+        foreach (var shards in AIData.shards)
+        {
+            if (shards.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
+                                           && finalBox.Contains(shards.transform.position))
+            {
+                reticleScript.AddSecondaryTarget(shards.transform);
+            }
+        }
+
+        foreach (var fragments in AIData.rockFragments)
+        {
+            if (fragments.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
+                                           && finalBox.Contains(fragments.transform.position))
+            {
+                reticleScript.AddSecondaryTarget(fragments.transform);
+            }
+        }
     }
 
     private void CycleTarget()

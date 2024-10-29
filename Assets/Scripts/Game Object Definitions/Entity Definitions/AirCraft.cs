@@ -92,7 +92,7 @@ public abstract class AirCraft : Craft
             timePassed = 0; // reset time passed
             oscillating = false;
         }
-        else if ((!draggable || !draggable.dragging) && entityBody.velocity.y == 0)
+        else if ((!draggable || !draggable.Dragging) && entityBody.velocity.y == 0)
         {
             // idle oscillation time
             if (!oscillating)

@@ -179,14 +179,14 @@ public class TractorBeam : MonoBehaviour
             {
                 if (!energies[i]) continue;
                 float sqrD = Vector3.SqrMagnitude(transform.position - energies[i].transform.position);
-                if ((closest == null || sqrD < closestD) && !energies[i].GetComponent<Draggable>().dragging)
+                if ((closest == null || sqrD < closestD) && !energies[i].GetComponent<Draggable>().Dragging)
                 {
                     closestD = sqrD;
                     closest = energies[i].transform;
                 }
             }
 
-            if (closest && closestD < energyPickupRangeSquared && target == null && !closest.gameObject.GetComponent<Draggable>().dragging && !MasterNetworkAdapter.lettingServerDecide)
+            if (closest && closestD < energyPickupRangeSquared && target == null && !closest.gameObject.GetComponent<Draggable>().Dragging && !MasterNetworkAdapter.lettingServerDecide)
             {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
             }
@@ -264,7 +264,7 @@ public class TractorBeam : MonoBehaviour
             
             if (target)
             {
-                target.dragging = false;
+                target.RemoveDrag();
             }
 
             var oldTarget = target;
@@ -279,7 +279,7 @@ public class TractorBeam : MonoBehaviour
 
             if (target && ((MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && (!owner.tractorSwitched || !target.GetComponent<Entity>())) || fromServer))
             {
-                target.dragging = true;
+                target.AddDrag();
             }
 
             if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && 
@@ -303,7 +303,7 @@ public class TractorBeam : MonoBehaviour
             return false;
         }
 
-        if ((newTarget.GetComponent<EnergySphereScript>() && newTarget.dragging) && !(target == newTarget))
+        if ((newTarget.GetComponent<EnergySphereScript>() && newTarget.Dragging) && !(target == newTarget))
         {
             return false;
         }
@@ -346,7 +346,7 @@ public class TractorBeam : MonoBehaviour
 
         if (target && target.GetComponentInChildren<Draggable>())
         {
-            target.GetComponentInChildren<Draggable>().dragging = false;
+            target.GetComponentInChildren<Draggable>().RemoveDrag();
         }
     }
 
