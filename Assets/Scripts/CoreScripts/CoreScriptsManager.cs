@@ -266,19 +266,24 @@ public class CoreScriptsManager : MonoBehaviour
 
         SectorManager.OnSectorLoad += (s) => {
             
-            var context = sectorTriggers.Find(c => c.sectorName == s);
-            if (context != null)
-            {
+            var contextList = sectorTriggers.FindAll(c => c.sectorName == s);
+            foreach (var context in contextList) {
+                if (context == null)
+                {
+                    continue;
+                }     
                 CoreScriptsSequence.RunSequence(context.sequence, context);
             }
         };
 
-        var current = sectorTriggers.Find(c => c.sectorName == SectorManager.instance.current.sectorName);
-        if (current != null)
-        {
-            CoreScriptsSequence.RunSequence(current.sequence, current);
-        } 
-
+        var contextList = sectorTriggers.FindAll(c => c.sectorName == SectorManager.instance.current.sectorName);
+        foreach (var context in contextList) {
+            if (context == null)
+            {
+                continue;
+            }     
+            CoreScriptsSequence.RunSequence(context.sequence, context);
+        }
     }
 
     void RunMissionTrigger(Context context)
