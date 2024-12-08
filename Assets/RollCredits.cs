@@ -74,7 +74,7 @@ public class RollCredits : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    string s1 = "ShellCoreCommand";
+    string s1 = $"ShellCore\nCommand";
     string s2 = "REMASTERED";
     string s3 = "TACTICAL RETRO COMBAT.";
     [SerializeField]
