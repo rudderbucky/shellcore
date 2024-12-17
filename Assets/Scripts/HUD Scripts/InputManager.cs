@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public enum KeyName
 {
@@ -57,36 +58,36 @@ public class InputManager : MonoBehaviour
 
     public static Dictionary<KeyName, Key> keys = new Dictionary<KeyName, Key>
     {
-        {KeyName.Up, new Key(KeyCode.W, "Move up")},
-        {KeyName.Left, new Key(KeyCode.A, "Move left")},
-        {KeyName.Down, new Key(KeyCode.S, "Move down")},
-        {KeyName.Right, new Key(KeyCode.D, "Move right")},
+        {KeyName.Up, new Key(KeyCode.W, "Move Up")},
+        {KeyName.Left, new Key(KeyCode.A, "Move Left")},
+        {KeyName.Down, new Key(KeyCode.S, "Move Down")},
+        {KeyName.Right, new Key(KeyCode.D, "Move Right")},
         {KeyName.Interact, new Key(KeyCode.Q, "Interact")},
-        {KeyName.ToggleTractorBeam, new Key(KeyCode.Space, "Toggle tractor beam")},
+        {KeyName.ToggleTractorBeam, new Key(KeyCode.Space, "Toggle Tractor Beam")},
         {KeyName.Exit, new Key(KeyCode.Escape, "Exit/Cancel")},
-        {KeyName.StatusMenu, new Key(KeyCode.E, "Status menu")},
-        {KeyName.PauseMenu, new Key(KeyCode.Escape, "Pause menu")},
-        {KeyName.Console, new Key(KeyCode.F3, "Open developer console")},
-        {KeyName.CommandWheel, new Key(KeyCode.LeftAlt, "Party command wheel")},
+        {KeyName.StatusMenu, new Key(KeyCode.E, "Status Menu")},
+        {KeyName.PauseMenu, new Key(KeyCode.Escape, "Pause Menu")},
+        {KeyName.Console, new Key(KeyCode.F3, "Developer Console")},
+        {KeyName.CommandWheel, new Key(KeyCode.LeftControl, "Party Command Wheel")},
         {KeyName.HideHUD, new Key(KeyCode.F1, "Hide HUD")},
-        {KeyName.ShowChatHistory, new Key(KeyCode.Return, "Show chat history")},
-        {KeyName.AutoCastBuyTurret, new Key(KeyCode.LeftShift, "Turret quick purchase (+ number) and Auto cast")},
+        {KeyName.ShowChatHistory, new Key(KeyCode.Return, "Show Chat History")},
+        {KeyName.AutoCastBuyTurret, new Key(KeyCode.LeftShift, "Turret Quick Purchase (+ Number) and Auto Cast")},
 
-        {KeyName.ShowSkills, new Key(KeyCode.Z, "Switch to skill hotbar")},
-        {KeyName.ShowSpawns, new Key(KeyCode.X, "Switch to spawn hotbar")},
-        {KeyName.ShowWeapons, new Key(KeyCode.C, "Switch to weapon hotbar")},
-        {KeyName.ShowPassives, new Key(KeyCode.V, "Switch to passive hotbar")},
+        {KeyName.ShowSkills, new Key(KeyCode.Z, "Switch to Skill Hotbar")},
+        {KeyName.ShowSpawns, new Key(KeyCode.X, "Switch to Spawn Hotbar")},
+        {KeyName.ShowWeapons, new Key(KeyCode.C, "Switch to Weapon Hotbar")},
+        {KeyName.ShowPassives, new Key(KeyCode.V, "Switch to Passive Hotbar")},
 
-        {KeyName.Ability0, new Key(KeyCode.Alpha1, "Use ability #1")},
-        {KeyName.Ability1, new Key(KeyCode.Alpha2, "Use ability #2")},
-        {KeyName.Ability2, new Key(KeyCode.Alpha3, "Use ability #3")},
-        {KeyName.Ability3, new Key(KeyCode.Alpha4, "Use ability #4")},
-        {KeyName.Ability4, new Key(KeyCode.Alpha5, "Use ability #5")},
-        {KeyName.Ability5, new Key(KeyCode.Alpha6, "Use ability #6")},
-        {KeyName.Ability6, new Key(KeyCode.Alpha7, "Use ability #7")},
-        {KeyName.Ability7, new Key(KeyCode.Alpha8, "Use ability #8")},
-        {KeyName.Ability8, new Key(KeyCode.Alpha9, "Use ability #9")},
-        {KeyName.Ability9, new Key(KeyCode.Alpha0, "Use ability #10")}
+        {KeyName.Ability0, new Key(KeyCode.Alpha1, "Use Ability #1")},
+        {KeyName.Ability1, new Key(KeyCode.Alpha2, "Use Ability #2")},
+        {KeyName.Ability2, new Key(KeyCode.Alpha3, "Use Ability #3")},
+        {KeyName.Ability3, new Key(KeyCode.Alpha4, "Use Ability #4")},
+        {KeyName.Ability4, new Key(KeyCode.Alpha5, "Use Ability #5")},
+        {KeyName.Ability5, new Key(KeyCode.Alpha6, "Use Ability #6")},
+        {KeyName.Ability6, new Key(KeyCode.Alpha7, "Use Ability #7")},
+        {KeyName.Ability7, new Key(KeyCode.Alpha8, "Use Ability #8")},
+        {KeyName.Ability8, new Key(KeyCode.Alpha9, "Use Ability #9")},
+        {KeyName.Ability9, new Key(KeyCode.Alpha0, "Use Ability #10")}
     };
 
     static InputManager instance;
@@ -107,12 +108,12 @@ public class InputManager : MonoBehaviour
         LoadControls();
     }
 
-    [System.Serializable]
+    [System.Serializable] // Updated by Ormanus
     public class KeyMapping
     {
-        public KeyName keyName;
+        public string keyName;
         public Key key;
-        public KeyMapping(KeyName keyName, Key key)
+        public KeyMapping(string keyName, Key key)
         {
             this.keyName = keyName;
             this.key = key;
@@ -125,14 +126,12 @@ public class InputManager : MonoBehaviour
         public List<KeyMapping> mappings;
     }
 
-
-
     public static void SaveControls()
     {
         var keyList = new List<KeyMapping>();
         foreach (var kvp in keys)
         {
-            keyList.Add(new KeyMapping(kvp.Key, kvp.Value));
+            keyList.Add(new KeyMapping(Enum.GetName(typeof(KeyName), kvp.Key), kvp.Value));
         }
 
         var list = new KeyMappingList();
@@ -152,7 +151,7 @@ public class InputManager : MonoBehaviour
                 keys.Clear();
                 foreach (var km in controls)
                 {
-                    keys.Add(km.keyName, km.key);
+                    keys.Add((KeyName)Enum.Parse(typeof(KeyName), km.keyName), km.key);
                 }
             }
         }
@@ -202,6 +201,7 @@ public class InputManager : MonoBehaviour
 
                     Debug.Log($"Set binding for {inputToChange.Value} to {(KeyCode)key}");
                     inputToChange = null;
+
                     SaveControls();
                     break;
                 }
