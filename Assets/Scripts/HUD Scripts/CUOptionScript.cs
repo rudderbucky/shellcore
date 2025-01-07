@@ -20,6 +20,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
             player.Rebuild();
             CoreUpgraderScript.DrawScreen();
             NodeEditorFramework.Standard.UpgradeCoreCondition.OnCoreUpgrade.Invoke();
+            BackgroundScript.instance.Restart();
         }
         else
         {
