@@ -67,8 +67,9 @@ public class Bunker : GroundConstruct, IVendor
 
 
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
-        
-        faction = lastDamagedBy.faction;
+
+        if (lastDamagedBy)
+            faction = lastDamagedBy.faction;
         
         for (int i = 0; i < parts.Count; i++)
         {
