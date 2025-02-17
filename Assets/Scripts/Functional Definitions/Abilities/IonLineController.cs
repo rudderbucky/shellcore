@@ -191,8 +191,6 @@ public class IonLineController : MonoBehaviour
             var damageable = CollisionManager.RaycastDamageable(transform.position, transform.position + GetVectorByBearing(originalBearing) * range, VerifyTarget, out var point);
             if (damageable != null && line.positionCount > 1)
             {
-                var hitTransform = damageable.GetTransform();
-
                 var magnitude = (point - (Vector2)transform.position).magnitude;
                 line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
                 Core.TakeEnergy(energyCost * Time.deltaTime);
@@ -200,11 +198,10 @@ public class IonLineController : MonoBehaviour
 
                 ShellPart part = null;
                 var dEnt = damageable as Entity;
-                if (!dEnt) return;
-                var colliders = dEnt.GetColliders();
                 var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
                 if (dEnt)
                 {
+                    var colliders = dEnt.GetColliders();
                     for (int i = 0; i < colliders.Length / 4; i++)
                     {
                         if (SATCollision.PointInRectangle(
