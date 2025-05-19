@@ -645,6 +645,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
 
             ShellPart part = childObject.AddComponent<ShellPart>();
+            part.craft = this;
             part.detachible = false;
             shell = part;
             renderer.sortingLayerName = "Default";
@@ -1027,7 +1028,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         var isLightDrone = drone && drone.type == DroneType.Light; // used for light drone weight reduction
         PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(part.partID);
 
-        GameObject partObject = ShellPart.BuildPart(partBlueprint);
+        GameObject partObject = ShellPart.BuildPart(partBlueprint, this);
         ShellPart shellPart = partObject.GetComponent<ShellPart>();
         shellPart.info = part;
         partObject.transform.SetParent(transform, false);
