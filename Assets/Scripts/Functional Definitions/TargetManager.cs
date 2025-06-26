@@ -116,9 +116,9 @@ public class TargetManager : MonoBehaviour
 
             for (int j = 0; j < FactionManager.FactionArrayLength; j++)
             {
-                if (FactionManager.IsAllied(j, faction) && !countSameFactionTargets)
-                    continue;
                 if (!FactionManager.FactionExists(j))
+                    continue;
+                if (FactionManager.IsAllied(j, faction) && !countSameFactionTargets)
                     continue;
 
                 if (j >= allTargets.Length) continue;

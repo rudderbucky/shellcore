@@ -93,6 +93,8 @@ public class FactionManager : MonoBehaviour
         if (!instance) return fac;
         foreach (var f in instance.factions)
         {
+            if (f == null) continue;
+
             if (IsAllied(f.ID, faction.factionID))
             {
                 EntityFaction ef = new();
