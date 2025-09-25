@@ -256,14 +256,20 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 newFaction.colorName = strings[1];
                 newFaction.relations = ints[1];
                 var factionList = new List<Faction>(manager.factions);
-                var existingFaction = factionList.Find(f => f.ID == newFaction.ID);
+                var existingFaction = factionList.Find(f => f?.ID == newFaction.ID);
                 if (existingFaction != null)
                 {
                     factionList.Remove(existingFaction);
                 }
 
+                while (factionList.Count < newFaction.ID)
+                {
+                    factionList.Add(null);
+                }
+
                 factionList.Insert(newFaction.ID, newFaction);
                 manager.factions = factionList.ToArray();
+
                 if (!File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
                 {
                     File.Create(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"));
@@ -389,6 +395,12 @@ public class WCBasePropertyHandler : GUIWindowScripts
         {
             var index = i;
             i++;
+
+            if (currentMode == Mode.Factions && obj == null)
+            {
+                continue;
+            }
+
             var gObj = Instantiate(menuButton, menuContents);
             gObj.GetComponentInChildren<Text>().text = obj.GetName();
             gObj.GetComponentInChildren<Button>().onClick.AddListener(() => { DisplaySelectedProperty(index); });
