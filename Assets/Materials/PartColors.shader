@@ -78,17 +78,13 @@ Shader "Sprites/PartColors"
 				return color;
 			}
 
-			fixed4 frag(v2f IN) : SV_Target
-			{
-				fixed4 c = SampleSpriteTexture (IN.texcoord);
-				c.a *= IN.color.a;
-				c.rgb *= c.a;
-				fixed thresh = 0.125 * c.a;
-				if (c.r > thresh && c.g > thresh && c.b > thresh)
-				{
-					c *= IN.color;
-				}
-				return c;
+			fixed4 frag(v2f IN) : SV_Target 
+			{ 
+				fixed4 c = SampleSpriteTexture (IN.texcoord); 
+				c.a *= IN.color.a; 
+				c.rgb *= c.a; 
+				c *= IN.color;
+				return c; 
 			}
 		ENDCG
 		}
