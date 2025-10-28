@@ -439,6 +439,17 @@ namespace NodeEditorFramework.IO
 
         private Vector2 GetVectorAttribute(XmlElement element, string attribute, bool throwIfInvalid = false)
         {
+            if (attribute.Count(c => c == ',') == 3)
+            {
+                // Fix wrong decimal separator in old files
+                int firstComma = attribute.IndexOf(',');
+                int lastComma = attribute.LastIndexOf(',');
+                var array = attribute.ToCharArray();
+                array[firstComma] = '.';
+                array[lastComma] = '.';
+                attribute = new string(array);
+            }
+
             string[] vecString = element.GetAttribute(attribute).Split(',');
             Vector2 vector = new Vector2(0, 0);
             float vecX, vecY;
@@ -451,6 +462,22 @@ namespace NodeEditorFramework.IO
 
         private Color GetColorAttribute(XmlElement element, string attribute, bool throwIfInvalid = false)
         {
+            if (attribute.Count(c => c == ',') == 7)
+            {
+                // Fix wrong decimal separator in old files
+                var array = attribute.ToCharArray();
+                bool flipFlop = true;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (array[i] == ',')
+                    {
+                        if (flipFlop)
+                            array[i] = '.';
+                        flipFlop = !flipFlop;
+                    }
+                }
+                attribute = new string(array);
+            }
             string[] vecString = element.GetAttribute(attribute).Split(',');
             Color color = Color.white;
             float colR, colG, colB, colA;
@@ -463,6 +490,22 @@ namespace NodeEditorFramework.IO
 
         private Rect GetRectAttribute(XmlElement element, string attribute, bool throwIfInvalid = false)
         {
+            if (attribute.Count(c => c == ',') == 7)
+            {
+                // Fix wrong decimal separator in old files
+                var array = attribute.ToCharArray();
+                bool flipFlop = true;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (array[i] == ',')
+                    {
+                        if (flipFlop)
+                            array[i] = '.';
+                        flipFlop = !flipFlop;
+                    }
+                }
+                attribute = new string(array);
+            }
             string[] vecString = element.GetAttribute(attribute).Split(',');
             Rect rect = new Rect(0, 0, 100, 100);
             float x, y, w, h;
@@ -475,6 +518,11 @@ namespace NodeEditorFramework.IO
 
         private bool TryParseFloat(string value, out float val)
         {
+            if (!value.Contains(".") && value.Contains(","))
+            {
+                // File created in an old version, with culture using ',' as decimal separator
+                value = value.Replace(",", ".");
+            }
             if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out val))
             {
                 return true;
