@@ -39,7 +39,8 @@ public class Yard : AirConstruct, IShipBuilder
 
     public static readonly int YardProximitySquared = 75;
     private static float lastPartTakenTime = 0;
-    private static int partsTakenCombo = 0;
+    private static int partsTakenCombo = 0, shardsTakenCombo = 0;
+    public static string collectingYardID;
 
     protected override void Update()
     {
@@ -62,44 +63,19 @@ public class Yard : AirConstruct, IShipBuilder
             // Notify the player that their parts have been collected
             if (Yard.partsTakenCombo > 0 && Time.time - Yard.lastPartTakenTime > 1)
             {
-                if (Yard.partsTakenCombo > 1)
+                if (Time.time - Yard.lastPartTakenTime > 1)
                 {
-                    string message = string.Format("<color=lime>Your {0} parts have been added into your inventory.</color>", Yard.partsTakenCombo);
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, message, 4);
+                    if (Yard.partsTakenCombo > 0)
+                    {
+                        PushPartCollectionDialogue();
+                    }
+                    if (Yard.shardsTakenCombo > 0)
+                    {
+                        PushShardCollectionDialogue();
+                    }
                 }
-                else
-                {
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
-                }
-                Yard.partsTakenCombo = 0;
             }
         }
-    }
-
-    public static void TakePart(Entity entity, TractorBeam tractor)
-    {
-        if (entity as Yard)
-        {
-            // Waits to see if it will get more parts
-            Yard.lastPartTakenTime = Time.time;
-            Yard.partsTakenCombo++;
-        }
-        else
-        {
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(entity.ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
-        }
-        var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
-        var info = shellPart.info;
-        info = ShipBuilder.CullSpatialValues(info);
-        ShipBuilder.AddOriginToDictionary(shellPart);
-        PlayerCore.Instance.cursave.partInventory.Add(info);
-        PartIndexScript.AttemptAddToPartsObtained(info);
-        PartIndexScript.AttemptAddToPartsSeen(info);
-        if (NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect != null)
-        {
-            NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
-        }
-        Destroy(shellPart.gameObject);
     }
 
     private void GrabCollectiblesFromAllies()
@@ -222,5 +198,73 @@ public class Yard : AirConstruct, IShipBuilder
         {
             shellCore.HealToMax();
         }
+    }
+
+    public static void TakePart(Entity entity, TractorBeam tractor)
+    {
+        if (entity as Yard)
+        {
+            // Waits to see if it will get more parts
+            Yard.lastPartTakenTime = Time.time;
+            Yard.partsTakenCombo++;
+        }
+        collectingYardID = entity.ID;
+        var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
+        var info = shellPart.info;
+        info = ShipBuilder.CullSpatialValues(info);
+        ShipBuilder.AddOriginToDictionary(shellPart);
+        PlayerCore.Instance.cursave.partInventory.Add(info);
+        PartIndexScript.AttemptAddToPartsObtained(info);
+        PartIndexScript.AttemptAddToPartsSeen(info);
+        if (NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect != null)
+        {
+            NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
+        }
+        Destroy(shellPart.gameObject);
+    }
+
+    public static void TakeShard(Entity entity, TractorBeam tractor)
+    {
+        collectingYardID = entity.ID;
+
+        var shard = tractor.GetTractorTarget().GetComponent<Shard>();
+        var tiers = new int[] { 1, 5, 20 };
+        if (entity as Yard)
+        {
+            // Waits to see if it will get more parts
+            Yard.lastPartTakenTime = Time.time;
+            Yard.shardsTakenCombo += tiers[shard.tier];
+        }
+        PlayerCore.Instance.cursave.shards += tiers[shard.tier];
+    	ShardCountScript.DisplayCount();
+        Destroy(shard.gameObject);
+    }
+
+    private void PushPartCollectionDialogue()
+    {
+        if (Yard.partsTakenCombo > 1)
+        {
+            string message = string.Format("Your {0} parts have been added into your inventory.", Yard.partsTakenCombo);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, message, 4, true);
+        }
+        else
+        {
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, "Your part has been added into your inventory.", 4, true);
+        }
+        Yard.partsTakenCombo = 0;
+    }
+
+    private void PushShardCollectionDialogue()
+    {
+        if (Yard.shardsTakenCombo > 1)
+        {
+            string message = string.Format("Your {0} shards have been added into your stash.", Yard.shardsTakenCombo);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, message, 4, true);
+        }
+        else
+        {
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(collectingYardID, "Your shard has been added into your stash.", 4, true);
+        }
+        Yard.shardsTakenCombo = 0;
     }
 }

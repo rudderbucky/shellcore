@@ -390,26 +390,39 @@ public class ReticleScript : MonoBehaviour
 
     private void UpdateReticleHealths(Image shellImage, Image coreImage, Transform targetCraft, Image energyImage = null)
     {
-        if (targetCraft != null && targetCraft.GetComponent<Entity>())
+        if (targetCraft != null && targetCraft.TryGetComponent<ITargetable>(out var targetable))
         {
-            var ent = targetCraft.GetComponent<Entity>();
+            //var ent = targetCraft.GetComponent<IDamageable>();
 
             // show craft related information
             shellImage.enabled = coreImage.enabled = true;
-            shellImage.color = FactionManager.GetFactionColor(ent.GetFaction().factionID);
+            if (targetCraft.GetComponent<ShardRock>())
+            {
+                var shardRock = targetCraft.GetComponent<ShardRock>();
+
+                if (shardRock.tier == 2)
+                    shellImage.color = new Color(1F, 0F, 0.0F);
+                else if (shardRock.tier == 1)
+                    shellImage.color = new Color(0F, 1F, 0.0F);
+                else
+                    shellImage.color = new Color(0.13725F, 0.56078F, 1F);
+            }
+            else
+                shellImage.color = FactionManager.GetFactionColor(targetable.GetFaction().factionID);
             coreImage.color = new Color(0.8F, 0.8F, 0.8F);
 
-
-            float[] targHealth = ent.GetHealth(); // get the target current health
-            float[] targMax = ent.GetMaxHealth(); // get the target max health
+            float[] targHealth = targetable.GetHealth(); // get the target current health
+            float[] targMax = targetable.GetMaxHealth(); // get the target max health
 
             shellImage.rectTransform.localScale = new Vector3(targHealth[0] / targMax[0], 1, 1);
             coreImage.rectTransform.localScale = new Vector3(targHealth[1] / targMax[1], 1, 1);
+            if (energyImage && !targetCraft.GetComponent<ShardRock>())
+                energyImage.rectTransform.localScale = new Vector3(targHealth[2] / targMax[2], 1, 1);
 
             // adjust the image scales according to the health ratios
 
             // Warning: does not account for the shell/core/energy number objects not on primary reticle
-            if (DebugMode && energyImage)
+            if (DebugMode && energyImage && !targetCraft.GetComponent<ShardRock>())
             {
                 energyImage.enabled = true;
                 var parent = coreImage.transform.parent.parent;
@@ -418,7 +431,6 @@ public class ReticleScript : MonoBehaviour
                 {
                     t.enabled = true;
                 }
-
 
                 parent.Find("Shell Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[0]) + "/" + targMax[0];
                 parent.Find("Core Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[1]) + "/" + targMax[1];

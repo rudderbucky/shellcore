@@ -53,10 +53,9 @@ public class MouseMovementVisualScript : MonoBehaviour
         }
     }
 
-    // TODO: remove hardcoding
     public static Vector3 GetMousePosOnMinimap()
     {
-        var minimapStart = (new Vector2(Screen.width, Screen.height) * (float)1920 / Screen.width) - new Vector2(260, 260);
-        return (((Vector2)Input.mousePosition * (float)1920 / Screen.width) - minimapStart) * 512 / 250;
+        var minimapStart = (new Vector2(Screen.width, Screen.height) * UIScalerScript.GetScale()) - new Vector2(260, 260);
+        return (((Vector2)Input.mousePosition * UIScalerScript.GetScale()) - minimapStart) * 512 / 250;
     }
 }

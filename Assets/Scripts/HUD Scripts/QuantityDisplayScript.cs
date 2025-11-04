@@ -157,7 +157,9 @@ public class QuantityDisplayScript : MonoBehaviour
             if (PartIndexScript.CheckPartObtained(info))
             {
                 targetName.text = info.partID;
-                targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null) + " " + info.tier;
+                targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, info.secondaryData);
+                if (info.tier != 0)
+                    targetDesc.text += " " + info.tier;
                 targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
             else
@@ -166,6 +168,21 @@ public class QuantityDisplayScript : MonoBehaviour
                 targetDesc.text = "Bring to Yard";
                 targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
+        }
+        else if (obj.GetComponent<ShardRock>() || obj.GetComponent<Shard>())
+        {
+            if (obj.GetComponent<Shard>())
+            {
+                targetName.text = "Shard";
+                targetDesc.text = "Loot";
+            }
+            else
+            {
+                targetName.text = "Shard Rock";
+                targetDesc.text = "";
+            }
+            targetDesc.color = targetName.color = new Color32(51, 153, 204, 255);
+            targetInfo.SetActive(true);
         }
         else
         {

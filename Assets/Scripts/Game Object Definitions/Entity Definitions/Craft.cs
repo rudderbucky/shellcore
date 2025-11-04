@@ -167,8 +167,8 @@ public abstract class Craft : Entity
         if (!SystemLoader.AllLoaded) return;
         var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
 
-        entityBody.drag = draggable.dragging  ? 25F : 0;
-        if (draggable.dragging)
+        entityBody.drag = draggable.Dragging  ? 25F : 0;
+        if (draggable.Dragging)
         {
             return;
         }

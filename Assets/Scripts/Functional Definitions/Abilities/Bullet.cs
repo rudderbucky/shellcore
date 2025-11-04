@@ -109,10 +109,7 @@ public class Bullet : WeaponAbility
         script.allowedHits = gasBoosted ? entityPierce : 1;
 
         // Add velocity to the bullet
-        if (t != 0)
-        {
-            bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity * t) * bulletSpeed;
-        }
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity * t) * bulletSpeed;
 
         // Destroy the bullet after survival time
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !MasterNetworkAdapter.lettingServerDecide)

@@ -48,7 +48,7 @@ public class YardWarp : Ability
             {
                 float d = (AIData.strayParts[i].transform.position - Core.transform.position).sqrMagnitude;
                 Draggable target = AIData.strayParts[i].GetComponent<Draggable>();
-                if (d < dist && target && !target.dragging)
+                if (d < dist && target && !target.Dragging)
                 {
                     dist = d;
                     part = target;

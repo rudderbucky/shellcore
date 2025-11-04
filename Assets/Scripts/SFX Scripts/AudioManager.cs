@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -71,15 +72,26 @@ public class AudioManager : MonoBehaviour
     // sourcePoint = where the sound is played (moves along with object)
     public static GameObject PlayClipByID(string ID, Vector3 pos, GameObject sourcePoint = null)
     {
-        if (instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
-        {
+        // Don't play audio if it is too far?
+        if (SceneManager.GetActiveScene().name == "SampleScene" && CheckAudioDistance(pos))
             return null;
-        }
+
+        // Don't play audio at the same time as another
+        if (instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
+            return null;
 
         var source = (sourcePoint ? sourcePoint : new GameObject()).AddComponent<AudioSource>();
         if (!sourcePoint)
         {
             source.transform.position = pos;
+        }
+
+        // Lowers volume by distance
+        if (SceneManager.GetActiveScene().name == "SampleScene" && !DialogueSystem.isInCutscene)
+        {
+            float distance = Vector3.Distance(source.transform.position, instance.playerMusicSource.transform.position);
+            float volume = Mathf.Clamp01(1 - (distance / (15 * CameraScript.GetMaxZoomLevel())));
+            source.volume = volume;
         }
 
         source.name = "Audio One-Shot";
@@ -164,5 +176,11 @@ public class AudioManager : MonoBehaviour
 
             instance.playerMusicSource.clip = null; // clear song
         }
+    }
+
+    private static bool CheckAudioDistance(Vector3 currentPos)
+    {
+        float distance = Vector3.Distance(currentPos, instance.playerMusicSource.transform.position);
+        return 1 < distance / (15 * CameraScript.GetMaxZoomLevel());
     }
 }

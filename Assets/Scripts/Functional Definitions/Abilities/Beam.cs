@@ -9,7 +9,7 @@ public class Beam : WeaponAbility
     protected float timer; // float timer for line renderer drawing
     public GameObject beamHitPrefab;
     public static readonly int beamDamage = 525;
-    protected List<Transform> targetArray;
+    protected List<Transform> hitTargets;
 
     protected int numShots = 0;
     protected int MAX_BOUNCES = 1;
@@ -31,7 +31,7 @@ public class Beam : WeaponAbility
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(ShellCore);
         cooldownDuration = 3f;
-        targetArray = new List<Transform>();
+        hitTargets = new List<Transform>();
         line.positionCount = 0;
     }
 
@@ -75,9 +75,9 @@ public class Beam : WeaponAbility
                 {
                     line.SetPosition(currentVertex + 1, partPos);
                 }
-                else if (targetArray.Count > currentVertex && targetArray[currentVertex])
+                else if (hitTargets.Count > currentVertex && hitTargets[currentVertex])
                 {
-                    line.SetPosition(currentVertex + 1, targetArray[currentVertex].position);
+                    line.SetPosition(currentVertex + 1, hitTargets[currentVertex].position);
                 }
                 else if (!MasterNetworkAdapter.lettingServerDecide)
                 {
@@ -111,16 +111,14 @@ public class Beam : WeaponAbility
         if (firing)
             timer += Time.deltaTime;
 
-        if (timer > 0.1 * numShots && numShots < MAX_BOUNCES)
+        if (timer > 0.1f * numShots && numShots < MAX_BOUNCES)
         {
             var vec = numShots == 0 ? transform.position : line.GetPosition(numShots);
             var closestEntity = targetingSystem.GetTarget();
 
-            if (closestEntity && !targetArray.Contains(closestEntity) && numShots == 0)
+            if (closestEntity && !hitTargets.Contains(closestEntity) && numShots == 0)
             {
-                targetArray.Add(closestEntity);
-                FireBeam(closestEntity.position);
-                numShots++;
+                FireBeam(closestEntity);
             }
             else
             {
@@ -128,7 +126,7 @@ public class Beam : WeaponAbility
                 closestEntity = null;
                 foreach (var ent in ents)
                 {
-                    if (targetArray.Contains(ent))
+                    if (hitTargets.Contains(ent))
                     {
                         continue;
                     }
@@ -138,13 +136,11 @@ public class Beam : WeaponAbility
 
                 if (!closestEntity)
                 {
-                    numShots = 0;
+                    //numShots = 0;
                 }
                 else
                 {
-                    targetArray.Add(closestEntity);
-                    FireBeam(closestEntity.position);
-                    numShots++;
+                    FireBeam(closestEntity);
                 }
             }
         }
@@ -178,7 +174,7 @@ public class Beam : WeaponAbility
         {
             SetUpCosmetics();
         }
-        targetArray.Clear();
+        hitTargets.Clear();
         firing = true;
         numShots = 0;
         return true;
@@ -196,7 +192,6 @@ public class Beam : WeaponAbility
             GetClosestPart(targetingSystem.GetTarget().GetComponentInParent<Entity>().NetworkGetParts().ToArray());
             targetPos = nextTargetPart.transform.position;
         }
-
 
         if (line.positionCount == 0) 
         {
@@ -218,14 +213,21 @@ public class Beam : WeaponAbility
     }
 
 
-    protected void FireBeam(Vector3 victimPos)
+    protected void FireBeam(Transform targetToAttack)
     {
-        Transform targetToAttack = targetArray[targetArray.Count - 1];
+        Vector3 victimPos = targetToAttack.position;
+        hitTargets.Add(targetToAttack);
+        numShots++;
         var residue = targetToAttack.GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
-        // deal instant damage
+
+        if (nextTargetPart && nextTargetPart.craft.gameObject != targetToAttack.gameObject)
+        {
+            nextTargetPart = null;
+        }
 
         if (nextTargetPart)
         {
+            // deal instant damage to the closest part
             nextTargetPart.TakeDamage(residue);
             victimPos = partPos = nextTargetPart.transform.position;
         }
@@ -233,14 +235,14 @@ public class Beam : WeaponAbility
         ActivationCosmetic(victimPos);
     }
 
-    protected override Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
+    protected Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
     {
-        var list = base.GetClosestTargets(num, pos);
+        var list = targetingSystem.GetClosestTargets(num, pos);
         if (list.Length > 0)
         {
             foreach (var ent in list)
             {
-                if (targetArray.Contains(ent)) continue;
+                if (hitTargets.Contains(ent)) continue;
                 GetClosestPart(pos, ent.GetComponentsInChildren<ShellPart>());
                 break;
             }
@@ -291,6 +293,7 @@ public class Beam : WeaponAbility
         var parts = targetEntity.GetComponentsInChildren<ShellPart>();
         if (parts.Length == 0)
         {
+            nextTargetPart = null;
             return base.DistanceCheck(targetEntity);
         }
         else

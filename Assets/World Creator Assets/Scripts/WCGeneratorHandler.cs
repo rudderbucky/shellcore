@@ -563,6 +563,9 @@ public class WCGeneratorHandler : MonoBehaviour
                     continue;
                 }
 
+                if (faction == null)
+                    continue;
+
                 lines.Add($"{faction.factionName}-{faction.ID}:Factions/{faction.factionName}-{faction.ID}.json");
             }
 

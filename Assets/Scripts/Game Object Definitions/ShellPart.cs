@@ -96,7 +96,7 @@ public class ShellPart : MonoBehaviour
     /// Build Part
     /// </summary>
     /// <param name="blueprint">blueprint of the part</param>
-    public static GameObject BuildPart(PartBlueprint blueprint)
+    public static GameObject BuildPart(PartBlueprint blueprint, Entity craft)
     {
         if (shaderMaterials == null)
         {
@@ -124,11 +124,11 @@ public class ShellPart : MonoBehaviour
         spriteRenderer.material = shaderMaterials[partShader];
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
         var part = obj.GetComponent<ShellPart>();
-        part.craft = part.transform.root.GetComponent<Entity>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
         part.currentHealth = part.partHealth;
         part.detachible = blueprint.detachible;
+        part.craft = craft;
 
         var partSys = obj.GetComponent<ParticleSystem>();
         var sh = partSys.shape;
