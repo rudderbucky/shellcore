@@ -526,11 +526,11 @@ public class SaveMenuHandler : GUIWindowScripts
         save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
         save.abilityCaps = CoreUpgraderScript.minAbilityCap;
         save.shards = 0;
-        //save.partyLock = false;
+        save.partyLock = false;
         save.version = currentVersion;
         save.resourcePath = resourcePath;
         save.abilityHotkeys = new AbilityHotkeyStruct();
-        //save.currentPartyMembers = new List<string>();
+        save.currentPartyMembers = new List<string>();
 
         var savesDir = System.IO.Path.Combine(Application.persistentDataPath, "Saves");
         Directory.CreateDirectory(savesDir);
