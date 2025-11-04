@@ -93,17 +93,14 @@ public class SaveHandler : MonoBehaviour
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 StartCoroutine(Autobackup());
 
-            /*if (save.currentPartyMembers.Count != 0) // Currently broken, I do not know why this is null
+            playerSave.currentPartyMembers.Clear();
+            foreach (var member in PartyManager.instance.partyMembers)
             {
-                foreach (var charID in save.currentPartyMembers)
-                {
-                    PartyManager.instance.AssignBackend(charID);
-                }
-                save.currentPartyMembers.Clear();
-            }*/
+                playerSave.currentPartyMembers.Add(member.ID);
+            }
 
-            //if (save.partyLock)
-                //PartyManager.instance.SetOverrideLock(save.partyLock);
+            if (save.partyLock)
+                PartyManager.instance.SetOverrideLock(save.partyLock);
         }
         else
         {

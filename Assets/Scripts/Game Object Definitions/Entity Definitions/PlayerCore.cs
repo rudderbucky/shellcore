@@ -319,6 +319,14 @@ public class PlayerCore : ShellCore
 
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
+
+        if (cursave.currentPartyMembers.Count != 0)
+        {
+            foreach (var charID in cursave.currentPartyMembers)
+            {
+                PartyManager.instance.AssignBackend(charID);
+            }
+        }
     }
 
     public override void Rebuild()
