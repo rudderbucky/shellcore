@@ -210,7 +210,7 @@ public class SaveHandler : MonoBehaviour
         {
             playerSave.currentPartyMembers.Add(member.ID);
         }
-        //playerSave.partyLock = PartyManager.instance.GetOverrideLock();
+        playerSave.partyLock = PartyManager.instance.GetOverrideLock();
     }
 
     public void Save()
