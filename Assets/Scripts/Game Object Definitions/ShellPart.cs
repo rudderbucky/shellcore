@@ -535,6 +535,11 @@ public class ShellPart : MonoBehaviour
         SetPartShader(color);
     }
 
+    public void UpdateMaterial()
+    {
+        block?.SetTexture("_MainTex", spriteRenderer.sprite.texture);
+    }
+
     private void SetPartShader(Color color)
     {
         if (block == null)
