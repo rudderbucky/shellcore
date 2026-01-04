@@ -42,11 +42,6 @@ public class Blink : Ability
             worldPos.z = 0;
             ActivateBlink(worldPos);
         }
-        else
-        {
-            ActivateBlink(Core.transform.position + Quaternion.Euler(0, 0, Random.Range(0, 360)) * new Vector3(15, 0, 0));
-            ActivationCosmetic(transform.position);
-        }
         
         AudioManager.PlayClipByID("clip_respawn", transform.position);
         base.Execute();
