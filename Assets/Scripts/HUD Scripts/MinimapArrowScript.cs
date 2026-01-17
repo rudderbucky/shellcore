@@ -8,6 +8,7 @@ public class MinimapArrowScript : MonoBehaviour
     PlayerCore player;
     public static MinimapArrowScript instance;
     public GameObject arrowPrefab;
+    private int currentDimension;
 
     Dictionary<TaskManager.ObjectiveLocation, Transform> arrows = new Dictionary<TaskManager.ObjectiveLocation, Transform>();
     Dictionary<ShellCore, Transform> coreArrows = new Dictionary<ShellCore, Transform>();
@@ -23,6 +24,7 @@ public class MinimapArrowScript : MonoBehaviour
         }
 
         playerTargetArrow.GetComponent<SpriteRenderer>().color = Color.cyan;
+        currentDimension = player.Dimension;
     }
 
     // Draw arrows signifying objective locations. Do not constantly call this method.
@@ -155,6 +157,12 @@ public class MinimapArrowScript : MonoBehaviour
         else if (playerTargetArrow)
         {
             playerTargetArrow.GetComponent<SpriteRenderer>().enabled = false;
+        }
+
+        if (player.Dimension != currentDimension)
+        {
+            DrawObjectiveLocations();
+            currentDimension = player.Dimension;
         }
 
         foreach (var loc in arrows.Keys)

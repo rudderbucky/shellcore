@@ -24,13 +24,14 @@ public class MouseMovementVisualScript : MonoBehaviour
         instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public static void Focus()
     {
+        if (PlayerCore.Instance.GetIsDead())
+        {
+            instance.deltaLineRenderer.positionCount = 0;
+            return;
+        }
+
         overMinimap = GetMousePosOnMinimap().x > 0 && GetMousePosOnMinimap().y > 0;
         instance.deltaLineRenderer.positionCount = 2;
         instance.deltaLineRenderer.SetPosition(0, PlayerCore.Instance.transform.position);
@@ -39,7 +40,7 @@ public class MouseMovementVisualScript : MonoBehaviour
             instance.deltaLineRenderer.SetPosition(1,
                 CameraScript.instance.GetWorldPositionOfMouse());
         }
-        else if (Input.GetMouseButton(0) && overMinimap)
+        else if (Input.GetMouseButton(0) && overMinimap && !Input.GetKey(KeyCode.LeftShift))
         {
             instance.deltaLineRenderer.SetPosition(1, instance.minimapCamera.ScreenToWorldPoint(GetMousePosOnMinimap()));
         }

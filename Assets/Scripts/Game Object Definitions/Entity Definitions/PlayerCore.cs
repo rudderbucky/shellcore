@@ -170,6 +170,15 @@ public class PlayerCore : ShellCore
     /// <returns>a directional vector based on current inputs</returns>
     public Vector2 getDirectionalInput()
     {
+        if (GetIsDead())
+        {
+            minimapPoint = null;
+            return Vector2.zero;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            return Vector2.zero;
+
         if (Input.GetMouseButton(1) && !(MouseMovementVisualScript.overMinimap && Input.GetMouseButton(0)))
         {
             minimapPoint = null;
@@ -180,7 +189,6 @@ public class PlayerCore : ShellCore
 
         if (Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap && !SelectionBoxScript.GetClicking())
         {
-            if (Input.GetKey(KeyCode.LeftShift)) return Vector2.zero;
             bool droneInteraction = false;
             var mousePosOnMinimap = MouseMovementVisualScript.GetMousePosOnMinimap();
             minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(mousePosOnMinimap);
