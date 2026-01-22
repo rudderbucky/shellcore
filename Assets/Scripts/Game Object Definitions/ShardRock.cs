@@ -180,8 +180,7 @@ public class ShardRock : MonoBehaviour, IDamageable
 
         if (LocationBasedShard && PlayerCore.Instance)
         {
-            var tiers = new int[] { 1, 5, 20 };
-            PlayerCore.Instance.cursave.shards += tiers[tier];
+            PlayerCore.Instance.cursave.shards += GetShardAmount(tier);
             ShardCountScript.DisplayCount();
         }
     }
@@ -202,5 +201,19 @@ public class ShardRock : MonoBehaviour, IDamageable
     public bool GetInvisible()
     {
         return false;
+    }
+
+    private int GetShardAmount(int tier)
+    {
+        switch (tier)
+        {
+            case 2:
+                return 20;
+            case 1:
+                return 5;
+            case 0:
+            default:
+                return 1;
+        }
     }
 }
