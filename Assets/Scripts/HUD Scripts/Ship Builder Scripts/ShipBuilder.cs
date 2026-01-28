@@ -517,6 +517,8 @@ public class ShipBuilder : GUIWindowScripts
         if (print.parts == null) return false;
         if (print.coreSpriteID != "core1_light") return false;
         if (!CoreUpgraderScript.GetCoreNames().ToList().Contains(coreShellSpriteID)) return false;
+        var allParts = ResourceManager.GetAssetIDsOfType<PartBlueprint>();
+        if (print.parts.Select(p => p.partID).Any(p => !allParts.Contains(p))) return false;
         List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
         
         foreach (var part in print.parts)

@@ -462,6 +462,19 @@ public class ResourceManager : MonoBehaviour
 
         return results.ToArray();
     }
+
+    public static List<string> GetAssetIDsOfType<T>() where T : Object
+    {
+        List<string> results = new List<string>();
+        foreach (var resource in Instance.resources)
+        {
+            if (resource.Value is T)
+            {
+                results.Add(resource.Key);
+            }
+        }
+        return results;
+    }
 }
 
 #if UNITY_EDITOR
