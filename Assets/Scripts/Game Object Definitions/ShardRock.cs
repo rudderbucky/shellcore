@@ -170,10 +170,6 @@ public class ShardRock : MonoBehaviour, IDamageable
             {
                 shardComp.SetCollectible(i == 0);
             }
-            else if (PlayerCore.Instance)
-            {
-                PlayerCore.Instance.cursave.locationBasedShardsFound.Add(ID);
-            }
 
             shardComp.tier = tier;
         }
@@ -181,6 +177,7 @@ public class ShardRock : MonoBehaviour, IDamageable
         if (LocationBasedShard && PlayerCore.Instance)
         {
             PlayerCore.Instance.cursave.shards += GetShardAmount(tier);
+            PlayerCore.Instance.cursave.locationBasedShardsFound.Add(ID);
             ShardCountScript.DisplayCount();
         }
     }
