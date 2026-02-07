@@ -35,7 +35,8 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         shellImage.rectTransform.anchoredPosition = new Vector2(shellImage.rectTransform.anchoredPosition.x,
             (shellImage.rectTransform.sizeDelta.y - (shellImage.sprite.pivot).y) / 2);
 
-        saveName.text = save.name;
+        // Note, don't use Path to grab files, there's literally a class called Path!
+        saveName.text = System.IO.Path.GetFileNameWithoutExtension(path);
         episodeNumber.text = $"Episode: {Mathf.Max(1, save.episode)}";
         version.text = "Version: " + save.version;
         if (save.version.Contains("Prototype") || save.version.Contains("Alpha 0.0.0"))
