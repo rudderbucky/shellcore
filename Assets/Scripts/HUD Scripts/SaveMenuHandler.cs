@@ -519,7 +519,7 @@ public class SaveMenuHandler : GUIWindowScripts
         icon.transform.SetSiblingIndex(icon.transform.parent.childCount - 2);
 
         int episodeIndex = Mathf.Clamp(save.episode, 1, episodeSprites.Length);
-        icon.transform.Find("ImageProfile").GetComponent<Image>().sprite = episodeSprites[episodeIndex - 1];
+        icon.GetComponent<Image>().sprite = episodeSprites[episodeIndex - 1];
     }
 
     public static PlayerSave CreateSave(string name, string checkpointName = null, string resourcePath = "")
