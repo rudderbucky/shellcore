@@ -45,7 +45,7 @@ public class SelectionBoxScript : MonoBehaviour
 
     private bool GetMouseOverTarget()
     {
-        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, CameraScript.zLevel));
         return CollisionManager.GetTargetAtPosition(pos) != null;
     }
 
@@ -189,7 +189,9 @@ public class SelectionBoxScript : MonoBehaviour
 
         CycleTarget();
 
-        if (Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject())
+        if (Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject() 
+            && !PlayerCore.Instance.GetIsInteracting() && !DialogueSystem.isInCutscene
+            && !PlayerViewScript.GetIsWindowActive())
         {
             SetClicking(true);
         }

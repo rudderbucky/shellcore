@@ -1139,9 +1139,14 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public void BumpCurrent(int val)
     {
-        if (currentIndex + val < 0 || currentIndex + val >= handler.items.Count)
+        if (currentIndex + val < 0)
         {
-            return;
+            currentIndex = handler.items.Count;
+        }
+
+        if (currentIndex + val >= handler.items.Count)
+        {
+            currentIndex = -1;
         }
 
         SetCurrent(currentIndex + val);
