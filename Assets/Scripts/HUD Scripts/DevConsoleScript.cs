@@ -558,7 +558,7 @@ public class DevConsoleScript : MonoBehaviour
             {
                 Debug.LogWarning("Backing up...");
                 cheatBackup = true;
-                SaveHandler.instance.BackupSave(" (cheat)");
+                SaveHandler.instance.BackupSave("(cheat)");
             }
 #endif
         }
