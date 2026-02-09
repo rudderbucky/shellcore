@@ -11,6 +11,11 @@ public class FactionManager : MonoBehaviour
 
     int factionCount = 0;
 
+    public static bool Exists
+    {
+        get { return instance != null; }
+    }
+
     public static void RemoveExtraFactions()
     {
         if (!instance) return;

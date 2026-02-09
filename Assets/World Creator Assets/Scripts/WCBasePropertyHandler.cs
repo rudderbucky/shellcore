@@ -155,6 +155,26 @@ public class WCBasePropertyHandler : GUIWindowScripts
         addPropertyButton.transform.SetAsLastSibling();
     }
 
+    void DisplayRelations(int index, string label)
+    {
+        if (ints.Count <= index)
+        {
+            ints.Add(0);
+        }
+
+        var gObj = Instantiate(inputFieldPrefab, fieldContents);
+        gObj.GetComponentInChildren<Text>().text = label;
+        var field = gObj.GetComponentInChildren<InputField>();
+        field.text = ints[index].ToString();
+        field.contentType = InputField.ContentType.IntegerNumber;
+        field.onEndEdit.AddListener((s) =>
+        {
+            ints[index] = (int)DefaultTryParse(s);
+            field.text = ints[index].ToString();
+        });
+        addPropertyButton.transform.SetAsLastSibling();
+    }
+
     public enum Mode
     {
         Characters,
@@ -327,7 +347,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 DisplayColors(0, "Faction color: ");
                 DisplayColors(1, "Shiny color: ");
                 DisplayString(1, "Color name: ");
-                DisplayInt(1, "Relations: ");
+                DisplayRelations(1, "Relations: ");
                 break;
             case Mode.Miscellaneous:
                 DisplayInt(0, "Default skill count: ");
