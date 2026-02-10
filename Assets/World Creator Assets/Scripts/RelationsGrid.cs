@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasRenderer))]
 public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClickHandler, ILayoutElement, IPointerExitHandler
 {
+    public static Action OnRelationsChanged;
+
     public GameObject factionNamePrefabX;
     public GameObject factionNamePrefabY;
     public Transform xRoot;
@@ -35,7 +38,7 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
     const float CellSize = 40f;
 
     readonly Color bgColor = new Color(0.1f, 0.2f, 0.05f);
-    readonly Color lineColor = new Color(0.2f, 0.3f, 0.1f);
+    readonly Color lineColor = new Color(0.0f, 0.3f, 0.1f);
     readonly Color highlightColor = new Color(0.4f, 0.5f, 0f);
     readonly Color alliedColor = new Color(0f, 0.7f, 0f);
     readonly Color enemyColor = new Color(0.3f, 0f, 0f);
@@ -88,18 +91,19 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
 
             // Create X-axis label
             var xLabel = Instantiate(factionNamePrefabX, xRoot);
-            xLabel.GetComponentInChildren<Text>().text = factionName;
+            xLabel.GetComponentInChildren<Text>().text = $"[{_factionIDs[i]}]";
             // Create Y-axis label
             var yLabel = Instantiate(factionNamePrefabY, yRoot);
-            yLabel.GetComponentInChildren<Text>().text = factionName;
+            yLabel.GetComponentInChildren<Text>().text = $"{factionName} [{_factionIDs[i]}]";
         }
 
         var parentRect = rectTransform.parent.GetComponent<RectTransform>();
-        const float labelPadding = 210f;
+        const float labelPaddingX = 260f;
+        const float labelPaddingY = 50f;
         CalculateLayoutInputHorizontal();
         CalculateLayoutInputVertical();
-        parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _preferredWidth + labelPadding);
-        parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _preferredHeight + labelPadding);
+        parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _preferredWidth + labelPaddingX);
+        parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _preferredHeight + labelPaddingY);
 
         Debug.Log("RelationsGrid initialized with " + _existingFactionCount + " factions.");
     }
@@ -111,6 +115,7 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
             int id = _factionIDs[i];
             FactionManager.SetFactionRelations(id, relations[i]);
         }
+        OnRelationsChanged?.Invoke();
     }
 
     protected override void OnPopulateMesh(VertexHelper vh)

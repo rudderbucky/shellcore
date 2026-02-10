@@ -32,6 +32,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
     public WaveBuilder waveBuilder;
+    public GUIWindowScripts relationsManager;
     public WCCharacterHandler characterHandler;
     WCPathCreator pathCreator;
     int cursorModeCount;
@@ -458,6 +459,11 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Factions);
         basePropertyHandler.ToggleActive();
+    }
+
+    public void ActivateRelationsManager()
+    {
+        relationsManager.Activate();
     }
 
     public void ActivateBasePropertyHandler()
