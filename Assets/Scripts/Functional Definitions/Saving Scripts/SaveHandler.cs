@@ -92,6 +92,15 @@ public class SaveHandler : MonoBehaviour
             }
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 StartCoroutine(Autobackup());
+
+            playerSave.currentPartyMembers.Clear();
+            foreach (var member in PartyManager.instance.partyMembers)
+            {
+                playerSave.currentPartyMembers.Add(member.ID);
+            }
+
+            if (save.partyLock)
+                PartyManager.instance.SetOverrideLock(save.partyLock);
         }
         else
         {
@@ -195,6 +204,13 @@ public class SaveHandler : MonoBehaviour
         playerSave.taskVariableNames = keys;
         playerSave.taskVariableValues = values;
         playerSave.reputation = player.reputation;
+
+        playerSave.currentPartyMembers.Clear();
+        foreach (var member in PartyManager.instance.partyMembers)
+        {
+            playerSave.currentPartyMembers.Add(member.ID);
+        }
+        playerSave.partyLock = PartyManager.instance.GetOverrideLock();
     }
 
     public void Save()

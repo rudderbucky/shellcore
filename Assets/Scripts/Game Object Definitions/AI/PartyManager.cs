@@ -28,6 +28,11 @@ public class PartyManager : MonoBehaviour
         overrideLock = val;
     }
 
+    public bool GetOverrideLock()
+    {
+        return overrideLock;
+    }
+
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
