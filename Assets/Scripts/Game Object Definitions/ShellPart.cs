@@ -159,8 +159,14 @@ public class ShellPart : MonoBehaviour
         return obj;
     }
 
-    private void CreateMaterial()
+    public void CreateMaterial()
     {
+        if (shaderMaterials == null)
+        {
+            shaderMaterials = new List<Material>();
+            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
+            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
+        }
         if (materialCopy)
         {
             Destroy(materialCopy);

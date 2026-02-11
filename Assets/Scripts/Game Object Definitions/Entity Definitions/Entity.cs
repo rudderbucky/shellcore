@@ -647,6 +647,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.craft = this;
             part.detachible = false;
+            part.CreateMaterial();
+            ShellPart.OnShaderChanged += part.CreateMaterial;
             shell = part;
             renderer.sortingLayerName = "Default";
             renderer.color = FactionManager.GetFactionColor(faction.factionID); // needed to reset outpost colors
