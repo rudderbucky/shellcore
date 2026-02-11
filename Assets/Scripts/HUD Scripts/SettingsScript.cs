@@ -271,6 +271,7 @@ public class SettingsScript : MonoBehaviour
     {
         PlayerPrefs.SetInt("ShellPart_partShader", val);
         ShellPart.partShader = val;
+        ShellPart.OnShaderChanged?.Invoke();
     }
 
     public void ChangeTaskManagerAutoSaveEnabled(bool val)
