@@ -646,7 +646,18 @@ public class WCGeneratorHandler : MonoBehaviour
 
         wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
-        wdata.defaultBlueprintJSON = blueprintField.text;
+        if (!string.IsNullOrEmpty(blueprintField.text))
+        {
+            if (File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", blueprintField.text + ".json")))
+                wdata.defaultBlueprintJSON = blueprintField.text;
+            else
+            {
+                saveState = 5;
+                Debug.LogError($"Player's blueprint {blueprintField.text} does not exist. Abort.");
+                yield break;
+            }
+        }
+
         wdata.author = authorField.text;
         wdata.description = descriptionField.text;
         wdata.partIndexDataArray = partData.ToArray();
