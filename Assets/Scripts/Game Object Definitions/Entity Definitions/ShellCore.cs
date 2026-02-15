@@ -280,7 +280,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public override void Respawn(bool force = false)
     {
-        if (force || (GetCarrier() != null && !GetCarrier().Equals(null)) || (this as PlayerCore && MasterNetworkAdapter.mode == NetworkMode.Off) || (PartyManager.instance && PartyManager.instance.partyMembers.Contains(this)))
+        bool hasCarrier = GetCarrier() != null && !GetCarrier().Equals(null);
+        if (force || hasCarrier || (this as PlayerCore && MasterNetworkAdapter.mode == NetworkMode.Off)
+            || (PartyManager.instance && PartyManager.instance.partyMembers.Contains(this)
+            && ((hasCarrier && sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone) || (!hasCarrier && sectorMngr.GetCurrentType() != Sector.SectorType.BattleZone))))
         {
             if (this as PlayerCore) PlayerCore.Instance.enabled = true;
             isYardRepairing = false;
