@@ -51,7 +51,9 @@ public enum AbilityID
     EnergyAura,
     ChainBeam,
     SpeederMissile,
-    Radar
+    Radar,
+    Blink,
+    Slash
 }
 
 public static class AbilityUtilities
@@ -128,6 +130,8 @@ public static class AbilityUtilities
             case 40:
             case 41:
             case 47:
+            case 48:
+            case 49:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -246,6 +250,10 @@ public static class AbilityUtilities
                 return $"Slow homing projectile that deals {Missile.missileDamage * tier} damage plus more if the target was moving.";
             case 47:
                 return "Marks unknown sectors on the map, or a random sector if all have been found.";
+            case 48:
+                return "Warps your ship to your mouse's location.";
+            case 49:
+                return $"Fires two projectiles that deals {Slash.slashDamage * tier}.";
             default:
                 return "Description unset";
         }
@@ -366,6 +374,7 @@ public static class AbilityUtilities
             case 32:
                 return "ability_indicator_core";
             case 28:
+            case 48:
                 return "ability_indicator_retreat";
             case 25:
                 return "ability_indicator_damage_boost";
@@ -497,6 +506,10 @@ public static class AbilityUtilities
                 return "Speeder Missile";
             case 47:
                 return "Radar";
+            case 48:
+                return "Blink";
+            case 49:
+                return "Slash";
             default:
                 return "Name unset";
         }
@@ -753,6 +766,12 @@ public static class AbilityUtilities
                 break;
             case 47:
                 ability = obj.AddComponent<Radar>();
+                break;
+            case 48:
+                ability = obj.AddComponent<Blink>();
+                break;
+            case 49:
+                ability = obj.AddComponent<Slash>();
                 break;
         }
 

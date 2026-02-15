@@ -228,12 +228,32 @@ public class SaveHandler : MonoBehaviour
     public void BackupSave(string postfix = "")
     {
         string currentPath = File.ReadAllLines(System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath"))[0];
-        string backupPath = currentPath + " - Backup" + postfix;
+        bool oldFileName = System.IO.Path.GetFileNameWithoutExtension(currentPath).Contains(" - Backup ");
+
+        string backupPath = string.Empty;
+        if (oldFileName)
+        {
+            backupPath = currentPath;
+            backupPath = backupPath.Remove(backupPath.Length - 1);
+        }
+        else
+        {
+            backupPath = currentPath + " - Backup " + postfix;
+        }
+
+        if (string.IsNullOrEmpty(postfix))
+        {
+            int i = 1;
+            while (File.Exists(backupPath + i))
+            {
+                i++;
+            }
+            backupPath = backupPath + i;
+        }
+        
 
         PlayerSave saveCopy = JsonUtility.FromJson<PlayerSave>(JsonUtility.ToJson(save));
         UpdateSaveData(saveCopy);
-
-        saveCopy.name += " - Backup";
 
         string saveJson = JsonUtility.ToJson(saveCopy);
         File.WriteAllText(backupPath, saveJson);
@@ -241,7 +261,7 @@ public class SaveHandler : MonoBehaviour
 
     IEnumerator Autobackup()
     {
-        while (true)
+        while (!save.name.Contains("TestSave"))
         {
             yield return new WaitForSeconds(20 * 60);
             BackupSave();

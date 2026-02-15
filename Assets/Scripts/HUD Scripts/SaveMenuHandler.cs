@@ -448,16 +448,25 @@ public class SaveMenuHandler : GUIWindowScripts
             inputFeedback.text = "The save name can't be empty.";
             return;
         }
+
+        if (name.Contains(" - Backup "))
+        {
+            inputFeedback.text = "The name \"Backup\" is reserved for save file backups.";
+            return;
+        }
+
         if (name == "TestSave")
         {
             inputFeedback.text = "The name \"TestSave\" is reserved for world creator functionality.";
             return;
         }
+
         if (name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1)
         {
             inputFeedback.text = "The save name contains invalid characters.";
             return;
         }
+
         string path = System.IO.Path.Combine(Application.persistentDataPath, "Saves", name);
         if (paths.Contains(path))
         {
@@ -508,6 +517,9 @@ public class SaveMenuHandler : GUIWindowScripts
         icon.handler = this;
         icons.Add(icon);
         icon.transform.SetSiblingIndex(icon.transform.parent.childCount - 2);
+
+        int episodeIndex = Mathf.Clamp(save.episode, 1, episodeSprites.Length);
+        icon.GetComponent<Image>().sprite = episodeSprites[episodeIndex - 1];
     }
 
     public static PlayerSave CreateSave(string name, string checkpointName = null, string resourcePath = "")

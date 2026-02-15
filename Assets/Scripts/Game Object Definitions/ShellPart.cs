@@ -35,8 +35,11 @@ public class ShellPart : MonoBehaviour
     public static List<Material> shaderMaterials = null;
     public Vector2 colliderExtents;
     public Matrix4x4 colliderMatrix;
+    private Material materialCopy;
 
     public bool weapon = false;
+
+    public static System.Action OnShaderChanged;
 
     public bool IsDamaged()
     {
@@ -121,14 +124,17 @@ public class ShellPart : MonoBehaviour
 
         //Part sprite
         var spriteRenderer = obj.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = shaderMaterials[partShader];
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
         var part = obj.GetComponent<ShellPart>();
+        part.materialCopy = new Material(shaderMaterials[partShader]);
+        spriteRenderer.material = part.materialCopy;
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
         part.currentHealth = part.partHealth;
         part.detachible = blueprint.detachible;
         part.craft = craft;
+
+        OnShaderChanged += part.CreateMaterial;
 
         var partSys = obj.GetComponent<ParticleSystem>();
         var sh = partSys.shape;
@@ -151,6 +157,26 @@ public class ShellPart : MonoBehaviour
         }
 
         return obj;
+    }
+
+    public void CreateMaterial()
+    {
+        if (shaderMaterials == null)
+        {
+            shaderMaterials = new List<Material>();
+            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
+            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
+        }
+        if (materialCopy)
+        {
+            Destroy(materialCopy);
+        }
+        materialCopy = new Material(shaderMaterials[partShader]);
+        if (spriteRenderer)
+        {
+            spriteRenderer.material = materialCopy;
+            SetPartShader(spriteRenderer.color);
+        }
     }
 
     /// <summary>
@@ -222,6 +248,8 @@ public class ShellPart : MonoBehaviour
         {
             AIData.strayParts.Remove(this);
         }
+
+        Destroy(spriteRenderer.material);
     }
 
     public void Awake()
@@ -355,18 +383,6 @@ public class ShellPart : MonoBehaviour
             Debug.LogWarning($"Active part at {transform.position} without craft.");
         }
         EditorPlayerPartCheck();
-        if (spriteRenderer)
-        {
-            if (shaderMaterials == null)
-            {
-                shaderMaterials = new List<Material>();
-                shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
-                shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
-            }
-
-            spriteRenderer.material = shaderMaterials[partShader];
-        }
-
 
         if (!craft && !hasDetached)
         {
@@ -514,7 +530,7 @@ public class ShellPart : MonoBehaviour
         }
     }
 
-    private MaterialPropertyBlock block;
+    //private MaterialPropertyBlock block;
     // ignores parameter alpha, since stealthing changes it
     public void SetPartColor(Color color)
     {
@@ -535,28 +551,22 @@ public class ShellPart : MonoBehaviour
         SetPartShader(color);
     }
 
+    public void UpdateMaterial()
+    {
+        spriteRenderer.material.SetTexture("_MainTex", spriteRenderer.sprite.texture);
+    }
+
     private void SetPartShader(Color color)
     {
-        if (block == null)
+        if (spriteRenderer && spriteRenderer.sprite && spriteRenderer.sprite.texture)
+            spriteRenderer.material.SetTexture("_MainTex", spriteRenderer.sprite.texture);
+        spriteRenderer.material.SetColor("_PerRendColor", color);
+        if (craft && craft.blueprint && !string.IsNullOrEmpty(craft.blueprint.coreShellSpriteID) && craft.blueprint.coreShellSpriteID.Contains("station_sprite"))
         {
-            block = new();
-            if (spriteRenderer && spriteRenderer.sprite && spriteRenderer.sprite.texture)
-                block.SetTexture("_MainTex", spriteRenderer.sprite.texture);
+            spriteRenderer.material.SetFloat("_Min", 0.07F);
         }
-        if (block != null)
-        {
-            block.SetColor("_PerRendColor", color);
-            if (craft && craft.blueprint && !string.IsNullOrEmpty(craft.blueprint.coreShellSpriteID) && craft.blueprint.coreShellSpriteID.Contains("station_sprite"))
-            {
-                block.SetFloat("_Min", 0.07F);
-            }
-            if (!detachible)
-                block.SetFloat("_Symmetry", 0);
-            else block.SetFloat("_Symmetry", 1);
-        }
-        if (shaderMaterials != null
-            && shaderMaterials.Count > 0
-            && block != null
-            && spriteRenderer) spriteRenderer.SetPropertyBlock(block);
+        if (!detachible)
+            spriteRenderer.material.SetFloat("_Symmetry", 0);
+        else spriteRenderer.material.SetFloat("_Symmetry", 1);
     }
 }

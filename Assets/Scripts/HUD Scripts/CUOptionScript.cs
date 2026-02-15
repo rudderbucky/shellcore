@@ -18,6 +18,11 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
             player.blueprint.coreShellSpriteID = coreID;
             player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(coreID);
             player.Rebuild();
+            var shell = player.transform.Find("Shell Sprite");
+            if (shell && shell.TryGetComponent<ShellPart>(out var part))
+            {
+                part.UpdateMaterial();
+            }
             CoreUpgraderScript.DrawScreen();
             NodeEditorFramework.Standard.UpgradeCoreCondition.OnCoreUpgrade.Invoke();
             BackgroundScript.instance.Restart();

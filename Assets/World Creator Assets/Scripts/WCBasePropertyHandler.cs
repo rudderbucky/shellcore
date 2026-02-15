@@ -23,6 +23,9 @@ public class WCBasePropertyHandler : GUIWindowScripts
     [SerializeField]
     private GameObject dropdownPrefab;
 
+    [SerializeField] 
+    private GameObject relationsPrefab;
+
     [SerializeField]
     private FactionManager manager;
 
@@ -36,6 +39,8 @@ public class WCBasePropertyHandler : GUIWindowScripts
 
     [SerializeField]
     private WorldCreatorCursor cursor;
+
+    int _currentIndex = 0;
 
     // the display methods are similar to GUI.IntField etc.
     void DisplayFloat(int index, string label)
@@ -155,6 +160,28 @@ public class WCBasePropertyHandler : GUIWindowScripts
         addPropertyButton.transform.SetAsLastSibling();
     }
 
+    void DisplayRelations(int index)
+    {
+        if (ints.Count <= index)
+        {
+            ints.Add(0);
+        }
+
+        var gObj = Instantiate(relationsPrefab, fieldContents);
+        gObj.GetComponentInChildren<Text>().text = "Relations sum: " + ints[index];
+        gObj.GetComponentInChildren<Button>().onClick.AddListener(cursor.ActivateRelationsManager);
+
+        RelationsGrid.OnRelationsChanged += UpdateRelations;
+        addPropertyButton.transform.SetAsLastSibling();
+    }
+
+    void UpdateRelations()
+    {
+        RelationsGrid.OnRelationsChanged -= UpdateRelations;
+        // Rebuild displayed fields to update the relations sum
+        DisplaySelectedProperty(_currentIndex);
+    }
+
     public enum Mode
     {
         Characters,
@@ -170,16 +197,32 @@ public class WCBasePropertyHandler : GUIWindowScripts
         currentMode = mode;
     }
 
-    float testFloat;
-
     void OnEnable()
     {
         SetupMenu();
     }
 
+    int GetFactionID(int menuIndex)
+    {
+        int factionCount = 0;
+        for (int i = 0; i < manager.factions.Length; i++)
+        {
+            if (manager.factions[i] != null)
+            {
+                if (factionCount == menuIndex)
+                {
+                    return manager.factions[i].ID;
+                }
+                factionCount++;
+            }
+        }
+        return 0;
+    }
+
     // enter in the property data into the lists and set up the fields
     public void DisplaySelectedProperty(int index)
     {
+        _currentIndex = index;
         floats.Clear();
         strings.Clear();
         ints.Clear();
@@ -200,7 +243,8 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 SetupAdditionFields();
                 break;
             case Mode.Factions:
-                var faction = manager.factions[index];
+                int factionID = GetFactionID(index);
+                var faction = manager.factions[factionID];
                 ints.Add(faction.ID);
                 strings.Add(faction.factionName);
                 colors.Add(faction.color);
@@ -255,20 +299,38 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 newFaction.shinyColor = colors[1];
                 newFaction.colorName = strings[1];
                 newFaction.relations = ints[1];
-                var factionList = new List<Faction>(manager.factions);
-                var existingFaction = factionList.Find(f => f?.ID == newFaction.ID);
-                if (existingFaction != null)
-                {
-                    factionList.Remove(existingFaction);
-                }
 
-                while (factionList.Count < newFaction.ID)
+                int maxID = manager.factions.Length;
+                if (newFaction.ID >= maxID)
                 {
-                    factionList.Add(null);
+                    maxID = newFaction.ID + 1;
                 }
+                Faction[] newFactions = new Faction[maxID];
+                for (int i = 0; i < manager.factions.Length; i++)
+                {
+                    newFactions[i] = manager.factions[i];
+                }
+                if (newFactions[newFaction.ID] != null)
+                {
+                    // Delete the old faction's resource
+                    Destroy(newFactions[newFaction.ID]);
+                }
+                newFactions[newFaction.ID] = newFaction;
+                manager.factions = newFactions;
 
-                factionList.Insert(newFaction.ID, newFaction);
-                manager.factions = factionList.ToArray();
+                int menuIndex = 0;
+                for (int i = 0; i < manager.factions.Length; i++)
+                {
+                    if (manager.factions[i] != null)
+                    {
+                        if (manager.factions[i].ID == newFaction.ID)
+                        {
+                            break;
+                        }
+                        menuIndex++;
+                    }
+                }
+                _currentIndex = menuIndex;
 
                 if (!File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
                 {
@@ -327,7 +389,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 DisplayColors(0, "Faction color: ");
                 DisplayColors(1, "Shiny color: ");
                 DisplayString(1, "Color name: ");
-                DisplayInt(1, "Relations: ");
+                DisplayRelations(1);
                 break;
             case Mode.Miscellaneous:
                 DisplayInt(0, "Default skill count: ");
@@ -393,13 +455,13 @@ public class WCBasePropertyHandler : GUIWindowScripts
         int i = 0;
         foreach (var obj in baseList)
         {
-            var index = i;
-            i++;
 
+            var index = i;
             if (currentMode == Mode.Factions && obj == null)
             {
                 continue;
             }
+            i++;
 
             var gObj = Instantiate(menuButton, menuContents);
             gObj.GetComponentInChildren<Text>().text = obj.GetName();

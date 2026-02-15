@@ -151,7 +151,7 @@ public class AIAbilityController
             Entity targetEntity = target.GetComponent<Entity>();
             if (targetEntity != null && targetEntity && !targetEntity.GetIsDead())
             {
-                var damageBoosts = GetAbilities(25, 33, 41); // damage boost, disrupt, unload
+                var damageBoosts = GetAbilities(25, 33, 41, 49); // damage boost, disrupt, unload
                 foreach (var damageBoost in damageBoosts)
                 {
                     damageBoost.Activate();

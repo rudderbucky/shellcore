@@ -64,7 +64,7 @@ public class QuantityDisplayScript : MonoBehaviour
         (() =>
         {
             var targSys = PlayerCore.Instance.GetTargetingSystem();
-            if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
+            if (targSys.GetTarget())
             {
                 reticle.AddSecondaryTarget(targSys.GetTarget());
             }
@@ -171,17 +171,27 @@ public class QuantityDisplayScript : MonoBehaviour
         }
         else if (obj.GetComponent<ShardRock>() || obj.GetComponent<Shard>())
         {
+            int tier = 0;
             if (obj.GetComponent<Shard>())
             {
                 targetName.text = "Shard";
                 targetDesc.text = "Loot";
+                tier = obj.GetComponent<Shard>().tier;
             }
             else
             {
                 targetName.text = "Shard Rock";
                 targetDesc.text = "";
+                tier = obj.GetComponent<ShardRock>().tier;
             }
-            targetDesc.color = targetName.color = new Color32(51, 153, 204, 255);
+
+            if (tier == 2)
+                targetDesc.color = targetName.color = new Color(255, 0, 0, 255);
+            else if (tier == 1)
+                targetDesc.color = targetName.color = new Color(0, 255, 0, 255);
+            else
+                targetDesc.color = targetName.color = new Color32(51, 153, 204, 255);
+
             targetInfo.SetActive(true);
         }
         else

@@ -92,11 +92,6 @@ public class ResourceManager : MonoBehaviour
 
     public bool LoadResources(string path)
     {
-        if (!path.Equals(Application.streamingAssetsPath))
-        {
-            // Debug.Log("Attempting to load additional resources from: \"" + path + "\"");
-        }
-
         var sprites = new List<(string, string)>();
         var parts = new List<(string, string)>();
         var entities = new List<(string, string)>();
@@ -109,149 +104,154 @@ public class ResourceManager : MonoBehaviour
 
         fileNames = new List<string>();
 
-        if (File.Exists(resDataPath))
+        if (!File.Exists(resDataPath))
         {
-            string[] lines = File.ReadAllLines(resDataPath);
-            int mode = -1;
-
-            //get files
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string line = lines[i];
-                if (line == "")
-                {
-                    continue;
-                }
-
-                var isMode = false;
-                for (int j = 0; j < resourceHeaders.Length; j++)
-                {
-                    if (line.ToLower().StartsWith(resourceHeaders[j]))
-                    {
-                        mode = j;
-                        isMode = true;
-                        break;
-                    }
-                }
-
-                if (isMode)
-                {
-                    continue;
-                }
-
-                string[] names = line.Split(':');
-                string resPath = System.IO.Path.Combine(path, names[1]);
-                if (File.Exists(resPath))
-                {
-                    fileNames.Add(resPath);
-                    switch (mode)
-                    {
-                        case 0:
-                            sprites.Add((names[0], resPath));
-                            break;
-                        case 1:
-                            parts.Add((names[0], resPath));
-                            break;
-                        case 2:
-                            entities.Add((names[0], resPath));
-                            break;
-                        case 3:
-                            vending.Add((names[0], resPath));
-                            break;
-                        case 4:
-                            paths.Add((names[0], resPath));
-                            break;
-                        case 5:
-                            factions.Add((names[0], resPath));
-                            break;
-                        case 6:
-                            sounds.Add((names[0], resPath));
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (!path.Equals(Application.streamingAssetsPath))
-                    {
-                        Debug.Log("Resource loaded: " + names[0]);
-                    }
-                }
-                else
-                {
-                    Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", System.IO.Path.Combine(Application.streamingAssetsPath, names[1]), names[0]);
-                }
-            }
-
-            //load sprites
-            for (int i = 0; i < sprites.Count; i++)
-            {
-                Texture2D texture = new Texture2D(2, 2, DefaultFormat.HDR, TextureCreationFlags.MipChain);
-                texture.mipMapBias = 0f;
-                texture.wrapMode = TextureWrapMode.Clamp;
-                texture.LoadImage(File.ReadAllBytes(sprites[i].Item2));
-                texture.filterMode = FilterMode.Trilinear;
-                resources[sprites[i].Item1] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            }
-
-            //load parts
-            for (int i = 0; i < parts.Count; i++)
-            {
-                string partData = File.ReadAllText(parts[i].Item2);
-                var partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
-                JsonUtility.FromJsonOverwrite(partData, partBlueprint);
-                allPartNames.Add(parts[i].Item1);
-                resources[parts[i].Item1] = partBlueprint;
-            }
-
-            //load entities
-            for (int i = 0; i < entities.Count; i++)
-            {
-                string entityData = File.ReadAllText(entities[i].Item2);
-                var entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
-                resources[entities[i].Item1] = entityBlueprint;
-            }
-
-            //load vending blueprints
-            for (int i = 0; i < vending.Count; i++)
-            {
-                string vendingData = File.ReadAllText(vending[i].Item2);
-                var vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
-                JsonUtility.FromJsonOverwrite(vendingData, vendingBlueprint);
-                resources[vending[i].Item1] = vendingBlueprint;
-            }
-
-            //load paths
-            for (int i = 0; i < paths.Count; i++)
-            {
-                string pathData = File.ReadAllText(paths[i].Item2);
-                var pathBlueprint = ScriptableObject.CreateInstance<Path>();
-                JsonUtility.FromJsonOverwrite(pathData, pathBlueprint);
-                resources[paths[i].Item1] = pathBlueprint;
-            }
-
-            //load factions
-            for (int i = 0; i < factions.Count; i++)
-            {
-                string factionData = File.ReadAllText(factions[i].Item2);
-                var faction = ScriptableObject.CreateInstance<Faction>();
-                JsonUtility.FromJsonOverwrite(factionData, faction);
-                resources[factions[i].Item1] = faction;
-            }
-
-            //load factions
-            for (int i = 0; i < sounds.Count; i++)
-            {
-                StartCoroutine(GetAudioClip(sounds[i].Item1, sounds[i].Item2));
-            }
-
-            FactionManager.UpdateFactions();
-        }
-        else
-        {
-            // Debug.Log("Resource file does not exist.");
             return false;
         }
+
+        if (!path.Equals(Application.streamingAssetsPath))
+        {
+            // Clear earlier resource packs before loading new ones
+            // Load only when not loading from default path, to avoid infinite loop
+            // because initialization calls this method again
+            Initialize();
+        }
+
+        string[] lines = File.ReadAllLines(resDataPath);
+        int mode = -1;
+
+        //get files
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            if (line == "")
+            {
+                continue;
+            }
+
+            var isMode = false;
+            for (int j = 0; j < resourceHeaders.Length; j++)
+            {
+                if (line.ToLower().StartsWith(resourceHeaders[j]))
+                {
+                    mode = j;
+                    isMode = true;
+                    break;
+                }
+            }
+
+            if (isMode)
+            {
+                continue;
+            }
+
+            string[] names = line.Split(':');
+            string resPath = System.IO.Path.Combine(path, names[1]);
+            if (File.Exists(resPath))
+            {
+                fileNames.Add(resPath);
+                switch (mode)
+                {
+                    case 0:
+                        sprites.Add((names[0], resPath));
+                        break;
+                    case 1:
+                        parts.Add((names[0], resPath));
+                        break;
+                    case 2:
+                        entities.Add((names[0], resPath));
+                        break;
+                    case 3:
+                        vending.Add((names[0], resPath));
+                        break;
+                    case 4:
+                        paths.Add((names[0], resPath));
+                        break;
+                    case 5:
+                        factions.Add((names[0], resPath));
+                        break;
+                    case 6:
+                        sounds.Add((names[0], resPath));
+                        break;
+                    default:
+                        break;
+                }
+
+                if (!path.Equals(Application.streamingAssetsPath))
+                {
+                    Debug.Log("Resource loaded: " + names[0]);
+                }
+            }
+            else
+            {
+                Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", System.IO.Path.Combine(Application.streamingAssetsPath, names[1]), names[0]);
+            }
+        }
+
+        //load sprites
+        for (int i = 0; i < sprites.Count; i++)
+        {
+            Texture2D texture = new Texture2D(2, 2, DefaultFormat.HDR, TextureCreationFlags.MipChain);
+            texture.mipMapBias = 0f;
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.LoadImage(File.ReadAllBytes(sprites[i].Item2));
+            texture.filterMode = FilterMode.Trilinear;
+            resources[sprites[i].Item1] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        }
+
+        //load parts
+        for (int i = 0; i < parts.Count; i++)
+        {
+            string partData = File.ReadAllText(parts[i].Item2);
+            var partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
+            JsonUtility.FromJsonOverwrite(partData, partBlueprint);
+            allPartNames.Add(parts[i].Item1);
+            resources[parts[i].Item1] = partBlueprint;
+        }
+
+        //load entities
+        for (int i = 0; i < entities.Count; i++)
+        {
+            string entityData = File.ReadAllText(entities[i].Item2);
+            var entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+            JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
+            resources[entities[i].Item1] = entityBlueprint;
+        }
+
+        //load vending blueprints
+        for (int i = 0; i < vending.Count; i++)
+        {
+            string vendingData = File.ReadAllText(vending[i].Item2);
+            var vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
+            JsonUtility.FromJsonOverwrite(vendingData, vendingBlueprint);
+            resources[vending[i].Item1] = vendingBlueprint;
+        }
+
+        //load paths
+        for (int i = 0; i < paths.Count; i++)
+        {
+            string pathData = File.ReadAllText(paths[i].Item2);
+            var pathBlueprint = ScriptableObject.CreateInstance<Path>();
+            JsonUtility.FromJsonOverwrite(pathData, pathBlueprint);
+            resources[paths[i].Item1] = pathBlueprint;
+        }
+
+        //load factions
+        for (int i = 0; i < factions.Count; i++)
+        {
+            string factionData = File.ReadAllText(factions[i].Item2);
+            var faction = ScriptableObject.CreateInstance<Faction>();
+            JsonUtility.FromJsonOverwrite(factionData, faction);
+            resources[factions[i].Item1] = faction;
+        }
+
+        //load factions
+        for (int i = 0; i < sounds.Count; i++)
+        {
+            StartCoroutine(GetAudioClip(sounds[i].Item1, sounds[i].Item2));
+        }
+
+        FactionManager.UpdateFactions();
 
         return true;
     }
@@ -461,6 +461,19 @@ public class ResourceManager : MonoBehaviour
         }
 
         return results.ToArray();
+    }
+
+    public static List<string> GetAssetIDsOfType<T>() where T : Object
+    {
+        List<string> results = new List<string>();
+        foreach (var resource in Instance.resources)
+        {
+            if (resource.Value is T)
+            {
+                results.Add(resource.Key);
+            }
+        }
+        return results;
     }
 }
 

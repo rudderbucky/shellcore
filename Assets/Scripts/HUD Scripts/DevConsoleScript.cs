@@ -548,6 +548,11 @@ public class DevConsoleScript : MonoBehaviour
                         break;
                 }
             }
+            else if (command.Equals("resources", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var objs = FindObjectsOfType<ScriptableObject>(true);
+                textBox.text += "\n<color=lime>Scriptable object count:</color>" + objs.Length;
+            }
             else doNotAttemptBackup = true;
             doNotAttemptBackup |= coreScript;
 
@@ -558,7 +563,7 @@ public class DevConsoleScript : MonoBehaviour
             {
                 Debug.LogWarning("Backing up...");
                 cheatBackup = true;
-                SaveHandler.instance.BackupSave(" (cheat)");
+                SaveHandler.instance.BackupSave("(cheat)");
             }
 #endif
         }

@@ -47,6 +47,7 @@ public class EscapeMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         AudioListener.pause = false;
+        PlayerViewScript.paused = false;
         gameObject.SetActive(false);
     }
 
