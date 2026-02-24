@@ -138,7 +138,7 @@ public class TractorBeam : MonoBehaviour
                 }
                 else if (dist > 2f)
                 {
-                    if (!owner.tractorSwitched)
+                    if (!owner.isTractorSwitched)
                     {
                         rigidbody.AddForce(dir.normalized * (dist - 2F) * rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
                     }
@@ -165,7 +165,7 @@ public class TractorBeam : MonoBehaviour
     private float auxillaryScaleY = 0.6F;
     protected void TractorBeamUpdate()
     {
-        lineRenderer.material.color = owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128);
+        lineRenderer.material.color = owner.isTractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128);
         this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
         // Grab energy automatically after a while when the craft is not pulling something more important
         if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.IsInvisible && !owner.isAbsorbing)
@@ -209,7 +209,7 @@ public class TractorBeam : MonoBehaviour
                 coreGlow.gameObject.SetActive(true);
                 targetGlow.gameObject.SetActive(true);
                 var x = auxillaryParticleSystem.GetComponentInChildren<ParticleSystem>().main;
-                x.startColor = new ParticleSystem.MinMaxGradient(owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128));
+                x.startColor = new ParticleSystem.MinMaxGradient(owner.isTractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128));
                 auxillaryParticleSystem.SetActive(true);
                 auxillaryParticleSystem.transform.position = Vector3.Lerp(transform.position, target.transform.position, 0.5F);
                 auxillaryParticleSystem.transform.localScale = new Vector3((target.transform.position - transform.position).magnitude/0.2F, auxillaryScaleY, 1);
@@ -277,7 +277,7 @@ public class TractorBeam : MonoBehaviour
                 }
             }
 
-            if (target && ((MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && (!owner.tractorSwitched || !target.GetComponent<Entity>())) || fromServer))
+            if (target && ((MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && (!owner.isTractorSwitched || !target.GetComponent<Entity>())) || fromServer))
             {
                 target.AddDrag();
             }
@@ -314,7 +314,7 @@ public class TractorBeam : MonoBehaviour
     public static bool InvertTractorCheck(Entity owner, Draggable newTarget)
     {
         Entity requestedTarget = newTarget.gameObject.GetComponent<Entity>();
-        if (owner.tractorSwitched || !requestedTarget || (FactionManager.IsAllied(requestedTarget.faction, owner.faction) && (requestedTarget.isStandardTractorTarget)))
+        if (owner.isTractorSwitched || !requestedTarget || (FactionManager.IsAllied(requestedTarget.faction, owner.faction) && (requestedTarget.isStandardTractorTarget)))
         {
             return true;
         }
