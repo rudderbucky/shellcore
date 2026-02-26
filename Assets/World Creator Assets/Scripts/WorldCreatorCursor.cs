@@ -32,6 +32,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
     public WaveBuilder waveBuilder;
+    public VendorBuilder vendorBuilder;
     public GUIWindowScripts relationsManager;
     public WCCharacterHandler characterHandler;
     WCPathCreator pathCreator;
@@ -451,6 +452,11 @@ public class WorldCreatorCursor : MonoBehaviour
         waveBuilder.ToggleActive();
     }
 
+    public void ActivateVendorBuilder()
+    {
+        vendorBuilder.ToggleActive();
+    }
+
     [SerializeField]
     WCBasePropertyHandler basePropertyHandler;
 
@@ -490,6 +496,11 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && !system.IsPointerOverGameObject())
         {
             ActivateWaveBuilder();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
+        {
+            ActivateVendorBuilder();
         }
 
         if (!Input.GetKey(KeyCode.LeftControl) && !system.IsPointerOverGameObject())
