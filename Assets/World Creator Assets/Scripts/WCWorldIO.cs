@@ -631,8 +631,13 @@ public class WCWorldIO : GUIWindowScripts
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    File.Delete(name);
-                    Destroy(button.gameObject);
+                    if (File.Exists(name)) //I could allow it to delete directories if it is a directory
+                    {
+                        File.Delete(name);
+                        Destroy(button.gameObject);
+                        if (mode == IOMode.ReadCanvas || mode == IOMode.WriteCanvas) // Not the best fix, look into this later
+                            Hide();
+                    }
                     return;
                 }
                 action.Invoke();
