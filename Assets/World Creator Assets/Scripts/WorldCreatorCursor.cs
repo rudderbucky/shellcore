@@ -38,7 +38,7 @@ public class WorldCreatorCursor : MonoBehaviour
     int cursorModeCount;
     public static WCCursorMode originalCursorMode;
     public int DimensionCount { get; set; }
-    private int currentDim = 0;
+    public int currentDim = 0;
     private static bool readySelection;
 
     public enum WCCursorMode
@@ -583,6 +583,8 @@ public class WorldCreatorCursor : MonoBehaviour
 
         characters.Clear();
         handler.ClearInstantiation();
+        DimensionCount = 1;
+        currentDim = DimensionCount - 1;
     }
 
 

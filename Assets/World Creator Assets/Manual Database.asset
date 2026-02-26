@@ -1,0 +1,415 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02c779af7a1abe74a9c9db9dd109bb30, type: 3}
+  m_Name: Manual Database
+  m_EditorClassIdentifier: 
+  manualEntries:
+  - title: Introduction
+    imageID: 
+    contents: "Welcome to the manual! \r\n\r\nThis manual is meant to aid users through
+      the process of creating worlds in the World Creator. Each entry will provide
+      information about the tools, objects, and many more. Though the World Creator
+      is abstract, we believe it has great power in creating stories in a ShellCore
+      setting. We hope you enjoy using it!"
+  - title: Basic Controls
+    imageID: 
+    contents: 'Move: WASD or Arrow Keys
+
+      Open manual: M
+
+      Change mode:
+      Z
+
+      Orient camera to player spawn/sector center: Spacebar
+
+      Zoom
+      in/out: Ctrl + Scroll
+
+      Open pause menu: Esc'
+  - title: Hotkeys
+    imageID: 
+    contents: "Certain hotkeys only work in certain modes.\r\n\r\nItem Mode:\r\nPlace
+      item: Left mouse button\r\nDelete item: Right mouse button\r\nOpen Item Property
+      Display: Click on an item \r\nRotate item: R\r\nOpen Ship Builder: B\r\nOpen
+      Wave Builder: V\r\nOpen Search: Control+F\n\r\nSector Mode:\r\nDelete Sector:
+      Right mouse button\r\nOpen Sector Property Display: Click on a sector's center
+      \r\nChange Dimension: G\r\r\nAdd Dimension: Left Shift + G\r\n\r\nControl Mode:\r\nOpen
+      Canvas Editor: T\r\nOpen Character Editor: C\r"
+  - title: Read and Write Worlds
+    imageID: 
+    contents: "To read and write a world from your files, navigate to the bottom-left
+      corner. You will find three special buttons: play (arrow), read (book), and
+      write (pencil) buttons. Pressing the read or write button will open a window
+      that display all of your worlds. To read a world, select one of the worlds
+      and press the read world button. To write a world, select a world to override
+      and press the write world button. If the world does not exist, you can add
+      a new world by pressing the add item button. \r\n\r\nIf you press the play
+      button, the game will switch to gameplay mode where you can playtest your world.
+      Note, the game will stop you from playtesting or saving a world if it has found
+      an error. "
+  - title: Clear World
+    imageID: 
+    contents: To clear everything in the current scene, click on the button with
+      the eraser icon. The game will throw a prompt before clearing the world. Make
+      sure you know what you are doing.
+  - title: Troubleshooting
+    imageID: 
+    contents: 'The likelihood of a playtester finding a bug or an error is easier
+      said than done compared to world creators. The best approach is to troubleshoot
+      the issue. The first option is to check the world, locate the problem, and
+      try to resolve it. These are usually user-made bugs from accidental oversights
+      or mistakes from the world creator. If the world creator is unable to fix the
+      problem, then the issue is considered a code-related bug, which leads to the
+      second option. Try to recreate the issue as much as possible and create a bug
+      report.
+
+
+
+      Some error messages are intentional, mainly to avoid certain
+      user-related mistakes.'
+  - title: Backups
+    imageID: 
+    contents: If you are ever concerned about losing your world due to bugs or errors,
+      always make a backup and store it somewhere safe. The game does generate placeholder
+      directories for specific files, as well as a TestWorld within the StreamingAssets
+      directory. As long as the World Creator does not load another world, the game
+      should retain those files.
+  - title: Dev Console
+    imageID: 
+    contents: "This game has a built-in Developer Console. For world creators, this
+      is a great tool for speeding up playtesting and troubleshooting. If the game
+      finds an error in the World Creator or from playtesting, it will throw an error
+      message in red. Sometimes a warning message in yellow will also show up due
+      to missing inputs from certain objects. \r\n\r\nTo manually open this window,
+      press the 'F3' key or the custom input from the Settings window. Press the
+      key again to close it. To enter a command, input a value and press the 'Enter'
+      key."
+  - title: Modes
+    imageID: 
+    contents: You can change the World Creator's current mode by pressing the mode
+      button in the bottom right or by pressing the 'Z' key. There are three main
+      modes - Item Mode, Sector Mode, and Control Mode. Separate manual entries exist
+      for each one.
+  - title: Item Mode
+    imageID: 
+    contents: "Item Mode allows you to manipulate the world's items. If you don't
+      know what items are, they are placeable objects on your hotbar. They come in
+      various types: ground platforms, background objects, and units. They will load
+      in your world if placed in a sector. You can use the middle-mouse button to
+      scroll around, or press the two arrow buttons to select one of them. \r\n\r\nLeft-clicking
+      will place these items down, and right-clicking will remove them. You can modify
+      an item's properties (blueprint, ID, and name) using the Item Properties Window.
+      To save the changes you made to an item, press the 'Enter' key. Remember, not
+      every object is the same, and all objects must be inside a sector.\r\n\r\nSome
+      objects can be placed on top of each other if they are from different categories.\r\n"
+  - title: Sector Mode
+    imageID: manual_sector_mode
+    contents: "Sector Mode allows you to create and manipulate a sector's size, shape,
+      and metadata (name, color, background spawns, etc.). A sector is a unique object
+      that stores various items and loads them in-game. \r\n\r\nTo create a sector,
+      hold the left-mouse button to create a sector. Releasing the button will create
+      the sector. To adjust sector properties (or metadata), click on the sector's
+      center to open the Sector Properties Window. To save the changes you made to
+      an item, press the 'Enter' key. Clicking on the edge of a sector will adjust
+      the size.\r\n\r\nSectors are capable of spawning entities via background spawns.
+      To add a background spawn, click on the add background spawn button in the
+      Sector Properties Window. To save the sector's background spawns, click on
+      the parse background spawn button."
+  - title: Control Mode
+    imageID: 
+    contents: 'Control Mode allows you to create, modify, and remove canvases, characters,
+      and factions.
+
+
+
+      The grayscaled ShellCore is the player''s spawn point.
+      Clicking it in this mode will allow you to move it around, and clicking it
+      again will place it. Make sure the core is in a valid sector. Otherwise, the
+      game will throw an error.'
+  - title: Select Mode
+    imageID: 
+    contents: Select Mode is a submode that allows world creators to select entities
+      easily without needing to input the values. This is accessible via the Canvas
+      Editor. Use your mouse and left-click on an object to grab an ID. If done correctly,
+      you will be brought back to Control Mode. Holding down 'E' or 'F' will restrict
+      the selection to entity IDs or flag names only. Press the 'Enter' key to cancel
+      the selection.
+  - title: Draw Path Mode
+    imageID: 
+    contents: 'Draw Path Mode is a submode that allows world creators to draw paths
+      for various aircraft. This mode is accessible via the Canvas Editor''s Set
+      Path Node or entity''s Set Patrol Path in the Item Properties Window. Left-click
+      anywhere in the world to create the initial waypoint of a path. Left-clicking
+      again to add a new waypoint. Right-click to remove a waypoint. To move a waypoint,
+      move your cursor close to the position and hold the left mouse button. Releasing
+      the button will update the modification. To save the path, press the ''Enter''
+      key.
+
+
+
+      A bit of a note about adding or removing waypoints. It is based
+      on your cursor''s position.'
+  - title: Property Display
+    imageID: 
+    contents: The Property Display window assigns metadata like ID or name onto items
+      or sectors. The game will provide default parameters if you haven't set any
+      values to them. Clicking on an item or a sector will open their corresponding
+      windows.
+  - title: Object Naming
+    imageID: 
+    contents: 'Naming any entity or sector is case sensitive. Be sure to keep it
+      as unique as possible. If certain fields are left blank, the game will automatically
+      fill them in.
+
+
+
+      The important fields you must be cautious of are the
+      ID field for entities and the name field for sectors. The game will throw an
+      error if it detects duplicate entity IDs. As for sectors, the game will delete
+      duplicate sectors with existing names whenever it tries to save a world.'
+  - title: Entities
+    imageID: 
+    contents: Entity Objects are any item that can move, attack, interact, or take
+      damage. They can come in various types, from stations and turrets to drones
+      and tanks. These objects are customizable, so use any design you want!
+  - title: Flags
+    imageID: 
+    contents: "Flags are a unique type of object in the game. They can't do anything
+      by themselves, but other objects and systems can use them. Setting a unique
+      name can make it a valid location for Spawn or Cutscene Nodes. Naming a Flag
+      in BattleZones with platforms as 'tankpickup#' and 'tankdropoff#', where #
+      is the faction ID, will allow tanks to move to those locations and allow commanders
+      to pick them up and drop them off.\n\nName fields don't have to be unique like
+      ID fields. They can be reused multiple times if they are outside a sector that
+      also has a flag with the same name. If a sector has two flags with the same
+      name, only one of them can be seen by the game. \n\nRemember, Flags are invisible
+      in-game. You can only see them in the World Creator."
+  - title: Platforms
+    imageID: 
+    contents: Platform Objects adds ground warfare to the player experience. They
+      enable ground units (i.e., tanks) to move around and find the nearest enemy
+      target. These objects come in various shapes and in two styles. Use these if
+      you want entities to battle ground units.
+  - title: Decorations
+    imageID: 
+    contents: Decoration Objects are items designed to decorate sectors. These objects
+      can't be disabled via the Settings. So, use them wisely.
+  - title: Misc. Objects
+    imageID: 
+    contents: "Any item not categorized from the previous four is considered a Miscellaneous
+      Object. Excluding Flags, they can interact with entities and the player. Currently,
+      there are only two types available: Interactables and Collectables. \r\n\r\nInteractable
+      Objects are designed to assist or harm entities. One example is the Power Rock.
+      It actively generates power orbs, which, upon collecting them, will heal the
+      entity. It also allows entities to build constructs. There's no example of
+      an Interactable Object that can harm entities.\r\n\r\nCollectable Objects are
+      what their name says. If the player finds these objects, they are added to
+      the player's save file and won't appear again. "
+  - title: Neutral Sectors
+    imageID: 
+    contents: Neutral Sectors are basic sectors with no special properties. Players
+      can think of these zones as the early stage of a region. Depending on the progression,
+      it's recommended to keep the enemy count to a minimum so that it is less threatening
+      to travel.
+  - title: Dark Neutral Sectors
+    imageID: 
+    contents: Dark Neutral Sectors are a variant of the Neutral Sectors. They are
+      fundamentally the same, but their use differentiates them. Assuming players
+      don't know the difficulty of a sector, the color is the best bet. Adding enemies
+      that are more threatening and rewarding will make players think about how they
+      enter those sectors. Making it too difficult will likely force them to border
+      hop, which isn't a good sign. These sectors are optional to world creation,
+      but implementing them into a world will rely on the design of other Neutral
+      and Dark Neutral Sectors.
+  - title: Haven Sectors
+    imageID: 
+    contents: Havens are intended to be players' safe zones. Entering one of these
+      sectors will reset the player's spawn point to the current location and allow
+      them to recover. It's recommended to have a few Havens around the map, in between
+      Neutral and Dark Neutral Sectors. They are also good for setting players' progression,
+      NPCs, and difficulty.
+  - title: Capitol Sectors
+    imageID: 
+    contents: Capitols are the better versions of Havens. Mechanically, they play
+      the same and are optional to world creation. The only difference is how world
+      creators use them. Capitols can serve as a means to reward players with harder
+      missions and greater loot, or to direct the importance of the story.
+  - title: BattleZone Sectors
+    imageID: 
+    contents: 'BattleZones serve as a way to test the player''s skill level. The
+      intended objective for these sectors is to destroy the enemy''s carrier without
+      losing the player''s carrier. World creators can add more factions or commanders
+      to spice up the battle. Depending on the implementation, balancing may cause
+      some issues due to the progression gap. It''s recommended to find the right
+      difficulty according to player progression.
+
+
+
+      Setting up a BattleZone
+      requires allied and enemy carriers, power rocks, vendors (i.e., outposts and
+      bunkers), and enemy commanders. '
+  - title: SiegeZone Sectors
+    imageID: 
+    contents: 'SiegeZones tends to be the most annoying sector to work on. The objective
+      for these sectors is to survive as long as possible while completing every
+      wave. World Creators can increase the difficulty by adding more conditions
+      (i.e., protect your base from the enemy onslaught) to them. Like BattleZones,
+      SiegeZones may result in balancing issues due to the progression gap. So, it''s
+      recommended to find the right difficulty according to player progression.
+
+
+
+      Setting
+      up a SiegeZone requires a wave set in the sector''s properties and flags. Adding
+      power rocks, stations, vendors (i.e., outposts and bunkers), and units will
+      help the player complete the sector. Creating a wave set can be found in the
+      Wave Builder.'
+  - title: DangerZone Sectors
+    imageID: 
+    contents: DangerZones, or DeadZones, are sectors designed to push players away
+      from entering specific areas. They will incrementally damage them the longer
+      they stay inside. It's recommended to add these sectors in areas where you
+      don't want players to go. Background spawns are nice to include as long as
+      they are not next to a Haven.
+  - title: Search Window
+    imageID: 
+    contents: If you can't find a specific object in a world, you can use the Search
+      Window to find it. Entering the ID, name, or JSON, and pressing the button
+      will redirect you to that specific object.
+  - title: Ship Builder
+    imageID: 
+    contents: 'Unlike building your ship in-game, the World Creator''s Ship Builder
+      is more advanced. You can create a ship with any type of part and core configuration.
+      Adding news parts requires you to manually create them with a specific shape,
+      ability, and tier. Some may require you to include a secondary ID.
+
+
+
+      Once
+      you made a ship, don''t forget to save it with a unique name. They will be
+      stored in the current world folder as a JSON file. Pressing the ''X'' key will
+      allow you to change the core type.'
+  - title: Wave Builder
+    imageID: 
+    contents: 'The Wave Builder is a unique feature of the World Creator. It can
+      create and customize enemy waves for SiegeZones. Adding a wave will create
+      a new blank wave. Adding a spawn will create a new spawnable object for a selected
+      wave. Selecting a spawnable object will update the metadata. ''Shift-Click''
+      to delete a spawnable object or wave.
+
+
+
+      The only requirements for SiegeZones
+      to run a custom wave in-game are to have a valid flag name and entity''s blueprint
+      (name/JSON), and wave set ID. If one of the three is invalid, the game will
+      throw an error.'
+  - title: Vendor Builder
+    imageID: 
+    contents: The Vendor Builder is a bit different. This window allows you to create
+      vendors, such as outposts and bunkers, with custom blueprints and provide a
+      set of building options for players and enemy commanders to use. Currently,
+      every entity blueprint is set as a ShellCore, so you will have to modify the
+      JSON files to allow building other types of units.
+  - title: Item/Sector Defaults
+    imageID: 
+    contents: Do you want to make things easier for yourself? If you are in the Item
+      or Sector Mode and have to place the same object multiple times, you can modify
+      an object's default parameters. This will reduce the need to open their corresponding
+      property windows. You can find them on the bottom-left side of the screen.
+      You can press the reset button to revert them to their original values.
+  - title: Character Creator
+    imageID: 
+    contents: The Character Handler allows you to create special entities called
+      characters in a given world. These entities can be made party members, if specified,
+      and do not despawn if you leave their designated sector besides BattleZones
+      and SiegeZones. They can be dynamically accessed via Canvases.
+  - title: Faction Builder
+    imageID: 
+    contents: The Faction Builder allows you to create custom factions in a given
+      world. They will require an ID number and a faction relation number (2^(faction
+      ID)).
+  - title: Canvas Editor
+    imageID: 
+    contents: "The Canvas Editor is the largest tool in the World Creator. It allows
+      you to create objects called Canvases that run in the background for every
+      world. There are only three types of canvases: mission, dialogue, and sector
+      canvases. Separate manual entries exist for each one. \r\n\r\nLeft-click to
+      move around the Canvas Editor. Right-click on a space to open a Node Creator
+      window, and left-click to create a new node. Left-clicking on a node to select
+      it to modify its values. Right-clicking it will give options to duplicate or
+      delete the node, and left-clicking will confirm the action."
+  - title: Mission Canvases
+    imageID: 
+    contents: "Mission Canvases are the most complex and flexible canvases, but are
+      the longest to create and test in the entire game. They provide the foundations
+      for building mission objectives. Mission Canvases are composed of various nodes,
+      including their exclusives, Mission Nodes.\r\n\r\nAll Mission Canvases will
+      require one Start Mission Node to initialize the mission and one Finish Mission
+      Node to complete it. You can use Start and Finish Task Nodes to set specific
+      objectives and Sector Limiter and Map Marker Nodes to mark the objective location.
+      Use Checkpoint Nodes to save the player's progression. \r\n\r\nOne example
+      of making a Mission Canvas can go as follows: \r\nStart Mission Node -> Start
+      Task Node -> Flow/Condition Node -> Finish Task Node -> Finish Mission Node\r\n\r\nNote
+      that the design of a Mission Canvas can vary depending on how the world creators
+      want to design it. There can be as many tasks or a few objectives."
+  - title: Dialogue Canvases
+    imageID: 
+    contents: 'Dialogue Canvases allow world creators to create passive interactions
+      between the player and the entity. They are the most basic and simple canvases
+      to learn, but they are known for being less compatible with other nodes. Dialogue
+      Canvases are composed of various Dialogue Nodes, each with its own variants.
+
+
+
+      Every
+      Dialogue Canvas requires a Start Dialogue Node (with an entity''s ID) and a
+      Finish Dialogue Node to start and end an interaction. Connecting a Dialogue
+      Node between the two nodes will show the entity''s dialogue upon interaction
+      in-game. Remember, these nodes can only be connected to other nodes of their
+      type.'
+  - title: Sector Canvases
+    imageID: 
+    contents: 'Sector Canvases are a unique type of canvas. They can run like a Dialogue
+      Canvas and use conditions from a Mission Canvas. What makes them different
+      is that they are activated whenever a player enters a specified sector.
+
+
+
+      A
+      Sector Canvas only needs an Enter Sector Node to initialize. Any node connected
+      to it will run depending on how it was configured. '
+  - title: Node Ports
+    imageID: 
+    contents: 'If you had examined some of the canvases, you might noticed the color
+      for some ports. They represent the connection types for specific nodes. Some
+      can be connected to a few things, while others are compatible with almost anything.
+      You can refer to this below.
+
+
+      Green -> Flow
+
+      Yellow -> Mission
+
+      Aqua
+      -> Dialogue
+
+      Dark Blue -> Cutscene
+
+      Red -> Condition'
+  - title: Part Index
+    imageID: 
+    contents: 'Every world has its own Part Index. If a sector has a ShellCore with
+      a custom blueprint, the game will grab its parts and adds them to the Part
+      Index. This also includes Mission Canvases with part rewards and traders. The
+      game won''t add new parts to the Part Index if they were generated from an
+      Add Reward Node, created by fusing/nullifying parts, spawned from a SiegeZone
+      wave/Spawn Node, or stored in a sector that has part drops disabled. '
