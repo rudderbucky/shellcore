@@ -8,12 +8,13 @@ using UnityEditor;
 
 public enum ItemType
 {
-    Other,
+    Entities,
     Platform,
     Flag,
-    Decoration,
-    BackgroundDecoration,
-    DecorationWithMetadata
+    Decorations,        // objects with faction color
+    BackgroundObjects,  // bg objects and particles
+    MetaDataObjects,    // shard rocks
+    SpecialObjects      // power rocks
 }
 
 /// <summary>

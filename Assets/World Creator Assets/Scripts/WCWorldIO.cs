@@ -29,6 +29,7 @@ public class WCWorldIO : GUIWindowScripts
     public MapMakerScript mapMakerScript;
     public GameObject window;
     public GameObject newWorldButton;
+    public Text windowHeaderText;
     public InputField field;
     public Text readButton;
     private bool rwFromEntityPlaceholder;
@@ -452,6 +453,7 @@ public class WCWorldIO : GUIWindowScripts
                 authors.text = "";
                 description.text = "";
                 defaultBlueprint.text = "";
+                windowHeaderText.text = "WORLDS";
                 authors.placeholder.GetComponent<Text>().text = "World authors appear here";
                 description.placeholder.GetComponent<Text>().text = "World description appears here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Default blueprint appears here";
@@ -463,6 +465,7 @@ public class WCWorldIO : GUIWindowScripts
                 authors.text = "";
                 description.text = "";
                 defaultBlueprint.text = "";
+                windowHeaderText.text = "WORLDS";
                 authors.placeholder.GetComponent<Text>().text = "Enter world authors here";
                 description.placeholder.GetComponent<Text>().text = "Enter world description here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Enter default blueprint here";
@@ -470,6 +473,7 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
+                windowHeaderText.text = "SHIPS";
                 switchBPDirectoryButton.gameObject.SetActive(rwFromEntityPlaceholder);
                 List<string> files = new List<string>();
                 if (rwFromEntityPlaceholder && !String.IsNullOrEmpty(placeholderPath)) files.AddRange(Directory.GetFiles(placeholderPath));
@@ -478,6 +482,7 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
+                windowHeaderText.text = "WAVES";
                 var path = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
                 if (!Directory.Exists(path))
                 {
@@ -487,6 +492,7 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadCanvas:
             case IOMode.WriteCanvas:
+                windowHeaderText.text = "CANVASES";
                 path = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
                 if (!Directory.Exists(path))
                 {
