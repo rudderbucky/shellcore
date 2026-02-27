@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public enum KeyName
+public enum KeyName // Do not modify the order, it may break the keybinds
 {
     Up,
     Left,
@@ -160,11 +161,13 @@ public class InputManager : MonoBehaviour
 
     public static void ResetControls()
     {
-        foreach (var pair in keys)
+        var keyNames = new List<KeyName>(keys.Keys);
+        for (int i = 0; i < keyNames.Count; i++)
         {
-            Key key = pair.Value;
+            var keyName = keyNames[i];
+            var key = keys[keyName];
             key.overrideKey = key.defaultKey;
-            keys[pair.Key] = key;
+            keys[keyName] = key;
         }
         SaveControls();
     }

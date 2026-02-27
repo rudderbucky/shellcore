@@ -10,6 +10,8 @@ public class SaveHandler : MonoBehaviour
     PlayerSave save;
     public static SaveHandler instance;
     bool initialized = false;
+    public static bool backupEnabled;
+    public static bool autoSaveEnabled;
 
     public PlayerSave GetSave()
     {
@@ -91,7 +93,13 @@ public class SaveHandler : MonoBehaviour
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+            {
+                autoSaveEnabled = PlayerPrefs.GetString("SaveHandler_autoSaveEnabled", "True") == "True";
+                StartCoroutine(AutoSave());
+
+                backupEnabled = PlayerPrefs.GetString("SaveHandler_autoBackupEnabled", "True") == "True";
                 StartCoroutine(Autobackup());
+            }
         }
         else
         {
@@ -103,6 +111,7 @@ public class SaveHandler : MonoBehaviour
             player.blueprint = GetDefaultBlueprint();
             player.abilityCaps = CoreUpgraderScript.minAbilityCap;
             player.cursave = save;
+            save.currentPartyMembers.Clear();
         }
     }
 
@@ -195,6 +204,8 @@ public class SaveHandler : MonoBehaviour
         playerSave.taskVariableNames = keys;
         playerSave.taskVariableValues = values;
         playerSave.reputation = player.reputation;
+
+        playerSave.partyLock = PartyManager.instance.GetOverrideLock();
     }
 
     public void Save()
@@ -243,9 +254,18 @@ public class SaveHandler : MonoBehaviour
         File.WriteAllText(backupPath, saveJson);
     }
 
+    IEnumerator AutoSave()
+    {
+        while (autoSaveEnabled)
+        {
+            yield return new WaitForSeconds(20 * 60);
+            Save();
+        }
+    }
+
     IEnumerator Autobackup()
     {
-        while (!save.name.Contains("TestSave"))
+        while (backupEnabled && !save.name.Contains("TestSave"))
         {
             yield return new WaitForSeconds(20 * 60);
             BackupSave();
