@@ -28,6 +28,11 @@ public class PartyManager : MonoBehaviour
         overrideLock = val;
     }
 
+    public bool GetOverrideLock()
+    {
+        return overrideLock;
+    }
+
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
@@ -128,7 +133,7 @@ public class PartyManager : MonoBehaviour
         UpdatePortraits();
     }
 
-    public void ClearParty(bool destroyMembers)
+    public void ClearParty(bool destroyMembers, bool clearPlayerSave = true)
     {
         int i = 0;
         if (destroyMembers)
@@ -146,6 +151,8 @@ public class PartyManager : MonoBehaviour
         }
 
         partyMembers.Clear();
+        if (clearPlayerSave)
+            PlayerCore.Instance.cursave.currentPartyMembers.Clear();
         foreach (var val in partyIndicators.Values)
         {
             if (val)
@@ -206,6 +213,7 @@ public class PartyManager : MonoBehaviour
         PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
         core.faction.overrideFaction = PlayerCore.Instance.faction.overrideFaction;
         partyMembers.Add(core);
+        PlayerCore.Instance.cursave.currentPartyMembers.Add(charID);
         Debug.Log($"<Party Management> Character {charID} added");
         if (!partyIndicators.ContainsKey(core))
             partyIndicators.Add(core, Instantiate(partyIndicatorPrefab, indicatorTransform));
@@ -218,6 +226,7 @@ public class PartyManager : MonoBehaviour
         {
             var member = partyMembers.Find(c => c.ID == charID);
             UnassignBackend(charID, member);
+            PlayerCore.Instance.cursave.currentPartyMembers.Remove(charID);
         }
         else
         {
@@ -512,5 +521,20 @@ public class PartyManager : MonoBehaviour
         }
 
         CharacterScrollSetup();
+    }
+
+    // Only used in the Sector Manager
+    public void CheckParty()
+    {
+        if (!partyMembers.Any() && PlayerCore.Instance.cursave.currentPartyMembers.Any())
+        {
+            List<string> currentPartyList = new List<string>(PlayerCore.Instance.cursave.currentPartyMembers);
+            ClearParty(false);
+            for (int i = 0; i < currentPartyList.Count(); i++)
+            {
+                AssignBackend(currentPartyList[i]);
+            }
+            currentPartyList.Clear();
+        }
     }
 }
