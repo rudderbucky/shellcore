@@ -116,6 +116,7 @@ public class WCBetterBarHandler : MonoBehaviour
                         case EntityBlueprint.IntendedType.WeaponStation:
                         case EntityBlueprint.IntendedType.CoreUpgrader:
                         case EntityBlueprint.IntendedType.DroneWorkshop:
+                        case EntityBlueprint.IntendedType.FusionStation:
                             scaler.localScale = new Vector3(0.15f, 0.15f, 1);
                             break;
                         default:
