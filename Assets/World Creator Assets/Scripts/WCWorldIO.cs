@@ -18,6 +18,7 @@ public class WCWorldIO : GUIWindowScripts
     private SelectionDisplayHandler displayHandler;
     public ShipBuilder builder;
     public WaveBuilder waveBuilder;
+    public VendorBuilder vendorBuilder;
     public RTNodeEditor nodeEditor;
     public GameObject buttonPrefab;
     public Transform content;
@@ -29,6 +30,7 @@ public class WCWorldIO : GUIWindowScripts
     public MapMakerScript mapMakerScript;
     public GameObject window;
     public GameObject newWorldButton;
+    public Text windowHeaderText;
     public InputField field;
     public Text readButton;
     private bool rwFromEntityPlaceholder;
@@ -126,6 +128,20 @@ public class WCWorldIO : GUIWindowScripts
         IOContainer.sizeDelta = new Vector2(900, IOContainer.sizeDelta.y);
         worldContents.SetActive(true);
         Show(IOMode.Write);
+    }
+
+    public void ShowVendorReadMode()
+    {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
+        Show(IOMode.ReadVendingBlueprintJSON);
+    }
+
+    public void ShowVendorWriteMode()
+    {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
+        Show(IOMode.WriteVendingBlueprintJSON);
     }
 
     public SaveMenuHandler saveMenuHandler;
@@ -227,6 +243,17 @@ public class WCWorldIO : GUIWindowScripts
             }
 
             System.IO.Directory.Delete(FactionPlaceholder);
+        }
+
+        var VendorPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "VendorPlaceholder");
+        if (System.IO.Directory.Exists(VendorPlaceholder))
+        {
+            foreach (var file in System.IO.Directory.GetFiles(VendorPlaceholder))
+            {
+                System.IO.File.Delete(file);
+            }
+
+            System.IO.Directory.Delete(VendorPlaceholder);
         }
 
         var ResourcePlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder");
@@ -452,6 +479,7 @@ public class WCWorldIO : GUIWindowScripts
                 authors.text = "";
                 description.text = "";
                 defaultBlueprint.text = "";
+                windowHeaderText.text = "WORLDS";
                 authors.placeholder.GetComponent<Text>().text = "World authors appear here";
                 description.placeholder.GetComponent<Text>().text = "World description appears here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Default blueprint appears here";
@@ -463,6 +491,7 @@ public class WCWorldIO : GUIWindowScripts
                 authors.text = "";
                 description.text = "";
                 defaultBlueprint.text = "";
+                windowHeaderText.text = "WORLDS";
                 authors.placeholder.GetComponent<Text>().text = "Enter world authors here";
                 description.placeholder.GetComponent<Text>().text = "Enter world description here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Enter default blueprint here";
@@ -470,6 +499,7 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
+                windowHeaderText.text = "SHIPS";
                 switchBPDirectoryButton.gameObject.SetActive(rwFromEntityPlaceholder);
                 List<string> files = new List<string>();
                 if (rwFromEntityPlaceholder && !String.IsNullOrEmpty(placeholderPath)) files.AddRange(Directory.GetFiles(placeholderPath));
@@ -478,7 +508,18 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
+                windowHeaderText.text = "WAVES";
                 var path = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                directories = Directory.GetFiles(path);
+                break;
+            case IOMode.ReadVendingBlueprintJSON:
+            case IOMode.WriteVendingBlueprintJSON:
+                windowHeaderText.text = "VENDORS";
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "VendorPlaceholder");
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -487,6 +528,7 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadCanvas:
             case IOMode.WriteCanvas:
+                windowHeaderText.text = "CANVASES";
                 path = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
                 if (!Directory.Exists(path))
                 {
@@ -532,6 +574,14 @@ public class WCWorldIO : GUIWindowScripts
                             break;
                         case IOMode.WriteWaveJSON:
                             waveBuilder.ParseWaves(dir);
+                            Hide();
+                            break;
+                        case IOMode.ReadVendingBlueprintJSON:
+                            vendorBuilder.ReadVendor(JsonUtility.FromJson<VendorList>(System.IO.File.ReadAllText(dir)));
+                            Hide();
+                            break;
+                        case IOMode.WriteVendingBlueprintJSON:
+                            vendorBuilder.ParseVendor(dir);
                             Hide();
                             break;
                         case IOMode.ReadCanvas:
@@ -581,8 +631,13 @@ public class WCWorldIO : GUIWindowScripts
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    File.Delete(name);
-                    Destroy(button.gameObject);
+                    if (File.Exists(name)) //I could allow it to delete directories if it is a directory
+                    {
+                        File.Delete(name);
+                        Destroy(button.gameObject);
+                        if (mode == IOMode.ReadCanvas || mode == IOMode.WriteCanvas) // Not the best fix, look into this later
+                            Hide();
+                    }
                     return;
                 }
                 action.Invoke();
@@ -690,6 +745,10 @@ public class WCWorldIO : GUIWindowScripts
             case IOMode.WriteWaveJSON:
                 path = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder", field.text + ".json");
                 break;
+            case IOMode.ReadVendingBlueprintJSON:
+            case IOMode.WriteVendingBlueprintJSON:
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "VendorPlaceholder", field.text + ".json");
+                break;
             case IOMode.WriteCanvas:
                 path = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder", field.text + ImportExportFormat.GetCanvasExtension());
                 break;
@@ -720,6 +779,14 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.WriteWaveJSON:
                 waveBuilder.ParseWaves(path);
+                Hide();
+                break;
+            case IOMode.ReadVendingBlueprintJSON:
+                vendorBuilder.ReadVendor(JsonUtility.FromJson<VendorList>(System.IO.File.ReadAllText(path)));
+                Hide();
+                break;
+            case IOMode.WriteVendingBlueprintJSON:
+                vendorBuilder.ParseVendor(path);
                 Hide();
                 break;
             case IOMode.WriteCanvas:

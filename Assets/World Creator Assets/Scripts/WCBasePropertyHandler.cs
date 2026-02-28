@@ -35,6 +35,9 @@ public class WCBasePropertyHandler : GUIWindowScripts
     private List<int> ints = new List<int>();
 
     [SerializeField]
+    private Text basePropertyWindowText;
+
+    [SerializeField]
     private Button addPropertyButton;
 
     [SerializeField]
@@ -230,6 +233,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
         switch (currentMode)
         {
             case Mode.Characters:
+                basePropertyWindowText.text = "CHARACTER CREATOR";
                 var character = cursor.characters[index];
                 strings.Add(character.ID);
                 strings.Add(character.name);
@@ -243,6 +247,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 SetupAdditionFields();
                 break;
             case Mode.Factions:
+                basePropertyWindowText.text = "FACTION BUILDER";
                 int factionID = GetFactionID(index);
                 var faction = manager.factions[factionID];
                 ints.Add(faction.ID);

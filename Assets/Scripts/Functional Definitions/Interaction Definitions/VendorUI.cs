@@ -77,9 +77,12 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         costInfo.text = "";
         range = blueprint.range;
 
-
-        buttons = new GameObject[blueprint.items.Count];
-        for (int i = 0; i < blueprint.items.Count; i++)
+        // This could be done differently, but for now I'm just limiting it to 10
+        buttons = new GameObject[10];
+        if (blueprint.items.Count > 10)
+            Debug.LogWarning("Vendor has more than 10 item! Please remove them from the blueprint's JSON file!");
+        
+        for (int i = 0; i < blueprint.items.Count && i < 10; i++)
         {
             int index = i;
             buttons[i] = Instantiate(buttonPrefab);

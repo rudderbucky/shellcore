@@ -835,8 +835,8 @@ public class SectorManager : MonoBehaviour
         try
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (System.IO.Path.Combine(instance.resourcePath, "Entities", json + ".json")), def);
-            if (!string.IsNullOrEmpty(def.vendingBlueprint)) 
+                (System.IO.Path.Combine(instance.resourcePath, "Vendors", json + ".json")), def);
+            if (!string.IsNullOrEmpty(def.vendingBlueprint))
             {
                 var dialogueRef = blueprint.dialogue;
                 blueprint = TryGettingEntityBlueprint(def.entityBlueprint);

@@ -24,7 +24,7 @@ public class CharacterButtonScript : MonoBehaviour
         Item item = new Item();
         item.ID = character.ID;
         item.name = character.name;
-        item.type = ItemType.Other;
+        item.type = ItemType.Entities;
         item.obj = Instantiate(itemObj);
 
         cursor.SetCurrent(item);

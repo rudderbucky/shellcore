@@ -29,6 +29,8 @@ public class WCItemFinder : GUIWindowScripts
             if (cursor.placedItems[i].ID == ID)
             {
                 cameraScript.transform.position = cursor.placedItems[i].pos + new Vector3(0, 0, cameraScript.transform.position.z);
+                if (cursor.currentDim != cursor.placedItems[i].dimension)
+                    cursor.currentDim = cursor.placedItems[i].dimension;
                 break;
             }
         }
@@ -41,6 +43,25 @@ public class WCItemFinder : GUIWindowScripts
             if (cursor.placedItems[i].name == name)
             {
                 cameraScript.transform.position = cursor.placedItems[i].pos + new Vector3(0, 0, cameraScript.transform.position.z);
+                if (cursor.currentDim != cursor.placedItems[i].dimension)
+                    cursor.currentDim = cursor.placedItems[i].dimension;
+                currentIndex = i + 1;
+                return;
+            }
+        }
+
+        currentIndex = 0;
+    }
+
+    private void FindItemByJSON(string json, int start = 0)
+    {
+        for (int i = start; i < cursor.placedItems.Count; i++)
+        {
+            if (cursor.placedItems[i].shellcoreJSON == json)
+            {
+                cameraScript.transform.position = cursor.placedItems[i].pos + new Vector3(0, 0, cameraScript.transform.position.z);
+                if (cursor.currentDim != cursor.placedItems[i].dimension)
+                    cursor.currentDim = cursor.placedItems[i].dimension;
                 currentIndex = i + 1;
                 return;
             }
@@ -58,6 +79,9 @@ public class WCItemFinder : GUIWindowScripts
                 break;
             case 1:
                 FindItemByName(stringField.text, currentIndex);
+                break;
+            case 2:
+                FindItemByJSON(stringField.text, currentIndex);
                 break;
         }
     }
