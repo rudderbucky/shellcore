@@ -144,8 +144,8 @@ public class TractorBeam : MonoBehaviour
                     }
                     else
                     {
-                        owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) *
-                            rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
+                        var ownerRigbody = owner.GetComponent<Rigidbody2D>();
+                        ownerRigbody.AddForce(-dir.normalized * (dist - 2F) * ownerRigbody.mass * tractorStrength / Time.fixedDeltaTime);
                     }
                 }
             }
