@@ -29,6 +29,9 @@ public class VendorBuilder : GUIWindowScripts
     void OnEnable()
     {
         ClearVendor();
+        currentVendor = new VendorList();
+        currentVendorBlueprint = new VendingBlueprintData();
+        currentVendorBlueprint.items = new List<VendingBlueprint.Item>();
         instance = this;
 
         if (equivalentDropdown.options.Count == 0)
@@ -98,7 +101,12 @@ public class VendorBuilder : GUIWindowScripts
 
         if (currentVendingItem != null)
         {
-            currentVendingItem = newSpawn;
+            currentVendingItem.json = newSpawn.json;
+            currentVendingItem.icon = newSpawn.icon;
+            currentVendingItem.description = newSpawn.description;
+            currentVendingItem.cost = newSpawn.cost;
+            currentVendingItem.equivalentTo = newSpawn.equivalentTo;
+
             if (selectedItemButton)
                 selectedItemButton.GetComponentInChildren<Text>().text = itemBlueprintInputField.text;
             ResetSelectedVendorItem();
