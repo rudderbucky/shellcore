@@ -757,6 +757,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         if (clickedOnce && player)
         {
             followPlayerMode = !followPlayerMode;
+            scrollbarHorizontal.interactable = scrollbarVertical.interactable = !followPlayerMode;
             if (!followPlayerMode)
             {
                 _mapRectTransform.anchoredPosition = anchoredPos;
