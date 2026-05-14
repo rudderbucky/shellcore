@@ -118,15 +118,16 @@ public class AudioManager : MonoBehaviour
     public static void PlayClipByID(string ID, bool clear = false, float volume = 1F)
     {
         if (instance.playerSource == null) return;
-        if (clear)
-        {
-            instance.playerSource.Stop();
-        }
 
         if (ID == null) return;
         if (instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
         {
             return;
+        }
+
+        if (clear)
+        {
+            instance.playerSource.Stop();
         }
 
         var clip = ResourceManager.GetAsset<AudioClip>(ID);

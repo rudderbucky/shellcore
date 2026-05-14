@@ -125,6 +125,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         pos *= UIScalerScript.GetScale();
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
+        AddCustomFactionsToDropdown(factionDropdown);
         factionDropdown.value = item.faction;
         jsonField.text = currentItem.shellcoreJSON;
         jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other || item.type == ItemType.DecorationWithMetadata);

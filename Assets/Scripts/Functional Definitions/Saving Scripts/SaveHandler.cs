@@ -100,6 +100,8 @@ public class SaveHandler : MonoBehaviour
                 backupEnabled = PlayerPrefs.GetString("SaveHandler_autoBackupEnabled", "True") == "True";
                 StartCoroutine(Autobackup());
             }
+            if (save.partyLock)
+                PartyManager.instance.SetOverrideLock(save.partyLock);
         }
         else
         {

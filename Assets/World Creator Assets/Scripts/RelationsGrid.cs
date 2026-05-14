@@ -10,8 +10,11 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
 {
     public static Action OnRelationsChanged;
 
+    public Transform window;
     public GameObject factionNamePrefabX;
     public GameObject factionNamePrefabY;
+    public Transform relationValueRoot;
+    public GameObject relationValueDisplayPrefab;
     public Transform xRoot;
     public Transform yRoot;
 
@@ -20,6 +23,7 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
     int _existingFactionCount = 0;
     float _preferredWidth, _preferredHeight;
     int mouseX, mouseY;
+    bool _numbersVisible = false;
 
     public float minWidth => _preferredWidth;
 
@@ -105,7 +109,40 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
         parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _preferredWidth + labelPaddingX);
         parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _preferredHeight + labelPaddingY);
 
+        ShowRelationValues();
+
         Debug.Log("RelationsGrid initialized with " + _existingFactionCount + " factions.");
+    }
+
+    // Generate ui components, add text onto text fields
+    public void ShowRelationValues()
+    {
+        if (!_numbersVisible) return;
+
+        for (int i = 0; i < relationValueRoot.childCount; i++)
+        {
+            Destroy(relationValueRoot.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < _existingFactionCount; i++)
+        {
+            var gObj = Instantiate(relationValueDisplayPrefab, relationValueRoot);
+            gObj.GetComponentInChildren<Text>().text = FactionManager.GetFactionName(_factionIDs[i]);
+            var field = gObj.GetComponentInChildren<InputField>();
+            field.text = relations[i].ToString();
+        }
+    }
+
+    public void ToggleRelationValues()
+    {
+        _numbersVisible = !_numbersVisible;
+        relationValueRoot.gameObject.SetActive(_numbersVisible);
+        AudioManager.PlayClipByID("clip_select");
+
+        const float defaultWidth = 800f;
+        const float expandedWidth = 1200f;
+        window.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _numbersVisible ? expandedWidth : defaultWidth);
+        ShowRelationValues();
     }
 
     public void ApplyChanges()
@@ -195,6 +232,7 @@ public class RelationsGrid : MaskableGraphic, IPointerMoveHandler, IPointerClick
             int yid = _factionIDs[y];
             relations[x] ^= (1 << yid);
             UpdateGeometry();
+            ShowRelationValues();
         }
     }
 
