@@ -92,6 +92,9 @@ public class SaveHandler : MonoBehaviour
             }
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 StartCoroutine(Autobackup());
+
+            if (save.partyLock)
+                PartyManager.instance.SetOverrideLock(save.partyLock);
         }
         else
         {
@@ -103,6 +106,7 @@ public class SaveHandler : MonoBehaviour
             player.blueprint = GetDefaultBlueprint();
             player.abilityCaps = CoreUpgraderScript.minAbilityCap;
             player.cursave = save;
+            save.currentPartyMembers.Clear();
         }
     }
 
@@ -195,6 +199,8 @@ public class SaveHandler : MonoBehaviour
         playerSave.taskVariableNames = keys;
         playerSave.taskVariableValues = values;
         playerSave.reputation = player.reputation;
+
+        playerSave.partyLock = PartyManager.instance.GetOverrideLock();
     }
 
     public void Save()
