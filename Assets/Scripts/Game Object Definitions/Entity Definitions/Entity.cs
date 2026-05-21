@@ -337,6 +337,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     [HideInInspector]
     public int absorptions = 0;
+    [HideInInspector] 
+    public int invertTractors = 0;
 
     public bool canUseAbilities = true;
 
@@ -344,7 +346,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         get { return absorptions > 0; }
     }
-    public bool tractorSwitched = false;
+
+    public bool isTractorSwitched // if true, switch tractor
+    {
+        get { return invertTractors > 0; }
+    }
 
     public SectorManager sectorMngr;
     protected Entity lastDamagedBy;
@@ -753,6 +759,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         stealths = 0;
         absorptions = 0;
+        invertTractors = 0;
 
         BuildEntity();
         GetComponentInChildren<MinimapLockRotationScript>().Initialize(); // initialize the minimap dot

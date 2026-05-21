@@ -15,6 +15,10 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     public Transform player;
     public Font shellcoreFont;
     public Sprite gridSprite;
+    public Scrollbar scrollbarHorizontal;
+    public Scrollbar scrollbarVertical;
+
+
     RectTransform indicator;
     int zoomoutFactor = 4;
     int sectorCount = 0;
@@ -58,6 +62,18 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
     Dictionary<TaskManager.ObjectiveLocation, RectTransform> arrows = new Dictionary<TaskManager.ObjectiveLocation, RectTransform>();
 
+    RectTransform _mapRectTransform;
+
+    bool _pointerDown;
+    Vector2 _prevMousePos;
+    Vector2 anchoredPos;
+    float timer;
+
+    bool clickedOnce;
+    bool followPlayerMode;
+    private static bool mapVisibleCheatEnabled = false;
+    bool mouseInBounds;
+
     public static void Redraw(List<Sector> sectors)
     {
         if (instance)
@@ -75,8 +91,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     private void InitializeVariables(int zoomoutFactor, bool resetPosition)
     {
         this.zoomoutFactor = zoomoutFactor;
-        gridSizeX = canvas.sizeDelta.x;
-        gridSizeY = canvas.sizeDelta.y;
+        gridSizeX = _mapRectTransform.sizeDelta.x;
+        gridSizeY = _mapRectTransform.sizeDelta.y;
         // this sets up the tiled grid
         gridImg = new GameObject().AddComponent<Image>();
         gridImg.gameObject.name = "Grid";
@@ -102,7 +118,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         maxY = int.MinValue;
         if (resetPosition)
         {
-            canvas.anchoredPosition = Vector2.zero;
+            _mapRectTransform.anchoredPosition = Vector2.zero;
         }
     }
 
@@ -330,18 +346,18 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         if (player)
         {
-            if (anchor == Vector2.zero)
+            if (anchoredPos == Vector2.zero)
             {
                 Vector2 playerPos = new Vector2(player.transform.position.x - minX, player.transform.position.y - maxY);
                 Vector2 vec = -playerPos / zoomoutFactor;
-                vec.x = Mathf.Max(0, vec.x - canvas.sizeDelta.x / 2);
-                vec.y = Mathf.Max(0, vec.y - canvas.sizeDelta.y / 2);
-                canvas.anchoredPosition = vec;
-                anchor = canvas.anchoredPosition;
+                vec.x = Mathf.Max(0, vec.x - _mapRectTransform.sizeDelta.x / 2);
+                vec.y = Mathf.Max(0, vec.y - _mapRectTransform.sizeDelta.y / 2);
+                _mapRectTransform.anchoredPosition = vec;
+                anchoredPos = _mapRectTransform.anchoredPosition;
             }
             else
             {
-                canvas.anchoredPosition = anchor;
+                _mapRectTransform.anchoredPosition = anchoredPos;
             }
         }
 
@@ -383,6 +399,19 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         if (!gameObject.activeInHierarchy) return;
         instance.arrows.Clear();
         coroutine = StartCoroutine(DrawCoroutine(sectors, dimension, displayStations));
+
+        if (scrollbarHorizontal)
+        {
+            float size = _mapRectTransform.sizeDelta.x / (gridSizeX * zoomoutFactor);
+            scrollbarHorizontal.size = Mathf.Min(1, size);
+            scrollbarHorizontal.gameObject.SetActive(size < 1);
+        }
+        if (scrollbarVertical)
+        {
+            float size = _mapRectTransform.sizeDelta.y / (gridSizeY * zoomoutFactor);
+            scrollbarVertical.size = Mathf.Min(1, size);
+            scrollbarVertical.gameObject.SetActive(size < 1);
+        }
     }
 
     private void AddMapDistanceMarker(Vector2 pos, int i, TextAnchor anchor)
@@ -460,13 +489,10 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         mapVisibleCheatEnabled = false;
     }
 
-
-    RectTransform canvas;
-
     void Awake()
     {
-        canvas = GetComponent<RectTransform>();
-        canvas.anchoredPosition = new Vector3(0, 0);
+        _mapRectTransform = GetComponent<RectTransform>();
+        _mapRectTransform.anchoredPosition = new Vector3(0, 0);
     }
 
     void Update()
@@ -496,15 +522,15 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
         else if (player)
         {
-            greenBox.anchoredPosition = new Vector2(canvas.sizeDelta.x, -canvas.sizeDelta.y) / 2;
-            canvas.anchoredPosition = new Vector2(-player.position.x + minX, maxY - player.position.y) / zoomoutFactor + greenBox.anchoredPosition;
-            anchor = canvas.anchoredPosition;
+            greenBox.anchoredPosition = new Vector2(_mapRectTransform.sizeDelta.x, -_mapRectTransform.sizeDelta.y) / 2;
+            _mapRectTransform.anchoredPosition = new Vector2(-player.position.x + minX, maxY - player.position.y) / zoomoutFactor + greenBox.anchoredPosition;
+            anchoredPos = _mapRectTransform.anchoredPosition;
         }
 
-        if (!Input.GetMouseButton(0) && !followPlayerMode && updatePos)
+        if (!Input.GetMouseButton(0) && !followPlayerMode && _pointerDown)
         {
-            updatePos = false;
-            anchor = canvas.anchoredPosition;
+            _pointerDown = false;
+            anchoredPos = _mapRectTransform.anchoredPosition;
         }
 
 
@@ -582,30 +608,69 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     }
 
 
-    private void UpdateMapPosition(Vector2 vec)
+    private void MoveMap(Vector2 vec)
     {
-            var width = canvas.sizeDelta.x;
-            var height = canvas.sizeDelta.y;
-            canvas.anchoredPosition = anchor + vec;
-            canvas.anchoredPosition = new Vector2(Mathf.Min(canvas.anchoredPosition.x, 0), Mathf.Max(canvas.anchoredPosition.y, 0));
-            canvas.anchoredPosition = new Vector2(Mathf.Max(canvas.anchoredPosition.x,
-                    -gridImg.rectTransform.sizeDelta.x + width),
-                //(gridSizeY * zoomoutFactor + distancePerTextMarker) / zoomoutFactor - height )
-                Mathf.Min(canvas.anchoredPosition.y, gridImg.rectTransform.sizeDelta.y - height));
+        _mapRectTransform.anchoredPosition = anchoredPos + vec;
+        KeepInBounds();
+
+        UpdateScrollBarPositions();
+    }
+
+    private void SetMapPosition(Vector2 vec)
+    {
+        var width = _mapRectTransform.sizeDelta.x;
+        var height = _mapRectTransform.sizeDelta.y;
+
+        if (scrollbarHorizontal && scrollbarHorizontal.gameObject.activeSelf)
+        {
+            width -= 20f; // account for scrollbar
+        }
+        if (scrollbarVertical && scrollbarVertical.gameObject.activeSelf)
+        {
+            height -= 20f; // account for scrollbar
+        }
+
+        Vector2 offset = vec * new Vector2(-gridSizeX + width, gridSizeY - height);
+        _mapRectTransform.anchoredPosition = offset;
+        KeepInBounds();
+        anchoredPos = _mapRectTransform.anchoredPosition;
+    }
+
+    private void KeepInBounds()
+    {
+        var width = _mapRectTransform.sizeDelta.x;
+        var height = _mapRectTransform.sizeDelta.y;
+
+        _mapRectTransform.anchoredPosition = new Vector2(Mathf.Min(_mapRectTransform.anchoredPosition.x, 0), Mathf.Max(_mapRectTransform.anchoredPosition.y, 0));
+        _mapRectTransform.anchoredPosition = new Vector2(
+            Mathf.Max(_mapRectTransform.anchoredPosition.x, -gridImg.rectTransform.sizeDelta.x + width),
+            Mathf.Min(_mapRectTransform.anchoredPosition.y, gridImg.rectTransform.sizeDelta.y - height));
+    }
+
+    private void UpdateScrollBarPositions()
+    { 
+        if (scrollbarHorizontal)
+        {
+            scrollbarHorizontal.SetValueWithoutNotify(-_mapRectTransform.anchoredPosition.x / (gridSizeX - _mapRectTransform.sizeDelta.x));
+        }
+        if (scrollbarVertical)
+        {
+            scrollbarVertical.SetValueWithoutNotify(_mapRectTransform.anchoredPosition.y / (gridSizeY - _mapRectTransform.sizeDelta.y));
+        }
     }
 
 
     void PollMouseFollow()
     {
-        if (updatePos)
+        if (_pointerDown)
         {
-            UpdateMapPosition((Vector2)Input.mousePosition - mousePos);
+            MoveMap((Vector2)Input.mousePosition - _prevMousePos);
         }
 
         if (player)
         {
             Vector2 playerPos = new Vector2(player.transform.position.x - minX, player.transform.position.y - maxY);
-            greenBox.anchoredPosition = canvas.anchoredPosition + playerPos / zoomoutFactor;
+            greenBox.anchoredPosition = _mapRectTransform.anchoredPosition + playerPos / zoomoutFactor;
         }
     }
 
@@ -630,11 +695,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     {
         Destroy();
     }
-
-    bool updatePos;
-    Vector2 mousePos;
-    Vector2 anchor;
-    float timer;
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -667,8 +727,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         if (!followPlayerMode)
         {
-            updatePos = true;
-            mousePos = Input.mousePosition;
+            _pointerDown = true;
+            _prevMousePos = Input.mousePosition;
         }
 
 
@@ -692,20 +752,17 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
     }
 
-    bool clickedOnce;
-    bool followPlayerMode;
-    private static bool mapVisibleCheatEnabled = false;
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (clickedOnce && player)
         {
             followPlayerMode = !followPlayerMode;
+            scrollbarHorizontal.interactable = scrollbarVertical.interactable = !followPlayerMode;
             if (!followPlayerMode)
             {
-                canvas.anchoredPosition = anchor;
-                mousePos = Input.mousePosition;
-                updatePos = true;
+                _mapRectTransform.anchoredPosition = anchoredPos;
+                _prevMousePos = Input.mousePosition;
+                _pointerDown = true;
                 PollMouseFollow();
             }
         }
@@ -716,7 +773,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
     }
 
-    bool mouseInBounds;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -727,5 +783,15 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     {
         if (GetComponent<RectTransform>().rect.Contains(Input.mousePosition)) return;
         mouseInBounds = false;
+    }
+
+    public void OnHorizontalScroll(float value)
+    {
+        SetMapPosition(new Vector2(value, scrollbarVertical.value));
+    }
+
+    public void OnVerticalScroll(float value)
+    {
+        SetMapPosition(new Vector2(scrollbarHorizontal.value, value));
     }
 }

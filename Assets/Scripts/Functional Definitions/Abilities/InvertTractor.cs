@@ -7,6 +7,7 @@ public class InvertTractor : ActiveAbility
         if (abilityTier < 1) abilityTier = 1;
         base.SetTier(abilityTier);
         activeDuration = 5 * abilityTier;
+        cooldownDuration = 5 + abilityTier * 5;
     }
 
     protected override void Awake()
@@ -19,11 +20,11 @@ public class InvertTractor : ActiveAbility
     }
 
     /// <summary>
-    /// Returns the engine power to the original value
+    /// Disable invert tractor
     /// </summary>
     public override void Deactivate()
     {
-        Core.tractorSwitched = false;
+        Core.invertTractors--;
         if (Core is ShellCore core && !MasterNetworkAdapter.lettingServerDecide) core.SetTractorTarget(null);
         base.Deactivate();
     }
@@ -35,13 +36,12 @@ public class InvertTractor : ActiveAbility
         Execute();
     }
 
-
     /// <summary>
-    /// Increases core engine power to speed up the core
+    /// Invert tractor
     /// </summary>
     protected override void Execute()
     {
-        Core.tractorSwitched = true;
+        Core.invertTractors++;
         AudioManager.PlayClipByID("clip_buff", transform.position);
         base.Execute();
     }

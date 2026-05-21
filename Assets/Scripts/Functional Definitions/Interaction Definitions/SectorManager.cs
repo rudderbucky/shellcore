@@ -285,6 +285,8 @@ public class SectorManager : MonoBehaviour
                 {
                     AttemptSectorLoad();
                     abortTimer = 6;
+
+                    PartyManager.instance.CheckParty();
                 }
             }
             else
@@ -1689,7 +1691,7 @@ public class SectorManager : MonoBehaviour
                     foreach (var ch in characters)
                     {
                         if (obj.Value.GetComponentInChildren<Entity>().ID == ch.ID && (
-                            lastSectorType == null ||
+                            lastSectorType == null || lastSectorType != overrideProperties.type ||
                             lastSectorType != Sector.SectorType.BattleZone ||
                             obj.Value.GetComponentInChildren<Entity>().faction.factionID == player.faction.factionID))
                         {
