@@ -63,10 +63,11 @@ public class PlayerSave
     // As well as for side missions to not change the episode number.
     public int episode;
 
-    // Contains IDs of unlocked party members (there will be a node that unlocks members adding IDs into this list)
+    public bool partyLock;
+    // The three lists contain IDs of unlocked, locked, and current party members
     public List<string> unlockedPartyIDs;
-    // Disabled party members. Saved so that EP3 persistent party locking does not need constant checkpoints
     public List<string> disabledPartyIDs;
+    public List<string> currentPartyMembers;
     public AbilityHotkeyStruct abilityHotkeys;
     public List<string> locationBasedShardsFound;
     public int lastDimension;

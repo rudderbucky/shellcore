@@ -99,7 +99,7 @@ public class SkirmishMenu : GUIWindowScripts
         }
 
         if (currentOption.clearParty)
-            PartyManager.instance.ClearParty(false);
+            PartyManager.instance.ClearParty(false, false);
         Flag.FindEntityAndWarpPlayer(currentOption.sectorName, currentOption.entityID);
         //Debug.LogError(PlayerCore.Instance.currentHealth[0]);
         CloseUI();

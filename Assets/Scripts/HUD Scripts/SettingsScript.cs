@@ -1,34 +1,37 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class SettingsScript : MonoBehaviour
 {
-    public Dropdown uiScaleSlider;
-    public float[] uiScales = new float[] { 0.25f, 0.5f, 1f, 1.5f, 2f, 4f };
+    public (int, int)[] resolutions = new (int, int)[] { (1024, 768), (1366, 768), (1600, 900), (1920, 1080), (3840, 2160) };
+    public Dropdown windowResolution;
+    public Toggle windowedMode;
+    public Slider uiScaleSlider;
+    
     public Slider masterSoundSlider;
     public Slider musicSlider;
     public Slider soundSlider;
+    
     public Slider hudDamageIndicatorSlider;
     public Toggle HUDArrowScriptToggle;
     public Toggle BackgroundScriptToggle;
     public Toggle RectangleEffectScriptToggle;
     public Toggle overworldGridToggle;
     public Toggle coreGlowToggle;
-
-    public (int, int)[] resolutions = new (int, int)[] {(1024, 768), (1366, 768), (1600, 900), (1920, 1080), (3840, 2160)};
-    public Dropdown windowResolution;
-    public Toggle windowedMode;
     public Dropdown dialogueStyle;
     public Dropdown partShader;
+
+    public Toggle autoSaveEnabled;
     public Toggle taskManagerAutoSaveEnabled;
+    public Toggle autoBackupEnabled;
     public Toggle rdbServerBuilderCheckEnabled;
+    
     public Toggle simpleMouseMovementToggle;
     public Toggle allowAutocastSkillsToggle;
 
-    public Transform controlsSection;
-    //public InputField[] abilityKeybindFields;
-
     public GameObject keybindItemPrefab;
+    public List<GameObject> keybindList = new List<GameObject>();
     public RectTransform keybindBG;
     GameObject[] keybinds;
     public bool initialized = false;
@@ -36,7 +39,7 @@ public class SettingsScript : MonoBehaviour
     void Start()
     {
         // get playerpref values and configure toggles and sliders based on them
-        uiScaleSlider.value = findClosestScaleIndex(PlayerPrefs.GetFloat("UIScale", 1f));
+        uiScaleSlider.value = PlayerPrefs.GetFloat("NewUIScale", 1.0f);
         HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
         BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
         RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
@@ -48,7 +51,9 @@ public class SettingsScript : MonoBehaviour
         soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
         dialogueStyle.value = PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
         partShader.value = PlayerPrefs.GetInt("ShellPart_partShader", 0);
+        autoSaveEnabled.isOn = PlayerPrefs.GetString("SaveHandler_autoSaveEnabled", "True") == "True";
         taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
+        autoBackupEnabled.isOn = PlayerPrefs.GetString("SaveHandler_autoBackupEnabled", "True") == "True";
         simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
         allowAutocastSkillsToggle.isOn = PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True";
         rdbServerBuilderCheckEnabled.isOn = PlayerPrefs.GetString("ShipBuilder_rdbServerValidity", "False") == "True";
@@ -59,6 +64,7 @@ public class SettingsScript : MonoBehaviour
         //	abilityKeybindFields[i].text = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
         //}
 
+        keybindList.Clear();
         keybindBG.sizeDelta = new Vector2(0f, 64f * InputManager.keys.Count);
 
         for (int i = 0; i < InputManager.keys.Count; i++)
@@ -78,27 +84,12 @@ public class SettingsScript : MonoBehaviour
 
             var keyName = (KeyName)i;
             obj.GetComponent<Button>().onClick.AddListener(() => { InputManager.ChangeControl(keyName, key); });
+            keybindList.Add(obj);
         }
 
         windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
         windowResolution.value = PlayerPrefs.GetInt("Screen_defaultResolution", FindResolution() != -1 ? FindResolution() : 3);
         initialized = true;
-    }
-
-    int findClosestScaleIndex(float scale)
-    {
-        int bestIndex = 0;
-        float distance = float.MaxValue;
-        for (int i = 0; i < uiScales.Length; i++)
-        {
-            float newDistance = Mathf.Abs(scale - uiScales[i]);
-            if (newDistance < distance)
-            {
-                distance = newDistance;
-                bestIndex = i;
-            }
-        }
-        return bestIndex;
     }
 
     int FindResolution()
@@ -114,6 +105,18 @@ public class SettingsScript : MonoBehaviour
         return -1;
     }
 
+    public void ResetKeybinds()
+    {
+        InputManager.ResetControls();
+        for (int i = 0; i < keybindList.Count; i++)
+        {
+            var obj = keybindList[i];
+
+            Text key = obj.transform.Find("KeyBG").GetComponentInChildren<Text>();
+            key.text = InputManager.keys[(KeyName)i].overrideKey.ToString();
+        }
+    }
+
     public void SaveSettings()
     {
         UpdateVolumes();
@@ -122,6 +125,8 @@ public class SettingsScript : MonoBehaviour
         ChangeBackgroundScriptActive(BackgroundScriptToggle.isOn);
         ChangeRectangleEffectScriptActive(RectangleEffectScriptToggle.isOn);
         ChangeTaskManagerAutoSaveEnabled(taskManagerAutoSaveEnabled.isOn);
+        ChangeAutoSaveEnabled(autoSaveEnabled.isOn);
+        ChangeAutoBackupEnabled(autoBackupEnabled.isOn);
         ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
         ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
         ChangeShellPartPartShader(partShader.value);
@@ -194,12 +199,12 @@ public class SettingsScript : MonoBehaviour
 #endif
     }
 
-    public void ChangeUIScale(int index)
+    public void ChangeUIScale(float scale)
     {
-        float scale = uiScales[index];
-
-        PlayerPrefs.SetFloat("UIScale", scale);
+        PlayerPrefs.SetFloat("NewUIScale", scale);
         UIScalerScript.SetScale(scale);
+        var text = uiScaleSlider.GetComponentInChildren<Text>();
+        text.text = $"UI Scale: {(int)(scale * 100)}%";
     }
 
     public void ChangeHUDArrowScriptActive(bool val)
@@ -278,6 +283,18 @@ public class SettingsScript : MonoBehaviour
     {
         PlayerPrefs.SetString("TaskManager_autoSaveEnabled", val.ToString());
         TaskManager.autoSaveEnabled = val;
+    }
+
+    public void ChangeAutoSaveEnabled(bool val)
+    {
+        PlayerPrefs.SetString("SaveHandler_autoSaveEnabled", val.ToString());
+        SaveHandler.autoSaveEnabled = val;
+    }
+
+    public void ChangeAutoBackupEnabled(bool val)
+    {
+        PlayerPrefs.SetString("SaveHandler_autoBackupEnabled", val.ToString());
+        SaveHandler.backupEnabled = val;
     }
 
     public void ChangeSimpleMouseMovementEnabled(bool val)
