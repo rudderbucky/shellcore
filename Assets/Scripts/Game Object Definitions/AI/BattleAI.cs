@@ -51,6 +51,11 @@ public class BattleAI : AIModule
     List<AITarget> AITargets = new List<AITarget>();
     Dictionary<EnergyRock, Turret> harvesterTurrets = new Dictionary<EnergyRock, Turret>();
 
+    int _ownGroundStation = 0;
+    int _ownTank = 0;
+    int _enemyTank = 0;
+    int _enemyGroundStation = 0;
+
     public void OnEntityDeath()
     {
         collectTarget = null;
@@ -670,61 +675,97 @@ public class BattleAI : AIModule
     }
 
 
-    private void EvaluateMostNeededUnit(int numEnemyTanks, int numOwnTanks, int numEnemyGroundStations)
+    private void EvaluateMostNeededTank(int numEnemyTanks, int numOwnTanks, int numEnemyGroundStations, VendingBlueprint blueprint)
     {
-        if (numEnemyTanks > numOwnTanks)
+        List<AIEquivalent> availableTanks = new();
+        foreach (var item in blueprint.items)
         {
-            if ((shellcore.GetPower() >= 150 && Random.Range(0, 5) < 4) || Random.Range(0, 3) == 1)
+            // Enum values <= MissileTank are tanks
+            if (item.equivalentTo <= AIEquivalent.MissileTank 
+                && GetItemEnabled(item.equivalentTo)
+                && item.cost <= shellcore.GetPower())
             {
-                if (Random.Range(0, 2) == 0 && GetItemEnabled(AIEquivalent.BeamTank))
-                {
-                    mostNeeded = AIEquivalent.BeamTank;
-                }
-                else if (GetItemEnabled(AIEquivalent.LaserTank))
-                {
-                    mostNeeded = AIEquivalent.LaserTank;
-                }
-            }
-            else if ((shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1) && GetItemEnabled(AIEquivalent.BulletTank))
-            {
-                mostNeeded = AIEquivalent.BulletTank;
-            }
-            else if (GetItemEnabled(AIEquivalent.SpeederTank))
-            {
-                mostNeeded = AIEquivalent.SpeederTank;
+                availableTanks.Add(item.equivalentTo);
             }
         }
-        else if (2 * numEnemyGroundStations + numEnemyTanks > numOwnTanks)
+
+        bool manyEnemies = numEnemyTanks > numOwnTanks;
+        bool siegeRequired = (2 * numEnemyGroundStations + numEnemyTanks > numOwnTanks);
+
+        List<(AIEquivalent, float)> pool = new();
+        if (availableTanks.Contains(AIEquivalent.SpeederTank))
         {
-            if (shellcore.GetPower() >= 150 || Random.Range(0, 3) <= 1)
-            {
-                if (GetItemEnabled(AIEquivalent.BeamTank) && (!GetItemEnabled(AIEquivalent.SiegeTank) || Random.Range(0, 3) == 0))
-                {
-                    mostNeeded = AIEquivalent.BeamTank;
-                }
-                else if (GetItemEnabled(AIEquivalent.SiegeTank))
-                {
-                    mostNeeded = AIEquivalent.SiegeTank;
-                }
-            }
-            else if ((shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)  && GetItemEnabled(AIEquivalent.BulletTank))
-            {
-                mostNeeded = AIEquivalent.BulletTank;
-            }
-            else if (GetItemEnabled(AIEquivalent.SpeederTank))
-            {
-                mostNeeded = AIEquivalent.SpeederTank;
-            }
+            pool.Add((AIEquivalent.SpeederTank, 1f));
         }
-        else
+        if (availableTanks.Contains(AIEquivalent.BulletTank))
         {
-            if ((shellcore.GetPower() >= 200 && Random.Range(0, 4) < 3) || Random.Range(0, 2) == 1 && GetItemEnabled(AIEquivalent.MissileTank))
+            pool.Add((AIEquivalent.BulletTank, 1.5f));
+        }
+        if (availableTanks.Contains(AIEquivalent.BeamTank))
+        {
+            pool.Add((AIEquivalent.BeamTank, 1.5f));
+        }
+        if (availableTanks.Contains(AIEquivalent.LaserTank) && !manyEnemies && !siegeRequired)
+        {
+            pool.Add((AIEquivalent.LaserTank, 3f));
+        }
+        if (availableTanks.Contains(AIEquivalent.MissileTank) && !manyEnemies && !siegeRequired)
+        {
+            pool.Add((AIEquivalent.MissileTank, 6f));
+        }
+        if (availableTanks.Contains(AIEquivalent.SiegeTank) && siegeRequired)
+        {
+            pool.Add((AIEquivalent.SiegeTank, 10f));
+        }
+        if (pool.Count == 0 && availableTanks.Count > 0)
+        {
+            pool.AddRange(availableTanks.Select(t => (t, 1f)));
+        }
+
+        float totalWeight = pool.Sum(t => t.Item2);
+        float choice = Random.Range(0, totalWeight);
+        foreach (var (tank, weight) in pool)
+        {
+            if (choice < weight)
             {
-                mostNeeded = AIEquivalent.MissileTank;
+                mostNeeded = tank;
+                break;
             }
-            else if (GetItemEnabled(AIEquivalent.LaserTank))
+            choice -= weight;
+        }
+    }
+
+    void CountUnits()
+    {
+        _ownGroundStation = 0;
+        _ownTank = 0;
+        _enemyTank = 0;
+        _enemyGroundStation = 0;
+
+
+        foreach (var ent in AIData.entities)
+        {
+            if (FactionManager.IsAllied(ent.faction, craft.faction))
             {
-                mostNeeded = AIEquivalent.LaserTank;
+                if (ent.Terrain == Entity.TerrainType.Ground && ent.Category == Entity.EntityCategory.Station)
+                {
+                    _ownGroundStation += 1;
+                }
+                if (ent.Terrain == Entity.TerrainType.Ground && ent.Category == Entity.EntityCategory.Unit)
+                {
+                    _ownTank += 1;
+                }
+            }
+            else
+            {
+                if (ent.Terrain == Entity.TerrainType.Ground && ent.Category == Entity.EntityCategory.Station)
+                {
+                    _enemyGroundStation += 1;
+                }
+                if (ent.Terrain == Entity.TerrainType.Ground && ent.Category == Entity.EntityCategory.Unit)
+                {
+                    _enemyTank += 1;
+                }
             }
         }
     }
@@ -732,24 +773,41 @@ public class BattleAI : AIModule
     private void AttemptBuyUnits(int energyCount)
     {
         if ((energyCount > 0 && state != BattleState.ReinforceGround) || shellcore.unitsCommanding.Count >= shellcore.GetTotalCommandLimit()) return;
+        CountUnits();
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
             if ((AIData.vendors[i].GetPosition() - craft.transform.position).sqrMagnitude > 100f) continue;
             IVendor vendor = AIData.vendors[i] as IVendor;
+            var blueprint = vendor.GetVendingBlueprint();
+            if (blueprint == null)
+            {
+                continue;
+            }
 
             int itemIndex = -1;
             if (vendor is TowerBase towerBase && !towerBase.TowerActive())
             {
-                if (shellcore.GetRegens()[0] < shellcore.GetMaxHealth()[0] / 5 && shellcore.HealAuraStacks < 1 && shellcore.GetPower() >= 250)
+                int healIndex = blueprint.getItemIndex(AIEquivalent.HealerTower);
+                int energyIndex = blueprint.getItemIndex(AIEquivalent.EnergyTower);
+                int speedIndex = blueprint.getItemIndex(AIEquivalent.SpeedTower);
+
+                int healCost = healIndex != -1 ? blueprint.items[healIndex].cost : int.MaxValue;
+                int energyCost = energyIndex != -1 ? blueprint.items[energyIndex].cost : int.MaxValue;
+                int speedCost = speedIndex != -1 ? blueprint.items[speedIndex].cost : int.MaxValue;
+
+                if (shellcore.GetRegens()[0] < shellcore.GetMaxHealth()[0] / 5 && shellcore.HealAuraStacks < 1 && shellcore.GetPower() >= healCost)
                 {
-                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.HealerTower);
+                    itemIndex = healIndex;
                 }
-                else if (shellcore.GetRegens()[2] < shellcore.GetMaxHealth()[2] / 5 && shellcore.EnergyAuraStacks < 1 && shellcore.GetPower() >= 150)
+                else if (shellcore.GetRegens()[2] < shellcore.GetMaxHealth()[2] / 5 && shellcore.EnergyAuraStacks < 1 && shellcore.GetPower() >= energyCost)
                 {
-                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.EnergyTower);
+                    itemIndex = energyIndex;
                 }
-                else if (shellcore.GetPower() >= 200) itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.SpeedTower);
-                
+                else if (shellcore.GetPower() >= speedCost)
+                {
+                    itemIndex = speedIndex;
+                }
+
                 if (itemIndex != -1)
                 {
                     BuyFromVendor(itemIndex, vendor);
@@ -762,42 +820,15 @@ public class BattleAI : AIModule
                 continue;
             }
 
-            if (vendor.GetVendingBlueprint() == null)
-            {
-                continue;
-            }
-
-            int ownGroundStation = 0;
-            int ownTank = 0;
-            int enemyTank = 0;
-            int enemyGroundStation = 0;
-            for (int j = 0; j < AIData.entities.Count; j++)
-            {
-                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
-                {
-                    ownGroundStation += 1;
-                }
-                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Station)
-                {
-                    enemyGroundStation += 1;
-                }
-                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
-                {
-                    ownTank += 1;
-                }
-                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].Category == Entity.EntityCategory.Unit)
-                {
-                    enemyTank += 1;
-                }
-            }
             if (mostNeeded == null)
             {
-                EvaluateMostNeededUnit(enemyTank, ownTank, enemyGroundStation);
+                EvaluateMostNeededTank(_enemyTank, _ownTank, _enemyGroundStation, blueprint);
             }
 
             if (state == BattleState.Attack)
             {
-                if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo >= 6)
+                // Item eq enum index >= 6: blueprint contains turrets
+                if (blueprint.items[0].equivalentTo >= AIEquivalent.TorpedoTurret)
                 {
                     bool ownGroundExists = false;
                     for (int j = 0; j < AIData.entities.Count; j++)
@@ -808,31 +839,43 @@ public class BattleAI : AIModule
                             break;
                         }
                     }
-                    if (!ownGroundExists && IsEnemyGroundTargetPresent(true) && shellcore.GetPower() >= 150 && GetItemEnabled(AIEquivalent.TorpedoTurret))
+                    if (!ownGroundExists && IsEnemyGroundTargetPresent(true) && GetItemEnabled(AIEquivalent.TorpedoTurret))
                     {
-                        // Attack & enemy holds all ground
-                        itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.TorpedoTurret);
-                    }
-                    else
-                    {
-                        if (shellcore.GetPower() >= 200  && GetItemEnabled(AIEquivalent.MissileTurret))
+                        int torpedoTurretIndex = blueprint.getItemIndex(AIEquivalent.TorpedoTurret);
+                        int torpedoTurretCost = torpedoTurretIndex != -1 ? blueprint.items[torpedoTurretIndex].cost : int.MaxValue;
+                        if (shellcore.GetPower() >= torpedoTurretCost)
                         {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.MissileTurret);
+                            itemIndex = torpedoTurretIndex;
                         }
-                        else if (shellcore.GetPower() >= 100  && GetItemEnabled(AIEquivalent.DefenseTurret))
+                    }
+                    if (GetItemEnabled(AIEquivalent.MissileTurret) && itemIndex == -1)
+                    {
+                        int missileTurretIndex = blueprint.getItemIndex(AIEquivalent.MissileTurret);
+                        int missileTurretCost = missileTurretIndex != -1 ? blueprint.items[missileTurretIndex].cost : int.MaxValue;
+                        if (shellcore.GetPower() >= missileTurretCost)
                         {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.DefenseTurret);
+                            itemIndex = missileTurretIndex;
+                        }
+                    }
+                    if (GetItemEnabled(AIEquivalent.DefenseTurret) && itemIndex == -1)
+                    {
+                        int defenseTurretIndex = blueprint.getItemIndex(AIEquivalent.DefenseTurret);
+                        int defenseTurretCost = defenseTurretIndex != -1 ? blueprint.items[defenseTurretIndex].cost : int.MaxValue;
+                        if (shellcore.GetPower() >= defenseTurretCost)
+                        {
+                            itemIndex = defenseTurretIndex;
                         }
                     }
                 }
+                // Else, a tank has possibly been selected
                 else if (mostNeeded.HasValue)
                 {
-                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
+                    itemIndex = blueprint.getItemIndex(mostNeeded.Value);
                 }
             }
             if (state == BattleState.ReinforceGround && mostNeeded.HasValue)
             {
-                itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
+                itemIndex = blueprint.getItemIndex(mostNeeded.Value);
             }
             if (itemIndex == -1)
             {
@@ -850,11 +893,14 @@ public class BattleAI : AIModule
 
     private int EvaluateItemIndexIfNoPriority(IVendor vendor)
     {
+        var blueprint = vendor.GetVendingBlueprint();
         int itemIndex = -1;
+        int harvesterTurretIndex = blueprint.getItemIndex(AIEquivalent.HarvesterTurret);
+        int harvesterTurretCost = harvesterTurretIndex != -1 ? blueprint.items[harvesterTurretIndex].cost : int.MaxValue;
         if (harvesterTurrets.Count < Mathf.Min(5, AIData.energyRocks.Count)
-                    && shellcore.GetPower() >= 100  && GetItemEnabled(AIEquivalent.HarvesterTurret))
+                    && shellcore.GetPower() >= harvesterTurretCost  && GetItemEnabled(AIEquivalent.HarvesterTurret))
         {
-            itemIndex = vendor.GetVendingBlueprint().getItemIndex(AIEquivalent.HarvesterTurret);
+            itemIndex = harvesterTurretIndex;
             foreach (var turret in harvesterTurrets.Values)
             {
                 if (turret && Vector3.SqrMagnitude(turret.transform.position - shellcore.transform.position) <= 200)
@@ -865,19 +911,19 @@ public class BattleAI : AIModule
         }
         else
         {
-            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+            for (int j = 0; j < blueprint.items.Count; j++)
             {
-                if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType != EntityBlueprint.IntendedType.Tank) // more expensive => better (TODO: choose based on the situation)
+                if (itemIndex != -1 && blueprint.items[j].cost <= blueprint.items[itemIndex].cost && blueprint.items[0].entityBlueprint.intendedType != EntityBlueprint.IntendedType.Tank) // more expensive => better (TODO: choose based on the situation)
                 {
-                    if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                    if (itemIndex != -1 && blueprint.items[j].cost <= blueprint.items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
                     {
                         continue;
                     }
 
-                    if (vendor.GetVendingBlueprint().items[j].equivalentTo != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
+                    if (blueprint.items[j].equivalentTo != mostNeeded && blueprint.items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
                         continue;
 
-                    if (!GetItemEnabled(vendor.GetVendingBlueprint().items[j].equivalentTo))
+                    if (!GetItemEnabled(blueprint.items[j].equivalentTo))
                         continue;
                         
                     itemIndex = j;
@@ -919,12 +965,13 @@ public class BattleAI : AIModule
     {
         UpdateWaitingDraggable();
 
-        var turretIsHarvester = shellcore.GetTractorTarget() &&
-                                shellcore.GetTractorTarget().GetComponent<Turret>()
-                                && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
+        var tractorTarget = shellcore.GetTractorTarget();
+        var turretIsHarvester = tractorTarget &&
+                                tractorTarget.GetComponent<Turret>()
+                                && tractorTarget.GetComponent<Turret>().entityName == "Harvester Turret";
 
         AttemptMoveTank();
-        var hasTank = shellcore.GetTractorTarget() && shellcore.GetTractorTarget().GetComponent<Tank>();
+        var hasTank = tractorTarget && tractorTarget.GetComponent<Tank>();
         if (!hasTank && craft && !craft.GetIsDead())
         switch (state)
         {

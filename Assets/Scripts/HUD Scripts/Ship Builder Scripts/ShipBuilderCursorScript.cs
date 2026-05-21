@@ -352,22 +352,20 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     private void UpdateCompact()
     {
+        RectTransform container = builder.GetComponent<RectTransform>();
         if (compactMode)
         {
-            inventorySection.anchoredPosition = new Vector2(-465.15F + 125, 0);
-            statsSection.anchoredPosition = new Vector2(-125 + 6.35F, 0);
             grid2mask.sizeDelta = new Vector2(750, 1250);
             background.sizeDelta = new Vector2(1270 - 250, 670);
             if (droneWorkshopPhaseHider) droneWorkshopPhaseHider.sizeDelta = new Vector2(940 - 250, 635);
         }
         else
         {
-            inventorySection.anchoredPosition = new Vector2(-465.15F, 0);
-            statsSection.anchoredPosition = new Vector2(6.35F, 0);
             grid2mask.sizeDelta = new Vector2(1250, 1250);
             background.sizeDelta = new Vector2(1270, 670);
             if (droneWorkshopPhaseHider) droneWorkshopPhaseHider.sizeDelta = new Vector2(940, 635);
         }
+        container.sizeDelta = background.sizeDelta;
     }
 
     public enum SymmetryMode
@@ -521,6 +519,13 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
         else if (Input.GetMouseButtonDown(0))
         {
+            // don't allow grabbing parts covered by inventory or stats sections
+            if (RectTransformUtility.RectangleContainsScreenPoint(inventorySection, Input.mousePosition) ||
+                RectTransformUtility.RectangleContainsScreenPoint(statsSection, Input.mousePosition))
+            {
+                return;
+            }
+
             grid2lastPos = grid.anchoredPosition;
             grid2mousePos = Input.mousePosition;
             lastPart = null;
