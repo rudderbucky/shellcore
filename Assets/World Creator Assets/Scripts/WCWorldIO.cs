@@ -446,7 +446,7 @@ public class WCWorldIO : GUIWindowScripts
         active = true;
         gameObject.SetActive(true);
         window.SetActive(true);
-        bool writing = mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON || mode == IOMode.WriteCanvas;
+        bool writing = mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON || mode == IOMode.WriteVendingBlueprintJSON || mode == IOMode.WriteCanvas;
         DestroyAllButtons();
         this.mode = mode;
         string[] directories = null;

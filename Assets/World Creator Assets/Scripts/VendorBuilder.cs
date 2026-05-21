@@ -78,6 +78,7 @@ public class VendorBuilder : GUIWindowScripts
             return;
 
         Destroy(selectedItemButton.gameObject);
+        currentVendorBlueprint.items.Remove(currentVendingItem);
         selectedItemButton = null;
         currentVendingItem = null;
     }
