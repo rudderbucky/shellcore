@@ -146,10 +146,11 @@ public class AIAbilityController
         }
 
         var target = craft.GetTargetingSystem().GetTarget();
+        var distanceToTarget = target == null ? 10000f : ((Vector2)target.transform.position - (Vector2)craft.transform.position).sqrMagnitude;
         if (target != null && target)
         {
             Entity targetEntity = target.GetComponent<Entity>();
-            if (targetEntity != null && targetEntity && !targetEntity.GetIsDead())
+            if (targetEntity != null && targetEntity && !targetEntity.GetIsDead() && distanceToTarget < 300f)
             {
                 var damageBoosts = GetAbilities(25, 33, 41, 49); // damage boost, disrupt, unload
                 foreach (var damageBoost in damageBoosts)
@@ -157,9 +158,8 @@ public class AIAbilityController
                     damageBoost.Activate();
                 }
 
-                // TODO: use only if the enemy is close enough!
                 var pinDown = GetAbilities(27); // pin down
-                if (Time.time > nextPin)
+                if (Time.time > nextPin && distanceToTarget < 225f)
                 {
                     foreach (var pin in pinDown)
                     {
@@ -183,6 +183,19 @@ public class AIAbilityController
                 {
                     ability.Activate();
                     if (ability.GetActiveTimeRemaining() > 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            // invert tractor is generally useless when you're going after a stationary target, only activate if target can move at all
+            if (target != null && target && target.GetComponent<Craft>() != null && !craft.isTractorSwitched && distanceToTarget < craft.GetComponent<TractorBeam>().maxRangeSquared)
+            {
+                var inverts = GetAbilities(35); // invert tractor
+                foreach (var invtra in inverts)
+                {
+                    invtra.Activate();
+                    if (craft.isTractorSwitched)
                     {
                         break;
                     }

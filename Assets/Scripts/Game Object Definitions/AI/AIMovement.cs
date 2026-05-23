@@ -31,7 +31,7 @@ public class AIMovement
     }
 
     bool inRange = false;
-    public float DistanceToTarget { get; private set; }
+    public float DistanceToTarget = 10000f;
 
     public bool targetIsInRange()
     {

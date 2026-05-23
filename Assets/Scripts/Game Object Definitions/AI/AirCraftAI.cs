@@ -327,6 +327,13 @@ public class AirCraftAI : MonoBehaviour
                             {
                                 timer += Time.deltaTime;
                             }
+                            if (craft.isTractorSwitched && movement.DistanceToTarget < craft.GetComponent<TractorBeam>().maxRangeSquared)
+                            {
+                                if (craft.GetComponent<TractorBeam>().GetTractorTarget() == null && aggroTarget.GetComponent<Draggable>() != null)
+                                {
+                                    craft.GetComponent<TractorBeam>().SetTractorTarget(aggroTarget.GetComponent<Draggable>());
+                                }
+                            }
 
                             float dist = movement.DistanceToTarget;
                             if (dist > 1000f)
