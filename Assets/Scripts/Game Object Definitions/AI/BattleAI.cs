@@ -289,7 +289,7 @@ public class BattleAI : AIModule
     private void AttackBattleState()
     {
         bool moveToTank = false;
-        if (shellcore.GetTractorTarget() == null)
+        if (shellcore.GetTractorTarget() == null && !shellcore.isTractorSwitched)
         {
             moveToTank = AttemptFindTank();
             if (attackTurret == null)
@@ -507,7 +507,7 @@ public class BattleAI : AIModule
                 return;
             }
         }
-        else if (attackTurret && shellcore.GetTractorTarget() != attackTurret.GetComponent<Draggable>())
+        else if (attackTurret && shellcore.GetTractorTarget() != attackTurret.GetComponent<Draggable>() && !shellcore.isTractorSwitched)
         {
             ai.movement.SetMoveTarget(attackTurret.transform.position, 100f);
             if (ai.movement.targetIsInRange())
