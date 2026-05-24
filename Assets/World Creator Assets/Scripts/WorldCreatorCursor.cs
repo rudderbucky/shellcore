@@ -1042,7 +1042,7 @@ public class WorldCreatorCursor : MonoBehaviour
         return Vector2.zero;
     }
 
-    bool CheckForSectorOverlap(LineRenderer checkRenderer, int dimension)
+    public bool CheckForSectorOverlap(LineRenderer checkRenderer, int dimension)
     {
         foreach (SectorWCWrapper sector in sectors)
         {

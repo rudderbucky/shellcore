@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class DevConsoleScript : MonoBehaviour
 {
@@ -140,7 +141,9 @@ public class DevConsoleScript : MonoBehaviour
         inputField.ActivateInputField();
 
         bool doNotAttemptBackup = false;
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")//&& MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "SampleScene")//&& MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             if (command.Equals("poor", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -169,7 +172,7 @@ public class DevConsoleScript : MonoBehaviour
             }
             else if (command.StartsWith("network ", StringComparison.CurrentCultureIgnoreCase))
             {
-                switch(command.Substring(8).Trim())
+                switch (command.Substring(8).Trim())
                 {
                     case "client":
                         MasterNetworkAdapter.StartClient();
@@ -316,7 +319,7 @@ public class DevConsoleScript : MonoBehaviour
                 {
                     textBox.text += "\nUsage: addpart a=<abilityID> t=<tier> c=<count> s=<secondaryData> p=<partID> sh=<true/false>";
                 }
-                foreach(var split in splits)
+                foreach (var split in splits)
                 {
                     if (split.StartsWith("a="))
                         int.TryParse(split.Split("=")[1], out ability);
@@ -334,7 +337,7 @@ public class DevConsoleScript : MonoBehaviour
                     }
 
                 }
-                     
+
                 info.abilityID = ability;
                 info.tier = tier;
                 if (string.IsNullOrEmpty(info.partID)) return;
@@ -386,7 +389,7 @@ public class DevConsoleScript : MonoBehaviour
                 string entityID = command.Substring(5).Trim();
                 foreach (var entity in AIData.entities)
                 {
-                    if (entity.ID == entityID) 
+                    if (entity.ID == entityID)
                     {
                         entity.TakeCoreDamage(9999999);
                         textBox.text += $"\n<color=lime>Killing entity with ID {entityID}...</color>";
@@ -567,7 +570,7 @@ public class DevConsoleScript : MonoBehaviour
             }
 #endif
         }
-        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
+        else if (sceneName == "MainMenu")
         {
             if (command.StartsWith("Load ", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -583,6 +586,23 @@ public class DevConsoleScript : MonoBehaviour
                 else
                 {
                     textBox.text += "\n<color=orange>Invalid path.</color>";
+                }
+            }
+        }
+        else if (sceneName == "WorldCreator")
+        {
+            
+            if (command.Equals("random size", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var spd = FindAnyObjectByType<SectorPropertyDisplay>();
+                if (spd && spd.isActiveAndEnabled)
+                {
+                    spd.RandomSize();
+                    textBox.text += "\n<color=lime>Random size generated.</color>";
+                }
+                else
+                {
+                    textBox.text += "\n<color=orange>Select a sector first!</color>";
                 }
             }
         }

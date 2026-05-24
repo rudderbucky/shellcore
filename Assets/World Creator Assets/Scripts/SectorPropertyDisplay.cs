@@ -524,4 +524,46 @@ public class SectorPropertyDisplay : MonoBehaviour
             currentSector.gasVortices = gasVortices;
 
     }
+
+    public void RandomSize()
+    {
+        if (opening || editingDefaults)
+        {
+            return;
+        }
+
+        Vector2Int topLeft = new Vector2Int(currentSector.bounds.x, currentSector.bounds.y);
+
+        for (int i = 0; i < 500; i++) // Try to find a non-overlapping random size, but avoid infinite loops
+        {
+            int min = 5;
+            int max = 15;
+            float tx = Random.value;
+            tx = tx * tx;
+            float ty = Random.value;
+            ty = ty * ty;
+            int w = Mathf.RoundToInt(Mathf.Lerp(min, max, tx));
+            int h = Mathf.RoundToInt(Mathf.Lerp(min, max, ty));
+            int tileSize = (int)WorldCreatorCursor.instance.tileSize;
+            w *= tileSize;
+            h *= tileSize;
+            currentSector.bounds = new IntRect(topLeft.x, topLeft.y, w, h);
+
+            var wrapper = WorldCreatorCursor.instance.sectors.Find((s) => s.sector == currentSector);
+            if (wrapper != null)
+            {
+                IntRect b = currentSector.bounds;
+                wrapper.renderer.SetPosition(0, new Vector3(b.x, b.y));
+                wrapper.renderer.SetPosition(1, new Vector3(b.x + b.w, b.y));
+                wrapper.renderer.SetPosition(2, new Vector3(b.x + b.w, b.y - b.h));
+                wrapper.renderer.SetPosition(3, new Vector3(b.x, b.y - b.h));
+            }
+
+            bool overlap = WorldCreatorCursor.instance.CheckForSectorOverlap(wrapper.renderer, currentSector.dimension);
+
+            if (!overlap)
+                break;
+        }
+
+    }
 }
