@@ -339,7 +339,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         lastPart.info.mirrored = !lastPart.info.mirrored;
         if (symmetryLastPart)
         {
-            symmetryLastPart.info.mirrored = !lastPart.info.mirrored;
+            symmetryLastPart.info.mirrored = !symmetryLastPart.info.mirrored;
         }
 
         flipped = true;
