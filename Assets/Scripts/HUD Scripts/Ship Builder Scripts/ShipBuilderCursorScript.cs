@@ -638,39 +638,37 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         part.rotation %= 360;
         symmetryPart.rotation %= 360;
         var partSymmetry = GetPartSymmetry(part.partID);
+        var diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
 
+        // Note: There are cases where the parts are symmetrically aligned for both same-mirror and opposite-mirror pairs
         switch (partSymmetry)
         {
             case PartSymmetry.MirrorXAxis:
-                // There are cases where the parts are symmetrically aligned for both same-mirror and opposite-mirror pairs
-                var diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
                 if (symmetryMode == SymmetryMode.Y)
                 {
                     if (part.mirrored == symmetryPart.mirrored)
                         return diff % 360 == 0;
-                    else
-                        return diff % 360 == 180;
+
+                    return diff % 360 == 180;
                 }
 
                 if (part.mirrored != symmetryPart.mirrored)
-                {
                     return diff % 360 == 0;
-                }
 
                 return diff % 360 == 180;
             case PartSymmetry.MirrorYAxis:
                 if (symmetryMode == SymmetryMode.X)
-                {
-                    return part.mirrored != symmetryPart.mirrored && ((part.rotation + symmetryPart.rotation) % 360 == 0);
-                }
+                    return part.mirrored != symmetryPart.mirrored && diff % 360 == 0;
 
-                diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
                 return diff % 360 == 180;
             case PartSymmetry.MirrorBothAxes:
-                return (part.rotation + symmetryPart.rotation) % 360 == 0;
+                return diff % 360 == 0 || diff % 360 == 180;
             case PartSymmetry.None:
             default:
-                return part.mirrored != symmetryPart.mirrored && ((part.rotation + symmetryPart.rotation) % 360 == 0);
+                if (symmetryMode == SymmetryMode.Y)
+                    return part.mirrored != symmetryPart.mirrored && diff % 360 == 180;
+
+                return part.mirrored != symmetryPart.mirrored && diff % 360 == 0;
         }
     }
 
