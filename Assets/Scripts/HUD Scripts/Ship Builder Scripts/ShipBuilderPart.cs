@@ -104,11 +104,13 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
                     if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
                     {
                         onAxis = Mathf.Abs(rectTransform.anchoredPosition.y) < ShipBuilderCursorScript.stepSize;
+                        onAxis = Mathf.Abs(rectTransform.anchoredPosition.x) < ShipBuilderCursorScript.stepSize;
                     }
 
-                    if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
+                    if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.Y)  // need some fixing
                     {
                         onAxis = Mathf.Abs(rectTransform.anchoredPosition.x) < ShipBuilderCursorScript.stepSize;
+                        onAxis = Mathf.Abs(rectTransform.anchoredPosition.y) < ShipBuilderCursorScript.stepSize;
                     }
 
                     if ((!symmetryPart || (symmetryPart.rectTransform.anchoredPosition - symVec).sqrMagnitude >
