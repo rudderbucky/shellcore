@@ -635,6 +635,8 @@ public class WCWorldIO : GUIWindowScripts
                     {
                         File.Delete(name);
                         Destroy(button.gameObject);
+                        if (mode == IOMode.ReadCanvas || mode == IOMode.WriteCanvas) // Not the best fix, look into this later
+                            Hide();
                     }
                     return;
                 }
