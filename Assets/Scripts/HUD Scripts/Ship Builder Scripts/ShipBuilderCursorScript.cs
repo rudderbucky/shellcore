@@ -603,33 +603,10 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         return (vec1 - vec2).sqrMagnitude <= ShipBuilderCursorScript.stepSize;
     }
 
-    private enum PartSymmetry
-    {
-        None,
-        MirrorXAxis,
-        MirrorYAxis,
-        MirrorBothAxes
-    }
-
-    // Hardcodes axial symmetry for specific part IDs
+    // Check axial symmetry using part ID
     private static PartSymmetry GetPartSymmetry(string partID)
     {
-        switch (partID)
-        {
-            case "SmallSide1":
-            case "SmallSide3":
-            case "SmallSide4":
-            case "MediumSide2":
-                return PartSymmetry.MirrorXAxis;
-            case "MediumExtra1":
-            case "MediumCenter4":
-                return PartSymmetry.MirrorYAxis;
-            case "SmallSide2":
-                return PartSymmetry.MirrorBothAxes;
-            default:
-                if (partID.Contains("Center")) return PartSymmetry.MirrorYAxis;
-                return PartSymmetry.None;
-        }
+        return ResourceManager.GetAsset<PartBlueprint>(partID).symmetry;
     }
 
     // Checks the orientation of the part.
