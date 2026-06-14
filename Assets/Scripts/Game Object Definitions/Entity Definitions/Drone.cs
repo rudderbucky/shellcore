@@ -13,7 +13,7 @@ public class Drone : AirCraft, IOwnable
     private float time;
     private float initialzangle;
     public DroneType type;
-    public Path path;
+    public EntityPath path;
     
     private float aiReenableTime;
 
@@ -39,8 +39,8 @@ public class Drone : AirCraft, IOwnable
 
     public void GeneratePath()
     {
-        var path = ScriptableObject.CreateInstance<Path>();
-        path.waypoints = new List<Path.Node>();
+        var path = new EntityPath();
+        path.waypoints = new List<EntityPath.Node>();
 
         List<Vector2> waypoints = new();
 
@@ -76,7 +76,7 @@ public class Drone : AirCraft, IOwnable
         // Construct the path
         for (int i = 0; i < waypoints.Count; i++)
         {
-            var node = new Path.Node();
+            var node = new EntityPath.Node();
             node.position = waypoints[i];
             node.ID = i;
             node.children = new List<int>();

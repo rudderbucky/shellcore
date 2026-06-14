@@ -228,13 +228,13 @@ public class ResourceManager : MonoBehaviour
         }
 
         //load paths
-        for (int i = 0; i < paths.Count; i++)
+        /*for (int i = 0; i < paths.Count; i++)
         {
             string pathData = File.ReadAllText(paths[i].Item2);
             var pathBlueprint = ScriptableObject.CreateInstance<Path>();
             JsonUtility.FromJsonOverwrite(pathData, pathBlueprint);
             resources[paths[i].Item1] = pathBlueprint;
-        }
+        }*/
 
         //load factions
         for (int i = 0; i < factions.Count; i++)
