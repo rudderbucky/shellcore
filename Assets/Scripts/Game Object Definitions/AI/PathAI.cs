@@ -10,7 +10,7 @@ public class PathAI : AIModule
         public int index;
     }
 
-    private Path path;
+    private NewPath path;
     public UnityAction OnPathEnd;
     int waypointID = 0;
     int waypointIndex = 0;
@@ -18,12 +18,12 @@ public class PathAI : AIModule
     // if this is set to true the AI restarts on path end
     bool patrolling = false;
 
-    public PathAI(Path path = null)
+    public PathAI(NewPath path = null)
     {
         this.path = path;
     }
 
-    public void setPath(Path path, bool patrolling = false)
+    public void setPath(NewPath path, bool patrolling = false)
     {
         this.path = path;
         this.patrolling = patrolling;
@@ -45,7 +45,7 @@ public class PathAI : AIModule
     {
         waypointID = -1;
         initialized = true;
-        if (path)
+        if (path != null)
         {
             StartPath();
         }
@@ -152,11 +152,11 @@ public class PathAI : AIModule
             index++;
         }
 
-        path = ScriptableObject.CreateInstance<Path>();
-        path.waypoints = new List<Path.Node>();
+        path = new NewPath();
+        path.waypoints = new List<NewPath.Node>();
         for (int i = 0; i < nodes.Count; i++)
         {
-            var node = new Path.Node();
+            var node = new NewPath.Node();
             node.ID = nodes.Count - i - 1;
             node.position = nodes[i].construct.spawnPoint;
             List<int> children = new List<int>();

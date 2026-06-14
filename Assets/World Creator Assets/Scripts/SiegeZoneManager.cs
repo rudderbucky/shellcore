@@ -121,9 +121,9 @@ public class SiegeZoneManager : MonoBehaviour
                     var sectorEntity = SectorManager.instance.SpawnEntity(SectorManager.GetBlueprintOfLevelEntity(ent.entity), ent.entity);
                     if (sectorEntity as Drone || sectorEntity as ShellCore)
                     {
-                        Path path = ScriptableObject.CreateInstance<Path>();
-                        path.waypoints = new List<Path.Node>();
-                        Path.Node node = new Path.Node();
+                        NewPath path = new NewPath();
+                        path.waypoints = new List<NewPath.Node>();
+                        NewPath.Node node = new NewPath.Node();
                         var currentTargets = targets.FindAll(targ => targ && !FactionManager.IsAllied(sectorEntity.faction.factionID, targ.faction.factionID));
                         if (currentTargets.Count > 0)
                         {

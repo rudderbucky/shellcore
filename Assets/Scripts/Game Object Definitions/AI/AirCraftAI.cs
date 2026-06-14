@@ -182,13 +182,13 @@ public class AirCraftAI : MonoBehaviour
         }
 
 
-        Path path = ScriptableObject.CreateInstance<Path>();
-        path.waypoints = new List<Path.Node>();
+        NewPath path = new NewPath();
+        path.waypoints = new List<NewPath.Node>();
 
         craft.isPathing = true;
         for (int i = 0; i < data.waypoints.Count; i++)
         {
-            path.waypoints.Add(new Path.Node()
+            path.waypoints.Add(new NewPath.Node()
             {
                 ID = data.waypoints[i].ID,
                 position = data.waypoints[i].position,
@@ -215,7 +215,7 @@ public class AirCraftAI : MonoBehaviour
         (module as PathAI).OnPathEnd = OnPathEnd;
     }
 
-    public void setPath(Path path)
+    public void setPath(NewPath path)
     {
         setMode(AIMode.Path);
         (module as PathAI).setPath(path);
