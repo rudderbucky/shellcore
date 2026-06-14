@@ -4,8 +4,8 @@ using UnityEngine;
 public class WCPathCreator : MonoBehaviour
 {
     bool dragging = false;
-    NewPath.Node selectedNode = null;
-    List<NewPath.Node> pathNodes;
+    EntityPath.Node selectedNode = null;
+    List<EntityPath.Node> pathNodes;
     const float maxClickDistance = 0.5f;
 
     MeshFilter mf;
@@ -32,7 +32,7 @@ public class WCPathCreator : MonoBehaviour
 
     public void Clear()
     {
-        pathNodes = new List<NewPath.Node>();
+        pathNodes = new List<EntityPath.Node>();
         UpdateMesh();
     }
 
@@ -41,7 +41,7 @@ public class WCPathCreator : MonoBehaviour
         int closest = GetClosestNodeIndex(point);
 
         int ID = pathNodes.Count == 0 ? 0 : IDCount++;
-        pathNodes.Add(new NewPath.Node()
+        pathNodes.Add(new EntityPath.Node()
         {
             ID = ID,
             position = point,
@@ -65,7 +65,7 @@ public class WCPathCreator : MonoBehaviour
 
         if (pathNodes == null)
         {
-            pathNodes = new List<NewPath.Node>();
+            pathNodes = new List<EntityPath.Node>();
         }
 
         if (Input.GetMouseButton(0))
@@ -111,8 +111,8 @@ public class WCPathCreator : MonoBehaviour
 
                 if (d < maxClickDistance * maxClickDistance && dragging)
                 {
-                    NewPath.Node from = selectedNode;
-                    NewPath.Node to = pathNodes[closest];
+                    EntityPath.Node from = selectedNode;
+                    EntityPath.Node to = pathNodes[closest];
 
                     for (int i = 0; i < pathNodes.Count; i++)
                     {
@@ -240,7 +240,7 @@ public class WCPathCreator : MonoBehaviour
 
         while (openList.Count > 0)
         {
-            NewPath.Node current = pathNodes[GetNodeIndex(openList[0])];
+            EntityPath.Node current = pathNodes[GetNodeIndex(openList[0])];
 
             for (int i = 0; i < current.children.Count; i++)
             {
@@ -397,7 +397,7 @@ public class WCPathCreator : MonoBehaviour
                     IDCount = data.waypoints[i].ID + 1;
                 }
 
-                pathNodes.Add(new NewPath.Node()
+                pathNodes.Add(new EntityPath.Node()
                 {
                     ID = data.waypoints[i].ID,
                     position = data.waypoints[i].position,

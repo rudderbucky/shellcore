@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class NewPath
+public class EntityPath
 {
     [System.Serializable]
     public class Node
