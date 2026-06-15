@@ -639,7 +639,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
                 return diff % 360 == 180;
             case PartSymmetry.MirrorBothAxes:
-                return diff % 360 == 0 || diff % 360 == 180;
+                return diff % 180 == 0;
             case PartSymmetry.None:
             default:
                 if (symmetryMode == SymmetryMode.Y)
