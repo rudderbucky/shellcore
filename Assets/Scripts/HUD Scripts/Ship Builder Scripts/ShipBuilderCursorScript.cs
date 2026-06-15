@@ -339,7 +339,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         lastPart.info.mirrored = !lastPart.info.mirrored;
         if (symmetryLastPart)
         {
-            symmetryLastPart.info.mirrored = !lastPart.info.mirrored;
+            symmetryLastPart.info.mirrored = !symmetryLastPart.info.mirrored;
         }
 
         flipped = true;
@@ -583,9 +583,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                     continue;
                 }
             }
-            if ((!symmetryPart || (parts[i].info.partID == symmetryPart.info.partID &&
-                (symmetryMode != SymmetryMode.X
-                    || CheckOrientationCompatibility(parts[i].info, symmetryPart.info)))))
+            
+            if (!symmetryPart || (parts[i].info.partID == symmetryPart.info.partID)
+                && (symmetryMode == SymmetryMode.Off || CheckOrientationCompatibility(parts[i].info, symmetryPart.info)))
             {
                 transform.position = origPos;
                 return parts[i];
@@ -603,57 +603,49 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         return (vec1 - vec2).sqrMagnitude <= ShipBuilderCursorScript.stepSize;
     }
 
-    private enum PartSymmetry
-    {
-        None,
-        MirrorXAxis,
-        MirrorYAxis,
-        MirrorBothAxes
-    }
-
-    // Hardcodes axial symmetry for specific part IDs
+    // Check axial symmetry using part ID
     private static PartSymmetry GetPartSymmetry(string partID)
     {
-        switch (partID)
-        {
-            case "SmallSide1":
-            case "SmallSide3":
-            case "SmallSide4":
-            case "MediumSide2":
-                return PartSymmetry.MirrorXAxis;
-            case "MediumExtra1":
-            case "MediumCenter4":
-                return PartSymmetry.MirrorYAxis;
-            case "SmallSide2":
-                return PartSymmetry.MirrorBothAxes;
-            default:
-                if (partID.Contains("Center")) return PartSymmetry.MirrorYAxis;
-                return PartSymmetry.None;
-        }
+        return ResourceManager.GetAsset<PartBlueprint>(partID).symmetry;
     }
 
-    // Currently only does something for X-axis checks.
+    // Checks the orientation of the part.
     private bool CheckOrientationCompatibility(EntityBlueprint.PartInfo part, EntityBlueprint.PartInfo symmetryPart)
     {
-        var partID = part.partID;
         part.rotation %= 360;
         symmetryPart.rotation %= 360;
-        switch (GetPartSymmetry(part.partID))
+        var partSymmetry = GetPartSymmetry(part.partID);
+        var diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
+
+        // Note: There are cases where the parts are symmetrically aligned for both same-mirror and opposite-mirror pairs
+        switch (partSymmetry)
         {
-            case PartSymmetry.MirrorYAxis:
-            case PartSymmetry.MirrorBothAxes:
-                return (part.rotation + symmetryPart.rotation) % 360 == 0;
             case PartSymmetry.MirrorXAxis:
-                // There are cases where the parts are symmetrically aligned for both same-mirror and opposite-mirror pairs
-                var diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
-                if (part.mirrored != symmetryPart.mirrored)
+                if (symmetryMode == SymmetryMode.Y)
                 {
-                    return diff % 360 == 0;
+                    if (part.mirrored == symmetryPart.mirrored)
+                        return diff % 360 == 0;
+
+                    return diff % 360 == 180;
                 }
+
+                if (part.mirrored != symmetryPart.mirrored)
+                    return diff % 360 == 0;
+
                 return diff % 360 == 180;
+            case PartSymmetry.MirrorYAxis:
+                if (symmetryMode == SymmetryMode.X)
+                    return part.mirrored != symmetryPart.mirrored && diff % 360 == 0;
+
+                return diff % 360 == 180;
+            case PartSymmetry.MirrorBothAxes:
+                return diff % 180 == 0;
             case PartSymmetry.None:
             default:
-                return part.mirrored != symmetryPart.mirrored && ((part.rotation + symmetryPart.rotation) % 360 == 0);
+                if (symmetryMode == SymmetryMode.Y)
+                    return part.mirrored != symmetryPart.mirrored && diff % 360 == 180;
+
+                return part.mirrored != symmetryPart.mirrored && diff % 360 == 0;
         }
     }
 

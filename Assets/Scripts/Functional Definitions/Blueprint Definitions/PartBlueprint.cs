@@ -8,4 +8,13 @@ public class PartBlueprint : ScriptableObject
     public float mass;
     public int size;
     public bool detachible = true;
+    public PartSymmetry symmetry;
+}
+
+public enum PartSymmetry
+{
+    None,
+    MirrorXAxis,        // shape mirrored horizontally (up to down)
+    MirrorYAxis,        // shape mirrored vertically (left to right)
+    MirrorBothAxes      // all four corners are mirrored (180 degrees)
 }

@@ -115,11 +115,16 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         ShipBuilderPart symmetryPart = count >= minCount && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
         if (symmetryPart)
         {
-            //if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
-            symmetryPart.info.mirrored = !builderPart.info.mirrored;
-            if (cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.Y)
+
+            switch (cursor.symmetryMode)
             {
-                symmetryPart.info.rotation = 180;
+                case ShipBuilderCursorScript.SymmetryMode.X:
+                    symmetryPart.info.mirrored = !builderPart.info.mirrored;
+                    break;
+                case ShipBuilderCursorScript.SymmetryMode.Y:
+                    symmetryPart.info.rotation = 180;
+                    symmetryPart.info.mirrored = !builderPart.info.mirrored;
+                    break;
             }
         }
 
