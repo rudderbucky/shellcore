@@ -60,3 +60,10 @@ public class VendingBlueprint : ScriptableObject
         return -1;
     }
 }
+
+[System.Serializable]
+public class VendingBlueprintData
+{
+    public int range;
+    public List<VendingBlueprint.Item> items;
+}

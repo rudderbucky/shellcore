@@ -128,12 +128,12 @@ public class ItemPropertyDisplay : MonoBehaviour
         AddCustomFactionsToDropdown(factionDropdown);
         factionDropdown.value = item.faction;
         jsonField.text = currentItem.shellcoreJSON;
-        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other || item.type == ItemType.DecorationWithMetadata);
+        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Entities || item.type == ItemType.MetaDataObjects);
         rotationButtons.SetActive(item.type == ItemType.Platform);
-        factionDropdown.transform.parent.gameObject.SetActive(item.type != ItemType.Flag && item.type != ItemType.Platform && item.type != ItemType.DecorationWithMetadata);
+        factionDropdown.transform.parent.gameObject.SetActive(item.type == ItemType.Entities || item.type == ItemType.Decorations);
         idField.text = currentItem.ID;
         nameField.text = currentItem.name;
-        pathButton.SetActive(item.type == ItemType.Other);
+        pathButton.SetActive(item.type == ItemType.Entities);
     }
 
     public void UpdateFaction()

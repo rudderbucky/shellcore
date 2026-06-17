@@ -32,13 +32,15 @@ public class WorldCreatorCursor : MonoBehaviour
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
     public WaveBuilder waveBuilder;
+    public VendorBuilder vendorBuilder;
     public GUIWindowScripts relationsManager;
     public WCCharacterHandler characterHandler;
     WCPathCreator pathCreator;
     int cursorModeCount;
     public static WCCursorMode originalCursorMode;
     public int DimensionCount { get; set; }
-    private int currentDim = 0;
+    public int currentDim = 0;
+    private static bool readySelection;
 
     public enum WCCursorMode
     {
@@ -206,6 +208,8 @@ public class WorldCreatorCursor : MonoBehaviour
                 current.obj.SetActive(true);
                 modeText.text = "Item Mode";
                 PollItems();
+
+                originalCursorMode = WCCursorMode.Item;
                 break;
             case WCCursorMode.Sector:
                 current.obj.SetActive(false);
@@ -215,6 +219,7 @@ public class WorldCreatorCursor : MonoBehaviour
                     PollSectors();
                 }
 
+                originalCursorMode = WCCursorMode.Sector;
                 break;
             case WCCursorMode.Control:
                 RemovePendingSector();
@@ -225,9 +230,10 @@ public class WorldCreatorCursor : MonoBehaviour
                     PollControls();
                 }
 
+                originalCursorMode = WCCursorMode.Control;
                 break;
             case WCCursorMode.SelectEntity:
-                modeText.text = "Select Entity Mode"; // change only when mode changes?
+                modeText.text = "Select Mode"; // change only when mode changes?
                 current.obj.SetActive(false); // same
                 PollEntitySelection();
                 break;
@@ -263,7 +269,7 @@ public class WorldCreatorCursor : MonoBehaviour
         foreach (var item in placedItems)
         {
             if (!item.obj) continue;
-            if (item.type == ItemType.Other || item.assetID == "core_gate" || item.assetID == "broken_core_gate")
+            if (item.type == ItemType.Entities || item.type == ItemType.Decorations)
             {
                 foreach (var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
                 {
@@ -272,7 +278,7 @@ public class WorldCreatorCursor : MonoBehaviour
             }
         }
 
-        if (current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
+        if (current.type == ItemType.Entities || current.type == ItemType.Decorations)
         {
             foreach (var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())
             {
@@ -295,7 +301,7 @@ public class WorldCreatorCursor : MonoBehaviour
         }
 
         current.shellcoreJSON = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
-        if (current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
+        if (current.type == ItemType.Entities || current.type == ItemType.Decorations)
         {
             foreach (var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())
             {
@@ -446,6 +452,11 @@ public class WorldCreatorCursor : MonoBehaviour
         waveBuilder.ToggleActive();
     }
 
+    public void ActivateVendorBuilder()
+    {
+        vendorBuilder.ToggleActive();
+    }
+
     [SerializeField]
     WCBasePropertyHandler basePropertyHandler;
 
@@ -485,6 +496,11 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && !system.IsPointerOverGameObject())
         {
             ActivateWaveBuilder();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
+        {
+            ActivateVendorBuilder();
         }
 
         if (!Input.GetKey(KeyCode.LeftControl) && !system.IsPointerOverGameObject())
@@ -578,6 +594,8 @@ public class WorldCreatorCursor : MonoBehaviour
 
         characters.Clear();
         handler.ClearInstantiation();
+        DimensionCount = 1;
+        currentDim = DimensionCount - 1;
     }
 
 
@@ -949,34 +967,47 @@ public class WorldCreatorCursor : MonoBehaviour
 
     void PollEntitySelection()
     {
-        if (Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject())
+        if (Input.GetMouseButtonUp(0))
         {
             var item = GetItemUnderCursor();
-            if (item != null)
+            if (item != null && readySelection)
             {
                 Item underCursor = new Item();
                 underCursor = item;
 
-                Debug.Log("under cursor: " + item);
+                /*Debug.Log("under cursor: " + item);
                 Debug.Log("under cursor name: " + item.name);
                 Debug.Log("under cursor ID: " + item.ID);
-                Debug.Log("under cursor assetID: " + item.assetID);
+                Debug.Log("under cursor assetID: " + item.assetID);*/
 
-                // TODO: Specify which type of item you are scanning for
-                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration || underCursor.type == ItemType.DecorationWithMetadata)
+                if ((Input.GetKey(KeyCode.F) && underCursor.type == ItemType.Flag) || underCursor.type == ItemType.Flag)
+                {
+                    taskInterface.Activate();
+                    SetMode(originalCursorMode);
+                    selectEntity.Invoke(underCursor.name);
+                    readySelection = false;
+                }
+                else if (Input.GetKey(KeyCode.E) && underCursor.type == ItemType.Entities
+                    || underCursor.type != ItemType.Platform)
                 {
                     taskInterface.Activate();
                     SetMode(originalCursorMode);
                     selectEntity.Invoke(underCursor.ID);
+                    readySelection = false;
                 }
+            }
+            else
+            {
+                readySelection = true;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             taskInterface.Activate();
             SetMode(originalCursorMode);
             selectEntity.Invoke("");
+            readySelection = false;
         }
     }
 

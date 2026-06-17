@@ -77,21 +77,21 @@ public static class DroneUtilities
         {
             // similarity for reasons described above
             case DroneType.Mini:
-                return ResourceManager.GetAsset<Sprite>("mini_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("mini_drone_vending");
             case DroneType.Counter:
-                return ResourceManager.GetAsset<Sprite>("counter_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("counter_drone_vending");
             case DroneType.Light:
-                return ResourceManager.GetAsset<Sprite>("light_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("light_drone_vending");
             case DroneType.Strike:
-                return ResourceManager.GetAsset<Sprite>("strike_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("strike_drone_vending");
             case DroneType.Worker:
-                return ResourceManager.GetAsset<Sprite>("worker_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("worker_drone_vending");
             case DroneType.Gun:
-                return ResourceManager.GetAsset<Sprite>("gun_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("gun_drone_vending");
             case DroneType.Torpedo:
-                return ResourceManager.GetAsset<Sprite>("torpedo_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("torpedo_drone_vending");
             case DroneType.Heavy:
-                return ResourceManager.GetAsset<Sprite>("heavy_drone_ability");
+                return ResourceManager.GetAsset<Sprite>("heavy_drone_vending");
             default:
                 return null;
         }

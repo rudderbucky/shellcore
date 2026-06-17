@@ -202,6 +202,7 @@ public class WCGeneratorHandler : MonoBehaviour
         var entityPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
         var wavePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
         var factionPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder");
+        var vendorPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "VendorPlaceholder");
         var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder");
 
         // Reinitialize node editor
@@ -303,15 +304,17 @@ public class WCGeneratorHandler : MonoBehaviour
                         rotation = (byte)item.rotation
                     });
                     break;
-                case ItemType.Other:
-                case ItemType.Decoration:
-                case ItemType.DecorationWithMetadata:
+                case ItemType.Entities:
+                case ItemType.Decorations:
+                case ItemType.BackgroundObjects:
+                case ItemType.MetaDataObjects:
+                case ItemType.SpecialObjects:
                 case ItemType.Flag:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if (cursor.characters.TrueForAll((WorldData.CharacterData x) => { return x.ID != item.ID; }))
                     {
                         // Debug.Log(item.ID + " is not a character. " + ID);
-                        if (item.type == ItemType.DecorationWithMetadata)
+                        if (item.type == ItemType.MetaDataObjects)
                         {
                             int parsedId;
                             if (item.assetID == "shard_rock" && int.TryParse(item.ID, out parsedId))
@@ -646,18 +649,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
         wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
-        if (!string.IsNullOrEmpty(blueprintField.text))
-        {
-            if (File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", blueprintField.text + ".json")))
-                wdata.defaultBlueprintJSON = blueprintField.text;
-            else
-            {
-                saveState = 5;
-                Debug.LogError($"Player's blueprint {blueprintField.text} does not exist. Abort.");
-                yield break;
-            }
-        }
-
+        wdata.defaultBlueprintJSON = blueprintField.text;
         wdata.author = authorField.text;
         wdata.description = descriptionField.text;
         wdata.partIndexDataArray = partData.ToArray();
@@ -679,6 +671,7 @@ public class WCGeneratorHandler : MonoBehaviour
         TryCopy(entityPlaceholderPath, System.IO.Path.Combine(path, "Entities"));
         TryCopy(wavePlaceholderPath, System.IO.Path.Combine(path, "Waves"));
         TryCopy(factionPlaceholderPath, System.IO.Path.Combine(path, "Factions"));
+        TryCopy(vendorPlaceholderPath, System.IO.Path.Combine(path, "Vendors"));
         TryCopy(resourcePlaceholderPath, System.IO.Path.Combine(path, "Resources"));
 
         foreach (var sector in sectors)
@@ -833,6 +826,9 @@ public class WCGeneratorHandler : MonoBehaviour
 
                 // copying factions
                 TryCopy(System.IO.Path.Combine(path, "Factions"), System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"));
+
+                // copying vendors
+                TryCopy(System.IO.Path.Combine(path, "Vendors"), System.IO.Path.Combine(Application.streamingAssetsPath, "VendorPlaceholder"));
 
                 // copying resources
                 TryCopy(System.IO.Path.Combine(path, "Resources"), System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder"));

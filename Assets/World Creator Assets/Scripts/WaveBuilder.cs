@@ -5,34 +5,24 @@ using UnityEngine.UI;
 
 public class WaveBuilder : GUIWindowScripts
 {
-    [SerializeField]
-    private Transform waveContents;
-
-    [SerializeField]
-    private Transform waveSpawnContents;
-
-    [SerializeField]
-    private GameObject buttonPrefab;
-    [SerializeField]
-    private WaveSet waveSet;
-    [SerializeField]
-    private SiegeWave currentSiegeWave;
-    private SiegeEntity currentSiegeEntity;
-    [SerializeField]
-    private InputField jsonInputField;
-    [SerializeField]
-    private InputField timeInputField;
-    [SerializeField]
-    private InputField flagNameInputField;
-    [SerializeField]
-    private Dropdown factionDropdown;
-    [SerializeField]
-    private Button existingButton;
-    private Color32 selectedColor = new Color32(100,150,100,255);
-    private Color32 unselectedColor = new Color32(100,100,100,255);
     public static WaveBuilder instance;
+    [SerializeField] private Transform waveContents;
+    [SerializeField] private Transform waveSpawnContents;
+    [SerializeField] private GameObject buttonPrefab;
     
-    
+    [SerializeField] private InputField jsonInputField;
+    [SerializeField] private InputField timeInputField;
+    [SerializeField] private InputField flagNameInputField;
+    [SerializeField] private Dropdown factionDropdown;
+
+    [SerializeField] private Button selectedSpawnButton;
+    [SerializeField] private Button selectedWaveButton;
+    private Color32 selectedColor = new Color32(100, 150, 100, 255);
+    private Color32 unselectedColor = new Color32(100, 100, 100, 255);
+
+    [SerializeField] private WaveSet waveSet;
+    [SerializeField] private SiegeWave currentSiegeWave;
+    private SiegeEntity currentSiegeEntity;
 
     void OnEnable()
     {
@@ -66,14 +56,19 @@ public class WaveBuilder : GUIWindowScripts
 
     void ClearWaveSpawns()
     {
-
         for (int i = 0; i < waveSpawnContents.childCount; i++)
         {
             Destroy(waveSpawnContents.GetChild(i).gameObject);
         }
         currentSiegeEntity = null;
-        existingButton = null;
+        selectedSpawnButton = null;
     }
+
+    /*public void ClearSelectedSpawns()
+    {
+        AudioManager.PlayClipByID("clip_unload");
+        ClearWaveSpawns();
+    }*/
 
     public void AddWave()
     {
@@ -87,55 +82,65 @@ public class WaveBuilder : GUIWindowScripts
         currentSiegeWave = x;
     }
 
-    private void AddSpawnToTable(SiegeEntity spawn)
-    {
-        var button = Instantiate(buttonPrefab, waveSpawnContents.transform).GetComponent<Button>();
-        var text = GetDescriptor(spawn);
-        button.GetComponentInChildren<Text>().text = text;
-        button.onClick.AddListener(() => 
-        {
-            if (Input.GetKey(KeyCode.LeftShift) && currentSiegeWave != null)
-            {
-                currentSiegeWave.entities.Remove(spawn);
-                if (currentSiegeEntity == spawn) currentSiegeEntity = null;
-                Destroy(button.gameObject);
-                return;
-            }
-            var doNotSetModify = spawn == GetCurrentSiegeEntity();
-            ResetSelectedWaveSpawn();
-            if (doNotSetModify) return;
-            existingButton = button;
-            existingButton.GetComponent<Image>().color = selectedColor;
-            SetModifyWaveSpawnFields(spawn);
-        });
-    }
-
-    public void SetWaveSpawnContents(SiegeWave wave)
-    {
-        if (wave == null) return;
-        ClearWaveSpawns();
-        if (wave.entities == null) wave.entities = new List<SiegeEntity>();
-        foreach (var spawn in wave.entities)
-        {
-            AddSpawnToTable(spawn);
-        }
-        
-        currentSiegeWave = wave;
-    }
-
     private SiegeEntity GetCurrentSiegeEntity()
     {
         return currentSiegeEntity;
     }
 
-    private void ResetSelectedWaveSpawn()
+    public void ResetSelectedWave()
     {
-        currentSiegeEntity = null;
-        if (existingButton) 
+        if (selectedWaveButton != null)
         {
-            existingButton.GetComponent<Image>().color = unselectedColor;
+            selectedWaveButton.GetComponent<Image>().color = unselectedColor;
+            selectedWaveButton = null;
         }
-        existingButton = null;
+    }
+
+    public void DeselectWave()
+    {
+        ClearWaveSpawns();
+        ResetSelectedWaveSpawn();
+        ResetSelectedWave();
+    }
+
+    public void RemoveSelectedWave()
+    {
+        if (currentSiegeWave == null || selectedWaveButton == null)
+            return;
+
+        var wv = new List<SiegeWave>(waveSet.waves);
+        wv.Remove(currentSiegeWave);
+        waveSet.waves = wv.ToArray();
+        Destroy(selectedWaveButton.gameObject);
+        ClearWaveSpawns();
+        currentSiegeWave = null;
+    }
+
+    // Button for creating/editing spawns
+    public void AddOrModifyWaveSpawn()
+    {
+        var entity = TryParseFields((jsonInputField, timeInputField, flagNameInputField, factionDropdown));
+        if (entity == null) 
+            return;
+        var text = GetDescriptor(entity);
+        if (currentSiegeEntity != null)
+        {
+            currentSiegeEntity.entity = entity.entity;
+            currentSiegeEntity.flagName = entity.flagName;
+            currentSiegeEntity.timeSinceWaveStartToSpawn = entity.timeSinceWaveStartToSpawn;
+            if (selectedSpawnButton)
+                selectedSpawnButton.GetComponentInChildren<Text>().text = text;
+            ResetSelectedWaveSpawn();
+        }
+        else if (currentSiegeWave != null) // selectedSpawnButton = null
+        {
+            if (currentSiegeWave.entities == null) 
+                currentSiegeWave.entities = new List<SiegeEntity>();
+            currentSiegeWave.entities.Add(entity);
+            AddSpawnToTable(entity);
+        }
+        else 
+            Debug.LogWarning(3);
     }
 
     public void SetModifyWaveSpawnFields(SiegeEntity siegeEntity)
@@ -146,39 +151,77 @@ public class WaveBuilder : GUIWindowScripts
             return;
         }
         jsonInputField.text = (siegeEntity.entity.assetID == "shellcore_blueprint" ? siegeEntity.entity.blueprintJSON : siegeEntity.entity.assetID);
-        timeInputField.text = siegeEntity.timeSinceWaveStartToSpawn+"";
+        timeInputField.text = siegeEntity.timeSinceWaveStartToSpawn + "";
         flagNameInputField.text = siegeEntity.flagName;
         factionDropdown.value = siegeEntity.entity.faction;
         currentSiegeEntity = siegeEntity;
     }
 
-    private string GetDescriptor(SiegeEntity entity)
+    private void AddSpawnToTable(SiegeEntity spawn)
     {
-        return $"{entity.timeSinceWaveStartToSpawn}/{entity.flagName+""}/{(entity.entity.assetID == "shellcore_blueprint" ? entity.entity.blueprintJSON : entity.entity.assetID) }/{entity.entity.faction}";
+        var button = Instantiate(buttonPrefab, waveSpawnContents.transform).GetComponent<Button>();
+        var text = GetDescriptor(spawn);
+        button.GetComponentInChildren<Text>().text = text;
+        button.onClick.AddListener(() =>
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && currentSiegeWave != null)
+            {
+                currentSiegeWave.entities.Remove(spawn);
+                if (currentSiegeEntity == spawn)
+                    currentSiegeEntity = null;
+                Destroy(button.gameObject);
+                return;
+            }
+
+            var doNotSetModify = spawn == GetCurrentSiegeEntity();
+            ResetSelectedWaveSpawn();
+            if (doNotSetModify)
+                return;
+
+            selectedSpawnButton = button;
+            selectedSpawnButton.GetComponent<Image>().color = selectedColor;
+            SetModifyWaveSpawnFields(spawn);
+        });
     }
 
-    public void AddOrModifyWaveSpawn()
+    public void SetWaveSpawnContents(SiegeWave wave)
     {
-        var entity = TryParseFields((jsonInputField, timeInputField, flagNameInputField, factionDropdown));
-        if (entity == null) return;
-        var text = GetDescriptor(entity);
-        if (currentSiegeEntity != null)
+        if (wave == null)
+            return;
+        ClearWaveSpawns();
+        if (wave.entities == null)
+            wave.entities = new List<SiegeEntity>();
+        foreach (var spawn in wave.entities)
         {
-            currentSiegeEntity.entity = entity.entity;
-            currentSiegeEntity.flagName = entity.flagName;
-            currentSiegeEntity.timeSinceWaveStartToSpawn = entity.timeSinceWaveStartToSpawn;
-            if (existingButton) 
-                existingButton.GetComponentInChildren<Text>().text = text;
-            ResetSelectedWaveSpawn();
+            AddSpawnToTable(spawn);
         }
-        else if (currentSiegeWave != null) // existingButton = null
+
+        currentSiegeWave = wave;
+    }
+
+    public void ResetSelectedWaveSpawn()
+    {
+        currentSiegeEntity = null;
+        if (selectedSpawnButton != null)
         {
-            if (currentSiegeWave.entities == null) currentSiegeWave.entities = new List<SiegeEntity>();
-            currentSiegeWave.entities.Add(entity);
-            AddSpawnToTable(entity);
+            selectedSpawnButton.GetComponent<Image>().color = unselectedColor;
+            selectedSpawnButton = null;
         }
-        else 
-            Debug.LogWarning(3);
+    }
+
+    public void RemoveSelectedWaveSpawn()
+    {
+        if (currentSiegeEntity == null || currentSiegeWave == null || selectedSpawnButton == null)
+            return;
+
+        currentSiegeWave.entities.Remove(currentSiegeEntity);
+        Destroy(selectedSpawnButton.gameObject);
+        selectedSpawnButton = null;
+    }
+
+    private string GetDescriptor(SiegeEntity entity)
+    {
+        return $"{entity.timeSinceWaveStartToSpawn}/{entity.flagName + ""}/{(entity.entity.assetID == "shellcore_blueprint" ? entity.entity.blueprintJSON : entity.entity.assetID)}/{entity.entity.faction}";
     }
 
     private SiegeEntity TryParseFields((InputField, InputField, InputField, Dropdown) field)
@@ -239,12 +282,13 @@ public class WaveBuilder : GUIWindowScripts
         return siegeEntity;
     }
 
-
+    // Saves everything
     public void ParseWaves(string path)
     {
         System.IO.File.WriteAllText(path, JsonUtility.ToJson(waveSet));
     }
 
+    // Button for creating waves
     public void ReadWaves(WaveSet waves)
     {
         ClearWaves();
@@ -270,6 +314,11 @@ public class WaveBuilder : GUIWindowScripts
                     }
                     return;
                 }
+
+                ResetSelectedWave();
+
+                selectedWaveButton = button;
+                selectedWaveButton.GetComponent<Image>().color = selectedColor;
                 SetWaveSpawnContents(wave);
             });
         }
