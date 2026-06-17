@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12746,7 +12745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.5019608, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -16572,6 +16571,7 @@ GameObject:
   - component: {fileID: 1296363338}
   - component: {fileID: 1296363340}
   - component: {fileID: 1296363339}
+  - component: {fileID: 1296363341}
   m_Layer: 5
   m_Name: Tally
   m_TagString: Untagged
@@ -16640,6 +16640,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1296363337}
   m_CullTransparentMesh: 0
+--- !u!114 &1296363341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296363337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1299087295
 GameObject:
   m_ObjectHideFlags: 0
@@ -22980,6 +22995,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 2077927833
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -23666,8 +23682,8 @@ MonoBehaviour:
   stealthGasBoosted: 0
   flatDamageIncrease: 0
   absorptions: 0
+  invertTractors: 0
   canUseAbilities: 1
-  tractorSwitched: 0
   sectorMngr: {fileID: 0}
   entityName: 
   isStandardTractorTarget: 0
@@ -23710,8 +23726,10 @@ MonoBehaviour:
     missions: []
     reputation: 0
     episode: 0
+    partyLock: 0
     unlockedPartyIDs: []
     disabledPartyIDs: []
+    currentPartyMembers: []
     abilityHotkeys:
       skills: 
       spawns: []
@@ -27564,12 +27582,12 @@ PrefabInstance:
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
@@ -27584,7 +27602,7 @@ PrefabInstance:
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 4076859596742077408, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}

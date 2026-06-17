@@ -313,7 +313,8 @@ public class PartIndexScript : MonoBehaviour
             partsObtained.Add(CullToPartIndexValues(part));
             if (instance) instance.SetPartAsObtained(CullToPartIndexValues(part));
         }
-        else if (part.shiny)
+        
+        if (part.shiny && partsObtained.Exists(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part))))
         {
             partsObtained[partsObtained.FindIndex(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part)))] = part;
             if (instance) instance.SetPartAsObtained(CullToPartIndexValues(part));

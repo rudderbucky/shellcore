@@ -420,7 +420,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 }
 
                 var factionPath = System.IO.Path.Combine(
-                    System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"), $"{manager.factions[index].factionName}.json");
+                    System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"), $"{manager.factions[index].factionName}-{manager.factions[index].ID}.json");
                 if (File.Exists(factionPath))
                 {
                     File.Delete(factionPath);
