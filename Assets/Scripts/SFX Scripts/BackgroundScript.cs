@@ -1,6 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
+public class BackgroundTileSetList
+{
+    public GameObject[] tileSet;
+    public bool animated;
+    public bool randomRotation;
+}
+
 public enum BackgroundTileSkin
 {
     Squares,
@@ -11,7 +19,8 @@ public enum BackgroundTileSkin
 
 public class BackgroundScript : MonoBehaviour
 {
-    public GameObject[] tile; // array of tile images, prefabbed into sprites
+    public BackgroundTileSetList[] tiles;   // a nested list of images, prefabbed into sprites
+
     public static BackgroundTileSkin currentSkin = BackgroundTileSkin.Squares;
     private Vector2 tileStartPos; // the start position of the background (lower left tile)
     Vector2 tileSpacing; // the size of the tile (contains length and height as x and y)
@@ -53,7 +62,7 @@ public class BackgroundScript : MonoBehaviour
             {
                 TileWrapper(tile[i], 0); // update each tile for both dimensions
                 TileWrapper(tile[i], 1);
-                if (currentSkin != BackgroundTileSkin.Web)
+                if (tiles[(int)currentSkin].animated)
                 {
                     var x = tile[i].GetComponent<SpriteRenderer>().color;
                     x.a = Mathf.Sin(Time.time / 2 + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
@@ -109,7 +118,7 @@ public class BackgroundScript : MonoBehaviour
             }
 
             mcamera = Camera.main.transform;
-            tileSpacing = tile[4 * (int)currentSkin].GetComponent<Renderer>().bounds.size;
+            tileSpacing = tiles[(int)currentSkin].tileSet[0].GetComponent<Renderer>().bounds.size;
             GameObject parent = new GameObject("Tile Holder");
             parent.transform.SetParent(transform, true);
             // grab tile spacing (this should be constant between the tile sprites given)
@@ -133,7 +142,7 @@ public class BackgroundScript : MonoBehaviour
                     {
                         instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
                         // the position of the tile
-                        GameObject go = Instantiate(tile[0], instancedPos, Quaternion.identity);
+                        GameObject go = Instantiate(tiles[(int)currentSkin].tileSet[0], instancedPos, Quaternion.identity);
                         go.transform.SetParent(parent.transform, true);
                         
                         
@@ -154,17 +163,13 @@ public class BackgroundScript : MonoBehaviour
     private bool[] refreshed;
 
     private void SetSprite(int count) {
-        int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
-        ingameTiles[count].GetComponent<SpriteRenderer>().sprite = tile[randomTile].GetComponent<SpriteRenderer>().sprite;
+        int randomTile = Random.Range(0, tiles[(int)currentSkin].tileSet.Length - 1); // grabs a random tile from the nested list of sprites
+        ingameTiles[count].GetComponent<SpriteRenderer>().sprite = tiles[(int)currentSkin].tileSet[randomTile].GetComponent<SpriteRenderer>().sprite;
 
         GameObject go = ingameTiles[count];
-        if (currentSkin == BackgroundTileSkin.Web || currentSkin == BackgroundTileSkin.Tetrominoes) 
+        if (tiles[(int)currentSkin].randomRotation)
         {
-            go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, Random.Range(0, 2) > 0.5F ? 1 : -1,1);
-        }
-        else if (currentSkin == BackgroundTileSkin.Squares)
-        {
-            go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, 1, 1);
+            go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, Random.Range(0, 2) > 0.5F ? 1 : -1, 1);
         }
     }
 
